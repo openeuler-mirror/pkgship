@@ -15,7 +15,7 @@ LOGGER = Log(__name__)
 def validate_pagenum(pagenum):
     """
     Description: Method test
-    Args£º
+    Args:
         pagenum: pagenum
     Returns:
         True or failure
@@ -30,7 +30,7 @@ def validate_pagenum(pagenum):
 def validate_pagesize(pagesize):
     """
     Description: Method test
-    Args£º
+    Args:
         pagesize: pagesize
     Returns:
         True or failure
