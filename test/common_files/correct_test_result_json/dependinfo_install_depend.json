@@ -1,0 +1,41 @@
+[
+  {
+    "input": {
+      "binaryName": "A1"
+    },
+    "output": {
+      "code": "2001",
+      "data": {
+        "install_dict": {"binary_dicts": [{"binary_name": "A1", "database": "mainline", "source_name": "A", "version": "0.0.23b"}, {"binary_name": "A2", "database": "mainline", "source_name": "A", "version": "0.0.23b"}, {"binary_name": "C1", "database": "mainline", "source_name": "C", "version": "0.1"}, {"binary_name": "D1", "database": "mainline", "source_name": "D", "version": "0.11"}], "source_dicts": [{"database": "mainline", "source_name": "D", "version": "0.11"}, {"database": "mainline", "source_name": "A", "version": "0.0.23b"}, {"database": "mainline", "source_name": "C", "version": "0.1"}], "statistics": [{"binary_num": 4, "database": "mainline", "source_num": 3}, {"binary_num": 0, "database": "fedora30", "source_num": 0}]},
+        "not_found_components": []
+      },
+      "msg": "Successful Operation!"
+    }
+  },
+  {
+    "input": {
+      "binaryName": "D2"
+    },
+    "output": {
+      "code": "2001",
+      "data": {
+        "install_dict": {"binary_dicts": [{"binary_name": "D2", "database": "mainline", "source_name": "D", "version": "0.11"}, {"binary_name": "D1", "database": "mainline", "source_name": "D", "version": "0.11"}, {"binary_name": "A1", "database": "mainline", "source_name": "A", "version": "0.0.23b"}, {"binary_name": "A2", "database": "mainline", "source_name": "A", "version": "0.0.23b"}, {"binary_name": "C1", "database": "mainline", "source_name": "C", "version": "0.1"}], "source_dicts": [{"database": "mainline", "source_name": "C", "version": "0.1"}, {"database": "mainline", "source_name": "A", "version": "0.0.23b"}, {"database": "mainline", "source_name": "D", "version": "0.11"}], "statistics": [{"binary_num": 5, "database": "mainline", "source_num": 3}, {"binary_num": 0, "database": "fedora30", "source_num": 0}]},
+        "not_found_components": []
+      },
+      "msg": "Successful Operation!"
+    }
+  },
+  {
+    "input": {
+      "binaryName": "C2"
+    },
+    "output": {
+      "code": "2001",
+      "data": {
+        "install_dict": {"binary_dicts": [{"binary_name": "C2", "database": "mainline", "source_name": "C", "version": "0.1"}], "source_dicts": [{"database": "mainline", "source_name": "C", "version": "0.1"}], "statistics": [{"binary_num": 1, "database": "mainline", "source_num": 1}, {"binary_num": 0, "database": "fedora30", "source_num": 0}]},
+        "not_found_components": []
+      },
+      "msg": "Successful Operation!"
+    }
+  }
+]
