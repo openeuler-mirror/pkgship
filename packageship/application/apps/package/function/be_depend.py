@@ -136,6 +136,13 @@ class BeDepend():
         _components = set()
         for obj in result:
             if not obj.pro_name:
+                self.result_dict[obj.search_bin_name] = [
+                    obj.source_name,
+                    obj.search_bin_version,
+                    self.db_name,
+                    self.comm_install_builds[obj.pro_name]
+                    if self.comm_install_builds[obj.pro_name] else {(None, None)}
+                ]
                 continue
             # De-weight components
             if obj.pro_name not in self.comm_install_builds:
