@@ -15,19 +15,29 @@ description: Interface processing
 class: BeDepend, BuildDepend, InitSystem, InstallDepend, Packages,
 Repodatas, SelfDepend, SinglePack
 """
-from flask import request
+import io
+import pandas as pd
+
+from flask import request, make_response, current_app
 from flask import jsonify
 from flask_restful import Resource
+
+from packageship.libs.exception import Error
 from packageship.libs.log import Log
 
-from packageship.application.apps.package.serialize import SelfDependSchema
-from packageship.application.apps.package.serialize import BeDependSchema
-from packageship.application.apps.package.serialize import have_err_db_name
+from .serialize import SelfDependSchema
+from .serialize import InstallDependSchema
+from .serialize import BuildDependSchema
+from .serialize import BeDependSchema
+from .serialize import have_err_db_name
+from .serialize import SingleGraphSchema
 from packageship.application.apps.package.function.constants import ResponseCode
 from packageship.application.apps.package.function.searchdb import db_priority
 from packageship.application.apps.package.function.constants import ListNode
-from .function.graphcache import bedepend
+from .function.graphcache import bedepend, build_depend, install_depend
 from .function.graphcache import self_build as selfbuild
+from .function.singlegraph import BaseGraph
+
 
 DB_NAME = 0
 LOGGER = Log(__name__)
@@ -50,8 +60,8 @@ class ParseDependPackageMethod(Resource):
 
     def _parse_database(self, db_list):
         data_name = []
-        for _, v in enumerate(db_list):
-            data_name.append({"database": v, "binary_num": 0, "source_num": 0})
+        for _, dname in enumerate(db_list):
+            data_name.append({"database": dname, "binary_num": 0, "source_num": 0})
         return data_name
 
     # pylint: disable = too-many-nested-blocks
@@ -99,6 +109,14 @@ class ParseDependPackageMethod(Resource):
                                 con["source_num"] += 1
                     depend_bin_data.append(row_data)
                     depend_src_data.append(row_src_data)
+                elif isinstance(package_depend, list) and \
+                        package_depend[ListNode.SOURCE_NAME] == 'source':
+                    bin_package = bin_package.split("_")[0]
+                    row_src_data = {"source_name": bin_package,
+                                    "version": package_depend[ListNode.VERSION],
+                                    "database": package_depend[ListNode.DBNAME]}
+                    depend_src_data.append(row_src_data)
+
         src_data = [dict(t) for t in set([tuple(d.items()) for d in depend_src_data])]
         statistics_table = {
             "binary_dicts": depend_bin_data,
@@ -107,7 +125,7 @@ class ParseDependPackageMethod(Resource):
         return statistics_table
 
 
-class InfoSelfDepend(ParseDependPackageMethod):
+class SelfDependInfo(ParseDependPackageMethod):
     """
     Description: querying install and build depend for a package
                  and others which has the same src name
@@ -128,8 +146,7 @@ class InfoSelfDepend(ParseDependPackageMethod):
         if bin_packages:
             for bin_package, package_depend in bin_packages.items():
                 # distinguish whether the current data is the data of the root node
-                if isinstance(package_depend, list) and package_depend[ListNode.PARENT_LIST][DB_NAME][
-                    DB_NAME] != 'root':
+                if isinstance(package_depend, list) :
                     row_data = {"binary_name": bin_package,
                                 "source_name": package_depend[ListNode.SOURCE_NAME],
                                 "version": package_depend[ListNode.VERSION],
@@ -250,7 +267,7 @@ class InfoSelfDepend(ParseDependPackageMethod):
         )
 
 
-class InfoBeDepend(ParseDependPackageMethod):
+class BeDependInfo(ParseDependPackageMethod):
     """
     Description: querying be installed and built depend for a package
                  and others which has the same src name
@@ -290,7 +307,16 @@ class InfoBeDepend(ParseDependPackageMethod):
         package_name = data.get("packagename")
         with_sub_pack = data.get("withsubpack")
         db_name = data.get("dbname")
-        if db_name not in db_priority():
+
+        db_pri = db_priority()
+        if not db_pri:
+            return jsonify(
+                ResponseCode.response_json(
+                    ResponseCode.NOT_FOUND_DATABASE_INFO
+                )
+            )
+
+        if db_name not in db_pri:
             return jsonify(
                 ResponseCode.response_json(ResponseCode.DB_NAME_ERROR)
             )
@@ -328,3 +354,234 @@ class DataBaseInfo(Resource):
         return jsonify(
             ResponseCode.response_json(ResponseCode.SUCCESS, data=name_list)
         )
+
+
+class InstallDependInfo(ParseDependPackageMethod):
+    """
+    Description: install depend of binary package
+    Restful API: post
+    changeLog:
+    """
+
+    def post(self):
+        """
+        Query a package's install depend(support
+        querying in one or more databases)
+
+        Args:
+            binaryName
+            dbPreority: the array for database preority
+        Returns:
+            resultDict{
+                binary_name: //binary package name
+                [
+                    src, //the source package name for
+                            that binary packge
+                    dbname,
+                    version,
+                    [
+                        parent_node, //the binary package name which is
+                                       the install depend for binaryName
+                        type //install  install or build, which
+                                depend on the function
+                    ]
+                ]
+            }
+        Raises:
+        """
+        schema = InstallDependSchema()
+
+        data = request.get_json()
+        validate_err = schema.validate(data)
+        if validate_err:
+            return jsonify(
+                ResponseCode.response_json(ResponseCode.PARAM_ERROR)
+            )
+        pkg_name = data.get("binaryName")
+
+        db_pri = db_priority()
+        if not db_pri:
+            return jsonify(
+                ResponseCode.response_json(
+                    ResponseCode.NOT_FOUND_DATABASE_INFO
+                )
+            )
+
+        db_list = data.get("db_list") if data.get("db_list") \
+            else db_pri
+
+        if not all([pkg_name, db_list]):
+            return jsonify(
+                ResponseCode.response_json(ResponseCode.PARAM_ERROR)
+            )
+
+        if have_err_db_name(db_list, db_pri):
+            return jsonify(
+                ResponseCode.response_json(ResponseCode.DB_NAME_ERROR)
+            )
+
+        query_parameter = {"binaryName": pkg_name,
+                           "db_list": db_list}
+
+        result_data = install_depend(query_parameter)
+        res_code = result_data["code"]
+        res_dict = result_data["install_dict"]
+        res_not_found_components = result_data["not_found_components"]
+
+        if not res_dict:
+            return jsonify(
+                ResponseCode.response_json(res_code)
+            )
+        elif len(res_dict) == 1 and res_dict.get(pkg_name)[2] == 'NOT FOUND':
+            return jsonify(
+                ResponseCode.response_json(ResponseCode.PACK_NAME_NOT_FOUND)
+            )
+
+        install_dict = self.parse_depend_package(res_dict, db_list)
+
+        return jsonify(
+            ResponseCode.response_json(ResponseCode.SUCCESS, data={
+                "install_dict": install_dict,
+                'not_found_components': list(res_not_found_components)
+            })
+        )
+
+
+class BuildDependInfo(ParseDependPackageMethod):
+    """
+        Description: build depend of binary package
+        Restful API: post
+        changeLog:
+        """
+
+    def post(self):
+        """
+        Query a package's build depend and
+        build depend package's install depend
+        (support querying in one or more databases)
+
+        Args:
+            sourceName :name of the source package
+            dbPreority：the array for database preority
+        Returns:
+            for
+            example::
+                {
+                  "code": "",
+                  "data": "",
+                  "msg": ""
+                }
+        Raises:
+        """
+        schema = BuildDependSchema()
+
+        data = request.get_json()
+        if schema.validate(data):
+            return jsonify(
+                ResponseCode.response_json(ResponseCode.PARAM_ERROR)
+            )
+        pkg_name = data.get("sourceName")
+
+        db_pri = db_priority()
+
+        if not db_pri:
+            return jsonify(
+                ResponseCode.response_json(
+                    ResponseCode.NOT_FOUND_DATABASE_INFO
+                )
+            )
+
+        db_list = data.get("db_list") if data.get("db_list") \
+            else db_pri
+
+        if have_err_db_name(db_list, db_pri):
+            return jsonify(
+                ResponseCode.response_json(ResponseCode.DB_NAME_ERROR)
+            )
+
+        query_parameter = {"sourceName": pkg_name,
+                           "db_list": db_list}
+
+        result_data = build_depend(query_parameter)
+        res_code = result_data["code"]
+        res_dict = result_data["build_dict"]
+        res_not_found_components = result_data["not_found_components"]
+
+        if res_dict:
+            res_code = ResponseCode.SUCCESS
+        else:
+            return jsonify(
+                ResponseCode.response_json(
+                    res_code
+                )
+            )
+
+        res_dict = self.parse_depend_package(res_dict, db_list)
+
+        return jsonify(
+            ResponseCode.response_json(
+                res_code,
+                data={
+                    'build_dict': res_dict,
+                    'not_found_components': list(res_not_found_components)
+                }
+            )
+        )
+
+
+class SingleGraph(Resource):
+    """
+        Description: Specifies the binary package dependency graph fetch
+        Restful API: post
+        changeLog:
+    """
+
+    def post(self):
+        """
+            Specifies that the binary package dependency graph gets the interface
+
+            Args:
+                packagename:The package name, binary package, or source package
+                dbname:databases name
+                query_type:The type of data you want to query
+                selfbuild:Is a self-compiling dependency
+                withsubpack:Whether the query subpackage query needs to pass this parameter
+                packagetype:The type of data, mainly source or binary
+                node_name:The name of the node to be queried
+            Returns:
+                for example:
+                    {
+                        "code": "",
+                        "data": "",
+                        "msg": ""
+                    }
+            Raises:
+        """
+        schema = SingleGraphSchema()
+        data = request.get_json()
+        if schema.validate(data):
+            return jsonify(
+                ResponseCode.response_json(ResponseCode.PARAM_ERROR)
+            )
+
+        db_pri = db_priority()
+
+        if not db_pri:
+            return jsonify(
+                ResponseCode.response_json(
+                    ResponseCode.NOT_FOUND_DATABASE_INFO
+                )
+            )
+
+        dbname = data.get("dbname")
+
+        if have_err_db_name(dbname, db_pri):
+            return jsonify(
+                ResponseCode.response_json(ResponseCode.DB_NAME_ERROR)
+            )
+
+        response_status, msg, res_data = BaseGraph(**data).parse_depend_graph()
+
+        res_dict = {"code": response_status, "data": res_data, "msg": msg}
+
+        return jsonify(res_dict)
