@@ -88,6 +88,13 @@ class PreloadingSettings():
         """
         return self._setting_container is not None
 
+    def reload(self):
+        """
+            Add the reload mechanism
+        """
+        self._setting_container = None
+        self._preloading()
+
 
 class Configs():
     """
