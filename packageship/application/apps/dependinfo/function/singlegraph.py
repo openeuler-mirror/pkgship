@@ -31,6 +31,7 @@ from .graphcache import self_build, bedepend, build_depend, install_depend
 LEVEL_RADIUS = 30
 NODE_SIZE = 25
 PACKAGE_NAME = 0
+TAIL = -1
 LOGGER = Log(__name__)
 
 
@@ -49,8 +50,8 @@ class SelfBuildDep:
             'packagename': self.graph.packagename,
             'db_list': self.graph.dbname,
             'packtype': self.graph.packagetype,
-            'selfbuild': self.graph.selfbuild,
-            'withsubpack': self.graph.withsubpack
+            'selfbuild': self.graph.selfbuild or "0",
+            'withsubpack': self.graph.withsubpack or "0"
         }
 
     def validate(self):
@@ -70,8 +71,8 @@ class SelfBuildDep:
         """
         db_list = query_parameter['db_list']
         packagename = query_parameter['packagename']
-        selfbuild = int(query_parameter['selfbuild'])
-        withsubpack = int(query_parameter['withsubpack'])
+        selfbuild = query_parameter['selfbuild']
+        withsubpack = query_parameter['withsubpack']
         packtype = query_parameter['packtype']
         _response_code, binary_dicts, source_dicts, not_fd_components = \
             SelfDepend(db_list).query_depend(packagename,
@@ -88,7 +89,7 @@ class SelfBuildDep:
     def __call__(self):
         def _query_depend():
             query_result = self_build(self.query_parameter)
-            return query_result['binary_dicts']
+            return query_result['code'], query_result['binary_dicts']
         return self.graph.get_depend_relation_data(self, _query_depend)
 
 
@@ -136,7 +137,7 @@ class InstallDep:
     def __call__(self):
         def _query_depend():
             query_result = install_depend(self.query_parameter)
-            return query_result['install_dict']
+            return query_result['code'], query_result['install_dict']
         return self.graph.get_depend_relation_data(self, _query_depend)
 
 
@@ -184,7 +185,7 @@ class BuildDep:
     def __call__(self):
         def _query_depend():
             query_result = build_depend(self.query_parameter)
-            return query_result['build_dict']
+            return query_result['code'], query_result['build_dict']
         return self.graph.get_depend_relation_data(self, _query_depend)
 
 
@@ -205,7 +206,7 @@ class BeDependOn:
         self.query_parameter = {
             'packagename': self.graph.packagename,
             'dbname': dbname,
-            'withsubpack': self.graph.withsubpack
+            'withsubpack': self.graph.withsubpack or 0
         }
 
     def validate(self):
@@ -240,7 +241,7 @@ class BeDependOn:
 
         def _query_depend():
             query_result = bedepend(self.query_parameter)
-            return query_result['bedepend']
+            return query_result['code'], query_result['bedepend']
         return self.graph.get_depend_relation_data(self, _query_depend)
 
 
@@ -258,6 +259,8 @@ class BaseGraph:
     def __init__(self, query_type, **kwargs):
         self.query_type = query_type
         self.dbname = None
+        if 'packagetype' not in kwargs:
+            kwargs['packagetype'] = "binary"
         self.__dict__.update(**kwargs)
         depend_graph = self.depend.get(self.query_type)
         if depend_graph is None:
@@ -441,9 +444,13 @@ class BaseGraph:
                 self.up_depend_node.append(package_name)
                 self.down_depend_nodes.append(package_name)
 
-            for depend_item in package_depend[-1]:
+            for depend_item in package_depend[TAIL]:
                 if depend_item[PACKAGE_NAME] == 'root':
                     continue
+                if self.packagetype == 'source' and depend_item[TAIL] == "build":
+                    self.up_depend_node.append(package_name)
+                    self.down_depend_nodes.append(package_name)
+
                 if not self.package_datas['uplevel'].__contains__(package_name):
                     self.package_datas['uplevel'][package_name] = list()
                 if not self.package_datas['downlevel'].__contains__(depend_item[PACKAGE_NAME]):
@@ -453,6 +460,9 @@ class BaseGraph:
                     depend_item[PACKAGE_NAME])
                 self.package_datas['downlevel'][depend_item[PACKAGE_NAME]].append(
                     package_name)
+        # Remove duplicate packets
+        self.up_depend_node = list(set(self.up_depend_node))
+        self.down_depend_nodes = list(set(self.down_depend_nodes))
 
     def get_depend_relation_data(self, depend, func):
         """
@@ -469,7 +479,7 @@ class BaseGraph:
         database_error = self._database_priority()
         if database_error:
             return database_error
-        _package_datas = func()
+        _code, _package_datas = func()
 
         if _package_datas:
             self._relation_recombine(_package_datas)
@@ -478,7 +488,7 @@ class BaseGraph:
             except KeyError as error:
                 LOGGER.logger.error(error)
                 return (ResponseCode.SERVICE_ERROR, ResponseCode.CODE_MSG_MAP[ResponseCode.SERVICE_ERROR])
-        return (ResponseCode.SUCCESS, ResponseCode.CODE_MSG_MAP[ResponseCode.SUCCESS])
+        return (_code, ResponseCode.CODE_MSG_MAP[_code])
 
     def parse_depend_graph(self):
         """Analyze the data that the graph depends on"""

@@ -5,7 +5,17 @@ Description: Initialization of data import
 Class: InitDataBase,MysqlDatabaseOperations,SqliteDatabaseOperations
 """
 import os
+import re
+import bz2
+import gzip
+import tarfile
+import zipfile
+import shutil
+import requests
 import yaml
+from retrying import retry
+from requests.exceptions import HTTPError
+from requests.exceptions import RequestException
 from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError, InternalError
 from packageship.libs.dbutils.sqlalchemy_helper import DBHelper
@@ -23,6 +33,7 @@ from packageship.application.models.package import SrcRequires
 from packageship.application.models.package import BinProvides
 from packageship.application.models.package import BinFiles
 from packageship.application.models.package import Packages
+from packageship.application.models.package import FileList
 
 
 class InitDataBase():
@@ -57,7 +68,7 @@ class InitDataBase():
         }
         self.database_name = None
         self._tables = ['src_pack', 'bin_pack',
-                        'bin_requires', 'src_requires', 'bin_provides', 'bin_files']
+                        'bin_requires', 'src_requires', 'bin_provides', 'bin_files', 'filelist']
         # Create life cycle related databases and tables
         if not self.create_database(db_name='lifecycle',
                                     tables=['packages_issue',
@@ -66,6 +77,11 @@ class InitDataBase():
                                     storage=True):
             raise SQLAlchemyError(
                 'Failed to create the specified database and table：lifecycle')
+        # A valid remote address
+        # For example：<a href="http://openeuler.org/openEuler-20.03-LTS/everything/aarch64" />
+        # Use the regular expression to match the remote address in the href
+        self._http_regex = r"^(ht|f)tp(s?)\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])"\
+            r"*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%$#_]*)?"
 
     def __read_config_file(self):
         """
@@ -106,9 +122,10 @@ class InitDataBase():
             for config_item in init_database_config:
                 if not isinstance(config_item, dict):
                     raise ConfigurationException(
-                        "The format of the initial database"
-                        "configuration file is incorrect, and the value in a single node should"
-                        "be presented in the form of key - val pairs:{}".format(self.config_file_path))
+                        "The format of the initial database "
+                        "configuration file is incorrect, and the value "
+                        "in a single node should be presented in the form "
+                        "of key - val pairs:{}".format(self.config_file_path))
             return init_database_config
 
     def init_data(self):
@@ -173,6 +190,61 @@ class InitDataBase():
             db_name=db_name, tables=tables, storage=storage).create_database(self)
         return _create_table_result
 
+    def _get_sqlite_file(self, database_config, db_name):
+        """
+        Gets the path to a local or remote SQLite file
+        Args:
+            database_config:Initializes the contents of the configuration file
+        return:
+            A tuple that contains the binary, source package
+            and binary collection path addresses
+        """
+
+        def src_sqlite_file(src_db_file):
+            if not src_db_file:
+                raise ContentNoneException(
+                    "The path to the sqlite file in the database initialization"
+                    "configuration is incorrect ")
+            if not re.match(self._http_regex, src_db_file):
+                src_db_file = src_db_file.split('file://')[-1]
+
+            file = DownloadFile(src_db_file, 'primary', db_name + '_src')
+            if re.match(self._http_regex, src_db_file):
+                src_db_file = file.get_remote_file()
+            else:
+                src_db_file = file.get_location_file()
+            return src_db_file
+
+        def bin_sqlite_file(bin_db_file):
+            if not bin_db_file:
+                raise ContentNoneException(
+                    "The path to the sqlite file in the database initialization"
+                    "configuration is incorrect ")
+            if not re.match(self._http_regex, bin_db_file):
+                bin_db_file = bin_db_file.split('file://')[-1]
+
+            file_bin = DownloadFile(
+                bin_db_file, 'primary', db_name + '_bin')
+            files = DownloadFile(
+                bin_db_file, 'filelists', db_name + '_files')
+            if re.match(self._http_regex, bin_db_file):
+                bin_db_file = file_bin.get_remote_file()
+                file_list = files.get_remote_file()
+            else:
+                bin_db_file = file_bin.get_location_file()
+                file_list = files.get_location_file()
+            return (bin_db_file, file_list)
+
+        src_db_file = src_sqlite_file(database_config.get('src_db_file'))
+        bin_db_file, file_list = bin_sqlite_file(
+            database_config.get('bin_db_file'))
+
+        if not all([src_db_file, bin_db_file, file_list]):
+            raise ContentNoneException(
+                "The path to the sqlite file in the database initialization"
+                "configuration is incorrect ")
+        return (src_db_file, bin_db_file, file_list)
+
     def _init_data(self, database_config):
         """
         data initialization operation
@@ -197,21 +269,18 @@ class InitDataBase():
                 raise SQLAlchemyError(
                     'Failed to create the specified database and table：%s'
                     % database_config['dbname'])
-            # 2. get the data of binary packages and source packages
-            src_db_file = database_config.get('src_db_file')
-            bin_db_file = database_config.get('bin_db_file')
-
-            if src_db_file is None or bin_db_file is None:
-                raise ContentNoneException(
-                    "The path to the sqlite file in the database initialization"
-                    "configuration is incorrect ")
-            if not os.path.exists(src_db_file) or not os.path.exists(bin_db_file):
+             # 2. get the data of binary packages and source packages
+            src_db_file, bin_db_file, file_list = self._get_sqlite_file(
+                database_config, _db_name)
+            if not all([os.path.exists(src_db_file),
+                        os.path.exists(bin_db_file),
+                        os.path.exists(file_list)]):
                 raise FileNotFoundError(
                     "sqlite file {src} or {bin} does not exist, please"
                     "check and try again".format(src=src_db_file, bin=bin_db_file))
             # 3. Obtain temporary source package files and binary package files
             if self.__save_data(database_config,
-                                self.database_name):
+                                self.database_name, src_db_file, bin_db_file, file_list):
                 # Update the configuration file of the database
                 database_content = {
                     'database_name': _db_name,
@@ -224,6 +293,9 @@ class InitDataBase():
             LOGGER.logger.error(error_msg)
             # Delete the specified database
             self.__del_database(_db_name)
+        finally:
+            # Delete the downloaded temporary files
+            DownloadFile.del_temporary_file()
 
     def __del_database(self, db_name):
         try:
@@ -271,7 +343,7 @@ class InitDataBase():
             LOGGER.logger.error(sql_error)
             return None
 
-    def __save_data(self, database_config, db_name):
+    def __save_data(self, database_config, db_name, src_db_file, bin_db_file, file_list):
         """
         integration of multiple data files
 
@@ -283,8 +355,6 @@ class InitDataBase():
         Raises:
 
         """
-        src_db_file = database_config.get('src_db_file')
-        bin_db_file = database_config.get('bin_db_file')
         table_name = database_config.get('dbname')
         lifecycle_status_val = database_config.get('lifecycle')
         try:
@@ -304,12 +374,34 @@ class InitDataBase():
                 self._save_bin_requires(db_name)
                 self._save_bin_provides(db_name)
                 self._save_bin_files(db_name)
+            self._save_file_list(file_list, db_name)
         except (SQLAlchemyError, ContentNoneException) as sql_error:
             LOGGER.logger.error(sql_error)
             self.__del_database(db_name)
             return False
         else:
             return True
+
+    def _save_file_list(self, file_list, db_name):
+        """
+        Holds a collection of binary file paths
+        Args:
+            file_list:The file path
+            db_name:The name of the database saved
+        """
+        # Save filelist package
+        file_list_datas = None
+        with DBHelper(db_name=file_list, db_type='sqlite:///', complete_route_db=True)\
+                as database:
+            self._database = database
+            self.sql = " select * from filelist "
+            file_list_datas = self.__get_data()
+        if not file_list_datas:
+            raise ContentNoneException(
+                "{db_name}:The binary path provided has no relevant data"
+                " in the SQLite database ".format(db_name=db_name))
+        with DBHelper(db_name=db_name) as database:
+            database.batch_add(file_list_datas, FileList)
 
     def _save_src_packages(self, db_name, table_name, lifecycle_status_val):
         """
@@ -798,3 +890,205 @@ class SqliteDatabaseOperations():
             return False
         else:
             return True
+
+
+class Unpack():
+    """
+    Decompression of a file is related to the operation
+
+    Attributes:
+        file_path: The path to the zip file
+        save_file: The path to the saved file
+    """
+
+    def __init__(self, file_path, save_file):
+        self.file_path = file_path
+        self.save_file = save_file
+
+    @classmethod
+    def dispatch(cls, extend, *args, **kwargs):
+        """
+        Specific decompression methods are adopted for different compression packages
+        Args:
+            extend:The format of the compressed package
+        """
+        self = cls(*args, **kwargs)
+        meth = getattr(self, extend[1:].lower(), None)
+        if meth is None:
+            raise Error(
+                "Unzipping files in the current format is not supported：%s" % extend)
+        meth()
+
+    def bz2(self):
+        """
+        Unzip the bZ2 form of the compression package
+        """
+        with open(self.save_file, 'wb') as file, bz2.BZ2File(self.file_path, 'rb') as bz_file:
+            for data in iter(lambda: bz_file.read(100 * 1024), b''):
+                file.write(data)
+
+    def gz(self):
+        """
+        Unzip the compressed package in GZIP format
+        """
+        with open(self.save_file, 'wb') as file, gzip.GzipFile(self.file_path) as gzip_file:
+            for data in iter(lambda: gzip_file.read(100 * 1024), b''):
+                file.write(data)
+
+    def tar(self):
+        """
+        Unzip the tar package
+        """
+        with open(self.save_file, 'wb') as file, tarfile.open(self.file_path) as tar_file:
+            file_names = tar_file.getnames()
+            if len(file_names) != 1:
+                raise IOError(
+                    "Too many files in the zip file, do not"
+                    " conform to the form of a single file：%s" % self.file_path)
+            _file = tar_file.extractfile(file_names[0])
+            for data in iter(lambda: _file.read(100 * 1024), b''):
+                file.write(data)
+
+    def zip(self):
+        """
+        Unzip the zip package
+        """
+        with open(self.save_file, 'wb') as file, zipfile.open(self.file_path) as zip_file:
+            file_names = zip_file.namelist()
+            if len(file_names) != 1:
+                raise IOError("Too many files in the zip file, do not"
+                              " conform to the form of a single file：%s" % self.file_path)
+            file.write(zip_file.read())
+
+
+class DownloadFile():
+    """
+    Download the file for the remote address
+    """
+
+    def __init__(self, url, file_type, file_name):
+        if not url:
+            raise Error("The path to download the file is empty")
+        if not url.endswith('/'):
+            url += '/'
+        self.url = url + 'repodata/'
+        self._file_type = file_type
+        self._temporary_directory = configuration.TEMPORARY_DIRECTORY
+        if not os.path.exists(self._temporary_directory):
+            os.makedirs(self._temporary_directory)
+        # Matches the remote download address in the Href attribute in the A tag
+        self._file_regex = r'href=\"([^\"]*%s.sqlite.{3,4})\".?' % self._file_type
+        self._file_remote = None
+        self.file_name = file_name
+
+    @retry(stop_max_attempt_number=3, stop_max_delay=1000)
+    def __download_file(self, url):
+        """
+        Download the file or web page in the specified path
+        Args:
+            url:Remote online address
+        Return:
+            Successful download of binary stream
+        """
+        try:
+            response = requests.get(url)
+        except RequestException as error:
+            raise RequestException(error)
+        if response.status_code != 200:
+            _msg = "There is an exception with the remote service [%s]，" \
+                   "Please try again later.The HTTP error code is：%s" % (url, str(
+                       response.status_code))
+            raise HTTPError(_msg)
+        return response
+
+    @staticmethod
+    def del_temporary_file():
+        """
+        Delete temporary files or directories
+        """
+        try:
+            del_list = os.listdir(configuration.TEMPORARY_DIRECTORY)
+            for file in del_list:
+                file_path = os.path.join(
+                    configuration.TEMPORARY_DIRECTORY, file)
+                if os.path.isfile(file_path):
+                    os.remove(file_path)
+                elif os.path.isdir(file_path):
+                    shutil.rmtree(file_path)
+        except IOError as error:
+            LOGGER.error(error)
+
+    def _matching_remote_file(self):
+        """
+        Matches the filename that the remote needs to download
+        """
+        try:
+            response = self.__download_file(self.url)
+            result = re.search(
+                self._file_regex, response.content.decode('utf-8'))
+            if result:
+                self._file_remote = self.url + result.group(1)
+        except (RequestException, HTTPError)as error:
+            LOGGER.error(error)
+
+    def __unzip_file(self, file_path, file_name):
+        """
+        Unzip a compressed package file in a specific format
+        Args:
+            file_path: The path of the compression package
+        """
+        if not os.path.exists(file_path):
+            raise Error("The unzip file does not exist：%s" % file_path)
+        sqlite_file_path = os.path.join(
+            os.path.dirname(file_path), file_name + ".sqlite")
+        try:
+            Unpack.dispatch(os.path.splitext(file_path)[-1], file_path=file_path,
+                            save_file=sqlite_file_path)
+            return sqlite_file_path
+        except IOError as error:
+            raise Error(
+                "An error occurred during file decompression：%s" % error)
+        finally:
+            os.remove(file_path)
+
+    def get_location_file(self):
+        """
+        Get the local compressed file and copy the local file to a temporary folder
+        """
+        # A file that matches the end of a particular character
+        regex = r'.*?%s.sqlite.{3,4}' % self._file_type
+
+        file_path = None
+        for file in os.listdir(self.url):
+            if os.path.isfile(os.path.join(self.url, file)) and re.match(regex, file):
+                file_path = os.path.join(self._temporary_directory, file)
+                shutil.copyfile(os.path.join(self.url, file), file_path)
+                continue
+        if file_path:
+            file_path = self.__unzip_file(file_path, self.file_name)
+        return file_path
+
+    def get_remote_file(self):
+        """
+        Gets the remote zip file
+        """
+        self._matching_remote_file()
+        if not self._file_remote:
+            raise Error("There is no SQLite file in the specified remote"
+                        " service %s that can be used for initialization" % self.url)
+        try:
+            response = self.__download_file(self._file_remote)
+        except (RequestException, HTTPError) as error:
+            LOGGER.error(error)
+            raise Error("There was an error downloading file: %s, "
+                        "Please try again later." % self._file_remote)
+        try:
+            _file_path = os.path.join(
+                self._temporary_directory, self._file_remote.split('/')[-1])
+            with open(_file_path, "wb") as file:
+                file.write(response.content)
+        except IOError as error:
+            LOGGER.error(error)
+            raise Error("There was an error downloading file: %s, "
+                        "Please try again later." % self._file_remote)
+        return self.__unzip_file(_file_path, self.file_name)

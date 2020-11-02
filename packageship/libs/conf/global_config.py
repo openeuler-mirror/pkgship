@@ -108,3 +108,6 @@ REDIS_MAX_CONNECTIONS = 10
 
 # Maximum queue length
 QUEUE_MAXSIZE = 1000
+
+# A temporary directory for files downloaded from the network that are cleaned periodically
+TEMPORARY_DIRECTORY = '/var/run/pkgship'

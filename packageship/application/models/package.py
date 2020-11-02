@@ -212,3 +212,15 @@ class DatabaseInfo(DBHelper.BASE):
     id = Column(Integer, primary_key=True)
     name = Column(String(200), nullable=True)
     priority = Column(Integer, nullable=True)
+
+
+class FileList(DBHelper.BASE):
+    """
+        A collection of binary file paths
+    """
+    __tablename__ = 'filelist'
+    id = Column(Integer, primary_key=True)
+    pkgKey = Column(Integer)
+    dirname = Column(String(500), nullable=True)
+    filenames = Column(String(500))
+    filetypes = Column(String(200), nullable=True)
