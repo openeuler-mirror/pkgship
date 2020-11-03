@@ -1430,6 +1430,9 @@ class IssueCommand(PkgshipCommand):
         Raises:
             ConnectionError: requests connection error
         """
+        if "," in params.issue_type or "," in params.issue_status:
+            print('Params issue_type or issue_status are error! Please check and try it again')
+            return
         self._set_read_host(params.remote)
         _url = self.read_host + \
             '/lifeCycle/issuetrace?page_num={page_num}&\

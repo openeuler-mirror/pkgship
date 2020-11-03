@@ -278,10 +278,10 @@ class IssueView(Resource):
                         PackagesIssue.pkg_name == request_data.get("pkg_name"))
                 if request_data.get("issue_type"):
                     issues_query = issues_query.filter(
-                        PackagesIssue.issue_type == request_data.get("issue_type"))
+                        PackagesIssue.issue_type.in_(request_data.get("issue_type").split(",")))
                 if request_data.get("issue_status"):
                     issues_query = issues_query.filter(
-                        PackagesIssue.issue_status == request_data.get("issue_status"))
+                        PackagesIssue.issue_status.in_(request_data.get("issue_status").split(",")))
                 if request_data.get("maintainer"):
                     issues_query = issues_query.filter(
                         PackagesMaintainer.maintainer == request_data.get("maintainer"))
