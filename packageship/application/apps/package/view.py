@@ -433,7 +433,16 @@ class BeDepend(Resource):
         with_sub_pack = data.get("withsubpack")
         db_name = data.get("dbname")
 
-        if db_name not in db_priority():
+        db_pri = db_priority()
+
+        if not db_pri:
+            return jsonify(
+                ResponseCode.response_json(
+                    ResponseCode.NOT_FOUND_DATABASE_INFO
+                )
+            )
+
+        if db_name not in db_pri:
             return jsonify(
                 ResponseCode.response_json(ResponseCode.DB_NAME_ERROR)
             )
