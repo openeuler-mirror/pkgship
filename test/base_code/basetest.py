@@ -73,7 +73,7 @@ class TestBase(unittest.TestCase):
         self.assertIsNone(resp.get("data"),
                           msg=f"Error in data format return {common_string}")
 
-    def without_dbs_folder(self, request_args: dict, met=None, code=None):
+    def without_dbs_folder(self, request_args: dict, met=None, code=None, test_type=None):
         """
         Method of comparison of correct results
         """
@@ -91,10 +91,16 @@ class TestBase(unittest.TestCase):
             if os.path.exists(configuration.DATABASE_FOLDER_PATH):
                 shutil.rmtree(configuration.DATABASE_FOLDER_PATH)
 
-            configuration.DATABASE_FOLDER_PATH = os.path.join(
-                os.path.dirname(BASE_PATH), 'test', 'common_files', 'dbs')
+            if not test_type:
+                dbs_folder = "dbs"
+            else:
+                dbs_folder = "operate_dbs"
+            configuration.DATABASE_FOLDER_PATH = os.path.join(os.path.dirname(BASE_PATH),
+                                                              'test',
+                                                              'common_files',
+                                                              dbs_folder)
 
-    def when_db_no_content(self, request_args: dict, met=None, code=None):
+    def when_db_no_content(self, request_args: dict, met=None, code=None, test_type=None):
         """
         When there is no database, expectations are compared to actual results
         """
@@ -112,8 +118,14 @@ class TestBase(unittest.TestCase):
         except Error:
             print("when_db_no_content")
         finally:
-            configuration.DATABASE_FOLDER_PATH = os.path.join(
-                os.path.dirname(BASE_PATH), 'test', 'common_files', 'dbs')
+            if not test_type:
+                dbs_folder = "dbs"
+            else:
+                dbs_folder = "operate_dbs"
+            configuration.DATABASE_FOLDER_PATH = os.path.join(os.path.dirname(BASE_PATH),
+                                                              'test',
+                                                              'common_files',
+                                                              dbs_folder)
 
     def compare_resp_and_output(self, file_name, met=None):
         """

@@ -7,154 +7,92 @@ import json
 import unittest
 
 from test.base_code.read_data_base import ReadTestBase
-from test.base_code.common_test_code import compare_two_values, get_correct_json_by_filename
 from packageship.application.apps.package.function.constants import ResponseCode
+
 
 
 class TestBuildDepend(ReadTestBase):
     """
     class for test build_depend
     """
+    REQUESTS_KWARGS = {
+        "url": "/packages/findBuildDepend",
+        "method": "post",
+        "data": "",
+        "content_type": "application/json"
+    }
 
-    def test_empty_source_name_dblist(self):
+    def test_not_found_database_info_response(self):
+        """
+        Initialization failed. No database was generated. Database information could not be found
+        Returns:
+        """
+        self.REQUESTS_KWARGS["data"] = json.dumps({'sourceName': 'CUnit'})
+        self.without_dbs_folder(
+            self.REQUESTS_KWARGS,
+            met=self,
+            code=ResponseCode.NOT_FOUND_DATABASE_INFO)
+        self.when_db_no_content(
+            self.REQUESTS_KWARGS,
+            met=self,
+            code=ResponseCode.NOT_FOUND_DATABASE_INFO)
+
+    def test_param_error_response(self):
         """
         test empty parameters:sourceName,dbList
-        :return:
+        Returns:
         """
-        resp = self.client.post("/packages/findBuildDepend",
-                                data="{}",
-                                content_type="application/json")
-        resp_dict = json.loads(resp.data)
 
-        self.assertIn("code", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.PARAM_ERROR,
-                         resp_dict.get("code"),
-                         msg="Error in status code return")
+        param_error_list = [
+            "{}",
+            json.dumps({"sourceName": ""}),
+            json.dumps({"sourceName": "dsd" * 120}),
+            json.dumps({"sourceName": 0}),
+            json.dumps({"sourceName": "CUnit",
+                        "db_list": [12, 3, 4]}),
+            json.dumps({"sourceName": "CUnit",
+                        "db_list": "ccaa"})
+        ]
+        for error_param in param_error_list:
+            self.REQUESTS_KWARGS["data"] = error_param
 
-        self.assertIn("msg", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.CODE_MSG_MAP.get(ResponseCode.PARAM_ERROR),
-                         resp_dict.get("msg"),
-                         msg="Error in status prompt return")
+            resp_dict = self.client_request(**self.REQUESTS_KWARGS)
+            self.response_json_error_judge(
+                resp_dict, resp_code=ResponseCode.PARAM_ERROR, method=self)
 
-        self.assertIn("data", resp_dict, msg="Error in data format return")
-        self.assertIsNone(resp_dict.get("data"), msg="Error in data information return")
-
-        resp = self.client.post("/packages/findBuildDepend",
-                                data=json.dumps({"sourceName": "A"}),
-                                content_type="application/json")
-
-        resp_dict = json.loads(resp.data)
-        self.assertIn("code", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.SUCCESS,
-                         resp_dict.get("code"),
-                         msg="Error in status code return")
-
-        self.assertIn("msg", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.CODE_MSG_MAP.get(ResponseCode.SUCCESS),
-                         resp_dict.get("msg"),
-                         msg="Error in status prompt return")
-
-        self.assertIn("data", resp_dict, msg="Error in data format return")
-        self.assertIsNotNone(resp_dict.get("data"), msg="Error in data information return")
-
-    def test_wrong_source_name_dblist(self):
+    def test_pkg_name_not_found_response(self):
         """
-        test wrong parameters:sourceName,dbList
-        :return: None
+        The package name is not in the database
+        Returns:
         """
-        resp = self.client.post("/packages/findBuildDepend",
-                                data=json.dumps({"sourceName": 0}),
-                                content_type="application/json")
-        resp_dict = json.loads(resp.data)
+        self.REQUESTS_KWARGS["data"] = json.dumps(
+            {"sourceName": "qitiandasheng"})
+        resp_dict = self.client_request(**self.REQUESTS_KWARGS)
 
-        self.assertIn("code", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.PARAM_ERROR,
-                         resp_dict.get("code"),
-                         msg="Error in status code return")
+        self.response_json_error_judge(
+            resp_dict,
+            resp_code=ResponseCode.PACK_NAME_NOT_FOUND,
+            method=self)
 
-        self.assertIn("msg", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.CODE_MSG_MAP.get(ResponseCode.PARAM_ERROR),
-                         resp_dict.get("msg"),
-                         msg="Error in status prompt return")
+    def test_db_name_error_response(self):
+        """
+        Database name error
+        Returns:
+        """
+        self.REQUESTS_KWARGS["data"] = json.dumps(
+            {"sourceName": "CUnit", "db_list": ["shifu", "bajie"]})
 
-        self.assertIn("data", resp_dict, msg="Error in data format return")
-        self.assertIsNone(resp_dict.get("data"), msg="Error in data information return")
+        resp_dict = self.client_request(**self.REQUESTS_KWARGS)
 
-        resp = self.client.post("/packages/findBuildDepend",
-                                data=json.dumps({"sourceName": "qitiandasheng"}),
-                                content_type="application/json")
-
-        resp_dict = json.loads(resp.data)
-        self.assertIn("code", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.PACK_NAME_NOT_FOUND,
-                         resp_dict.get("code"),
-                         msg="Error in status code return")
-
-        self.assertIn("msg", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.CODE_MSG_MAP.get(ResponseCode.PACK_NAME_NOT_FOUND),
-                         resp_dict.get("msg"),
-                         msg="Error in status prompt return")
-
-        self.assertIn("data", resp_dict, msg="Error in data format return")
-        self.assertIsNone(resp_dict.get("data"), msg="Error in data information return")
-
-        resp = self.client.post("/packages/findBuildDepend",
-                                data=json.dumps({"sourceName": "CUnit",
-                                                 "db_list": [12, 3, 4]}),
-                                content_type="application/json")
-        resp_dict = json.loads(resp.data)
-
-        self.assertIn("code", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.PARAM_ERROR,
-                         resp_dict.get("code"),
-                         msg="Error in status code return")
-
-        self.assertIn("msg", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.CODE_MSG_MAP.get(ResponseCode.PARAM_ERROR),
-                         resp_dict.get("msg"),
-                         msg="Error in status prompt return")
-
-        self.assertIn("data", resp_dict, msg="Error in data format return")
-        self.assertIsNone(resp_dict.get("data"), msg="Error in data information return")
-
-        resp = self.client.post("/packages/findBuildDepend",
-                                data=json.dumps({"sourceName": "CUnit",
-                                                 "db_list": ["shifu", "bajie"]
-                                                 }), content_type="application/json")
-        resp_dict = json.loads(resp.data)
-
-        self.assertIn("code", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.DB_NAME_ERROR,
-                         resp_dict.get("code"),
-                         msg="Error in status code return")
-
-        self.assertIn("msg", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.CODE_MSG_MAP.get(ResponseCode.DB_NAME_ERROR),
-                         resp_dict.get("msg"),
-                         msg="Error in status prompt return")
-
-        self.assertIn("data", resp_dict, msg="Error in data format return")
-        self.assertIsNone(resp_dict.get("data"), msg="Error in data information return")
+        self.response_json_error_judge(
+            resp_dict, resp_code=ResponseCode.DB_NAME_ERROR, method=self)
 
     def test_true_params_result(self):
         """
         test_true_params_result
         Returns:
-
         """
-        correct_list = get_correct_json_by_filename("build_depend")
-
-        self.assertNotEqual([], correct_list, msg="Error reading JSON file")
-
-        for correct_data in correct_list:
-            input_value = correct_data["input"]
-            resp = self.client.post("/packages/findBuildDepend",
-                                    data=json.dumps(input_value),
-                                    content_type="application/json")
-            output_for_input = correct_data["output"]
-            resp_dict = json.loads(resp.data)
-            self.assertTrue(compare_two_values(output_for_input, resp_dict),
-                            msg="The answer is not correct")
+        self.compare_resp_and_output("build_depend", met=self)
 
 
 if __name__ == '__main__':
