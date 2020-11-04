@@ -156,6 +156,7 @@ class ParseYaml():
                     if _version[1] == self.pkg.version:
                         _end_time = date.datetime.strptime(
                             _version[0], '%Y-%m-%d')
+            self.pkg.release_time = _end_time
             self.pkg.used_time = (date.datetime.now() - _end_time).days
 
         except (IndexError, Error) as index_error:
