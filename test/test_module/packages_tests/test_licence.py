@@ -12,35 +12,22 @@
 # ******************************************************************************/
 # -*- coding:utf-8 -*-
 """
-The request class that reads the interface in the unit test
+ build_depend unittest
 """
+from test.base_code.read_data_base import ReadTestBase
 import os
-from packageship.libs.exception import Error
-from .basetest import TestBase
+import sys
 
 
-try:
+class TestLicence(ReadTestBase):
 
-    from packageship import BASE_PATH
-    from packageship.libs.conf import configuration
-    from test.base_code.init_config_path import init_config
-
-    configuration.DATABASE_FOLDER_PATH = os.path.join(
-        os.path.dirname(BASE_PATH), 'test', 'common_files', 'dbs')
-
-    from packageship.selfpkg import app
-
-except Error:
-    raise Error
+    def test_licence(self):
+        if getattr(sys, 'frozen', False):
+            BASE_PATH = os.path.dirname(os.path.realpath(sys.argv[0]))
+        else:
+            BASE_PATH = os.path.abspath(os.path.dirname(__file__))
+            BASE_PATH = BASE_PATH.split("pkgship")[0]
+            BASE_PATH = os.path.join(BASE_PATH, 'pkgship')
+        self.find_all_py_file([BASE_PATH])
 
 
-class ReadTestBase(TestBase):
-    """
-    ReadTestBase
-    """
-
-    def setUp(self):
-        """
-        Initial preparation of unit tests
-        """
-        self.client = app.test_client()

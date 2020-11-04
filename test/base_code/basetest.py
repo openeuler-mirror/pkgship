@@ -1,4 +1,15 @@
 #!/usr/bin/python3
+# ******************************************************************************
+# Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+# licensed under the Mulan PSL v2.
+# You can use this software according to the terms and conditions of the Mulan PSL v2.
+# You may obtain a copy of Mulan PSL v2 at:
+#     http://license.coscl.org.cn/MulanPSL2
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
+# PURPOSE.
+# See the Mulan PSL v2 for more details.
+# ******************************************************************************/
 # -*- coding:utf-8 -*-
 """
 A way to compare the request mode and the correct result in a unit test
@@ -168,3 +179,37 @@ class TestBase(unittest.TestCase):
                 resp_dict.get("data"),
                 correct_list),
             msg="Error in data information return")
+
+    def find_all_py_file(self, path_list, file_list=[]):
+        directory_list = []
+        for file_path in path_list:
+            for file in os.listdir(file_path):
+                f_path = file_path + '/' + file
+                if os.path.isdir(f_path):
+                    directory_list.append(f_path)
+                elif ".py" in f_path and ".pyc" not in f_path:
+                    file_list.append(f_path)
+        if directory_list:
+            self.find_all_py_file(directory_list)
+        else:
+            self.check_licence(file_list)
+
+
+    def check_licence(self, file_list):
+        results_list = []
+        str = "# See the Mulan PSL v2 for more details."
+        for file in file_list:
+            rec = open(file, 'r+', encoding="utf-8")
+            line_Infos = rec.readlines()
+            resultFlag = False
+            for row in line_Infos:
+                if row.strip().find(str) != -1:
+                    resultFlag = True
+                    break
+            if resultFlag == False:
+                results_list.append(file)
+            rec.close()
+        if len(results_list) != 0:
+            print("licence error please add The following files licence", results_list)
+        self.assertEqual(0, len(results_list),
+                         msg=f"The licence is not complete, please add")
