@@ -36,6 +36,7 @@ setup(
         'packageship.application.apps.package.function.searchdb',
         'packageship.application.apps.package.function.self_depend',
         'packageship.application.apps.lifecycle.function.download_yaml',
+        'packageship.application.apps.package.function.add_sig_info',
         'packageship.application.apps.lifecycle.function.gitee',
         'packageship.application.apps.lifecycle.function.concurrent',
         'packageship.application.apps.lifecycle.serialize',

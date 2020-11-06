@@ -111,3 +111,6 @@ QUEUE_MAXSIZE = 1000
 
 # A temporary directory for files downloaded from the network that are cleaned periodically
 TEMPORARY_DIRECTORY = '/var/run/pkgship'
+
+# url for sig yaml file
+SIG_URL = "https://gitee.com/openeuler/community/raw/master/sig/sigs.yaml"

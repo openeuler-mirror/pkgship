@@ -30,6 +30,7 @@ def _timed_task(app):
     # disable=import-outside-toplevel Avoid circular import problems,so import inside the function
     # pylint: disable=import-outside-toplevel
     from packageship.application.apps.lifecycle.function.download_yaml import update_pkg_info
+    from packageship.application.apps.package.function.add_sig_info import SigInfo
     _hour = configuration.HOUR
     _minute = configuration.MINUTE
     if _hour < 0 or _hour > 23:
@@ -47,6 +48,11 @@ def _timed_task(app):
         hour=_hour,
         minute=_minute,
         args=(False,))
+
+    sig_info = SigInfo()
+    app.apscheduler.add_job(  # pylint: disable=no-member
+        func=sig_info.save_all_packages_sigs_data, id="save_sigs_data", trigger="cron",
+        hour=_hour, minute=_minute)
 
 
 def init_app(operation):

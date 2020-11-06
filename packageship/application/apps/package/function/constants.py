@@ -70,6 +70,7 @@ class ResponseCode():
     TABLE_NAME_NOT_EXIST_IN_DATABASE = "60003"
     YAML_FILE_ERROR = " 70001"
     EMPTY_FOLDER = "70002"
+    EMPTY_PARSED_DATA = "70003"
 
     CODE_MSG_MAP = {
         SUCCESS: "Successful Operation!",
@@ -97,7 +98,8 @@ class ResponseCode():
         TABLE_NAME_NOT_EXIST_IN_DATABASE: "the table name dose not match the existed database",
         NOT_FOUND_DATABASE_INFO: "Unable to get the generated database information",
         YAML_FILE_ERROR: "Data error in yaml file",
-        EMPTY_FOLDER: "This is an empty folder, no yaml file"
+        EMPTY_FOLDER: "This is an empty folder, no yaml file",
+        EMPTY_PARSED_DATA: "The parsed yaml data is empty"
     }
 
     @classmethod

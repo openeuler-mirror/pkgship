@@ -213,6 +213,7 @@ class PackagesMaintainer(DBHelper.BASE):
     name = Column(String(200), nullable=True)
     maintainer = Column(String(200), nullable=True)
     maintainlevel = Column(Integer, nullable=True)
+    sig = Column(String(200), nullable=True)
 
 
 class DatabaseInfo(DBHelper.BASE):
