@@ -47,26 +47,21 @@ def hash_key(encrypt_obj):
 
 def get_module(module_path):
     """
-    Import a dotted module path and return the attribute/class designated by the
-    last name in the path. Raise ImportError if the import failed.
+    Dynamically imports the specified module
 
     Args:
         module_path:Module path
     """
     try:
         module_path, class_name = module_path.rsplit('.', 1)
-    except ValueError as err:
-        raise ImportError("%s doesn't look like a module path" %
-                          module_path) from err
-
+    except ValueError:
+        raise ValueError("%s Not a correct module path" % module_path)
     module = import_module(module_path)
-
     try:
         return getattr(module, class_name)
-    except AttributeError as err:
-        raise ImportError('Module "%s" does not define a "%s" attribute/class' % (
-            module_path, class_name)
-        ) from err
+    except AttributeError:
+        raise ImportError('There are no "%s" classes or properties in the module "%s"' % (
+            class_name, module_path))
 
 
 def _query_depend(query_parameter, depend_relation_str):

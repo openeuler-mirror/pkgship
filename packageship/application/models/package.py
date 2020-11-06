@@ -16,7 +16,7 @@ class SrcPack(DBHelper.BASE):
 
     pkgKey = Column(Integer, primary_key=True)
     pkgId = Column(String(500), nullable=True)
-    name = Column(String(200), nullable=True)
+    name = Column(String(200), nullable=True, index=True)
     arch = Column(String(200), nullable=True)
     version = Column(String(500), nullable=True)
     epoch = Column(String(200), nullable=True)
@@ -42,7 +42,7 @@ class SrcPack(DBHelper.BASE):
     checksum_type = Column(String(500), nullable=True)
     maintaniner = Column(String(100), nullable=True)
     maintainlevel = Column(String(100), nullable=True)
-    src_name = Column(String(100), nullable=True)
+    src_name = Column(String(100), nullable=True, index=True)
 
 
 class BinPack(DBHelper.BASE):
@@ -53,7 +53,7 @@ class BinPack(DBHelper.BASE):
 
     pkgKey = Column(Integer, primary_key=True)
     pkgId = Column(String(500), nullable=True)
-    name = Column(String(500), nullable=True)
+    name = Column(String(500), nullable=True, index=True)
     arch = Column(String(500), nullable=True)
     version = Column(String(500), nullable=True)
     epoch = Column(String(500), nullable=True)
@@ -67,7 +67,7 @@ class BinPack(DBHelper.BASE):
     rpm_vendor = Column(String(500), nullable=True)
     rpm_group = Column(String(500), nullable=True)
     rpm_buildhost = Column(String(500), nullable=True)
-    rpm_sourcerpm = Column(String(500), nullable=True)
+    rpm_sourcerpm = Column(String(500), nullable=True, index=True)
     rpm_header_start = Column(Integer, nullable=True)
     rpm_header_end = Column(Integer, nullable=True)
     rpm_packager = Column(String(500), nullable=True)
@@ -77,7 +77,7 @@ class BinPack(DBHelper.BASE):
     location_href = Column(String(500), nullable=True)
     location_base = Column(String(500), nullable=True)
     checksum_type = Column(String(500), nullable=True)
-    src_name = Column(String(500), nullable=True)
+    src_name = Column(String(500), nullable=True, index=True)
 
 
 class BinRequires(DBHelper.BASE):
@@ -88,12 +88,12 @@ class BinRequires(DBHelper.BASE):
     __tablename__ = 'bin_requires'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String(200), nullable=True)
+    name = Column(String(200), nullable=True, index=True)
     flags = Column(String(200), nullable=True)
     epoch = Column(String(200), nullable=True)
     version = Column(String(500), nullable=True)
     release = Column(String(200), nullable=True)
-    pkgKey = Column(Integer, nullable=True)
+    pkgKey = Column(Integer, nullable=True, index=True)
     pre = Column(String(20), nullable=True)
 
 
@@ -104,12 +104,12 @@ class SrcRequires(DBHelper.BASE):
     __tablename__ = 'src_requires'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String(200), nullable=True)
+    name = Column(String(200), nullable=True, index=True)
     flags = Column(String(200), nullable=True)
     epoch = Column(String(200), nullable=True)
     version = Column(String(500), nullable=True)
     release = Column(String(200), nullable=True)
-    pkgKey = Column(Integer, nullable=True)
+    pkgKey = Column(Integer, nullable=True, index=True)
     pre = Column(String(20), nullable=True)
 
 
@@ -120,12 +120,12 @@ class BinProvides(DBHelper.BASE):
     __tablename__ = 'bin_provides'
 
     id = Column(Integer, primary_key=True)
-    name = Column(String(200), nullable=True)
+    name = Column(String(200), nullable=True, index=True)
     flags = Column(String(200), nullable=True)
     epoch = Column(String(200), nullable=True)
     version = Column(String(500), nullable=True)
     release = Column(String(200), nullable=True)
-    pkgKey = Column(Integer, nullable=True)
+    pkgKey = Column(Integer, nullable=True, index=True)
 
 
 class BinFiles(DBHelper.BASE):
@@ -134,9 +134,9 @@ class BinFiles(DBHelper.BASE):
     """
     __tablename__ = 'bin_files'
     id = Column(Integer, primary_key=True)
-    name = Column(String(500), nullable=True)
+    name = Column(String(500), nullable=True, index=True)
     type = Column(String(50), nullable=True)
-    pkgKey = Column(Integer)
+    pkgKey = Column(Integer, index=True)
 
 
 class Packages():
