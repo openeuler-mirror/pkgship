@@ -5,13 +5,13 @@
                 class="form">
             <div class="form-inputs">
                 <el-form-item label="Product Version">
-                    <el-select class="pc-select" v-model="formData.tableName" @change="initData(1, value)">
+                    <el-select class="pc-select" v-model="formData.tableName" @change="initData(1)">
                         <el-option v-for="(item, index) in productV" :key="index"
                                    :label="item"
                                    :value="item">
                         </el-option>
                     </el-select>
-                    <el-select class="mobile-select" v-model="formData.tableName" @change="initData(1, value)" placeholder="Product Version">
+                    <el-select class="mobile-select" v-model="formData.tableName" @change="initData(1)" placeholder="Product Version">
                         <el-option v-for="(item, index) in productV" :key="index"
                                    :label="item"
                                    :value="item">
@@ -23,13 +23,13 @@
                             v-model="formData.queryPkgName"
                             class="pc-search"
                             placeholder="Search Name">
-                        <i slot="suffix" class="icon-search" @click="initData(1, value)"></i>
+                        <i slot="suffix" class="icon-search" @click="initData(1)"></i>
                     </el-input>
                     <el-input
                             v-model="formData.queryPkgName"
                             class="mobile-search"
                             placeholder="Search Name">
-                        <i slot="suffix" class="icon-search" @click="initData(1, value)"></i>
+                        <i slot="suffix" class="icon-search" @click="initData(1)"></i>
                     </el-input>
                 </el-form-item>
             </div>
@@ -62,6 +62,7 @@
         </el-dialog>
         <template>
             <el-table
+                    v-loading.fullscreen="tableLoading"
                     class="pc-pkg-table"
                     :data="tableData"
                     stripe
@@ -77,13 +78,13 @@
                         </template>
                     </el-table-column>
                     <el-table-column
-                        :key="index"
-                        v-if="item.label === 'Maintainer'"
-                        :label="item.label"
-                        :prop="item.column_name"
-                        :column-key="item.column_name"
-                        :filters="filterData(pkgMaintainer)"
-                        filter-placement="bottom-end">
+                            :key="index"
+                            v-if="item.label === 'Maintainer'"
+                            :label="item.label"
+                            :prop="item.column_name"
+                            :column-key="item.column_name"
+                            :filters="filterData(pkgMaintainer)"
+                            filter-placement="bottom-end">
                         <template slot-scope="scope">
                             <span>{{ scope.row.maintainer }}</span>
                         </template>
@@ -101,10 +102,10 @@
                         </template>
                     </el-table-column>
                     <el-table-column
-                        :key="index"
-                        v-if="(item.label !== 'Maintainer') && (item.label !== 'Name') && (item.label !== 'Maintenance Level')"
-                        :label="item.label"
-                        :prop="item.column_name">
+                            :key="index"
+                            v-if="(item.label !== 'Maintainer') && (item.label !== 'Name') && (item.label !== 'Maintenance Level')"
+                            :label="item.label"
+                            :prop="item.column_name">
                     </el-table-column>
                 </template>
             </el-table>
@@ -221,7 +222,8 @@
                 value: {
                     maintainner: "",
                     maintainlevel: ""
-                }
+                },
+                tableLoading: false
             }
         },
         mounted() {
@@ -230,7 +232,7 @@
             this.getData(maintainer, "pkgMaintainer");
         },
         created () {
-            this.initData(1, this.value);
+            this.initData(1);
         },
         methods: {
             filterTable(data) {
@@ -248,16 +250,12 @@
                 return datas;
             },
             filterChange (filterObj) {
-                let value = {
-                    maintainner: "",
-                    maintainlevel: ""
-                }
                 if (filterObj.maintainner === undefined) {
-                    value.maintainlevel = filterObj.maintainlevel[0];
+                    this.value.maintainlevel = filterObj.maintainlevel[0];
                 } else {
-                    value.maintainner = filterObj.maintainner[0];
+                    this.value.maintainner = filterObj.maintainner[0];
                 }
-                this.initData(1, value);
+                this.initData(1);
             },
             defaultColumn(data) {
                 let titles = data;
@@ -296,12 +294,14 @@
                 title = this.defaultColumn(title);
                 this.tableTitle = title;
             },
-            getTablePage (flag, value) {
+            getTablePage (flag) {
+                this.tableLoading = true
                 this.formData.pageNum = flag;
-                this.formData.maintainner = value.maintainner;
-                this.formData.maintainlevel = value.maintainlevel;
+                this.formData.maintainner = this.value.maintainner;
+                this.formData.maintainlevel = this.value.maintainlevel;
                 packages(this.formData)
                     .then(response => {
+                        this.tableLoading = false
                         if(response.total_count){
                             this.total = response.total_count;
                             this.tableData = response.data;
@@ -312,11 +312,12 @@
                         }
                     })
                     .catch(response => {
+                        this.tableLoading = false
                         this.$message.error('error', response);
                     });
             },
             initData(flag) {
-                this.getTablePage(flag, this.value);
+                this.getTablePage(flag);
             },
             go (pkg_name, table_name){
                 this.$router.push({
@@ -325,11 +326,14 @@
                 })
             },
             getData(func, verb) {
+                this.tableLoading = true
                 func()
                     .then(response => {
+                        this.tableLoading = false
                         this[verb] = response.data;
                     })
                     .catch(response => {
+                        this.tableLoading = false
                         this.$message.error(response);
                     });
             },

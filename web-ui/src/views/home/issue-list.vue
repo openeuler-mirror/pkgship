@@ -1,36 +1,37 @@
 <template>
     <div class="issue-list">
         <el-form
-            :inline="true"
-            class="form">
+                :inline="true"
+                class="form">
             <a class="form-button" href="https://api.openeuler.org/pkgmanage/lifeCycle/download/issues">
                 <img src="@/assets/images/dowmload.svg" alt="">
                 Export Excel
             </a>
         </el-form>
         <el-table
-            class="pc-pkg-table"
-            ref="filterTable"
-            :data="issueData"
-            stripe
-            @filter-change="filterChange">
+                v-loading.fullscreen="tableLoading"
+                class="pc-pkg-table"
+                ref="filterTable"
+                :data="issueData"
+                stripe
+                @filter-change="filterChange">
             <el-table-column
-                prop="issue_id"
-                label="Issue ID"
-                width="120">
+                    prop="issue_id"
+                    label="Issue ID"
+                    width="120">
                 <template slot-scope="scope">
                     <a :href="scope.row.issue_url" target="_blank">{{ scope.row.issue_id }}</a>
                 </template>
             </el-table-column>
             <el-table-column
-                prop="pkg_name"
-                label="Package Name"
-             width="140">
+                    prop="pkg_name"
+                    label="Package Name"
+                    width="140">
             </el-table-column>
             <el-table-column
-                prop="issue_title"
-                label="Issue Title"
-                width="420">
+                    prop="issue_title"
+                    label="Issue Title"
+                    width="420">
             </el-table-column>
             <el-table-column
                     prop="issue_type"
@@ -126,6 +127,7 @@
                 issueData: [],
                 issueType: [],
                 issueStatus: [],
+                tableLoading: false
             }
         },
         mounted() {
@@ -133,15 +135,17 @@
             this.getData(issueStatus, 'issueStatus');
         },
         created() {
-            this.initData(1, this.value);
+            this.initData(1);
         },
         methods: {
-            getTablePage (flag, value) {
+            getTablePage (flag) {
+                this.tableLoading = true;
                 this.formData.pageNum = flag;
-                this.formData.issueType = value.issueType;
-                this.formData.issueStatus = value.issueStatus;
+                this.formData.issueType = this.value.issueType;
+                this.formData.issueStatus = this.value.issueStatus;
                 issueList(this.formData)
                     .then(response => {
+                        this.tableLoading = false;
                         if (response.total_count){
                             this.total = response.total_count;
                             this.issueData = response.data;
@@ -151,11 +155,12 @@
                         }
                     })
                     .catch(data => {
+                        this.tableLoading = false;
                         this.$message.error(data);
                     });
             },
-            initData(flag, value) {
-                this.getTablePage(flag, value);
+            initData(flag) {
+                this.getTablePage(flag);
             },
             filterData(array) {
                 let datas = [];
@@ -168,23 +173,30 @@
                 return datas;
             },
             filterChange (filterObj) {
-                let value = {
-                    issueStatus: '',
-                    issueType: ''
-                }
+                this.value.issueStatus = ''
+                this.value.issueType = ''
                 if (filterObj.issue_type === undefined) {
-                    value.issueStatus = filterObj.issue_status[0];
+                    for (const filterObjElement of filterObj.issue_status) {
+                        this.value.issueStatus += ',' + filterObjElement;
+                    }
+                    this.value.issueStatus = this.value.issueStatus.slice(1);
                 } else {
-                    value.issueType = filterObj.issue_type[0];
+                    for (const filterObjElement of filterObj.issue_type) {
+                        this.value.issueType += ',' + filterObjElement;
+                    }
+                    this.value.issueType = this.value.issueType.slice(1);
                 }
-                this.initData(1, value);
+                this.initData(1);
             },
             getData(func, verb) {
+                this.tableLoading = true;
                 func()
                     .then(response => {
+                        this.tableLoading = false;
                         this[verb] = response.data;
                     })
                     .catch(response => {
+                        this.tableLoading = false;
                         this.$message.error(response);
                     });
             },
