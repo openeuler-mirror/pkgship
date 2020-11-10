@@ -23,6 +23,7 @@ from sqlalchemy.exc import DisconnectionError
 from sqlalchemy.exc import SQLAlchemyError
 
 from packageship.application.initsystem.data_import import InitDataBase
+from .function.searchdb import db_priority, SearchDB
 from packageship.libs.dbutils import DBHelper
 from packageship.libs.exception import Error
 from packageship.libs.exception import ContentNoneException
@@ -33,7 +34,6 @@ from packageship.libs.conf import configuration
 from .function.constants import ResponseCode
 from .function.packages import get_all_package_info
 from .function.packages import sing_pack
-from .function.searchdb import db_priority
 from .serialize import AllPackagesSchema
 from .serialize import SinglepackSchema
 
@@ -639,3 +639,55 @@ class InitSystem(Resource):
                 ResponseCode.response_json(
                     ResponseCode.FAILED_CREATE_DATABASE_TABLE))
         return jsonify(ResponseCode.response_json(ResponseCode.SUCCESS))
+
+
+class GetFilelistInfo(Resource):
+    """
+       Get filelist info include dir, file, ghost
+    """
+
+    def get(self):
+        """
+        Get filelist info
+
+        Returns:
+            for example:
+            "Judy": {
+                   "dir": [''],
+                   "file": [''],
+                   "ghost": ['']
+                   }
+        Raises:
+        """
+        data = request.args
+
+        _db_name = data.get("db_name")
+        pkg_names = data.get("pkg_name")
+
+        if not all([_db_name, pkg_names]):
+            return jsonify(
+                ResponseCode.response_json(ResponseCode.PARAM_ERROR)
+            )
+
+        db_names = db_priority()
+
+        if not db_names:
+            return jsonify(
+                ResponseCode.response_json(ResponseCode.NOT_FOUND_DATABASE_INFO)
+            )
+
+        search_db = SearchDB(db_names)
+
+        if _db_name not in db_names:
+            return jsonify(
+                ResponseCode.response_json(ResponseCode.DB_NAME_ERROR)
+            )
+
+        pkg_name_lst = pkg_names.strip().split("$")
+
+        resp_code, result = search_db.get_filelist_info(_db_name, pkg_name_lst)
+
+        return jsonify(
+            ResponseCode.response_json(resp_code, data=result if result else None)
+        )
+

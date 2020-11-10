@@ -15,7 +15,7 @@ Description:  A set for all query databases function
 class: SearchDB
 functions: db_priority
 """
-from collections import namedtuple, Counter
+from collections import namedtuple, Counter, defaultdict
 
 import yaml
 from flask import current_app
@@ -928,6 +928,108 @@ class SearchDB():
             result_list.append(
                 (return_tuple(None, None, None, search_name), 'NOT FOUND'))
         return ResponseCode.SUCCESS, result_list
+
+    def parse_filelist_data(self, sql_res):
+        """
+        Description: Parse the results of the sql query statement,
+                     the information contained in each package is dir, file, ghost
+
+        Args:
+                sql_res: the results of the sql query statement
+        Returns:
+                filelist_dic
+        Raises:
+                ValueError:
+
+        """
+
+        def is_append(lst, data):
+            if data not in lst:
+                lst.append(data)
+            return lst
+
+        filelist_dict = {}
+        for obj in sql_res:
+            if obj.fname:
+                all_list = list(map(lambda x: obj.path + '/' + x, obj.fname.split("/"))) # pylint: disable = cell-var-from-loop
+                if obj.bin_name not in filelist_dict.keys():
+                    filelist_dict[obj.bin_name] = {
+                        "dir": [],
+                        "file": [],
+                        "ghost": []
+                    }
+                for index, type_ in enumerate(obj.ftype):
+                    if type_ == "d":
+                        is_append(filelist_dict[obj.bin_name]["dir"], all_list[index])
+                    elif type_ == "f":
+                        is_append(filelist_dict[obj.bin_name]["file"], all_list[index])
+                    elif type_ == "g":
+                        is_append(filelist_dict[obj.bin_name]["ghost"], all_list[index])
+                    else:
+                        raise ValueError(f"The package {obj.bin_name} filetype is {type_}, "
+                                         f"not in ['d', 'f', 'g']")
+        return filelist_dict
+
+    def get_filelist_info(self, db_name, pkg_name_lst):
+        """
+        Description: get dir, file and ghost based on db_name and pkg_name_lst
+
+        Args:
+                db_name: database name, pkg_name_lst: list of package name
+        Returns:
+                response code
+                res_dict
+        Raises:
+                AttributeError: The object does not have this property
+                SQLAlchemyError: sqlalchemy error
+
+        """
+        res_dict = defaultdict(list)
+
+        if not self.db_object_dict:
+            LOGGER.logger.warning("Unable to connect to the database,"
+                                  "check the database configuration")
+            return ResponseCode.DIS_CONNECTION_DB, res_dict
+
+        name_set = set(pkg_name_lst)
+
+        try:
+            data_base = self.db_object_dict.get(db_name)
+            name_in = literal_column("name").in_(name_set)
+            sql_str = text("""
+            SELECT DISTINCT
+                bin.name AS bin_name,
+                filelist.dirname AS path,
+                filelist.filenames AS fname, 
+                filelist.filetypes AS ftype 
+            FROM
+                ( SELECT name, pkgKey FROM bin_pack WHERE {}) bin
+                LEFT JOIN filelist ON bin.pkgKey = filelist.pkgKey;
+            """.format(name_in))
+
+            res_set = data_base.session.execute(
+                sql_str, {
+                    'name_{}'.format(i): v
+                    for i, v in enumerate(name_set, 1)
+                }
+            ).fetchall()
+
+            parsed_filelist_data = self.parse_filelist_data(res_set)
+
+            if not parsed_filelist_data:
+                return ResponseCode.PACK_NAME_NOT_FOUND, dict()
+
+            return ResponseCode.SUCCESS, parsed_filelist_data
+
+        except AttributeError as attr_error:
+            current_app.logger.error(attr_error)
+        except SQLAlchemyError as sql_error:
+            current_app.logger.error(sql_error)
+        except ValueError as value_error:
+            current_app.logger.error(value_error)
+            return ResponseCode.FILELIST_TYPE_ERROR, dict()
+
+        return ResponseCode.CONNECT_DB_ERROR, dict()
 
 
 def db_priority():
