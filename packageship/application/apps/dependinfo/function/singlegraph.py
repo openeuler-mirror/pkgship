@@ -24,7 +24,7 @@ from packageship.application.apps.package.function.self_depend import SelfDepend
 from packageship.application.apps.package.function.install_depend import InstallDepend
 from packageship.application.apps.package.function.build_depend import BuildDepend
 from packageship.application.apps.package.function.be_depend import BeDepend
-from packageship.libs.log import Log
+from packageship.libs.log import LOGGER
 from .graphcache import self_build, bedepend, build_depend, install_depend
 
 
@@ -32,7 +32,6 @@ LEVEL_RADIUS = 30
 NODE_SIZE = 25
 PACKAGE_NAME = 0
 TAIL = -1
-LOGGER = Log(__name__)
 
 
 class SelfBuildDep:
@@ -378,9 +377,10 @@ class BaseGraph:
         """
         _up_depend_nodes = []
         for node_name in self.up_depend_node:
-            if node_name not in self.package_datas['uplevel'].keys():
+            try:
+                depend_data = self.package_datas['uplevel'][node_name]
+            except KeyError:
                 continue
-            depend_data = self.package_datas['uplevel'][node_name]
             for depend_item in depend_data:
                 _up_depend_nodes.append(depend_item)
                 self._combination_nodes(
@@ -396,9 +396,10 @@ class BaseGraph:
         """
         _down_depend_nodes = []
         for node_name in self.down_depend_nodes:
-            if node_name not in self.package_datas['downlevel'].keys():
+            try:
+                depend_data = self.package_datas['downlevel'][node_name]
+            except KeyError:
                 continue
-            depend_data = self.package_datas['downlevel'][node_name]
             for depend_item in depend_data:
                 _down_depend_nodes.append(depend_item)
                 self._combination_nodes(
@@ -417,6 +418,7 @@ class BaseGraph:
                 self.up_depend_node.append(self.node_name)
                 self.down_depend_nodes.append(self.node_name)
             self._combination_nodes(self.node_name)
+
             for _level in range(1, 3):
                 self._up_level_depend()
                 self._down_level_depend()
@@ -442,22 +444,22 @@ class BaseGraph:
                 continue
             if self.packagetype == 'source' and package_depend[PACKAGE_NAME] == self.node_name:
                 self.up_depend_node.append(package_name)
-                self.down_depend_nodes.append(package_name)
 
             for depend_item in package_depend[TAIL]:
                 if depend_item[PACKAGE_NAME] == 'root':
                     continue
                 if self.packagetype == 'source' and depend_item[TAIL] == "build":
-                    self.up_depend_node.append(package_name)
-                    self.down_depend_nodes.append(package_name)
+                    self.down_depend_nodes.append(depend_item[PACKAGE_NAME])
 
+                # Upper dependency graph
                 if not self.package_datas['uplevel'].__contains__(package_name):
                     self.package_datas['uplevel'][package_name] = list()
+                self.package_datas['uplevel'][package_name].append(
+                    depend_item[PACKAGE_NAME])
+
                 if not self.package_datas['downlevel'].__contains__(depend_item[PACKAGE_NAME]):
                     self.package_datas['downlevel'][depend_item[PACKAGE_NAME]] = list(
                     )
-                self.package_datas['uplevel'][package_name].append(
-                    depend_item[PACKAGE_NAME])
                 self.package_datas['downlevel'][depend_item[PACKAGE_NAME]].append(
                     package_name)
         # Remove duplicate packets
@@ -487,7 +489,8 @@ class BaseGraph:
                 self._graph_data()
             except KeyError as error:
                 LOGGER.logger.error(error)
-                return (ResponseCode.SERVICE_ERROR, ResponseCode.CODE_MSG_MAP[ResponseCode.SERVICE_ERROR])
+                return (ResponseCode.SERVICE_ERROR,
+                        ResponseCode.CODE_MSG_MAP[ResponseCode.SERVICE_ERROR])
         return (_code, ResponseCode.CODE_MSG_MAP[_code])
 
     def parse_depend_graph(self):

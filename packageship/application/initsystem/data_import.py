@@ -21,6 +21,7 @@ import bz2
 import gzip
 import tarfile
 import zipfile
+import lzma
 import shutil
 import requests
 import yaml
@@ -970,6 +971,15 @@ class Unpack():
                 raise IOError("Too many files in the zip file, do not"
                               " conform to the form of a single file：%s" % self.file_path)
             file.write(zip_file.read())
+
+    def xz(self):
+        """
+        Unzip the xz package
+        """
+
+        with open(self.save_file, 'wb') as file, lzma.open(self.file_path) as xz_file:
+            for data in iter(lambda: xz_file.read(100 * 1024), b''):
+                file.write(data)
 
 
 class DownloadFile():
