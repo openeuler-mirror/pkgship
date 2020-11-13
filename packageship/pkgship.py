@@ -206,6 +206,7 @@ class PkgshipCommand(BaseCommand):
         cls.register_command(IssueCommand())
         cls.register_command(AllTablesCommand())
         cls.register_command(BatchTaskCommand())
+        cls.register_command(GetFilelistInfoCommand())
         try:
             args = cls.parser.parse_args()
             args.func(args)
@@ -1593,6 +1594,116 @@ class BatchTaskCommand(PkgshipCommand):
             update_pkg_thread = threading.Thread(
                 target=update_pkg_info)
             update_pkg_thread.start()
+
+
+class GetFilelistInfoCommand(PkgshipCommand):
+    """
+    Description: get binary package info
+    Attributes:
+        params: Command line parameters
+    """
+
+    def __init__(self):
+        """
+        Description: Class instance initialization
+        """
+        super(GetFilelistInfoCommand, self).__init__()
+        self.columns = 30
+
+        self.parse = PkgshipCommand.subparsers.add_parser(
+            'info', help='Query filelist info')
+        self.params = [
+            ('--dbname', 'str', 'Database name', 'openEuler', 'store'),
+        ]
+
+    def register(self):
+        """
+        Description: Command line parameter injection
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
+        super(GetFilelistInfoCommand, self).register()
+        self.parse.set_defaults(func=self.do_command)
+        self.parse.add_argument('--packagename', nargs='*', required=True, default=None,
+                                help='Package name')
+
+    @staticmethod
+    def create_table(title=None):
+        """
+        Description: Create printed forms
+        Args:
+            title: Table title
+        Returns:
+            ASCII format table
+        Raises:
+            """
+        table = super(GetFilelistInfoCommand, GetFilelistInfoCommand).create_table(title)
+        table.horizontal_char = '-'
+        table.left_padding_width = 0
+        return table
+
+    def print_filelist_info(self, filelist_dict):
+        """
+        Description: Print filelist information on the command line
+        Args:
+
+        Returns:
+
+        Raises:
+
+        """
+        if filelist_dict:
+            for each_packagename, package_info in filelist_dict.items():
+                self.print_(each_packagename, dividing_line=True)
+
+                for key, values in package_info.items():
+                    if values:
+                        table = self.create_table([key])
+                        for value in values:
+                            table.add_row([value])
+                        print(table, '\n')
+
+    def do_command(self, params):
+        """
+        Description: Action to execute command
+        Args:
+            params: Command line parameters
+        Returns:
+
+        Raises:
+            ConnectionError: Request connection error
+        """
+        packagenames = "$".join(params.packagename)
+        _url = self.read_host + \
+               '/packages/packageInfo/file?db_name={db_name}&pkg_name={packagename}' \
+                   .format(db_name=params.dbname, packagename=packagenames)
+        try:
+            response = requests.get(_url)
+        except ConnErr as conn_error:
+            LOGGER.logger.error(conn_error)
+            print(str(conn_error))
+        else:
+            if response.status_code == 200:
+                try:
+                    response_data = json.loads(response.text)
+
+                    self.print_filelist_info(response_data['data'])
+
+                except JSONDecodeError as json_error:
+                    LOGGER.logger.error(json_error)
+                    print(response.text)
+                else:
+                    if response_data.get('code') == ResponseCode.SUCCESS:
+                        print('query completed')
+                    else:
+                        LOGGER.logger.error(response_data.get('msg'))
+                        print(response_data.get('msg'))
+            else:
+                self.http_error(response)
 
 
 if __name__ == '__main__':

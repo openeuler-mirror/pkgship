@@ -43,5 +43,8 @@ urls = [
     (view.Repodatas, '/repodatas', {'query': ('GET'), 'write': ('DELETE')}),
 
     # Reload database
-    (view.InitSystem, '/initsystem', {'write': ('POST')})
+    (view.InitSystem, '/initsystem', {'write': ('POST')}),
+
+    # Get filelist Info
+    (view.GetFilelistInfo, '/packages/packageInfo/file', {'query': ('GET')})
 ]

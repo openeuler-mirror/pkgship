@@ -65,6 +65,7 @@ class ResponseCode():
     DATA_MERGE_ERROR = "50004"
     FILE_NOT_FIND_ERROR = "50005"
     DIS_CONNECTION_DB = "50006"
+    FILELIST_TYPE_ERROR = "50007"
     NO_PACKAGES_TABLE = "60001"
     DATABASE_NOT_FOUND = "60002"
     TABLE_NAME_NOT_EXIST_IN_DATABASE = "60003"
@@ -88,6 +89,8 @@ class ResponseCode():
         DATA_MERGE_ERROR: "abnormal multi-file database integration",
         FILE_NOT_FIND_ERROR: "system initialization configuration file does not exist",
         DIS_CONNECTION_DB: "Unable to connect to the database, check the database configuration",
+        FILELIST_TYPE_ERROR: "The package filetype is not in ['d', 'f', 'g'], "
+                             "please try again later",
         SERVICE_ERROR: "An exception occurred in the system, please try again later",
         SPECIFIED_FILE_NOT_EXIST: "The specified file does not exist",
         NO_PACKAGES_TABLE: "There is no packages table in the database",
