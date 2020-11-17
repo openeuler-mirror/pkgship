@@ -40,6 +40,8 @@ else:
     from packageship.application.apps.lifecycle.function.download_yaml import update_pkg_info
 
 DB_NAME = 0
+DEPRECATION_LEN = 12
+LIST_LEN = 6
 
 
 def main():
@@ -89,13 +91,13 @@ class BaseCommand():
         Raises:
 
         """
-        wirte_port = configuration.WRITE_PORT
+        write_port = configuration.WRITE_PORT
 
         write_ip = configuration.WRITE_IP_ADDR
-        if not all([write_ip, wirte_port]):
+        if not all([write_ip, write_port]):
             raise Error(
                 "The system does not configure the relevant port and ip correctly")
-        _write_host = self.__http + write_ip + ":" + str(wirte_port)
+        _write_host = self.__http + write_ip + ":" + str(write_port)
         setattr(self, 'write_host', _write_host)
 
     def load_read_host(self):
@@ -233,9 +235,8 @@ class PkgshipCommand(BaseCommand):
                     if package_all.get("not_found_components"):
                         print("Problem: Not Found Components")
                         for not_found_com in package_all.get("not_found_components"):
-                            print(
-                                "  - nothing provides {} needed by {} ".
-                                format(not_found_com, params.packagename))
+                            print("  - nothing provides {} needed by {} ".format(
+                                not_found_com, params.packagename))
                     package_all = package_all.get("build_dict")
 
                 for bin_package, package_depend in package_all.items():
@@ -256,8 +257,8 @@ class PkgshipCommand(BaseCommand):
                         # Determine whether the current binary package exists
                         if bin_package not in \
                                 self.statistics[package_depend[ListNode.DBNAME]]['binary']:
-                            self.statistics[package_depend[ListNode.DBNAME]
-                                            ]['binary'].append(bin_package)
+                            self.statistics[package_depend[ListNode.DBNAME]]['binary'].\
+                                append(bin_package)
                             bin_package_count += 1
                         # Determine whether the source package exists
                         if package_depend[ListNode.SOURCE_NAME] not in \
@@ -327,9 +328,9 @@ class PkgshipCommand(BaseCommand):
         Raises:
 
         """
-        statistics_table = self.create_table(['', 'binary', 'source'])
+        statistics_table = self.create_table(['', 'Binary', 'Source'])
         statistics_table.add_row(
-            ['self depend sum', bin_package_count, src_package_count])
+            ['Self Depend Sum', bin_package_count, src_package_count])
 
         # cyclically count the number of source packages and binary packages in each database
         for database, statistics_item in self.statistics.items():
@@ -354,6 +355,25 @@ class PkgshipCommand(BaseCommand):
             LOGGER.logger.error(http_error)
             print('Request failed')
             print(http_error)
+
+    @staticmethod
+    def show_separation(value, separation, separation_str=" "):
+        """
+        Description:Split content as required
+        Args:
+            value: Need to be divided content
+            separation: Split length
+            separation_str: Delimiter
+        Returns:
+            value_separation: Content after segmentation as required
+        Raises:
+        """
+        value_separation = []
+        range_num = len(value) // separation + 1 if len(value) % separation else len(value) // separation
+        for idx in range(range_num):
+            value_separation.append(separation_str.join(value[separation * idx:
+                                                              separation * (idx + 1)]))
+        return value_separation
 
 
 class RemoveCommand(PkgshipCommand):
@@ -417,7 +437,7 @@ class RemoveCommand(PkgshipCommand):
                         print(response.text)
                     else:
                         if data.get('code') == ResponseCode.SUCCESS:
-                            print('delete success')
+                            print('Delete database success')
                         else:
                             LOGGER.logger.error(data.get('msg'))
                             print(data.get('msg'))
@@ -511,8 +531,8 @@ class AllPackageCommand(PkgshipCommand):
         self.parse = PkgshipCommand.subparsers.add_parser(
             'list', help='get all package data')
         self.table = self.create_table(
-            ['packagenames', 'database', 'version', 'license', 'maintainer',
-             'release date', 'used time'])
+            ['Package Names', 'Database', 'Version', 'License', 'Maintainer',
+             'Release Date', 'Used Time'])
         self.params = [('tablename', 'str', 'name of the database operated', '', 'store'),
                        ('-remote', 'str', 'The address of the remote service',
                         False, 'store_true'),
@@ -575,15 +595,15 @@ class AllPackageCommand(PkgshipCommand):
         """
         self._set_read_host(params.remote)
         _url = self.read_host + \
-            '/packages?table_name={table_name}&query_pkg_name={pkg_name}&\
-            maintainner={maintainer}&maintainlevel={maintainlevel}&\
-            page_num={page}&page_size={pagesize}'.format(
-                table_name=params.tablename,
-                pkg_name=params.packagename,
-                maintainer=params.maintainer,
-                maintainlevel='',
-                page=1,
-                pagesize=65535).replace(' ', '')
+               '/packages?table_name={table_name}&query_pkg_name={pkg_name}&\
+               maintainner={maintainer}&maintainlevel={maintainlevel}&\
+               page_num={page}&page_size={pagesize}'.format(
+                   table_name=params.tablename,
+                   pkg_name=params.packagename,
+                   maintainer=params.maintainer,
+                   maintainlevel='',
+                   page=1,
+                   pagesize=65535).replace(' ', '')
         try:
             response = requests.get(_url)
         except ConnErr as conn_error:
@@ -678,7 +698,7 @@ class UpdatePackageCommand(PkgshipCommand):
                     print(response.text)
                 else:
                     if data.get('code') == ResponseCode.SUCCESS:
-                        print('update completed')
+                        print('Update package data completed')
                     else:
                         LOGGER.logger.error(data.get('msg'))
                         print(data.get('msg'))
@@ -766,7 +786,7 @@ class BuildDepCommand(PkgshipCommand):
                         self.print_('query {} buildDepend  result display:'.format(
                             params.packagename))
                         print(self.table)
-                        self.print_('statistics')
+                        self.print_('Statistics')
                         print(statistics_table)
             else:
                 self.http_error(response)
@@ -840,9 +860,8 @@ class InstallDepCommand(PkgshipCommand):
                 if package_all.get("not_found_components"):
                     print("Problem: Not Found Components")
                     for not_found_com in package_all.get("not_found_components"):
-                        print(
-                            "  - nothing provides {} needed by {} ".
-                            format(not_found_com, params.packagename))
+                        print("  - nothing provides {} needed by {} ".format(
+                            not_found_com, params.packagename))
                 for bin_package, package_depend in package_all.get("install_dict").items():
                     # distinguish whether the current data is the data of the root node
                     if isinstance(package_depend, list) and package_depend[-1][0][0] != 'root':
@@ -860,8 +879,8 @@ class InstallDepCommand(PkgshipCommand):
                         # Determine whether the current binary package exists
                         if bin_package not in \
                                 self.statistics[package_depend[ListNode.DBNAME]]['binary']:
-                            self.statistics[package_depend[ListNode.DBNAME]
-                                            ]['binary'].append(bin_package)
+                            self.statistics[package_depend[ListNode.DBNAME]]['binary'].\
+                                append(bin_package)
                             bin_package_count += 1
                         # Determine whether the source package exists
                         if package_depend[ListNode.SOURCE_NAME] not in \
@@ -915,7 +934,7 @@ class InstallDepCommand(PkgshipCommand):
                         self.print_('query {} InstallDepend result display:'.format(
                             params.packagename))
                         print(self.table)
-                        self.print_('statistics')
+                        self.print_('Statistics')
                         print(statistics_table)
             else:
                 self.http_error(response)
@@ -941,9 +960,9 @@ class SelfBuildCommand(PkgshipCommand):
             'selfbuild', help='query the self-compiled dependencies of the specified package')
         self.collection = True
         self.bin_package_table = self.create_table(
-            ['package name', 'src name', 'version', 'database'])
+            ['Package name', 'Source Name', 'Version', 'Database'])
         self.src_package_table = self.create_table([
-            'src name', 'version', 'database'])
+            'Source Name', 'Version', 'Database'])
         self.params = [
             ('packagename', 'str', 'source package name', '', 'store'),
             ('-t', 'str', 'Source of data query', 'binary', 'store'),
@@ -1003,8 +1022,8 @@ class SelfBuildCommand(PkgshipCommand):
                     # Determine whether the current binary package exists
                     if bin_package not in \
                             self.statistics[package_depend[ListNode.DBNAME]]['binary']:
-                        self.statistics[package_depend[ListNode.DBNAME]
-                                        ]['binary'].append(bin_package)
+                        self.statistics[package_depend[ListNode.DBNAME]]['binary'].\
+                            append(bin_package)
                         bin_package_count += 1
                     self.bin_package_table.add_row(row_data)
 
@@ -1037,8 +1056,7 @@ class SelfBuildCommand(PkgshipCommand):
                         }
                     # Determine whether the current binary package exists
                     if src_package not in self.statistics[package_depend[DB_NAME]]['source']:
-                        self.statistics[package_depend[DB_NAME]
-                                        ]['source'].append(src_package)
+                        self.statistics[package_depend[DB_NAME]]['source'].append(src_package)
                         src_package_count += 1
 
                     self.src_package_table.add_row(row_data)
@@ -1068,9 +1086,8 @@ class SelfBuildCommand(PkgshipCommand):
                 if package_all.get("not_found_components"):
                     print("Problem: Not Found Components")
                     for not_found_com in package_all.get("not_found_components"):
-                        print(
-                            "  - nothing provides {} needed by {} ".
-                            format(not_found_com, params.packagename))
+                        print("  - nothing provides {} needed by {} ".format(
+                            not_found_com, params.packagename))
                 bin_package_count = self._parse_bin_package(
                     package_all.get('binary_dicts'))
 
@@ -1126,7 +1143,7 @@ class SelfBuildCommand(PkgshipCommand):
                         print(self.bin_package_table)
                         self.print_(character='=')
                         print(self.src_package_table)
-                        self.print_('statistics')
+                        self.print_('Statistics')
                         print(statistics_table)
             else:
                 self.http_error(response)
@@ -1205,8 +1222,9 @@ class BeDependCommand(PkgshipCommand):
                         self.print_('query {} beDepend result display :'.format(
                             params.packagename))
                         print(self.table)
-                        self.print_('statistics')
+                        self.print_('Statistics')
                         print(statistics_table)
+
             else:
                 self.http_error(response)
 
@@ -1248,29 +1266,50 @@ class SingleCommand(PkgshipCommand):
         super(SingleCommand, self).register()
         self.parse.set_defaults(func=self.do_command)
 
+    # pylint: disable=too-many-branches
     def __parse_package_detail(self, response_data):
         """
+        Description: Parse the detail data of the package
+        Args:
+            response_data: http response data
+        Returns:
+
+        Raises:
 
         """
-        _show_field_name = ('pkg_name', 'version', 'release', 'url', 'license', 'feature',
-                            'maintainer', 'maintainlevel', 'gitee_url', 'issue', 'summary',
-                            'description', 'buildrequired')
+        _show_field_name = {'pkg_name': "Package Name", 'version': "Version", 'release': "Release",
+                            'url': "Url", 'license': "License", 'feature': "Feature",
+                            'maintainer': "Maintainer", 'maintainlevel': "Maintain Level",
+                            'gitee_url': "Gitee Url", 'issue': "Issue", 'summary': "Summary",
+                            'description': "Description", 'buildrequired': "Build Required"}
         _package_detail_info = response_data.get('data')
         _line_content = []
         if _package_detail_info:
-            for key in _show_field_name:
+            for key, name_value in _show_field_name.items():
                 value = _package_detail_info.get(key)
                 if value is None:
                     value = ''
                 if isinstance(value, list):
-                    value = '、'.join(value) if value else ''
-                _line_content.append('%-15s:%s' % (key, value))
+                    value_s = self.show_separation(value, LIST_LEN, separation_str=',')
+                    for idx, con in enumerate(value_s):
+                        if idx != 0:
+                            name_value = " "
+                        _line_content.append("%-15s:%s" % (name_value, con))
+                if key == "description":
+                    value = _package_detail_info.get(key).split()
+                    value_d = self.show_separation(value, DEPRECATION_LEN)
+                    for idx, con in enumerate(value_d):
+                        if idx != 0:
+                            name_value = " "
+                        _line_content.append("%-15s:%s" % (name_value, con))
+                if not isinstance(value, list) and key != "description":
+                    _line_content.append('%-15s:%s' % (name_value, value))
         for content in _line_content:
             self.print_(content=content)
 
     def __parse_provides(self, provides):
         """
-
+            Data analysis of provides package
         """
         if provides and isinstance(provides, list):
             for _provide in provides:
@@ -1287,7 +1326,7 @@ class SingleCommand(PkgshipCommand):
 
     def __parse_requires(self, requires):
         """
-
+            Data analysis of requires package
         """
         if requires and isinstance(requires, list):
             for _require in requires:
@@ -1346,7 +1385,7 @@ class SingleCommand(PkgshipCommand):
         """
         self._set_read_host(params.remote)
         _url = self.read_host + \
-            '/packages/packageInfo?table_name={db_name}&pkg_name={packagename}' \
+               '/packages/packageInfo?table_name={db_name}&pkg_name={packagename}' \
                    .format(db_name=params.tablename, packagename=params.packagename)
         try:
             response = requests.get(_url)
@@ -1394,8 +1433,8 @@ class IssueCommand(PkgshipCommand):
             ('-remote', 'str', 'The address of the remote service', False, 'store_true')
         ]
         self.table = self.create_table(
-            ['issue_id', 'pkg_name', 'issue_title',
-             'issue_status', 'issue_type', 'maintainer'])
+            ['Issue ID', 'Package Name', 'Issue Title',
+             'Issue Status', 'Issue Type', 'Maintainer'])
 
     def register(self):
         """
@@ -1420,7 +1459,7 @@ class IssueCommand(PkgshipCommand):
                         issue_item.get('issue_id'),
                         issue_item.get('pkg_name') if issue_item.get(
                             'pkg_name') else '',
-                        issue_item.get('issue_title')[:50]+'...' if issue_item.get(
+                        issue_item.get('issue_title')[:50] + '...' if issue_item.get(
                             'issue_title') else '',
                         issue_item.get('issue_status') if issue_item.get(
                             'issue_status') else '',
@@ -1446,15 +1485,15 @@ class IssueCommand(PkgshipCommand):
             return
         self._set_read_host(params.remote)
         _url = self.read_host + \
-            '/lifeCycle/issuetrace?page_num={page_num}&\
-            page_size={page_size}&pkg_name={pkg_name}&issue_type={issue_type}\
-            &issue_status={issue_status}&maintainer={maintainer}'\
-                .format(page_num=params.page,
-                        page_size=params.pagesize,
-                        pkg_name=params.packagename,
-                        issue_type=params.issue_type,
-                        issue_status=params.issue_status,
-                        maintainer=params.maintainer).replace(' ', '')
+               '/lifeCycle/issuetrace?page_num={page_num}&\
+               page_size={page_size}&pkg_name={pkg_name}&issue_type={issue_type}\
+               &issue_status={issue_status}&maintainer={maintainer}' \
+                   .format(page_num=params.page,
+                           page_size=params.pagesize,
+                           pkg_name=params.packagename,
+                           issue_type=params.issue_type,
+                           issue_status=params.issue_status,
+                           maintainer=params.maintainer).replace(' ', '')
         try:
             response = requests.get(_url)
         except ConnErr as conn_error:
