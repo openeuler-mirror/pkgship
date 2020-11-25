@@ -36,8 +36,10 @@ class InitConf:
 
         conf_path = os.path.join(base_path, "conf.yaml")
         init_dbs = os.path.join(base_path, "init_dbs")
+        tem_path = os.path.join(base_path, "tem_path")
         config.set("SYSTEM", "database_folder_path", init_dbs)
         config.set("SYSTEM", "init_conf_path", conf_path)
+        config.set("SYSTEM", "temporary_directory", tem_path)
         config.write(open(sys_path, "w"))
 
         with open(conf_path, 'r', encoding='utf-8') as r_f:
