@@ -13,13 +13,13 @@
 """
 read yaml file, parse sig info, save sig info in database
 """
+import os
 import requests
 import yaml
 from retrying import retry
 from sqlalchemy import literal_column
 from sqlalchemy.exc import SQLAlchemyError
 from requests.exceptions import HTTPError, RequestException
-from packageship.application.apps.package.function.constants import ResponseCode
 from packageship.libs.log import Log
 from packageship.application.models.package import PackagesMaintainer
 from packageship.libs.dbutils import DBHelper
@@ -122,6 +122,7 @@ class SigInfo():
         Args:
         Returns:
         Raises:
+            SQLAlchemyError: sqlalchemy error
         """
         try:
             with DBHelper(db_name="lifecycle") as data_base:
@@ -145,23 +146,38 @@ class SigInfo():
         except SQLAlchemyError as error_msg:
             LOGGER.logger.error('update or add sig data faild: %s '
                                 % error_msg if error_msg else '')
+        else:
+            _msg = "Successfully save or update sig info."
+            LOGGER.logger.info(_msg)
 
     def save_all_packages_sigs_data(self):
         """
         Description: save all packages sig info in packages_maintainer table
         Args:
-        Returns:
+        Returns: None. Save or update data successfully,it is visible in the log information
         Raises:
-            SQLAlchemyError:sqlalchemy error
+            SQLAlchemyError: sqlalchemy error. Failed to save data, the exception is recorded in
+             the log
         """
-
         producer_consumer = ProducerConsumer()
         parsed_sigs_data = self.__parse_sigs_data()
         if not parsed_sigs_data:
-            LOGGER.logger.error(ResponseCode.response_json(ResponseCode.EMPTY_PARSED_DATA))
-            return ResponseCode.response_json(ResponseCode.EMPTY_PARSED_DATA)
+            _msg = "empty parsed sig data."
+            LOGGER.logger.error(_msg)
+            return None
+
+        db_file_path = os.path.join(configuration.DATABASE_FOLDER_PATH, "lifecycle.db")
+        if not os.path.exists(db_file_path):
+            LOGGER.logger.error("db file not exists")
+            return None
+
         try:
             with DBHelper(db_name="lifecycle") as database:
+                if 'packages_maintainer' not in database.engine.table_names():
+                    _msg = "packages_maintainer table not exists."
+                    LOGGER.logger.error(_msg)
+                    return None
+
                 name_in = literal_column('name').in_(parsed_sigs_data)
                 pkg_names = set()
                 for table_name in filter(
@@ -184,11 +200,9 @@ class SigInfo():
             }
 
             producer_consumer.put((to_insert_dict, self.__update_sig_data))
-            _msg = "Successfully save or update sig info."
-            LOGGER.logger.info(_msg)
-
             return None
+
         except SQLAlchemyError as error_msg:
             LOGGER.logger.error('update or add sig data faild: %s '
                                 % error_msg if error_msg else '')
-            return ResponseCode.response_json(ResponseCode.UPDATA_OR_ADD_DATA_FAILED)
+            return None
