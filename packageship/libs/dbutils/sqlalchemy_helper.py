@@ -164,7 +164,7 @@ class DBHelper(BaseHelper):
         }
         if connection_type is None:
             connection_type = configuration.DATABASE_ENGINE_TYPE
-        self._engine_pool = connection_type + '_' + db_name
+        self._engine_pool = hash((connection_type, configuration.DATABASE_FOLDER_PATH, db_name))
         _database_engine = self._database_engine.get(connection_type)
         if 'complete_route_db' in kwargs:
             _database_engine = SqliteHlper
