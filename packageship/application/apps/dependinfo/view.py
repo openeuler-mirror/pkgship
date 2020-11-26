@@ -230,7 +230,7 @@ class SelfDependInfo(ParseDependPackageMethod):
         if not db_pri:
             return jsonify(
                 ResponseCode.response_json(
-                    ResponseCode.FILE_NOT_FIND_ERROR
+                    ResponseCode.NOT_FOUND_DATABASE_INFO
                 )
             )
         db_list = data.get("db_list") if data.get("db_list") \

@@ -34,12 +34,18 @@ class TestDependInfoInstallDepend(ReadTestBase):
 
     # Let's say something goes wrong with init
     def test_not_found_database_info_response(self):
+        """
+        Initialization failed. No database was generated. Database information could not be found
+        Returns:
+        """
         self.REQUESTS_KWARGS["data"] = json.dumps({"binaryName": "A1"})
 
         # When DBS folder does not exist
-        self.without_dbs_folder(self.REQUESTS_KWARGS, met=self, code=ResponseCode.NOT_FOUND_DATABASE_INFO)
+        self.without_dbs_folder(self.REQUESTS_KWARGS,
+                                met=self, code=ResponseCode.NOT_FOUND_DATABASE_INFO)
         # When there is DB_ but no data
-        self.when_db_no_content(self.REQUESTS_KWARGS, met=self, code=ResponseCode.NOT_FOUND_DATABASE_INFO)
+        self.when_db_no_content(self.REQUESTS_KWARGS,
+                                met=self, code=ResponseCode.NOT_FOUND_DATABASE_INFO)
 
     # Data does not pass validation where the data is null plus length validation in Serialize
     def test_param_error_response(self):
@@ -61,17 +67,23 @@ class TestDependInfoInstallDepend(ReadTestBase):
 
         for error_param in param_error_list:
             self.REQUESTS_KWARGS["data"] = error_param
-
             resp_dict = self.client_request(**self.REQUESTS_KWARGS)
-            self.response_json_error_judge(resp_dict, resp_code=ResponseCode.PARAM_ERROR, method=self)
+            self.response_json_error_judge(resp_dict,
+                                           resp_code=ResponseCode.PARAM_ERROR, method=self)
 
     def test_pkg_name_not_found_response(self):
+        """
+        test package name not found
+        """
         self.REQUESTS_KWARGS["data"] = json.dumps({"binaryName": "qitiandasheng"})
         resp_dict = self.client_request(**self.REQUESTS_KWARGS)
-
-        self.response_json_error_judge(resp_dict, resp_code=ResponseCode.PACK_NAME_NOT_FOUND, method=self)
+        self.response_json_error_judge(resp_dict,
+                                       resp_code=ResponseCode.PACK_NAME_NOT_FOUND, method=self)
 
     def test_db_name_error_response(self):
+        """
+        test database name not found
+        """
         self.REQUESTS_KWARGS["data"] = json.dumps({"binaryName": "CUnit",
                                                    "db_list": ["shifu", "bajie"]
                                                    })
