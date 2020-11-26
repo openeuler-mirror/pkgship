@@ -22,7 +22,7 @@ urls = [
     (view.DataBaseInfo, '/dependInfo/databases', {'query': ('GET')}),
 
     # Download install or build or self or bedepend excel
-    (view.DownExcel, '/dependInfo/download/<file_type>', {'query': ('POST')}),
+    (view.Downloadzip, '/dependInfo/download/<file_type>', {'query': ('POST')}),
     # get InstallDepend
     (view.InstallDependInfo, '/dependInfo/installDepend', {'query': ('POST')}),
     # get BuildDepend

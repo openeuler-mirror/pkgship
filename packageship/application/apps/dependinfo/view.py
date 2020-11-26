@@ -585,3 +585,30 @@ class SingleGraph(Resource):
         res_dict = {"code": response_status, "data": res_data, "msg": msg}
 
         return jsonify(res_dict)
+
+
+class Downloadzip(Resource):
+    """
+    Description:Download the excel form of installation dependency, compilation dependency,
+                dependent and self-reliance, the content of the form is full csv and summary table
+    Restful API: post
+    changeLog:
+    """
+    def post(self, file_type):
+        """
+        To download as a ZIP archive
+        Args:
+            file_type: Type of dependency
+
+        Returns:
+            To download as a ZIP archive
+
+        Raises:
+            ValidationError: Parameter error
+            Error: Database name error
+            NameError: Bag name not found
+            ValueError: Download file failed
+        """
+        # File_type is returned here, just to ensure that the code will work properly,
+        # and the code will be uploaded later.
+        return file_type

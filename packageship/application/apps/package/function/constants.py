@@ -34,6 +34,12 @@ class ListNode():
     # FOR PARENT LIST:
     PARENT_NODE = 0
     DEPEND_TYPE = 1
+    # FOR PARSE DATA
+    BUILD_POP_COUNT = 3
+    INSTALL_POP_COUNT = 4
+    TAIL = -1
+    FLAG_TRUE = True
+    FLAG_FALSE = False
 
 # response code
 
