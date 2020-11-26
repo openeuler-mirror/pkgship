@@ -14,20 +14,20 @@
 """
  build_depend unittest
 """
-from test.base_code.read_data_base import ReadTestBase
 import os
-import sys
+from test.base_code.read_data_base import ReadTestBase
+from packageship import BASE_PATH
 
 
 class TestLicence(ReadTestBase):
-
+    """
+        TestLicence
+    """
     def test_licence(self):
-        if getattr(sys, 'frozen', False):
-            BASE_PATH = os.path.dirname(os.path.realpath(sys.argv[0]))
-        else:
-            BASE_PATH = os.path.abspath(os.path.dirname(__file__))
-            BASE_PATH = BASE_PATH.split("pkgship")[0]
-            BASE_PATH = os.path.join(BASE_PATH, 'pkgship')
-        self.find_all_py_file([BASE_PATH])
+        """
+        test_true_licence
+        Returns:
 
-
+        """
+        path = os.path.abspath(os.path.dirname(BASE_PATH))
+        self.find_all_py_file([path])

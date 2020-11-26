@@ -37,6 +37,7 @@
                                                        "source_num": 4},
                                                       {"binary_num": 0,
                                                        "database": "fedora30",
-                                                       "source_num": 0}]},
+                                                       "source_num": 0},
+                                         {"binary_num": 0, "database": "openEuler", "source_num": 0}]},
                         "not_found_components": []},
                "msg": "Successful Operation!"}}]
