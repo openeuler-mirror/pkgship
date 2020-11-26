@@ -44,6 +44,7 @@ setup(
         'packageship.application.apps.lifecycle.view',
         'packageship.application.apps.dependinfo.function.singlegraph',
         'packageship.application.apps.dependinfo.function.graphcache',
+        'packageship.application.apps.dependinfo.function.parse_depend_csv',
         'packageship.application.apps.dependinfo.serialize',
         'packageship.application.apps.dependinfo.url',
         'packageship.application.apps.dependinfo.view',
