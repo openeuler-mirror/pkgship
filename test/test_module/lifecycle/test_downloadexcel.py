@@ -15,11 +15,11 @@
 test_get_single_packages
 """
 from io import BytesIO
-import os
+
 import unittest
-import pandas as pd
 from test.base_code.read_data_base import ReadTestBase
-from packageship import system_config
+import pandas as pd
+
 from packageship.application.apps.package.function.constants import ResponseCode
 
 
@@ -27,36 +27,29 @@ class TestDownloadExcelFile(ReadTestBase):
     """
     Download test of excel file
     """
+    BASE_URL = "/lifeCycle/download/"
+    REQUESTS_KWARGS = {
+        "url": "",
+        "method": "GET"
+    }
 
     def test_file_type_error(self):
         """
             The file type to be downloaded for the test is incorrect
         """
-
-        response = self.client_request("/lifeCycle/download/xxx")
-        self.response_json_format(response)
-        self.assertEqual(ResponseCode.PARAM_ERROR,
-                         response.get("code"),
-                         msg="Error in status code return")
-
-        self.assertIsNone(
-            response.get("data"),
-            msg="Error in data information return")
-
-    def _save_download_file(self, response_data, path):
-        """
-            Save the downloaded file
-        """
-        with open(path, 'wb') as f:
-            f.write(response_data)
+        self.REQUESTS_KWARGS["url"] = self.BASE_URL + "xxx"
+        resp_dict = self.client_request(**self.REQUESTS_KWARGS)
+        self.response_json_error_judge(
+            resp_dict, resp_code=ResponseCode.PARAM_ERROR, method=self)
 
     def test_issue_file(self):
         """
             Issue file download test
         """
-        response = self.client.get("/lifeCycle/download/issues")
+        self.REQUESTS_KWARGS["url"] = self.BASE_URL + "issues"
+        resp_dict = self.client.get(self.REQUESTS_KWARGS["url"])
         data_frame = pd.read_excel(
-            BytesIO(response.data), sheet_name='Summary',engine='xlrd')
+            BytesIO(resp_dict.data), sheet_name='Summary', engine='xlrd')
         datas = data_frame.values.tolist()
         self.assertEqual(
             14, len(datas), msg="An error occurred in the downloaded data")
@@ -69,8 +62,7 @@ class TestDownloadExcelFile(ReadTestBase):
             'issue_status': 'open',
             'pkg_name': 'dnf',
             'issue_type': 'defect',
-            'related_release': 'hahaxx'
-        }
+            'related_release': 'hahaxx'}
         self.assertEqual(data, data_dict,
                          msg='An error occurred in the downloaded data')
 
@@ -78,11 +70,13 @@ class TestDownloadExcelFile(ReadTestBase):
         """
             download packages file
         """
-        response = self.client.get(
-            "/lifeCycle/download/packages?table_name=mainline")
 
+        self.REQUESTS_KWARGS["url"] = self.BASE_URL + \
+                                      "packages" + "?table_name=mainline"
+
+        response = self.client.get(self.REQUESTS_KWARGS["url"])
         data_frame = pd.read_excel(
-            BytesIO(response.data), sheet_name='Summary',engine='xlrd')
+            BytesIO(response.data), sheet_name='Summary', engine='xlrd')
         datas = data_frame.values.tolist()
         self.assertEqual(
             5, len(datas), msg="An error occurred in the downloaded data")
@@ -110,8 +104,8 @@ class TestDownloadExcelFile(ReadTestBase):
         """
             download packages file
         """
-        response = self.client_request(
-            "/lifeCycle/download/packages")
+        self.REQUESTS_KWARGS["url"] = self.BASE_URL + "packages"
+        response = self.client_request(self.REQUESTS_KWARGS["url"])
         self.response_json_format(response)
         self.assertEqual(ResponseCode.SERVICE_ERROR, response.get(
             'code'), msg='Error in status code return')
