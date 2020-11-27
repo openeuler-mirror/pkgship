@@ -23,18 +23,22 @@ class TestGetMaintainers(ReadTestBase):
     """
     Maintainer list acquisition test
     """
+    BASE_URL = "/lifeCycle/maintainer"
+    REQUESTS_KWARGS = {
+        "url": "",
+        "method": "GET"
+    }
 
     def test_maintainer(self):
         """
             Test the actual data sheet
         """
-        response = self.client_request(
-            "/lifeCycle/maintainer")
-        self.response_json_format(response)
+        self.REQUESTS_KWARGS["url"] = self.BASE_URL
+        resp_dict = self.client_request(**self.REQUESTS_KWARGS)
         self.assertEqual(ResponseCode.SUCCESS,
-                         response.get("code"),
+                         resp_dict.get("code"),
                          msg="Error in status code return")
-        self.assertEqual(['userA', 'userB'], response.get(
+        self.assertEqual(['userA', 'userB'], resp_dict.get(
             'data'), msg="The data content is incorrect")
 
 
