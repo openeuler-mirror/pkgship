@@ -10,436 +10,137 @@
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
-"""TestUpdatePackage"""
 # -*- coding:utf-8 -*-
+"""TestUpdatePackage"""
+
 import os
+
+from packageship import BASE_PATH
+
 from test.base_code.operate_data_base import OperateTestBase
-from packageship import system_config
-
 import json
-
 from packageship.application.apps.package.function.constants import ResponseCode
 
 
 class TestBatchUpdatePackage(OperateTestBase):
     """TestUpdatePackage"""
+    REQUESTS_KWARGS = {
+        "url": "/lifeCycle/updatePkgInfo",
+        "method": "put",
+        "data": "",
+        "content_type": "application/json"
+    }
 
-    def test_missing_required_parameters(self):
+    def test_init_wrong(self):
         """
-        Parameter error
-        """
-        # all miss required parameters
-        resp = self.client.put("/lifeCycle/updatePkgInfo",
-                               data=json.dumps({"batch": ""}),
-                               content_type="application/json")
-        resp_dict = json.loads(resp.data)
-        resp_dict.get("data")
-
-        self.assertIn("code", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.PARAM_ERROR,
-                         resp_dict.get("code"),
-                         msg="Error in status code return")
-
-        self.assertIn("msg", resp_dict, msg="Error in data format return")
-        self.assertEqual(
-            ResponseCode.CODE_MSG_MAP.get(
-                ResponseCode.PARAM_ERROR),
-            resp_dict.get("msg"),
-            msg="Error in status prompt return")
-
-        self.assertIn("data", resp_dict, msg="Error in data format return")
-        self.assertIsNone(
-            resp_dict.get("data"),
-            msg="Error in data information return")
-
-        # all miss wrong parameters
-        resp = self.client.put("/lifeCycle/updatePkgInfo",
-                               data=json.dumps({"batch": "1"}),
-                               content_type="application/json")
-        resp_dict = json.loads(resp.data)
-        resp_dict.get("data")
-
-        self.assertIn("code", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.SPECIFIED_FILE_NOT_EXIST,
-                         resp_dict.get("code"),
-                         msg="Error in status code return")
-
-        self.assertIn("msg", resp_dict, msg="Error in data format return")
-        self.assertEqual(
-            ResponseCode.CODE_MSG_MAP.get(
-                ResponseCode.SPECIFIED_FILE_NOT_EXIST),
-            resp_dict.get("msg"),
-            msg="Error in status prompt return")
-
-        self.assertIn("data", resp_dict, msg="Error in data format return")
-        self.assertIsNone(
-            resp_dict.get("data"),
-            msg="Error in data information return")
-
-    def test_read_yaml_update(self):
-        """
-
+        Initialization failed. No database was generated. Database information could not be found
         Returns:
 
         """
 
-        # Missing file path
-        resp = self.client.put("/lifeCycle/updatePkgInfo",
-                               data=json.dumps({"batch": 1}),
-                               content_type="application/json")
-
-        resp_dict = json.loads(resp.data)
-
-        self.assertIn("code", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.SPECIFIED_FILE_NOT_EXIST,
-                         resp_dict.get("code"),
-                         msg="Error in status code return")
-
-        self.assertIn("msg", resp_dict, msg="Error in data format return")
-        self.assertEqual(
-            ResponseCode.CODE_MSG_MAP.get(
-                ResponseCode.SPECIFIED_FILE_NOT_EXIST),
-            resp_dict.get("msg"),
-            msg="Error in status prompt return")
-
-        self.assertIn("data", resp_dict, msg="Error in data format return")
-        self.assertIsNone(
-            resp_dict.get("data"),
-            msg="Error in data information return")
-
-        # File path error
-        resp = self.client.put("/lifeCycle/updatePkgInfo",
-                               data=json.dumps({"batch": 1,
-                                                "filepath": "D\\"}),
-                               content_type="application/json")
-        resp_dict = json.loads(resp.data)
-
-        self.assertIn("code", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.SPECIFIED_FILE_NOT_EXIST,
-                         resp_dict.get("code"),
-                         msg="Error in status code return")
-
-        self.assertIn("msg", resp_dict, msg="Error in data format return")
-        self.assertEqual(
-            ResponseCode.CODE_MSG_MAP.get(
-                ResponseCode.SPECIFIED_FILE_NOT_EXIST),
-            resp_dict.get("msg"),
-            msg="Error in status prompt return")
-
-        self.assertIn("data", resp_dict, msg="Error in data format return")
-        self.assertIsNone(
-            resp_dict.get("data"),
-            msg="Error in data information return")
-
-        # Data error in yaml file
         yaml_path = os.path.join(
-            os.path.dirname(system_config.BASE_PATH),
-            "test",
-            "common_files",
-            "test_wrong_format_yaml")
-        resp = self.client.put("/lifeCycle/updatePkgInfo",
-                               data=json.dumps({"filepath": yaml_path,
-                                                "batch": 1
-                                                }),
-                               content_type="application/json")
-        resp_dict = json.loads(resp.data)
-
-        self.assertIn("code", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.YAML_FILE_ERROR,
-                         resp_dict.get("code"),
-                         msg="Error in status code return")
-
-        self.assertIn("msg", resp_dict, msg="Error in data format return")
-        self.assertEqual(
-            ResponseCode.CODE_MSG_MAP.get(
-                ResponseCode.YAML_FILE_ERROR),
-            resp_dict.get("msg"),
-            msg="Error in status prompt return")
-
-        self.assertIn("data", resp_dict, msg="Error in data format return")
-        self.assertIsNone(
-            resp_dict.get("data"),
-            msg="Error in data information return")
-
-        # Data error in yaml file
-        yaml_path = os.path.join(
-            os.path.dirname(system_config.BASE_PATH),
-            "test",
-            "common_files",
-            "test_wrong_main_yaml")
-        resp = self.client.put("/lifeCycle/updatePkgInfo",
-                               data=json.dumps({"filepath": yaml_path,
-                                                "batch": 1
-                                                }),
-                               content_type="application/json")
-        resp_dict = json.loads(resp.data)
-
-        self.assertIn("code", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.YAML_FILE_ERROR,
-                         resp_dict.get("code"),
-                         msg="Error in status code return")
-
-        self.assertIn("msg", resp_dict, msg="Error in data format return")
-        self.assertEqual(
-            ResponseCode.CODE_MSG_MAP.get(
-                ResponseCode.YAML_FILE_ERROR),
-            resp_dict.get("msg"),
-            msg="Error in status prompt return")
-
-        self.assertIn("data", resp_dict, msg="Error in data format return")
-        self.assertIsNone(
-            resp_dict.get("data"),
-            msg="Error in data information return")
-
-    def test_batch_error(self):
-        """
-        test_batch_error
-        Returns:
-
-        """
-
-        resp = self.client.put("/lifeCycle/updatePkgInfo",
-                               data=json.dumps({"filepath": "C:\\",
-                                                "batch": 2
-                                                }),
-                               content_type="application/json")
-        resp_dict = json.loads(resp.data)
-
-        self.assertIn("code", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.PARAM_ERROR,
-                         resp_dict.get("code"),
-                         msg="Error in status code return")
-
-        self.assertIn("msg", resp_dict, msg="Error in data format return")
-        self.assertEqual(
-            ResponseCode.CODE_MSG_MAP.get(
-                ResponseCode.PARAM_ERROR),
-            resp_dict.get("msg"),
-            msg="Error in status prompt return")
-
-        self.assertIn("data", resp_dict, msg="Error in data format return")
-        self.assertIsNone(
-            resp_dict.get("data"),
-            msg="Error in data information return")
-
-    def test_true_yaml(self):
-        """
-
-        Returns:
-
-        """
-        yaml_path = os.path.join(
-            os.path.dirname(system_config.BASE_PATH),
+            os.path.dirname(BASE_PATH),
             "test",
             "common_files",
             "test_true_yaml")
-        resp = self.client.put("/lifeCycle/updatePkgInfo",
-                               data=json.dumps({"filepath": yaml_path,
-                                                "batch": 1
-                                                }),
-                               content_type="application/json")
-        resp_dict = json.loads(resp.data)
+        self.REQUESTS_KWARGS["data"] = json.dumps({"batch": "1",
+                                                   "filepath": yaml_path})
+        self.without_dbs_folder(
+            self.REQUESTS_KWARGS,
+            met=self,
+            code=ResponseCode.UPDATA_DATA_FAILED, test_type='operate')
 
-        self.assertIn("code", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.SUCCESS,
-                         resp_dict.get("code"),
-                         msg="Error in status code return")
+    def test_missing_required_parameters(self):
+        """Parameter error"""
+        # all miss required parameters
+        param_error_list = [
+            "{}",
+            json.dumps({"batch": ""}),
+            json.dumps({"batch": "test"})
+        ]
+        for error_param in param_error_list:
+            self.REQUESTS_KWARGS["data"] = error_param
+            resp_dict = self.client_request(**self.REQUESTS_KWARGS)
+            self.response_json_error_judge(
+                resp_dict, resp_code=ResponseCode.PARAM_ERROR, method=self)
 
-        self.assertIn("msg", resp_dict, msg="Error in data format return")
-        self.assertEqual(
-            ResponseCode.CODE_MSG_MAP.get(
-                ResponseCode.SUCCESS),
-            resp_dict.get("msg"),
-            msg="Error in status prompt return")
+    def test_only_batch(self):
+        """Only batch field"""
+        self.REQUESTS_KWARGS["data"] = json.dumps({"batch": "1"})
+        resp_dict = self.client_request(**self.REQUESTS_KWARGS)
+        self.response_json_error_judge(
+            resp_dict,
+            resp_code=ResponseCode.SPECIFIED_FILE_NOT_EXIST,
+            method=self)
 
-        self.assertIn("data", resp_dict, msg="Error in data format return")
-        self.assertIsNone(
-            resp_dict.get("data"),
-            msg="Error in data information return")
+    def test_file_path_error(self):
+        """file path error"""
+        self.REQUESTS_KWARGS["data"] = json.dumps({"batch": "1",
+                                                   "filepath": "/test/"})
+        resp_dict = self.client_request(**self.REQUESTS_KWARGS)
+        self.response_json_error_judge(
+            resp_dict,
+            resp_code=ResponseCode.SPECIFIED_FILE_NOT_EXIST,
+            method=self)
 
-    def test_single_update(self):
-        """
+    def test_wrong_format_yaml(self):
+        """test wrong format yaml"""
 
-        Returns:
+        yaml_path = os.path.join(
+            os.path.dirname(BASE_PATH),
+            "test",
+            "common_files",
+            "test_wrong_format_yaml")
+        self.REQUESTS_KWARGS["data"] = json.dumps({"batch": "1",
+                                                   "filepath": yaml_path})
+        resp_dict = self.client_request(**self.REQUESTS_KWARGS)
+        self.response_json_error_judge(
+            resp_dict,
+            resp_code=ResponseCode.YAML_FILE_ERROR,
+            method=self)
 
-        """
+    def test_data_true_yaml(self):
+        """test wrong main yaml"""
+        yaml_path = os.path.join(
+            os.path.dirname(BASE_PATH),
+            "test",
+            "common_files",
+            "test_true_yaml")
+        self.REQUESTS_KWARGS["data"] = json.dumps({"batch": "1",
+                                                   "filepath": yaml_path})
+        resp_dict = self.client_request(**self.REQUESTS_KWARGS)
+        self.response_json_error_judge(
+            resp_dict, resp_code=ResponseCode.SUCCESS, method=self)
 
-        # Various parameters are missing
-        resp = self.client.put("/lifeCycle/updatePkgInfo",
-                               data=json.dumps({
-                                   "pkg_name": "",
-                                   "batch": 0
-                               }),
-                               content_type="application/json")
-        resp_dict = json.loads(resp.data)
-        resp_dict.get("data")
+    def test_single_update_miss_pkg(self):
+        """update single miss pkg name"""
+        self.REQUESTS_KWARGS["data"] = json.dumps({"batch": 0,
+                                                   "pkg_name": ""})
+        resp_dict = self.client_request(**self.REQUESTS_KWARGS)
+        self.response_json_error_judge(
+            resp_dict,
+            resp_code=ResponseCode.PACK_NAME_NOT_FOUND,
+            method=self)
 
-        self.assertIn("code", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.PACK_NAME_NOT_FOUND,
-                         resp_dict.get("code"),
-                         msg="Error in status code return")
+    def test_single_update_error_level(self):
+        """update single error level"""
+        param_error_list = [
+            json.dumps({"batch": 0, "pkg_name": "a", "maintainlevel": ""}),
+            json.dumps({"batch": 0, "pkg_name": "a", "maintainlevel": "a"}),
+            json.dumps({"batch": 0, "pkg_name": "a", "maintainlevel": "6"}),
+            json.dumps({"batch": 0, "pkg_name": "a", "maintainlevel": "-1"}),
+        ]
+        for error_param in param_error_list:
+            self.REQUESTS_KWARGS["data"] = error_param
+            resp_dict = self.client_request(**self.REQUESTS_KWARGS)
+            self.response_json_error_judge(
+                resp_dict, resp_code=ResponseCode.PARAM_ERROR, method=self)
 
-        self.assertIn("msg", resp_dict, msg="Error in data format return")
-        self.assertEqual(
-            ResponseCode.CODE_MSG_MAP.get(
-                ResponseCode.PACK_NAME_NOT_FOUND),
-            resp_dict.get("msg"),
-            msg="Error in status prompt return")
-
-        self.assertIn("data", resp_dict, msg="Error in data format return")
-        self.assertIsNone(
-            resp_dict.get("data"),
-            msg="Error in data information return")
-
-        resp = self.client.put("/lifeCycle/updatePkgInfo",
-                               data=json.dumps({
-                                   "pkg_name": "CUnit",
-                                   "batch": 0,
-                                   "maintainlevel": "a"
-                               }),
-                               content_type="application/json")
-        resp_dict = json.loads(resp.data)
-        resp_dict.get("data")
-
-        self.assertIn("code", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.PARAM_ERROR,
-                         resp_dict.get("code"),
-                         msg="Error in status code return")
-
-        self.assertIn("msg", resp_dict, msg="Error in data format return")
-        self.assertEqual(
-            ResponseCode.CODE_MSG_MAP.get(
-                ResponseCode.PARAM_ERROR),
-            resp_dict.get("msg"),
-            msg="Error in status prompt return")
-
-        self.assertIn("data", resp_dict, msg="Error in data format return")
-        self.assertIsNone(
-            resp_dict.get("data"),
-            msg="Error in data information return")
-
-        resp = self.client.put("/lifeCycle/updatePkgInfo",
-                               data=json.dumps({
-                                   "pkg_name": "CUnit",
-                                   "batch": 0,
-                                   "maintainlevel": "6"
-                               }),
-                               content_type="application/json")
-        resp_dict = json.loads(resp.data)
-        resp_dict.get("data")
-
-        self.assertIn("code", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.PARAM_ERROR,
-                         resp_dict.get("code"),
-                         msg="Error in status code return")
-
-        self.assertIn("msg", resp_dict, msg="Error in data format return")
-        self.assertEqual(
-            ResponseCode.CODE_MSG_MAP.get(
-                ResponseCode.PARAM_ERROR),
-            resp_dict.get("msg"),
-            msg="Error in status prompt return")
-
-        self.assertIn("data", resp_dict, msg="Error in data format return")
-        self.assertIsNone(
-            resp_dict.get("data"),
-            msg="Error in data information return")
-
-    def test_ture_name(self):
-        """
-        test table name
-        Returns:
-
-        """
-        resp = self.client.put("/lifeCycle/updatePkgInfo",
-                               data=json.dumps({
-                                   "pkg_name": "CUnit",
-                                   "batch": 0,
-                                   "maintainlevel": "4"
-                               }),
-                               content_type="application/json")
-        resp_dict = json.loads(resp.data)
-        resp_dict.get("data")
-
-        self.assertIn("code", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.SUCCESS,
-                         resp_dict.get("code"),
-                         msg="Error in status code return")
-
-        self.assertIn("msg", resp_dict, msg="Error in data format return")
-        self.assertEqual(
-            ResponseCode.CODE_MSG_MAP.get(
-                ResponseCode.SUCCESS),
-            resp_dict.get("msg"),
-            msg="Error in status prompt return")
-
-        self.assertIn("data", resp_dict, msg="Error in data format return")
-        self.assertIsNone(
-            resp_dict.get("data"),
-            msg="Error in data information return")
-
-    def test_pkg_name(self):
-        """
-        test_pkg_name
-        Returns:
-
-        """
-        resp = self.client.put("/lifeCycle/updatePkgInfo",
-                               data=json.dumps({
-                                   "pkg_name": "",
-                                   "batch": 0,
-                                   "maintainlevel": "4"
-                               }),
-                               content_type="application/json")
-        resp_dict = json.loads(resp.data)
-        resp_dict.get("data")
-
-        self.assertIn("code", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.PACK_NAME_NOT_FOUND,
-                         resp_dict.get("code"),
-                         msg="Error in status code return")
-
-        self.assertIn("msg", resp_dict, msg="Error in data format return")
-        self.assertEqual(
-            ResponseCode.CODE_MSG_MAP.get(
-                ResponseCode.PACK_NAME_NOT_FOUND),
-            resp_dict.get("msg"),
-            msg="Error in status prompt return")
-
-        self.assertIn("data", resp_dict, msg="Error in data format return")
-        self.assertIsNone(
-            resp_dict.get("data"),
-            msg="Error in data information return")
-
-    def test_true_updata_single(self):
-        """
-        test_true_single
-        Returns:
-
-        """
-        resp = self.client.put("/lifeCycle/updatePkgInfo",
-                               data=json.dumps({
-                                   "pkg_name": "CUnit",
-                                   "batch": 0,
-                                   "maintainlevel": "4"
-                               }),
-                               content_type="application/json")
-        resp_dict = json.loads(resp.data)
-        resp_dict.get("data")
-
-        self.assertIn("code", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.SUCCESS,
-                         resp_dict.get("code"),
-                         msg="Error in status code return")
-
-        self.assertIn("msg", resp_dict, msg="Error in data format return")
-        self.assertEqual(
-            ResponseCode.CODE_MSG_MAP.get(
-                ResponseCode.SUCCESS),
-            resp_dict.get("msg"),
-            msg="Error in status prompt return")
-
-        self.assertIn("data", resp_dict, msg="Error in data format return")
-        self.assertIsNone(
-            resp_dict.get("data"),
-            msg="Error in data information return")
+    def test_true_single_update(self):
+        """true single update"""
+        self.REQUESTS_KWARGS["data"] = json.dumps({"batch": 0,
+                                                   "pkg_name": "a",
+                                                   "maintainlevel": "1"})
+        resp_dict = self.client_request(**self.REQUESTS_KWARGS)
+        self.response_json_error_judge(
+            resp_dict, resp_code=ResponseCode.SUCCESS, method=self)

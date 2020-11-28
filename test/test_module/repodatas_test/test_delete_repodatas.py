@@ -14,15 +14,15 @@
 """
 test delete repodatas
 """
+
 import os
 import shutil
-
-from sqlalchemy.exc import SQLAlchemyError
-
 from test.base_code.operate_data_base import OperateTestBase
-import json
-from packageship import system_config
+from packageship.libs.conf import configuration
+
 from packageship.libs.exception import Error
+
+
 from packageship.application.apps.package.function.constants import ResponseCode
 
 
@@ -30,82 +30,68 @@ class TestDeleteRepodatas(OperateTestBase):
     """
     test delete repodata
     """
+    BASE_URL = "/repodatas?dbName="
+    REQUESTS_KWARGS = {
+        "url": "",
+        "method": "DELETE"
+    }
 
-    def test_wrong_dbname(self):
-        """Test simulation scenario, dbname is not transmitted"""
+    def test_init_wrong(self):
+        """
+        Initialization failed. No database was generated. Database information could not be found
+        Returns:
+
+        """
+
+        self.REQUESTS_KWARGS["url"] = self.BASE_URL + "test"
+        self.without_dbs_folder(
+            self.REQUESTS_KWARGS,
+            met=self,
+            code=ResponseCode.FILE_NOT_FOUND, test_type='operate')
+
+    def test_miss_dbname(self):
+        """The pass parameter is parameters"""
 
         # Scenario 1: the value passed by dbname is empty
-        resp = self.client.delete("/repodatas?dbName=")
-        resp_dict = json.loads(resp.data)
+        self.REQUESTS_KWARGS["url"] = self.BASE_URL
+        resp_dict = self.client_request(**self.REQUESTS_KWARGS)
+        self.response_json_error_judge(
+            resp_dict, resp_code=ResponseCode.PARAM_ERROR, method=self)
 
-        # assert
-        self.assertIn("code", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.PARAM_ERROR,
-                         resp_dict.get("code"),
-                         msg="Error in status code return")
-
-        self.assertIn("msg", resp_dict, msg="Error in data format return")
-        self.assertEqual(
-            ResponseCode.CODE_MSG_MAP.get(
-                ResponseCode.PARAM_ERROR),
-            resp_dict.get("msg"),
-            msg="Error in status prompt return")
-
-        self.assertIn("data", resp_dict, msg="Error in data format return")
-        self.assertIsNone(
-            resp_dict.get("data"),
-            msg="Error in data information return")
-
-        resp = self.client.delete("/repodatas?dbName=rr")
-        resp_dict = json.loads(resp.data)
-
-        self.assertIn("code", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.DB_NAME_ERROR,
-                         resp_dict.get("code"),
-                         msg="Error in status code return")
-
-        self.assertIn("msg", resp_dict, msg="Error in data format return")
-        self.assertEqual(
-            ResponseCode.CODE_MSG_MAP.get(
-                ResponseCode.DB_NAME_ERROR),
-            resp_dict.get("msg"),
-            msg="Error in status prompt return")
-
-        self.assertIn("data", resp_dict, msg="Error in data format return")
-        self.assertIsNone(
-            resp_dict.get("data"),
-            msg="Error in data information return")
-
-    def test_true_dbname(self):
+    def test_wrong_db_name(self):
         """
+        Database name error
         Returns:
+
+        """
+        self.REQUESTS_KWARGS["url"] = self.BASE_URL + "test"
+        resp_dict = self.client_request(**self.REQUESTS_KWARGS)
+
+        self.response_json_error_judge(
+            resp_dict, resp_code=ResponseCode.DB_NAME_ERROR, method=self)
+
+    def test_ture_dbname(self):
+        """
+        database name
+        Returns:
+
         """
         try:
-            shutil.copytree(
-                system_config.DATABASE_FOLDER_PATH,
-                system_config.DATABASE_FOLDER_PATH + '.bak')
-            resp = self.client.delete("/repodatas?dbName=fedora30")
-            resp_dict = json.loads(resp.data)
-            self.assertIn("code", resp_dict, msg="Error in data format return")
-            self.assertEqual(ResponseCode.SUCCESS,
-                             resp_dict.get("code"),
-                             msg="Error in status code return")
-
-            self.assertIn("msg", resp_dict, msg="Error in data format return")
-            self.assertEqual(
-                ResponseCode.CODE_MSG_MAP.get(
-                    ResponseCode.SUCCESS),
-                resp_dict.get("msg"),
-                msg="Error in status prompt return")
-
-            self.assertIn("data", resp_dict, msg="Error in data format return")
-            self.assertIsNone(
-                resp_dict.get("data"),
-                msg="Error in data information return")
-        except (SQLAlchemyError, FileExistsError, Error):
-            return None
+            if os.path.exists(configuration.DATABASE_FOLDER_PATH):
+                shutil.copytree(
+                    configuration.DATABASE_FOLDER_PATH,
+                    configuration.DATABASE_FOLDER_PATH + '.bak')
+            self.REQUESTS_KWARGS["url"] = self.BASE_URL + "mainline"
+            resp_dict = self.client_request(**self.REQUESTS_KWARGS)
+            self.response_json_error_judge(
+                resp_dict, resp_code=ResponseCode.SUCCESS, method=self)
+        except Error:
+            return
         finally:
-            shutil.rmtree(system_config.DATABASE_FOLDER_PATH)
-            os.rename(
-                system_config.DATABASE_FOLDER_PATH + '.bak',
-                system_config.DATABASE_FOLDER_PATH)
+            if os.path.exists(
+                    configuration.DATABASE_FOLDER_PATH) and \
+                    os.path.exists(configuration.DATABASE_FOLDER_PATH + '.bak'):
+                shutil.rmtree(configuration.DATABASE_FOLDER_PATH)
+                os.rename(
+                    configuration.DATABASE_FOLDER_PATH + '.bak',
+                    configuration.DATABASE_FOLDER_PATH)
