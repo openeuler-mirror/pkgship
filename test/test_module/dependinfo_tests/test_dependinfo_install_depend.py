@@ -17,11 +17,11 @@ TestInstallDepend
 import unittest
 import json
 
-from test.base_code.read_data_base import ReadTestBase
+from test.base_code.dependinfo_base_test import DependInfo
 from packageship.application.apps.package.function.constants import ResponseCode
 
 
-class TestDependInfoInstallDepend(ReadTestBase):
+class TestDependInfoInstallDepend(DependInfo):
     """
     TestInstallDepend
     """
