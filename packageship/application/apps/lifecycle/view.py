@@ -611,7 +611,7 @@ class UpdatePackages(Resource):
             with DBHelper(db_name="lifecycle") as database_name:
                 if 'packages_maintainer' not in database_name.engine.table_names():
                     return jsonify(ResponseCode.response_json(
-                        ResponseCode.TABLE_NAME_NOT_EXIST))
+                        ResponseCode.UPDATA_DATA_FAILED))
                 database_name.session.begin(subtransactions=True)
                 for yaml_data in yaml_data_list:
                     name = yaml_data.get("name")

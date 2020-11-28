@@ -14,11 +14,10 @@
 """
 test get repodatas
 """
-from test.base_code.common_test_code import get_correct_json_by_filename
-from test.base_code.common_test_code import compare_two_values
+
 from test.base_code.read_data_base import ReadTestBase
 import unittest
-import json
+
 
 from packageship.application.apps.package.function.constants import ResponseCode
 
@@ -27,50 +26,36 @@ class TestGetRepodatas(ReadTestBase):
     """
     test get repodatas
     """
+    BASE_URL = "/repodatas"
+    REQUESTS_KWARGS = {
+        "url": "",
+        "method": "GET"
+    }
 
-    def test_dbname(self):
-        """no dbName"""
-        correct_list = get_correct_json_by_filename("get_repodatas")
-        self.assertNotEqual([], correct_list, msg="Error reading JSON file")
-        resp = self.client.get("/repodatas")
-        resp_dict = json.loads(resp.data)
+    def test_not_found_database_info_response(self):
+        """
+        Initialization failed. No database was generated. Database information could not be found
+        Returns:
 
-        self.assertIn("code", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.SUCCESS,
-                         resp_dict.get("code"),
-                         msg="Error in status code return")
+        """
+        self.REQUESTS_KWARGS["url"] = self.BASE_URL
+        self.without_dbs_folder(
+            self.REQUESTS_KWARGS,
+            met=self,
+            code=ResponseCode.NOT_FOUND_DATABASE_INFO)
 
-        self.assertIn("msg", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.CODE_MSG_MAP.get(ResponseCode.SUCCESS),
-                         resp_dict.get("msg"),
-                         msg="Error in status prompt return")
+    def test_redundant_parameters(self):
+        """Tests for redundant parameters"""
+        self.REQUESTS_KWARGS["url"] = self.BASE_URL + "?ddd"
+        resp_dict = self.client_request(**self.REQUESTS_KWARGS)
 
-        self.assertIn("data", resp_dict, msg="Error in data format return")
-        self.assertTrue(
-            compare_two_values(
-                resp_dict.get("data"),
-                correct_list),
-            msg="Error in data information return")
+        self.compare_response_get_out("get_repodatas", resp_dict)
 
-        resp = self.client.get("/repodatas?ddd")
-        resp_dict = json.loads(resp.data)
-
-        self.assertIn("code", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.SUCCESS,
-                         resp_dict.get("code"),
-                         msg="Error in status code return")
-
-        self.assertIn("msg", resp_dict, msg="Error in data format return")
-        self.assertEqual(ResponseCode.CODE_MSG_MAP.get(ResponseCode.SUCCESS),
-                         resp_dict.get("msg"),
-                         msg="Error in status prompt return")
-
-        self.assertIn("data", resp_dict, msg="Error in data format return")
-        self.assertTrue(
-            compare_two_values(
-                resp_dict.get("data"),
-                correct_list),
-            msg="Error in data information return")
+    def test_true_parameters(self):
+        """Tests for true parameters"""
+        self.REQUESTS_KWARGS["url"] = self.BASE_URL
+        resp_dict = self.client_request(**self.REQUESTS_KWARGS)
+        self.compare_response_get_out("get_repodatas", resp_dict)
 
 
 if __name__ == '__main__':

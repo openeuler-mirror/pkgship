@@ -8,11 +8,11 @@ Source0:        https://gitee.com/openeuler/openEuler-Advisor/pkgship-%{version}
 
 BuildArch:      noarch
 
-BuildRequires: python3-flask-restful python3-flask python3 python3-pyyaml python3-sqlalchemy
+BuildRequires: python3-flask-restful python3-flask python3 python3-pyyaml python3-sqlalchemy python3-redis redis
 BuildRequires: python3-prettytable python3-requests python3-flask-session python3-flask-script python3-marshmallow
 BuildRequires: python3-Flask-APScheduler python3-pandas python3-retrying python3-xlrd python3-XlsxWriter
 BuildRequires: python3-concurrent-log-handler
-Requires: python3-pip python3-flask-restful python3-flask python3 python3-pyyaml
+Requires: python3-pip python3-flask-restful python3-flask python3 python3-pyyaml python3-redis redis
 Requires: python3-sqlalchemy python3-prettytable python3-requests python3-concurrent-log-handler
 Requires: python3-flask-session python3-flask-script python3-marshmallow python3-uWSGI
 Requires: python3-pandas python3-dateutil python3-XlsxWriter python3-xlrd python3-Flask-APScheduler python3-retrying

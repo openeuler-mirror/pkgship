@@ -10,9 +10,11 @@
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
+import os
 import unittest
 import datetime
 from test.base_code.my_test_runner import MyTestRunner
+from test.test_module.packages_tests.test_licence import TestLicence
 
 RUNNER = MyTestRunner()
 
@@ -40,7 +42,7 @@ def read_data_tests():
                TestGetRepodatas, TestBuildDepend, TestPackages,
                TestGetSinglePack, TestGetMaintainers, TestDownloadExcelFile,
                TestGetIssue, TestDependInfoBeDepend, TestDependInfoSelfDepend,
-               TestDependInfoBuildDepend, TestDependInfoInstallDepend]
+               TestDependInfoBuildDepend, TestDependInfoInstallDepend, TestLicence]
     for cls in classes:
         suite.addTests(unittest.TestLoader().loadTestsFromTestCase(cls))
     return RUNNER.run(suite)
@@ -58,3 +60,4 @@ print('\nA Read Test total of %s test cases were run： \nsuccessful:%s\tfailed:
 ))
 
 print('Read Test Total Time: %s' % (stop_time - start_time))
+os.system("redis-cli shutdown")
