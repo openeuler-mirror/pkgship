@@ -181,6 +181,7 @@ class InstallDepend(Resource):
         Args:
             binaryName
             dbPreority: the array for database preority
+            level: the layer of install depend
         Returns:
             resultDict{
                 binary_name: //binary package name
@@ -207,7 +208,11 @@ class InstallDepend(Resource):
             return jsonify(
                 ResponseCode.response_json(ResponseCode.PARAM_ERROR)
             )
-        pkg_name = data.get("binaryName")
+        pkg_name_list = data.get("binaryName")
+
+        # When user does not input level, the default value of level is -1,
+        # then query all install depend
+        level = int(data.get("level", -1))
 
         db_pri = db_priority()
         if not db_pri:
@@ -220,10 +225,6 @@ class InstallDepend(Resource):
         db_list = data.get("db_list") if data.get("db_list") \
             else db_pri
 
-        if not all([pkg_name, db_list]):
-            return jsonify(
-                ResponseCode.response_json(ResponseCode.PARAM_ERROR)
-            )
 
         if have_err_db_name(db_list, db_pri):
             return jsonify(
@@ -231,16 +232,17 @@ class InstallDepend(Resource):
             )
 
         response_code, install_dict, not_found_components = \
-            installdepend(db_list).query_install_depend([pkg_name])
+            installdepend(db_list).query_install_depend(pkg_name_list, level=level)
+
+        for pkg_name in pkg_name_list:
+            if install_dict.get(pkg_name)[2] == 'NOT FOUND':
+                del install_dict[pkg_name]
 
         if not install_dict:
             return jsonify(
-                ResponseCode.response_json(response_code)
-            )
-        elif len(install_dict) == 1 and install_dict.get(pkg_name)[2] == 'NOT FOUND':
-            return jsonify(
-                ResponseCode.response_json(ResponseCode.PACK_NAME_NOT_FOUND)
-            )
+                        ResponseCode.response_json(ResponseCode.PACK_NAME_NOT_FOUND)
+                    )
+
         return jsonify(
             ResponseCode.response_json(ResponseCode.SUCCESS, data={
                 "install_dict": install_dict,
@@ -690,4 +692,3 @@ class GetFilelistInfo(Resource):
         return jsonify(
             ResponseCode.response_json(resp_code, data=result if result else None)
         )
-
