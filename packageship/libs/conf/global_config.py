@@ -21,7 +21,7 @@ INIT_CONF_PATH = os.path.join('/', 'etc', 'pkgship', 'conf.yaml')
 
 # If the path of the imported database is not specified in the configuration file, the
 # configuration in the system is used by default
-DATABASE_FOLDER_PATH = os.path.join('/', 'var', 'run', 'pkgship_dbs')
+DATABASE_FOLDER_PATH = os.path.join('/', 'var', 'lib', 'pkgship_dbs')
 
 # The database engine supported in the system is sqlite database by default
 DATABASE_ENGINE_TYPE = 'sqlite'
