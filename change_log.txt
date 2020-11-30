@@ -1,3 +1,9 @@
+* Sat Nov 30 2020 Pengju Jiang <jiangpengju2@huawei.com>
+- Modify the address of the database after successful initialization
+
+* Sat Nov 28 2020 Pengju Jiang <jiangpengju2@huawei.com>
+- Test case refactoring-upload in batches 5
+
 * Sat Nov 28 2020 Shenmei Tu <tushenmei@huawei.com>
 - Test case refactoring-upload in batches 4
 
