@@ -1,7 +1,7 @@
 [
   {
     "input": {
-      "binaryName": "A1"
+      "binaryName": ["A1"]
     },
     "output": {
       "code": "2001",
@@ -67,7 +67,7 @@
   },
   {
     "input": {
-      "binaryName": "D2"
+      "binaryName": ["D2"]
     },
     "output": {
       "code": "2001",
@@ -144,7 +144,7 @@
   },
   {
     "input": {
-      "binaryName": "C2"
+      "binaryName": ["C2"]
     },
     "output": {
       "code": "2001",
@@ -166,5 +166,18 @@
       },
       "msg": "Successful Operation!"
     }
+  },
+  {
+    "input": {"binaryName": ["A1"], "level":"1"},
+    "output": {"code": "2001",
+               "data": {"install_dict": {"A1": ["A", "0.0.23b", "mainline", [["root", null]]],
+                                         "A2": ["A",
+                                                "0.0.23b",
+                                                "mainline",
+                                                [["A1", "install"]]]},
+                        "not_found_components": []},
+               "msg": "Successful Operation!"}
+
+
   }
 ]

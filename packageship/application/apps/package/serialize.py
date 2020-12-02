@@ -137,15 +137,27 @@ class UpdatePackagesSchema(Schema):
         max=200), required=False, allow_none=True)
 
 
+def validate_level(level):
+    """
+    Description: the default value of level is -1, then query all the install depend.
+    When user input level > 0, then query the corresponding level of install depend
+    Args：
+    Returns:
+    Raises: ValidationError
+    """
+    if int(level) < -1 or int(level) == 0:
+        raise ValidationError("level is illegal data ")
+
+
 class InstallDependSchema(Schema):
     """
     Description: InstallDependSchema
     """
-    binaryName = fields.Str(
-        required=True,
-        validate=validate.Length(
-            min=1, max=500))
+    binaryName = fields.List(
+        fields.String(),
+        required=True, validate=validate.Length(min=1, max=500))
     db_list = fields.List(fields.String(), required=False, allow_none=True)
+    level = fields.Integer(validate=validate_level, required=False, allow_none=True)
 
 
 class BuildDependSchema(Schema):

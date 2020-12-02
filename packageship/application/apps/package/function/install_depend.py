@@ -21,7 +21,6 @@ from packageship.application.apps.package.function.constants import ResponseCode
 
 LOGGER = Log(__name__)
 
-
 class InstallDepend():
     """
     Description: query install depend of package
@@ -48,10 +47,24 @@ class InstallDepend():
         self.not_found_components = set()
         self.__already_pk_value = []
 
-    def query_install_depend(self, binary_list, history_pk_val=None, history_dicts=None):
+    def __generate_install_layer(self, level):
+        """
+        Description: When the user does not query the full amount of dependencies,
+        it needs to query one more layer, because the last layer contains None
+        Args:
+            level: level of install depend
+        Returns:
+            level
+        """
+        if level != -1:
+            level += 1
+        return level
+
+    def query_install_depend(self, binary_list, level=-1, history_pk_val=None, history_dicts=None):
         """
         Description: init result dict and determint the loop end point
         Args:
+            level: level of install depend
             binary_list: A list of binary rpm package name
             history_dicts: record the searching install depend history,
                               defualt is None
@@ -80,9 +93,36 @@ class InstallDepend():
             else:
                 LOGGER.logger.warning("There is a  NONE in input value: %s", str(binary_list))
         self.__already_pk_value = history_pk_val if history_pk_val else []
+
+        layer = self.__generate_install_layer(level)
+
         while self.__search_list:
+            if layer == 0:
+                break
             self.__query_single_install_dep(history_dicts)
+            layer -= 1
+
+        if layer == 0:
+            self.binary_dict.dictionary = self.del_dict_none_val(self.binary_dict.dictionary)
         return ResponseCode.SUCCESS, self.binary_dict.dictionary, self.not_found_components
+
+    def del_dict_none_val(self, package_install_dict):
+        """
+         Description: delete key-value pairs with empty values
+        Args:
+             install_dict: install depend result
+        Returns:
+            install_dict: the install depend result after deleted key-value pairs with empty values
+        Raises:
+        """
+        if package_install_dict:
+            for pkg_name in list(package_install_dict.keys()):
+                # If the source package, version is null,
+                # it means that the package does not exist, then delete it
+                if not any([package_install_dict.get(pkg_name)[0],
+                            package_install_dict.get(pkg_name)[1]]):
+                    del package_install_dict[pkg_name]
+        return package_install_dict
 
     def __query_single_install_dep(self, history_dicts):
         """
@@ -93,8 +133,8 @@ class InstallDepend():
             response_code: response code
         Raises:
         """
-        res_list, not_found_components, pk_val = self.__search_db.get_install_depend(self.__search_list,
-                                                                                     pk_value=self.__already_pk_value)
+        res_list, not_found_components, pk_val = self.__search_db.get_install_depend(
+            self.__search_list,pk_value=self.__already_pk_value)
         result_list = set(res_list)
         self.not_found_components.update(not_found_components)
         self.__already_pk_value = pk_val
