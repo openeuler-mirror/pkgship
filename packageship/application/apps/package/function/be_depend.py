@@ -38,7 +38,7 @@ class BeDepend():
         result_dict:return json
     """
 
-    def __init__(self, source_name, db_name, with_sub_pack):
+    def __init__(self, source_name, db_name, with_sub_pack, level=-1):
         """
         init class
         """
@@ -50,6 +50,7 @@ class BeDepend():
         self.result_dict = dict()
         self.comm_install_builds = defaultdict(set)
         self.provides_name = set()
+        self.level = level + 1
 
     def main(self):
         """
@@ -72,19 +73,20 @@ class BeDepend():
             Raises:
         """
         with DBHelper(db_name=self.db_name) as data_base:
-            src_obj = data_base.session.query(
-                SrcPack).filter_by(name=self.source_name).first()
-            if src_obj:
-                # spell dictionary
-                self.result_dict[self.source_name + "_src"] = [
-                    "source",
-                    src_obj.version,
-                    self.db_name,
-                    [["root", None]]
-                ]
-            self.source_name_set.add(self.source_name)
+            for source_name in self.source_name:
+                src_obj = data_base.session.query(
+                    SrcPack).filter_by(name=source_name).first()
+                if src_obj:
+                    # spell dictionary
+                    self.result_dict[source_name + "_src"] = [
+                        "source",
+                        src_obj.version,
+                        self.db_name,
+                        [["root", None]]
+                    ]
+                self.source_name_set.add(source_name)
             self._provides_bedepend(
-                [self.source_name], data_base, package_type='src')
+                self.source_name, data_base, package_type='src')
 
         for _, value in self.result_dict.items():
             value[-1] = list(value[-1])
@@ -305,14 +307,16 @@ class BeDepend():
                 src_info.bebuild_src_name,
                 'build'
             )
-        # Recursively query all source packages that need to be looked up
-        if source_name_list:
-            self._provides_bedepend(
-                source_name_list, data_base, package_type="src")
-        # Recursively query all binary packages that need to be looked up
-        if bin_name_list:
-            self._provides_bedepend(
-                bin_name_list, data_base, package_type="bin")
+        self.level -= 1
+        if self.level != 0:
+            # Recursively query all source packages that need to be looked up
+            if source_name_list:
+                self._provides_bedepend(
+                    source_name_list, data_base, package_type="src")
+            # Recursively query all binary packages that need to be looked up
+            if bin_name_list:
+                self._provides_bedepend(
+                    bin_name_list, data_base, package_type="bin")
 
     def make_dicts(self, key, source_name, version, parent_node, be_type):
         """

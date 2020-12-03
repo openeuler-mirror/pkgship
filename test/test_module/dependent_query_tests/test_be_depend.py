@@ -36,7 +36,7 @@ class TestBeDepend(ReadTestBase):
         Initialization failed. No database was generated. Database information could not be found
         Returns:
         """
-        self.REQUESTS_KWARGS["data"] = json.dumps({"packagename": "CUnit", "dbname": "mainine"})
+        self.REQUESTS_KWARGS["data"] = json.dumps({"packagename": ["CUnit"], "dbname": "mainine"})
 
         self.without_dbs_folder(self.REQUESTS_KWARGS, met=self,
                                 code=ResponseCode.NOT_FOUND_DATABASE_INFO)
@@ -52,22 +52,33 @@ class TestBeDepend(ReadTestBase):
 
         param_error_list = [
             "{}",
-            json.dumps({"packagename": "",
-                        "dbname": "mainline"}),
-            json.dumps({"packagename": "dsd" * 220,
-                        "dbname": "mainline"}),
+            json.dumps({"packagename": [""],
+                        "dbname": "mainline",
+                        "level": "1"}),
+            json.dumps({"packagename": ["dsd" * 220],
+                        "dbname": ["mainline"],
+                        "level": "1"}),
             json.dumps({"packagename": 0,
-                        "dbname": "mainline"}),
+                        "dbname": "mainline",
+                        "level": "1"}),
             json.dumps({"packagename": "CUnit",
-                        "dbname": 12}),
-            json.dumps({"packagename": "CUnit",
-                        "dbname": ""}),
-            json.dumps({"packagename": "CUnit",
-                        "dbname": "ccc" * 50}),
-            json.dumps({"packagename": "CUnit",
-                        "dbname": "mainline", "withsubpack": "3"}),
-            json.dumps({"packagename": "CUnit",
-                        "dbname": "mainline", "withsubpack": ""})
+                        "dbname": 12,
+                        "level": "1"}),
+            json.dumps({"packagename": ["CUnit"],
+                        "dbname": "",
+                        "level": "1"}),
+            json.dumps({"packagename": ["CUnit"],
+                        "dbname": "ccc" * 50,
+                        "level": "1"}),
+            json.dumps({"packagename": ["CUnit"],
+                        "dbname": "mainline", "withsubpack": "3",
+                        "level": "1"}),
+            json.dumps({"packagename": ["CUnit"],
+                        "dbname": "mainline", "withsubpack": "",
+                        "level": "-1"}),
+            json.dumps({"packagename": ["CUnit"],
+                        "dbname": "mainline", "withsubpack": "",
+                        "level": "1.2"})
         ]
         for error_param in param_error_list:
             self.REQUESTS_KWARGS["data"] = error_param
@@ -82,8 +93,8 @@ class TestBeDepend(ReadTestBase):
         Returns:
 
         """
-        self.REQUESTS_KWARGS["data"] = json.dumps({
-            "packagename": "CasdfUsdnit", "dbname": "mainline"})
+        self.REQUESTS_KWARGS["data"] = json.dumps(
+            {"packagename": ["CasdfUsdnit"], "dbname": "mainline"})
         resp_dict = self.client_request(**self.REQUESTS_KWARGS)
 
         self.response_json_error_judge(resp_dict,
@@ -95,7 +106,7 @@ class TestBeDepend(ReadTestBase):
         Returns:
 
         """
-        self.REQUESTS_KWARGS["data"] = json.dumps({"packagename": "A", "dbname": "asdfavwfdsa"})
+        self.REQUESTS_KWARGS["data"] = json.dumps({"packagename": ["A"], "dbname": "asdfavwfdsa"})
 
         resp_dict = self.client_request(**self.REQUESTS_KWARGS)
 

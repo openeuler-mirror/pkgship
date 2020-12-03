@@ -80,7 +80,7 @@ class TestDependInfoBeDepend(DependInfo):
         test package name not found
         """
         self.REQUESTS_KWARGS["data"] = json.dumps(
-            {"packagename": "CasdfUsdnit", "dbname": "mainline"})
+            {"packagename": "sdfUsdnit", "dbname": "mainline"})
         resp_dict = self.client_request(**self.REQUESTS_KWARGS)
 
         self.response_json_error_judge(resp_dict,
