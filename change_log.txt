@@ -1,7 +1,10 @@
+* Mon Nov 30 2020 Pengju Jiang <jiangpengju2@huawei.com>
+- Four kinds of dependent zip download batch upload - dependent data parsing
+
 * Mon Nov 30 2020 Shenmei Tu <tushenmei@huawei.com>
 - Add level and batch query for install depend interface
 
-* Sat Nov 30 2020 Pengju Jiang <jiangpengju2@huawei.com>
+* Mon Nov 30 2020 Pengju Jiang <jiangpengju2@huawei.com>
 - Modify the address of the database after successful initialization
 
 * Sat Nov 28 2020 Pengju Jiang <jiangpengju2@huawei.com>
