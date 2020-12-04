@@ -109,7 +109,7 @@ class InitDataBase():
 
         if not os.path.exists(self.config_file_path):
             raise FileNotFoundError(
-                "system initialization configuration file"
+                "system initialization configuration file "
                 "does not exist: %s" % self.config_file_path)
         # load yaml configuration file
         with open(self.config_file_path, 'r', encoding='utf-8') as file_context:
@@ -119,7 +119,7 @@ class InitDataBase():
             except yaml.YAMLError as yaml_error:
 
                 raise ConfigurationException(
-                    "The format of the yaml configuration"
+                    "The format of the yaml configuration "
                     "file is wrong please check and try again:{0}".format(yaml_error))
 
             if init_database_config is None:
@@ -127,9 +127,9 @@ class InitDataBase():
                     'The content of the database initialization configuration file cannot be empty')
             if not isinstance(init_database_config, list):
                 raise ConfigurationException(
-                    "The format of the initial database configuration file"
+                    "The format of the initial database configuration file "
                     "is incorrect.When multiple databases need to be initialized,"
-                    "it needs to be configured in the form of multiple"
+                    "it needs to be configured in the form of multiple "
                     "nodes:{}".format(self.config_file_path))
             for config_item in init_database_config:
                 if not isinstance(config_item, dict):
@@ -149,7 +149,7 @@ class InitDataBase():
         """
         if getattr(self, 'config_file_datas', None) is None or \
                 self.config_file_datas is None:
-            raise ContentNoneException("The content of the database initialization"
+            raise ContentNoneException("The content of the database initialization "
                                        "configuration file is empty")
 
         if self.__exists_repeat_database():
@@ -171,12 +171,12 @@ class InitDataBase():
                 continue
             priority = database_config.get('priority')
             if not isinstance(priority, int) or priority < 0 or priority > 100:
-                LOGGER.logger.error("The priority value type in the database initialization"
+                LOGGER.logger.error("The priority value type in the database initialization "
                                     "configuration file is incorrect")
                 continue
             lifecycle_status_val = database_config.get('lifecycle')
             if lifecycle_status_val not in ('enable', 'disable'):
-                LOGGER.logger.error("The value of the life cycle in the initialization"
+                LOGGER.logger.error("The value of the life cycle in the initialization "
                                     "configuration file can only be enable or disable")
                 continue
             # Initialization data
@@ -215,7 +215,7 @@ class InitDataBase():
         def src_sqlite_file(src_db_file):
             if not src_db_file:
                 raise ContentNoneException(
-                    "The path to the sqlite file in the database initialization"
+                    "The path to the sqlite file in the database initialization "
                     "configuration is incorrect ")
             if not re.match(self._http_regex, src_db_file):
                 src_db_file = src_db_file.split('file://')[-1]
@@ -230,7 +230,7 @@ class InitDataBase():
         def bin_sqlite_file(bin_db_file):
             if not bin_db_file:
                 raise ContentNoneException(
-                    "The path to the sqlite file in the database initialization"
+                    "The path to the sqlite file in the database initialization "
                     "configuration is incorrect ")
             if not re.match(self._http_regex, bin_db_file):
                 bin_db_file = bin_db_file.split('file://')[-1]
@@ -253,7 +253,7 @@ class InitDataBase():
 
         if not all([src_db_file, bin_db_file, file_list]):
             raise ContentNoneException(
-                "The path to the sqlite file in the database initialization"
+                "The path to the sqlite file in the database initialization "
                 "configuration is incorrect ")
         return (src_db_file, bin_db_file, file_list)
 
@@ -288,7 +288,7 @@ class InitDataBase():
                         os.path.exists(bin_db_file),
                         os.path.exists(file_list)]):
                 raise FileNotFoundError(
-                    "sqlite file {src} or {bin} does not exist, please"
+                    "sqlite file {src} or {bin} does not exist, please "
                     "check and try again".format(src=src_db_file, bin=bin_db_file))
             # 3. Obtain temporary source package files and binary package files
             if self.__save_data(database_config,
@@ -1016,8 +1016,8 @@ class DownloadFile():
         except RequestException as error:
             raise RequestException(error)
         if response.status_code != 200:
-            _msg = "There is an exception with the remote service [%s]，" \
-                   "Please try again later.The HTTP error code is：%s" % (url, str(
+            _msg = "There is an exception with the remote service [%s]," \
+                   "Please try again later.The HTTP error code is:%s" % (url, str(
                        response.status_code))
             raise HTTPError(_msg)
         return response
