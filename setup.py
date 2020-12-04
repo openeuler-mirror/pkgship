@@ -57,6 +57,7 @@ setup(
         'packageship.libs.exception.ext',
         'packageship.libs.log.loghelper',
         'packageship.libs.conf.global_config',
+        'packageship.libs.tableutils.terminal_table',
         'packageship.manage',
         'packageship.pkgship',
         'packageship.selfpkg',

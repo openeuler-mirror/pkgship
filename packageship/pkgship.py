@@ -38,6 +38,7 @@ else:
     from packageship.application.apps.package.function.constants import ResponseCode
     from packageship.application.apps.package.function.constants import ListNode
     from packageship.application.apps.lifecycle.function.download_yaml import update_pkg_info
+    from packageship.libs.tableutils.terminal_table import TerminalTable
 
 DB_NAME = 0
 DEPRECATION_LEN = 12
@@ -308,7 +309,7 @@ class PkgshipCommand(BaseCommand):
         Raises:
 
         """
-        table = PrettyTable(title)
+        table = TerminalTable(title)
         # table.set_style(prettytable.PLAIN_COLUMNS)
         table.align = 'l'
         table.horizontal_char = '='
@@ -1459,7 +1460,7 @@ class IssueCommand(PkgshipCommand):
                         issue_item.get('issue_id'),
                         issue_item.get('pkg_name') if issue_item.get(
                             'pkg_name') else '',
-                        issue_item.get('issue_title')[:50] + '...' if issue_item.get(
+                        issue_item.get('issue_title')[:20] + '...' if issue_item.get(
                             'issue_title') else '',
                         issue_item.get('issue_status') if issue_item.get(
                             'issue_status') else '',
