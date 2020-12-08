@@ -163,7 +163,7 @@ class ImportData(unittest.TestCase):
             new_conf_path = config_obj.get('SYSTEM', "init_conf_path")
             with self.assertRaises(FileNotFoundError) as meg:
                 InitDataBase(config_file_path=new_conf_path).init_data()
-            error_msg = "system initialization configuration filedoes not exist: {}".format(
+            error_msg = "system initialization configuration file does not exist: {}".format(
                 new_conf_path)
             self.assertEqual(error_msg, str(meg.exception),
                              msg='error content not pattern')
