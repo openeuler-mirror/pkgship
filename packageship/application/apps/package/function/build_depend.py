@@ -16,7 +16,7 @@ class: BuildDepend
 """
 from packageship.application.apps.package.function.searchdb import SearchDB
 from packageship.application.apps.package.function.install_depend import InstallDepend
-from packageship.application.apps.package.function.constants import ResponseCode, ListNode
+from packageship.libs.constants import ResponseCode, ListNode
 
 
 class BuildDepend():

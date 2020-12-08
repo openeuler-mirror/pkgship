@@ -19,7 +19,7 @@ from test.base_code.operate_data_base import OperateTestBase
 import unittest
 import json
 
-from packageship.application.apps.package.function.constants import ResponseCode
+from packageship.libs.constants import ResponseCode
 
 
 class TestIssueCatch(OperateTestBase):

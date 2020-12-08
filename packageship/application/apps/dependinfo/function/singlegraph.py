@@ -15,7 +15,7 @@ Data analysis of dependency graph
 """
 import random
 from packageship.application.apps.package.function.searchdb import db_priority
-from packageship.application.apps.package.function.constants import ResponseCode
+from packageship.libs.constants import ResponseCode
 from packageship.application.apps.package.serialize import BeDependSchema
 from packageship.application.apps.package.serialize import BuildDependSchema
 from packageship.application.apps.package.serialize import InstallDependSchema

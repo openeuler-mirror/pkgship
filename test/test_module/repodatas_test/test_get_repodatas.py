@@ -19,7 +19,7 @@ from test.base_code.read_data_base import ReadTestBase
 import unittest
 
 
-from packageship.application.apps.package.function.constants import ResponseCode
+from packageship.libs.constants import ResponseCode
 
 
 class TestGetRepodatas(ReadTestBase):

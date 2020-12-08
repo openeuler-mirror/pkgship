@@ -31,7 +31,7 @@ from packageship.libs.exception import DataMergeException
 from packageship.libs.exception import ConfigurationException
 from packageship.libs.log import Log
 from packageship.libs.conf import configuration
-from .function.constants import ResponseCode
+from packageship.libs.constants import ResponseCode
 from .function.packages import get_all_package_info
 from .function.packages import sing_pack
 from .serialize import AllPackagesSchema
