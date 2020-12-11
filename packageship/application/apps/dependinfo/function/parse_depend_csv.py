@@ -225,3 +225,93 @@ class SelfDep(BaseDep):
             Quickly learn the contents of the object
         """
         return ' process self_build {} data '.format(self.pack_type)
+
+
+class InstallDep(BaseDep):
+    """
+    Install dependencies
+    """
+
+    def __init__(self, json_data, *args):
+        """
+        Initializing attribute
+        Args:
+            json_data: json data
+            *args: Multiple parameters
+        """
+        super(InstallDep, self).__init__()
+        self.json_data = json_data
+        self.args = args
+
+    @catch_error
+    def __init_data(self):
+        """
+        Get the data for install_DICt
+        Returns:
+            None,Object update property
+        """
+        self.data = self.json_data["install_dict"]
+
+    def __process_parent_nodes(self, bin_name, parent_nodes):
+        """
+        Parse data format
+        Args:
+            bin_name: Binary package name
+            parent_nodes: The parent node
+
+        Returns:
+            None,Object update property
+        """
+        for parent_name, depend_type in parent_nodes:
+
+            if parent_name == 'root':
+                continue
+
+            if depend_type == 'install':
+                self._process_install_dict(bin_name, parent_name)
+            else:
+                continue
+
+    def __process_data(self):
+        """
+        Parse data format
+
+        Returns:
+            Object update property
+        """
+        self.__init_data()
+        for bin_name, list_values in self.data.items():
+            parent_nodes = list_values[ListNode.TAIL]
+            if list_values[ListNode.SOURCE_NAME] == "source":
+                continue
+            self._init_install_data(bin_name, list_values)
+            self.__process_parent_nodes(bin_name, parent_nodes)
+
+    def run(self):
+        """
+        The entry to the call function
+        Returns:
+            self.data: data
+            self.install_dict: install dict
+            dict(): An empty dictionary
+            list(): An empty list
+        """
+        self.__process_data()
+        # return install data and empty data
+        return self.data, self.install_dict, dict(), list()
+
+    def __repr__(self):
+        """
+        The type, value, and so on of the object describe the information
+        Returns:
+            The type, value, and so on of the object describe the information
+        """
+        return ' process {} {} data '.format(self.__class__, self.args[0])
+
+    def __str__(self):
+        """
+        Quickly learn the contents of the object
+        Returns:
+            Quickly learn the contents of the object
+        """
+        return ' process {} {} data '.format(self.__class__, self.args[0])

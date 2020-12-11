@@ -1,3 +1,6 @@
+* Tue Dec 8 2020 Pengju Jiang <jiangpengju2@huawei.com>
+- Four kinds of dependent zip download batch upload - dependent data parsing
+
 * Mon Nov 30 2020 Pengju Jiang <jiangpengju2@huawei.com>
 - Four kinds of dependent zip download batch upload - dependent data parsing
 
