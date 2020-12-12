@@ -189,11 +189,8 @@ class BeDependSchema(Schema):
     """
     Description: BeDependSchema serialize
     """
-    packagename = fields.Str(
-        required=True,
-        validate=validate.Length(
-            min=1,
-            max=200))
+    packagename = fields.List(fields.String(validate=validate.Length(
+        min=1, max=200)), required=True, allow_none=False)
     withsubpack = fields.Str(
         validate=validate_withsubpack,
         required=False, allow_none=True)
@@ -202,6 +199,7 @@ class BeDependSchema(Schema):
         validate=validate.Length(
             min=1,
             max=50))
+    level = fields.Integer(validate=validate_level, required=False, allow_none=True)
 
 
 def validate_selfbuild(selfbuild):

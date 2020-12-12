@@ -446,6 +446,10 @@ class BeDepend(Resource):
         with_sub_pack = data.get("withsubpack")
         db_name = data.get("dbname")
 
+        # When user does not input level, the default value of level is -1,
+        # then query all install depend
+        level = int(data.get("level", -1))
+
         db_pri = db_priority()
 
         if not db_pri:
@@ -460,7 +464,7 @@ class BeDepend(Resource):
                 ResponseCode.response_json(ResponseCode.DB_NAME_ERROR)
             )
 
-        bedepnd_ins = be_depend(package_name, db_name, with_sub_pack)
+        bedepnd_ins = be_depend(package_name, db_name, with_sub_pack, level)
 
         res_dict = bedepnd_ins.main()
 
