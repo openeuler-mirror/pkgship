@@ -1,3 +1,6 @@
+* Mon Dec 14 2020 Shenmei Tu <tushenmei@huawei.com>
+- Add not_found_packages in output result for install depend interface
+
 * Tue Dec 8 2020 Pengju Jiang <jiangpengju2@huawei.com>
 - Four kinds of dependent zip download batch upload - dependent data parsing
 

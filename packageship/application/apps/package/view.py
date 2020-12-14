@@ -196,7 +196,9 @@ class InstallDepend(Resource):
                         type //install  install or build, which
                                 depend on the function
                     ]
-                ]
+                ],
+                "not_found_components": //list of not found components,
+                "not_found_packages": //list of not found packages
             }
         Raises:
         """
@@ -234,8 +236,10 @@ class InstallDepend(Resource):
         response_code, install_dict, not_found_components = \
             installdepend(db_list).query_install_depend(pkg_name_list, level=level)
 
+        not_found_packagename_list = []
         for pkg_name in pkg_name_list:
             if install_dict.get(pkg_name)[2] == 'NOT FOUND':
+                not_found_packagename_list.append(pkg_name)
                 del install_dict[pkg_name]
 
         if not install_dict:
@@ -246,7 +250,8 @@ class InstallDepend(Resource):
         return jsonify(
             ResponseCode.response_json(ResponseCode.SUCCESS, data={
                 "install_dict": install_dict,
-                'not_found_components': list(not_found_components)
+                'not_found_components': list(not_found_components),
+                "not_found_packages": not_found_packagename_list
             })
         )
 
