@@ -1,7 +1,7 @@
 [
   {
     "input": {
-      "sourceName": "A"
+      "sourceName": ["A"]
     },
     "output": {
       "code": "2001",
@@ -86,9 +86,20 @@
             ]
           ]
         },
-        "not_found_components": []
+        "not_found_components": [],
+        "not_found_packages": []
       },
       "msg": "Successful Operation!"
     }
-  }
+  },
+  {"input":{"sourceName": ["A"], "db_list": ["mainline"],"level": "1"},
+  "output":{"code": "2001",
+             "data": {"build_dict": {"A_src": ["source",
+                                               "0.0.23b",
+                                               "mainline",
+                                               [["root", null]]],
+                                     "B1": ["B", "0.0.2", "mainline", [["A", "build"]]],
+                                     "C1": ["C", "0.1", "mainline", [["A", "build"]]]},
+                      "not_found_components": [],"not_found_packages": []},
+ "msg": "Successful Operation!"}}
 ]

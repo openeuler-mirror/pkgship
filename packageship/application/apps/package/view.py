@@ -291,6 +291,10 @@ class BuildDepend(Resource):
             )
         pkg_name = data.get("sourceName")
 
+        # When user does not input level, the default value of level is -1,
+        # then query all install depend
+        level = int(data.get("level", -1))
+
         db_pri = db_priority()
 
         if not db_pri:
@@ -308,11 +312,18 @@ class BuildDepend(Resource):
                 ResponseCode.response_json(ResponseCode.DB_NAME_ERROR)
             )
 
-        build_ins = builddepend([pkg_name], db_list)
+        build_ins = builddepend(pkg_name, db_list, level)
 
         res_code, res_dict, _, not_found_com = build_ins.build_depend_main()
+
+        not_found_packages = []
         if res_dict:
             res_code = ResponseCode.SUCCESS
+            for p_name in pkg_name:
+                p_name_src = p_name + "_src"
+                if p_name_src in res_dict and res_dict[p_name_src][2] == "NOT_FOUND":
+                    del res_dict[p_name_src]
+                    not_found_packages.append(p_name)
         else:
             return jsonify(
                 ResponseCode.response_json(
@@ -325,7 +336,8 @@ class BuildDepend(Resource):
                 res_code,
                 data={
                     'build_dict': res_dict,
-                    'not_found_components': list(not_found_com)
+                    'not_found_components': list(not_found_com),
+                    'not_found_packages': not_found_packages
                 }
             )
         )

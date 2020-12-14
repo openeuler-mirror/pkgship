@@ -164,11 +164,10 @@ class BuildDependSchema(Schema):
     """
     Description: BuildDependSchema serialize
     """
-    sourceName = fields.Str(
-        required=True,
-        validate=validate.Length(
-            min=1, max=200))
+    sourceName = fields.List(fields.String(validate=validate.Length(
+        min=1, max=200)), required=True, allow_none=False)
     db_list = fields.List(fields.String(), required=False, allow_none=True)
+    level = fields.Integer(validate=validate_level, required=False, allow_none=True)
 
 
 def validate_withsubpack(withsubpack):

@@ -21,7 +21,6 @@ from test.base_code.read_data_base import ReadTestBase
 from packageship.application.apps.package.function.constants import ResponseCode
 
 
-
 class TestBuildDepend(ReadTestBase):
     """
     class for test build_depend
@@ -38,7 +37,7 @@ class TestBuildDepend(ReadTestBase):
         Initialization failed. No database was generated. Database information could not be found
         Returns:
         """
-        self.REQUESTS_KWARGS["data"] = json.dumps({'sourceName': 'CUnit'})
+        self.REQUESTS_KWARGS["data"] = json.dumps({'sourceName': ['CUnit']})
         self.without_dbs_folder(
             self.REQUESTS_KWARGS,
             met=self,
@@ -56,13 +55,24 @@ class TestBuildDepend(ReadTestBase):
 
         param_error_list = [
             "{}",
-            json.dumps({"sourceName": ""}),
-            json.dumps({"sourceName": "dsd" * 120}),
-            json.dumps({"sourceName": 0}),
+            json.dumps({"sourceName": [""],
+                        "level": "1"}),
+            json.dumps({"sourceName": ["dsd" * 120],
+                        "level": "1"}),
+            json.dumps({"sourceName": [0],
+                        "level": "1"}),
             json.dumps({"sourceName": "CUnit",
-                        "db_list": [12, 3, 4]}),
-            json.dumps({"sourceName": "CUnit",
-                        "db_list": "ccaa"})
+                        "db_list": ["1", 2, 3, 4],
+                        "level": "1"}),
+            json.dumps({"sourceName": ["CUnit"],
+                        "db_list": "ccaa",
+                        "level": "1"}),
+            json.dumps({"sourceName": ["CUnit"],
+                        "db_list": ["mainline"],
+                        "level": "a"}),
+            json.dumps({"sourceName": ["CUnit"],
+                        "db_list": ["mainline"],
+                        "level": "-2"})
         ]
         for error_param in param_error_list:
             self.REQUESTS_KWARGS["data"] = error_param
@@ -77,7 +87,7 @@ class TestBuildDepend(ReadTestBase):
         Returns:
         """
         self.REQUESTS_KWARGS["data"] = json.dumps(
-            {"sourceName": "qitiandasheng"})
+            {"sourceName": ["qitiandasheng"]})
         resp_dict = self.client_request(**self.REQUESTS_KWARGS)
 
         self.response_json_error_judge(
@@ -91,7 +101,7 @@ class TestBuildDepend(ReadTestBase):
         Returns:
         """
         self.REQUESTS_KWARGS["data"] = json.dumps(
-            {"sourceName": "CUnit", "db_list": ["shifu", "bajie"]})
+            {"sourceName": ["CUnit"], "db_list": ["shifu", "bajie"]})
 
         resp_dict = self.client_request(**self.REQUESTS_KWARGS)
 

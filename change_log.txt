@@ -1,8 +1,14 @@
+* Mon Dec 14 2020 Chengqiang Bao <baochengqiang1@huawei.com>
+- Add level and batch query for build depend interface
+
 * Mon Dec 14 2020 Shenmei Tu <tushenmei@huawei.com>
 - Add not_found_packages in output result for install depend interface
 
 * Tue Dec 8 2020 Pengju Jiang <jiangpengju2@huawei.com>
 - Four kinds of dependent zip download batch upload - dependent data parsing
+
+* Thu Dec 03 2020 Chengqiang Bao <baochengqiang1@huawei.com>
+- Add level and batch query for be depend interface
 
 * Mon Nov 30 2020 Pengju Jiang <jiangpengju2@huawei.com>
 - Four kinds of dependent zip download batch upload - dependent data parsing
