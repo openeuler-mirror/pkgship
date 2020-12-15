@@ -35,7 +35,7 @@ class BuildDepend():
     """
 
     # pylint: disable = R0902
-    def __init__(self, pkg_name_list, db_list, self_build=0, history_dict=None):
+    def __init__(self, pkg_name_list, db_list, level=-1, self_build=0, history_dict=None):
         """
         init class
         """
@@ -52,6 +52,7 @@ class BuildDepend():
         self.not_found_components = set()
 
         self.__already_pk_val = []
+        self.level = level
 
     def build_depend_main(self):
         """
@@ -110,24 +111,24 @@ class BuildDepend():
 
         # create root node and get next search list
         search_list = self._create_node_and_get_search_list(build_list, pkg_list)
+        if self.level > 1 or self.level == -1:
+            code, res_dict, not_fd_com_install = \
+                InstallDepend(self.db_list).query_install_depend(search_list, level=self.level-1,
+                                                                 history_pk_val=self.__already_pk_val,
+                                                                 history_dicts=self.history_dicts)
+            self.not_found_components.update(not_fd_com_install)
+            if not res_dict:
+                return code
 
-        code, res_dict, not_fd_com_install = \
-            InstallDepend(self.db_list).query_install_depend(search_list,
-                                                             history_pk_val=self.__already_pk_val,
-                                                             history_dicts=self.history_dicts)
-        self.not_found_components.update(not_fd_com_install)
-        if not res_dict:
-            return code
+            for k, values in res_dict.items():
+                if k in self.result_dict:
+                    if ['root', None] in values[ListNode.PARENT_LIST]:
+                        index = values[ListNode.PARENT_LIST].index(['root', None])
+                        del values[ListNode.PARENT_LIST][index]
 
-        for k, values in res_dict.items():
-            if k in self.result_dict:
-                if ['root', None] in values[ListNode.PARENT_LIST]:
-                    index = values[ListNode.PARENT_LIST].index(['root', None])
-                    del values[ListNode.PARENT_LIST][index]
-
-                self.result_dict[k][ListNode.PARENT_LIST].extend(values[ListNode.PARENT_LIST])
-            else:
-                self.result_dict[k] = values
+                    self.result_dict[k][ListNode.PARENT_LIST].extend(values[ListNode.PARENT_LIST])
+                else:
+                    self.result_dict[k] = values
 
         return ResponseCode.SUCCESS
 
