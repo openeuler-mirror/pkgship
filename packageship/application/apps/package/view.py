@@ -489,8 +489,16 @@ class BeDepend(Resource):
             return jsonify(
                 ResponseCode.response_json(ResponseCode.PACK_NAME_NOT_FOUND)
             )
+
+        not_found_packages = []
+        for p_name in package_name:
+            p_name_src = p_name + "_src"
+            if p_name_src not in res_dict:
+                not_found_packages.append(p_name)
+
+        return_dict = {"be_dict": res_dict, "not_found_packages": not_found_packages}
         return jsonify(
-            ResponseCode.response_json(ResponseCode.SUCCESS, data=res_dict)
+            ResponseCode.response_json(ResponseCode.SUCCESS, data=return_dict)
         )
 
 
