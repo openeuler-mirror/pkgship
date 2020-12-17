@@ -19,22 +19,36 @@ from marshmallow import ValidationError
 from marshmallow import validate
 
 
+def validate_level(level):
+    """
+    Description: the default value of level is -1, then query all the install depend.
+    When user input level > 0, then query the corresponding level of install depend
+    Args：
+    Returns:
+    Raises: ValidationError
+    """
+    if int(level) < -1 or int(level) == 0:
+        raise ValidationError("level is illegal data ")
+
+
 class InstallDependSchema(Schema):
     """
     Description: Check installdepend interface
     """
-    binaryName = fields.Str(validate=validate.Length(min=1, max=500),
-                            required=True)
+    binaryName = fields.List(fields.String(validate=validate.Length(
+        min=1, max=200)), required=True, allow_none=False)
     db_list = fields.List(fields.String(), required=False, allow_none=True)
+    level = fields.Integer(validate=validate_level, required=False, allow_none=True)
 
 
 class BuildDependSchema(Schema):
     """
     Description: Check builddepend interface
     """
-    sourceName = fields.Str(validate=validate.Length(min=1, max=200),
-                            required=True)
+    sourceName = fields.List(fields.String(validate=validate.Length(
+        min=1, max=200)), required=True, allow_none=False)
     db_list = fields.List(fields.String(), required=False, allow_none=True)
+    level = fields.Integer(validate=validate_level, required=False, allow_none=True)
 
 
 def _validate_withsubpack(withsubpack):
@@ -55,12 +69,13 @@ class BeDependSchema(Schema):
     """
     Description: Check bedepend interface
     """
-    packagename = fields.Str(validate=validate.Length(min=1, max=200),
-                             required=True)
+    packagename = fields.List(fields.String(validate=validate.Length(
+        min=1, max=200)), required=True, allow_none=False)
     withsubpack = fields.Str(validate=_validate_withsubpack,
                              required=False, allow_none=True)
     dbname = fields.Str(validate=validate.Length(min=1, max=50),
                         required=True)
+    level = fields.Integer(validate=validate_level, required=False, allow_none=True)
 
 
 def _validate_selfbuild(selfbuild):

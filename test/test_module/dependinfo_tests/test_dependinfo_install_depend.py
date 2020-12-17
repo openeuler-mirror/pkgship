@@ -38,7 +38,7 @@ class TestDependInfoInstallDepend(DependInfo):
         Initialization failed. No database was generated. Database information could not be found
         Returns:
         """
-        self.REQUESTS_KWARGS["data"] = json.dumps({"binaryName": "A1"})
+        self.REQUESTS_KWARGS["data"] = json.dumps({"binaryName": ["A1"]})
 
         # When DBS folder does not exist
         self.without_dbs_folder(self.REQUESTS_KWARGS,
@@ -56,13 +56,23 @@ class TestDependInfoInstallDepend(DependInfo):
         """
         param_error_list = [
             "{}",
-            json.dumps({"binaryName": ""}),
-            json.dumps({"binaryName": "dsd" * 200}),
-            json.dumps({"binaryName": 0}),
+            json.dumps({"binaryName": "",
+                        "level": "1"}),
+            json.dumps({"binaryName": "dsd" * 200,
+                        "level": "1"}),
+            json.dumps({"binaryName": 0,
+                        "level": "1"}),
             json.dumps({"binaryName": "CUnit",
-                        "db_list": [12, 3, 4]}),
-            json.dumps({"binaryName": "CUnit",
-                        "db_list": "xxxxx"}),
+                        "db_list": [12, 3, 4],
+                        "level": "1"}),
+            json.dumps({"binaryName": ["CUnit"],
+                        "db_list": "xxxxx",
+                        "level": "1"}),
+            json.dumps({"binaryName": ["CUnit"],
+                        "level": "a"}),
+            json.dumps({"binaryName": ["CUnit"],
+                        "level": "-2"}),
+
         ]
 
         for error_param in param_error_list:
@@ -75,7 +85,7 @@ class TestDependInfoInstallDepend(DependInfo):
         """
         test package name not found
         """
-        self.REQUESTS_KWARGS["data"] = json.dumps({"binaryName": "qitiandasheng"})
+        self.REQUESTS_KWARGS["data"] = json.dumps({"binaryName": ["qitiandasheng"]})
         resp_dict = self.client_request(**self.REQUESTS_KWARGS)
         self.response_json_error_judge(resp_dict,
                                        resp_code=ResponseCode.PACK_NAME_NOT_FOUND, method=self)
@@ -84,7 +94,7 @@ class TestDependInfoInstallDepend(DependInfo):
         """
         test database name not found
         """
-        self.REQUESTS_KWARGS["data"] = json.dumps({"binaryName": "CUnit",
+        self.REQUESTS_KWARGS["data"] = json.dumps({"binaryName": ["CUnit"],
                                                    "db_list": ["shifu", "bajie"]
                                                    })
 

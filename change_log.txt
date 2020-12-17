@@ -1,4 +1,7 @@
 * Thu Dec 17 2020 Chengqiang Bao <baochengqiang1@huawei.com>
+- Add level and batch query for dependinfo bedepend,installdepend,builddepend interface
+
+* Thu Dec 17 2020 Chengqiang Bao <baochengqiang1@huawei.com>
 - Add not_found_packages in output result for be depend interface
 
 * Mon Dec 14 2020 Chengqiang Bao <baochengqiang1@huawei.com>

@@ -105,7 +105,8 @@ class InstallDep:
         self.graph = graph
         self.query_parameter = {
             'binaryName': self.graph.packagename,
-            'db_list': self.graph.dbname
+            'db_list': self.graph.dbname,
+            'level': self.graph.level
         }
 
     def validate(self):
@@ -125,8 +126,9 @@ class InstallDep:
         """
         db_list = query_parameter['db_list']
         binary_name = query_parameter['binaryName']
+        level = query_parameter['level']
         _response_code, install_dict, not_found_components = \
-            InstallDepend(db_list).query_install_depend([binary_name])
+            InstallDepend(db_list).query_install_depend(binary_name, level=level)
         return {
             "code": _response_code,
             "install_dict": install_dict,
@@ -153,7 +155,8 @@ class BuildDep:
         self.graph = graph
         self.query_parameter = {
             'sourceName': self.graph.packagename,
-            'db_list': self.graph.dbname
+            'db_list': self.graph.dbname,
+            'level': self.graph.level
         }
 
     def validate(self):
@@ -173,7 +176,8 @@ class BuildDep:
         """
         source_name = query_parameter['sourceName']
         db_list = query_parameter['db_list']
-        build_ins = BuildDepend([source_name], db_list)
+        level = query_parameter['level']
+        build_ins = BuildDepend(source_name, db_list, level)
         _res_code, builddep_dict, _, not_found_components = build_ins.build_depend_main()
         return {
             "code": _res_code,
@@ -205,7 +209,8 @@ class BeDependOn:
         self.query_parameter = {
             'packagename': self.graph.packagename,
             'dbname': dbname,
-            'withsubpack': self.graph.withsubpack or 0
+            'withsubpack': self.graph.withsubpack or 0,
+            'level': self.graph.level
         }
 
     def validate(self):
@@ -226,7 +231,8 @@ class BeDependOn:
         packagename = query_parameter['packagename']
         db_name = query_parameter['dbname']
         withsubpack = query_parameter['withsubpack']
-        bedepnd_ins = BeDepend(packagename, db_name, withsubpack)
+        level = query_parameter['level']
+        bedepnd_ins = BeDepend(packagename, db_name, withsubpack, level)
         be_depend_dict = bedepnd_ins.main()
         _code = ResponseCode.PACK_NAME_NOT_FOUND
         if be_depend_dict:

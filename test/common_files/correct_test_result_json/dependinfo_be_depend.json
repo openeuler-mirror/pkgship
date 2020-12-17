@@ -1,11 +1,11 @@
 [
   {
     "input": {
-      "packagename": "A",
+      "packagename": ["A"],
       "dbname": "mainline"
     },
     "output": {"code": "2001",
-     "data": {"binary_dicts": [{"binary_name": "A1",
+     "data": {"be_dict": {"binary_dicts": [{"binary_name": "A1",
                                 "database": "mainline",
                                 "source_name": "A",
                                 "version": "0.0.23b"},
@@ -52,6 +52,8 @@
               "statistics": [{"binary_num": 8,
                               "database": "mainline",
                               "source_num": 4}]},
+       "not_found_packages": [],
      "msg": "Successful Operation!"}
   }
+    }
 ]

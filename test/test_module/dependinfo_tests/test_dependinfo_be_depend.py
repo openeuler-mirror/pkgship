@@ -12,18 +12,17 @@
 # ******************************************************************************/
 # -*- coding:utf-8 -*-
 """
-Less transmission is always parameter transmission
+ be_depend unittest
 """
-import unittest
 import json
-
+import unittest
 from test.base_code.dependinfo_base_test import DependInfo
 from packageship.application.apps.package.function.constants import ResponseCode
 
 
 class TestDependInfoBeDepend(DependInfo):
     """
-    The dependencies of the package are tested
+    class for test be_depend
     """
     REQUESTS_KWARGS = {
         "url": "/dependInfo/beDepend",
@@ -37,11 +36,13 @@ class TestDependInfoBeDepend(DependInfo):
         Initialization failed. No database was generated. Database information could not be found
         Returns:
         """
-        self.REQUESTS_KWARGS["data"] = json.dumps({"packagename": "CUnit", "dbname": "mainline"})
-        self.without_dbs_folder(self.REQUESTS_KWARGS,
-                                met=self, code=ResponseCode.NOT_FOUND_DATABASE_INFO)
-        self.when_db_no_content(self.REQUESTS_KWARGS,
-                                met=self, code=ResponseCode.NOT_FOUND_DATABASE_INFO)
+        self.REQUESTS_KWARGS["data"] = json.dumps({"packagename": ["CUnit"], "dbname": "mainine"})
+
+        self.without_dbs_folder(self.REQUESTS_KWARGS, met=self,
+                                code=ResponseCode.NOT_FOUND_DATABASE_INFO)
+
+        self.when_db_no_content(self.REQUESTS_KWARGS, met=self,
+                                code=ResponseCode.NOT_FOUND_DATABASE_INFO)
 
     def test_param_error_response(self):
         """
@@ -51,22 +52,33 @@ class TestDependInfoBeDepend(DependInfo):
 
         param_error_list = [
             "{}",
-            json.dumps({"packagename": "",
-                        "dbname": "mainline"}),
-            json.dumps({"packagename": "dsd" * 220,
-                        "dbname": "mainline"}),
+            json.dumps({"packagename": [""],
+                        "dbname": "mainline",
+                        "level": "1"}),
+            json.dumps({"packagename": ["dsd" * 220],
+                        "dbname": ["mainline"],
+                        "level": "1"}),
             json.dumps({"packagename": 0,
-                        "dbname": "mainline"}),
+                        "dbname": "mainline",
+                        "level": "1"}),
             json.dumps({"packagename": "CUnit",
-                        "dbname": 12}),
-            json.dumps({"packagename": "CUnit",
-                        "dbname": ""}),
-            json.dumps({"packagename": "CUnit",
-                        "dbname": "ccc" * 50}),
-            json.dumps({"packagename": "CUnit",
-                        "dbname": "mainline", "withsubpack": "3"}),
-            json.dumps({"packagename": "CUnit",
-                        "dbname": "mainline", "withsubpack": ""})
+                        "dbname": 12,
+                        "level": "1"}),
+            json.dumps({"packagename": ["CUnit"],
+                        "dbname": "",
+                        "level": "1"}),
+            json.dumps({"packagename": ["CUnit"],
+                        "dbname": "ccc" * 50,
+                        "level": "1"}),
+            json.dumps({"packagename": ["CUnit"],
+                        "dbname": "mainline", "withsubpack": "3",
+                        "level": "1"}),
+            json.dumps({"packagename": ["CUnit"],
+                        "dbname": "mainline", "withsubpack": "",
+                        "level": "-1"}),
+            json.dumps({"packagename": ["CUnit"],
+                        "dbname": "mainline", "withsubpack": "",
+                        "level": "1.2"})
         ]
         for error_param in param_error_list:
             self.REQUESTS_KWARGS["data"] = error_param
@@ -77,10 +89,12 @@ class TestDependInfoBeDepend(DependInfo):
 
     def test_pkg_name_not_found_response(self):
         """
-        test package name not found
+        The package name is not in the database
+        Returns:
+
         """
         self.REQUESTS_KWARGS["data"] = json.dumps(
-            {"packagename": "sdfUsdnit", "dbname": "mainline"})
+            {"packagename": ["CasdfUsdnit"], "dbname": "mainline"})
         resp_dict = self.client_request(**self.REQUESTS_KWARGS)
 
         self.response_json_error_judge(resp_dict,
@@ -88,9 +102,11 @@ class TestDependInfoBeDepend(DependInfo):
 
     def test_db_name_error_response(self):
         """
-        test database name not found
+        Database name error
+        Returns:
+
         """
-        self.REQUESTS_KWARGS["data"] = json.dumps({"packagename": "A", "dbname": "asdfavwfdsa"})
+        self.REQUESTS_KWARGS["data"] = json.dumps({"packagename": ["A"], "dbname": "asdfavwfdsa"})
 
         resp_dict = self.client_request(**self.REQUESTS_KWARGS)
 
