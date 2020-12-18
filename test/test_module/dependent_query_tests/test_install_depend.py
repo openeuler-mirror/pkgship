@@ -19,7 +19,7 @@ import json
 from pprint import pprint
 
 from test.base_code.read_data_base import ReadTestBase
-from packageship.application.apps.package.function.constants import ResponseCode
+from packageship.libs.constants import ResponseCode
 
 
 class TestInstallDepend(ReadTestBase):

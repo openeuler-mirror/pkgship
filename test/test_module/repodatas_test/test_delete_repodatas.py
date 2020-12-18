@@ -23,7 +23,7 @@ from packageship.libs.conf import configuration
 from packageship.libs.exception import Error
 
 
-from packageship.application.apps.package.function.constants import ResponseCode
+from packageship.libs.constants import ResponseCode
 
 
 class TestDeleteRepodatas(OperateTestBase):

@@ -23,7 +23,7 @@ from sqlalchemy import text
 from sqlalchemy.exc import SQLAlchemyError, DisconnectionError
 
 
-from packageship.application.apps.package.function.constants import ResponseCode
+from packageship.libs.constants import ResponseCode
 from packageship.application.apps.package.serialize import AllPackInfoSchema
 from packageship.application.apps.package.serialize import SinglePackInfoSchema
 from packageship.libs.dbutils import DBHelper

@@ -18,7 +18,7 @@ from functools import wraps
 
 from flask import current_app
 
-from packageship.application.apps.package.function.constants import ListNode
+from packageship.libs.constants import ListNode
 
 
 def catch_error(func):

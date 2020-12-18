@@ -1,3 +1,14 @@
+<<<<<<< HEAD
+* Thu Dec 17 2020 Chengqiang Bao <baochengqiang1@huawei.com>
+- Add not_found_packages in output result for be depend interface
+=======
+* Fri Dec 11 2020 Shaowei Cheng <chenshaowei3@huawei.com>
+- Echo effect optimization,constants file extraction
+
+* Fri Dec 4 2020 Shaowei Cheng <chenshaowei3@huawei.com>
+- Echo effect optimization
+>>>>>>> bc2b7ab (命令行显示优化,constants文件提取)
+
 * Thu Dec 17 2020 Chengqiang Bao <baochengqiang1@huawei.com>
 - Add not_found_packages in output result for be depend interface
 
@@ -31,7 +42,7 @@
 * Fir Nov 27 2020 Shenmei Tu <tushenmei@huawei.com>
 - Test case refactoring-upload in batches 3
 
-* Thu Nov 26 2020 Chengqiang Bao <baochengqiang1@huawei.com> 
+* Thu Nov 26 2020 Chengqiang Bao <baochengqiang1@huawei.com>
 - Test case refactoring-upload in batches 2
 
 * Wed Nov 25 2020 Shenmei Tu <tushenmei@huawei.com>
@@ -46,29 +57,29 @@
 * Tue Nov 10 2020 Shenmei Tu <tushenmei@huawei.com>
 - New requirement: add filelist query interface
 
-* Wed Nov 4 2020 Chengqiang Bao <baochengqiang1@huawei.com> 
+* Wed Nov 4 2020 Chengqiang Bao <baochengqiang1@huawei.com>
 - pkgship add license to all files
 
-* Wed Nov 4 2020 Shaowei Cheng <chenshaowei3@huawei.com> 
+* Wed Nov 4 2020 Shaowei Cheng <chenshaowei3@huawei.com>
 - Solve the problem that the release time value cannot be obtained
 
-* Tue Nov 3 2020 Shaowei Cheng <chenshaowei3@huawei.com> 
-- When the dependency graph in pkgship is aimed at the source code 
+* Tue Nov 3 2020 Shaowei Cheng <chenshaowei3@huawei.com>
+- When the dependency graph in pkgship is aimed at the source code
   package display, the build type package will be used as its next dependency
-  
-* Tue Nov 3 2020 Yiru Wang <wangyiru1@huawei.com> 
+
+* Tue Nov 3 2020 Yiru Wang <wangyiru1@huawei.com>
 - Add the license file in the root directory of pkgship
 
-* Tue Nov 3 2020 Xinxing Li <lixinxing6@huawei.com> 
+* Tue Nov 3 2020 Xinxing Li <lixinxing6@huawei.com>
 - Add loading status and modify issue-list interface
 
-* Sat Oct 31 2020 Chengqiang Bao <baochengqiang1@huawei.com> 
-- The bedepend interface adds exception capture and modifies the accuracy 
+* Sat Oct 31 2020 Chengqiang Bao <baochengqiang1@huawei.com>
+- The bedepend interface adds exception capture and modifies the accuracy
   of query results in special scenarios
-  
-* Sat Oct 31 2020 Chengqiang Bao <baochengqiang1@huawei.com> 
-- The web function adds an interface for obtaining installation dependent 
-  results, an interface for obtaining compile dependent results, and an 
+
+* Sat Oct 31 2020 Chengqiang Bao <baochengqiang1@huawei.com>
+- The web function adds an interface for obtaining installation dependent
+  results, an interface for obtaining compile dependent results, and an
   interface for obtaining graphics.
 
 * Thu Oct 29 2020 Shenmei Tu<tushenmei@huawei.com>
@@ -83,62 +94,62 @@
 * Wed Oct 28 2020 Pengju Jiang <jiangpengju2@huawei.com>
 - Unit test reconstruction, basic framework submission
 
-* Wed Oct 28 2020 Zhengtang Gong <gongzhengtang@huawei.com> 
-- pkgship initialization adds filelist data import, and replaces the 
+* Wed Oct 28 2020 Zhengtang Gong <gongzhengtang@huawei.com>
+- pkgship initialization adds filelist data import, and replaces the
   previous local sqlite file import method with the form of repo source
 
 * Thu Oct 22 2020 Pengju Jiang <jiangpengju2@huawei.com>
-- Solve the problem of crash when calling get_all_package_info and sing_pack, 
+- Solve the problem of crash when calling get_all_package_info and sing_pack,
   and the problem of function return value error
 
-* Wed Oct 21 2020 Zhengtang Gong <gongzhengtang@huawei.com> 
+* Wed Oct 21 2020 Zhengtang Gong <gongzhengtang@huawei.com>
 - Modify the files involved in the configuration file
 
 * Wed Oct 21 2020 Shaowei Cheng <chenshaowei3@huawei.com>
-- Bug fix, add parameter checks of  pagenum, pagesize 
+- Bug fix, add parameter checks of  pagenum, pagesize
 
 * Mon Oct 12 2020 Zhang Tao <zhangtao306@huawei.com>
-- Fix parameter errors, modify the status list update method to avoid memory 
+- Fix parameter errors, modify the status list update method to avoid memory
   overflow problems
 
-* Fri Sep 11 2020 Yiru Wang <wangyiru1@huawei.com> 
+* Fri Sep 11 2020 Yiru Wang <wangyiru1@huawei.com>
 - #I1UCM8, #I1UC8G: Modify some config files' permission issue;
 - #I1TIYQ: Add concurrent-log-handler module to fix log resource conflict issue
 - #I1TML0: Fix the matching relationship between source_rpm and src_name
 
-* Tue Sep 1 2020 Zhengtang Gong <gongzhengtang@huawei.com> 
+* Tue Sep 1 2020 Zhengtang Gong <gongzhengtang@huawei.com>
 - Delete the packaged form of pyinstaller and change the execution
   of the command in the form of a single file as the input
 
-* Sat Aug 29 2020 Yiru Wang <wangyiru1@huawei.com> 
+* Sat Aug 29 2020 Yiru Wang <wangyiru1@huawei.com>
 - Add package management features:
   RPM packages statically displayed in the version repository
   RPM packages used time displayed for current version in the version repository
   Issue management of packages in a version-management repository
 
-* Fri Aug 21 2020 Chengqiang Bao < baochengqiang1@huawei.com > 
+* Fri Aug 21 2020 Chengqiang Bao < baochengqiang1@huawei.com >
 - Fixed a problem with command line initialization of the Filepath parameter where relative paths are not supported and paths are too long
 
-* Wed Aug 12 2020 Zhang Tao <zhangtao306@huawei.com> 
+* Wed Aug 12 2020 Zhang Tao <zhangtao306@huawei.com>
 - Fix the test content to adapt to the new data structure, add BuildRequires for running %check
 
-* Mon Aug 10 2020 Zhengtang Gong <gongzhengtang@huawei.com> 
+* Mon Aug 10 2020 Zhengtang Gong <gongzhengtang@huawei.com>
 - Command line supports calling remote services
 
-* Wed Aug 5 2020 Yiru Wang <wangyiru1@huawei.com> 
+* Wed Aug 5 2020 Yiru Wang <wangyiru1@huawei.com>
 - change Requires rpm pakcages' name to latest one
 
-* Mon Jul 13 2020 Yiru Wang <wangyiru1@huawei.com> 
+* Mon Jul 13 2020 Yiru Wang <wangyiru1@huawei.com>
 - run test cases while building
 
-* Sat Jul 4 2020 Yiru Wang <wangyiru1@huawei.com> 
+* Sat Jul 4 2020 Yiru Wang <wangyiru1@huawei.com>
 - cheange requires python3.7 to python3,add check pyinstaller file.
 
-* Tue Jun 30 2020 Yiru Wang <wangyiru1@huawei.com> 
+* Tue Jun 30 2020 Yiru Wang <wangyiru1@huawei.com>
 - add pkgshipd file
 
-* Thu Jun 11 2020 Feng Hu <solar.hu@foxmail.com> 
+* Thu Jun 11 2020 Feng Hu <solar.hu@foxmail.com>
 - add macro to build cli bin when rpm install
 
-* Sat Jun 6 2020 Feng Hu  <solar.hu@foxmail.com> 
+* Sat Jun 6 2020 Feng Hu  <solar.hu@foxmail.com>
 - init package

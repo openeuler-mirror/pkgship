@@ -31,9 +31,9 @@ from .serialize import BuildDependSchema
 from .serialize import BeDependSchema
 from .serialize import have_err_db_name
 from .serialize import SingleGraphSchema
-from packageship.application.apps.package.function.constants import ResponseCode
+from packageship.libs.constants import ResponseCode
 from packageship.application.apps.package.function.searchdb import db_priority
-from packageship.application.apps.package.function.constants import ListNode
+from packageship.libs.constants import ListNode
 from .function.graphcache import bedepend, build_depend, install_depend
 from .function.graphcache import self_build as selfbuild
 from .function.singlegraph import BaseGraph

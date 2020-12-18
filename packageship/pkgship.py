@@ -27,7 +27,6 @@ try:
     from requests.exceptions import ConnectionError as ConnErr
     from requests.exceptions import HTTPError
     import prettytable
-    from prettytable import PrettyTable
     from packageship.libs.conf import configuration
     from packageship.libs.log import LOGGER
     from packageship.libs.exception import Error
@@ -35,10 +34,11 @@ except ImportError as import_error:
     print("Error importing related dependencies,"
           "please check if related dependencies are installed")
 else:
-    from packageship.application.apps.package.function.constants import ResponseCode
-    from packageship.application.apps.package.function.constants import ListNode
+    from packageship.libs.constants import ResponseCode
+    from packageship.libs.constants import ListNode
     from packageship.application.apps.lifecycle.function.download_yaml import update_pkg_info
     from packageship.libs.tableutils.terminal_table import TerminalTable
+    from packageship.libs.constants import ERROR_CON
 
 DB_NAME = 0
 DEPRECATION_LEN = 12
@@ -258,7 +258,7 @@ class PkgshipCommand(BaseCommand):
                         # Determine whether the current binary package exists
                         if bin_package not in \
                                 self.statistics[package_depend[ListNode.DBNAME]]['binary']:
-                            self.statistics[package_depend[ListNode.DBNAME]]['binary'].\
+                            self.statistics[package_depend[ListNode.DBNAME]]['binary']. \
                                 append(bin_package)
                             bin_package_count += 1
                         # Determine whether the source package exists
@@ -272,10 +272,27 @@ class PkgshipCommand(BaseCommand):
                             self.table.add_row(row_data)
         else:
             LOGGER.logger.error(response_data.get('msg'))
-            print(response_data.get('msg'))
+            self.output_error_formatted(response_data.get('msg'), response_data.get('code'))
         statistics_table = self.statistics_table(
             bin_package_count, src_package_count)
         return statistics_table
+
+    @staticmethod
+    def output_error_formatted(content, code):
+        """
+        Description: Output error formatted characters
+        Args:
+           content: Output content
+           code: Error code
+        Returns:
+
+        Raises:
+
+        """
+        con = ERROR_CON[code]
+        con["ERROR_CONTENT"] = content
+        for key, val in con.items():
+            print("{:15}:{}".format(key, val))
 
     def print_(self, content=None, character='=', dividing_line=False):
         """
@@ -370,7 +387,8 @@ class PkgshipCommand(BaseCommand):
         Raises:
         """
         value_separation = []
-        range_num = len(value) // separation + 1 if len(value) % separation else len(value) // separation
+        range_num = len(value) // separation + 1 if len(value) % separation \
+            else len(value) // separation
         for idx in range(range_num):
             value_separation.append(separation_str.join(value[separation * idx:
                                                               separation * (idx + 1)]))
@@ -427,7 +445,7 @@ class RemoveCommand(PkgshipCommand):
                 response = requests.delete(_url)
             except ConnErr as conn_err:
                 LOGGER.logger.error(conn_err)
-                print(str(conn_err))
+                self.output_error_formatted(str(conn_err), "CONN_ERROR")
             else:
                 # Determine whether to delete the mysql database or sqlite database
                 if response.status_code == 200:
@@ -435,13 +453,13 @@ class RemoveCommand(PkgshipCommand):
                         data = json.loads(response.text)
                     except JSONDecodeError as json_error:
                         LOGGER.logger.error(json_error)
-                        print(response.text)
+                        self.output_error_formatted(response.text, "JSON_DECODE_ERROR")
                     else:
                         if data.get('code') == ResponseCode.SUCCESS:
                             print('Delete database success')
                         else:
                             LOGGER.logger.error(data.get('msg'))
-                            print(data.get('msg'))
+                            self.output_error_formatted(data.get('msg'), data.get('code'))
                 else:
                     self.http_error(response)
 
@@ -496,20 +514,21 @@ class InitDatabaseCommand(PkgshipCommand):
                                      headers=self.headers)
         except ConnErr as conn_error:
             LOGGER.logger.error(conn_error)
-            print(str(conn_error))
+            self.output_error_formatted(str(conn_error), "CONN_ERROR")
         else:
             if response.status_code == 200:
                 try:
                     response_data = json.loads(response.text)
                 except JSONDecodeError as json_error:
                     LOGGER.logger.error(json_error)
-                    print(response.text)
+                    self.output_error_formatted(response.text, "JSON_DECODE_ERROR")
                 else:
                     if response_data.get('code') == ResponseCode.SUCCESS:
                         print('Database initialization success ')
                     else:
                         LOGGER.logger.error(response_data.get('msg'))
-                        print(response_data.get('msg'))
+                        self.output_error_formatted(response_data.get('msg'),
+                                                    response_data.get('code'))
             else:
                 self.http_error(response)
 
@@ -582,7 +601,7 @@ class AllPackageCommand(PkgshipCommand):
                                 package_item.get('used_time')]
                     self.table.add_row(row_data)
         else:
-            print(response_data.get('msg'))
+            self.output_error_formatted(response_data.get('msg'), response_data.get('code'))
 
     def do_command(self, params):
         """
@@ -609,7 +628,7 @@ class AllPackageCommand(PkgshipCommand):
             response = requests.get(_url)
         except ConnErr as conn_error:
             LOGGER.logger.error(conn_error)
-            print(str(conn_error))
+            self.output_error_formatted(str(conn_error), "CONN_ERROR")
         else:
             if response.status_code == 200:
                 try:
@@ -617,7 +636,7 @@ class AllPackageCommand(PkgshipCommand):
                     self.__parse_package(response_data, params.tablename)
                 except JSONDecodeError as json_error:
                     LOGGER.logger.error(json_error)
-                    print(response.text)
+                    self.output_error_formatted(response.text, "JSON_DECODE_ERROR")
 
                 if getattr(self.table, 'rowcount'):
                     print(self.table)
@@ -689,20 +708,20 @@ class UpdatePackageCommand(PkgshipCommand):
                 headers=self.headers)
         except ConnErr as conn_error:
             LOGGER.logger.error(conn_error)
-            print(str(conn_error))
+            self.output_error_formatted(str(conn_error), "CONN_ERROR")
         else:
             if response.status_code == 200:
                 try:
                     data = json.loads(response.text)
                 except JSONDecodeError as json_error:
                     LOGGER.logger.error(json_error)
-                    print(response.text)
+                    self.output_error_formatted(response.text, "JSON_DECODE_ERROR")
                 else:
                     if data.get('code') == ResponseCode.SUCCESS:
                         print('Update package data completed')
                     else:
                         LOGGER.logger.error(data.get('msg'))
-                        print(data.get('msg'))
+                        self.output_error_formatted(data.get('msg'), data.get('code'))
             else:
                 self.http_error(response)
 
@@ -773,7 +792,7 @@ class BuildDepCommand(PkgshipCommand):
                 headers=self.headers)
         except ConnErr as conn_error:
             LOGGER.logger.error(conn_error)
-            print(str(conn_error))
+            self.output_error_formatted(str(conn_error), "CONN_ERROR")
         else:
             if response.status_code == 200:
                 try:
@@ -781,7 +800,7 @@ class BuildDepCommand(PkgshipCommand):
                         json.loads(response.text), params)
                 except JSONDecodeError as json_error:
                     LOGGER.logger.error(json_error)
-                    print(response.text)
+                    self.output_error_formatted(response.text, "JSON_DECODE_ERROR")
                 else:
                     if getattr(self.table, 'rowcount'):
                         self.print_('query {} buildDepend  result display:'.format(
@@ -880,7 +899,7 @@ class InstallDepCommand(PkgshipCommand):
                         # Determine whether the current binary package exists
                         if bin_package not in \
                                 self.statistics[package_depend[ListNode.DBNAME]]['binary']:
-                            self.statistics[package_depend[ListNode.DBNAME]]['binary'].\
+                            self.statistics[package_depend[ListNode.DBNAME]]['binary']. \
                                 append(bin_package)
                             bin_package_count += 1
                         # Determine whether the source package exists
@@ -893,7 +912,7 @@ class InstallDepCommand(PkgshipCommand):
                         self.table.add_row(row_data)
         else:
             LOGGER.logger.error(response_data.get('msg'))
-            print(response_data.get('msg'))
+            self.output_error_formatted(response_data.get('msg'), response_data.get('code'))
         # Display of aggregated data
         statistics_table = self.statistics_table(
             bin_package_count, src_package_count)
@@ -921,7 +940,7 @@ class InstallDepCommand(PkgshipCommand):
                 }, ensure_ascii=True), headers=self.headers)
         except ConnErr as conn_error:
             LOGGER.logger.error(conn_error)
-            print(str(conn_error))
+            self.output_error_formatted(str(conn_error), "CONN_ERROR")
         else:
             if response.status_code == 200:
                 try:
@@ -929,7 +948,7 @@ class InstallDepCommand(PkgshipCommand):
                         json.loads(response.text), params)
                 except JSONDecodeError as json_error:
                     LOGGER.logger.error(json_error)
-                    print(response.text)
+                    self.output_error_formatted(response.text, "JSON_DECODE_ERROR")
                 else:
                     if getattr(self.table, 'rowcount'):
                         self.print_('query {} InstallDepend result display:'.format(
@@ -1023,7 +1042,7 @@ class SelfBuildCommand(PkgshipCommand):
                     # Determine whether the current binary package exists
                     if bin_package not in \
                             self.statistics[package_depend[ListNode.DBNAME]]['binary']:
-                        self.statistics[package_depend[ListNode.DBNAME]]['binary'].\
+                        self.statistics[package_depend[ListNode.DBNAME]]['binary']. \
                             append(bin_package)
                         bin_package_count += 1
                     self.bin_package_table.add_row(row_data)
@@ -1097,7 +1116,7 @@ class SelfBuildCommand(PkgshipCommand):
                     package_all.get('source_dicts'))
         else:
             LOGGER.logger.error(response_data.get('msg'))
-            print(response_data.get('msg'))
+            self.output_error_formatted(response_data.get('msg'), response_data.get('code'))
         # Display of aggregated data
         statistics_table = self.statistics_table(
             bin_package_count, src_package_count)
@@ -1127,7 +1146,7 @@ class SelfBuildCommand(PkgshipCommand):
                                      headers=self.headers)
         except ConnErr as conn_error:
             LOGGER.logger.error(conn_error)
-            print(str(conn_error))
+            self.output_error_formatted(str(conn_error), "CONN_ERROR")
         else:
             if response.status_code == 200:
                 try:
@@ -1135,7 +1154,7 @@ class SelfBuildCommand(PkgshipCommand):
                         json.loads(response.text), params)
                 except JSONDecodeError as json_error:
                     LOGGER.logger.error(json_error)
-                    print(response.text)
+                    self.output_error_formatted(response.text, "JSON_DECODE_ERROR")
                 else:
                     if getattr(self.bin_package_table, 'rowcount') \
                             and getattr(self.src_package_table, 'rowcount'):
@@ -1209,7 +1228,7 @@ class BeDependCommand(PkgshipCommand):
             ), headers=self.headers)
         except ConnErr as conn_error:
             LOGGER.logger.error(conn_error)
-            print(str(conn_error))
+            self.output_error_formatted(str(conn_error), "CONN_ERROR")
         else:
             if response.status_code == 200:
                 try:
@@ -1217,7 +1236,7 @@ class BeDependCommand(PkgshipCommand):
                         json.loads(response.text))
                 except JSONDecodeError as json_error:
                     LOGGER.logger.error(json_error)
-                    print(response.text)
+                    self.output_error_formatted(response.text, "JSON_DECODE_ERROR")
                 else:
                     if getattr(self.table, 'rowcount'):
                         self.print_('query {} beDepend result display :'.format(
@@ -1372,7 +1391,7 @@ class SingleCommand(PkgshipCommand):
             except KeyError as key_error:
                 LOGGER.logger.error(key_error)
         else:
-            print(response_data.get('msg'))
+            self.output_error_formatted(response_data.get('msg'), response_data.get('code'))
 
     def do_command(self, params):
         """
@@ -1392,14 +1411,14 @@ class SingleCommand(PkgshipCommand):
             response = requests.get(_url)
         except ConnErr as conn_error:
             LOGGER.logger.error(conn_error)
-            print(str(conn_error))
+            self.output_error_formatted(str(conn_error), "CONN_ERROR")
         else:
             if response.status_code == 200:
                 try:
                     self.__parse_package(json.loads(response.text))
                 except JSONDecodeError as json_error:
                     LOGGER.logger.error(json_error)
-                    print(response.text)
+                    self.output_error_formatted(response.text, "JSON_DECODE_ERROR")
 
             else:
                 self.http_error(response)
@@ -1469,7 +1488,7 @@ class IssueCommand(PkgshipCommand):
                         issue_item.get('maintainer') if issue_item.get('maintainer') else '']
                     self.table.add_row(_row_data)
         else:
-            print(response_data.get('msg'))
+            self.output_error_formatted(response_data.get('msg'), response_data.get('code'))
 
     def do_command(self, params):
         """
@@ -1499,7 +1518,7 @@ class IssueCommand(PkgshipCommand):
             response = requests.get(_url)
         except ConnErr as conn_error:
             LOGGER.logger.error(conn_error)
-            print(str(conn_error))
+            self.output_error_formatted(str(conn_error), "CONN_ERROR")
         else:
             if response.status_code == 200:
                 try:
@@ -1507,7 +1526,7 @@ class IssueCommand(PkgshipCommand):
                     self.__parse_package(response_data)
                 except JSONDecodeError as json_error:
                     LOGGER.logger.error(json_error)
-                    print(response.text)
+                    self.output_error_formatted(response.text, "JSON_DECODE_ERROR")
                 if getattr(self.table, "rowcount"):
                     print('total count : %d' % response_data['total_count'])
                     print('total page : %d' % response_data['total_page'])
@@ -1563,7 +1582,7 @@ class AllTablesCommand(PkgshipCommand):
             response = requests.get(_url, headers=self.headers)
         except ConnErr as conn_error:
             LOGGER.logger.error(conn_error)
-            print(str(conn_error))
+            self.output_error_formatted(str(conn_error), "CONN_ERROR")
         else:
             if response.status_code == 200:
                 try:
@@ -1575,10 +1594,12 @@ class AllTablesCommand(PkgshipCommand):
                         for table in _response_content.get('data', []):
                             print(table)
                     else:
+                        self.output_error_formatted(_response_content.get('msg'),
+                                                    _response_content.get('code'))
                         print('Failed to get the lifecycle repository')
                 except JSONDecodeError as json_error:
                     LOGGER.logger.error(json_error)
-                    print(response.text)
+                    self.output_error_formatted(response.text, "JSON_DECODE_ERROR")
             else:
                 self.http_error(response)
 
@@ -1725,7 +1746,7 @@ class GetFilelistInfoCommand(PkgshipCommand):
             response = requests.get(_url)
         except ConnErr as conn_error:
             LOGGER.logger.error(conn_error)
-            print(str(conn_error))
+            self.output_error_formatted(str(conn_error), "CONN_ERROR")
         else:
             if response.status_code == 200:
                 try:
@@ -1735,7 +1756,7 @@ class GetFilelistInfoCommand(PkgshipCommand):
 
                 except JSONDecodeError as json_error:
                     LOGGER.logger.error(json_error)
-                    print(response.text)
+                    self.output_error_formatted(response.text, "JSON_DECODE_ERROR")
                 else:
                     if response_data.get('code') == ResponseCode.SUCCESS:
                         print('query completed')

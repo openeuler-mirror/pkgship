@@ -29,7 +29,7 @@ from packageship.libs.log import Log
 from packageship.application.models.package import BinPack
 from packageship.application.models.package import SrcPack
 from packageship.application.models.package import DatabaseInfo
-from packageship.application.apps.package.function.constants import ResponseCode
+from packageship.libs.constants import ResponseCode
 
 LOGGER = Log(__name__)
 

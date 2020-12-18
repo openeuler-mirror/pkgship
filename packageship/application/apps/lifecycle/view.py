@@ -30,7 +30,7 @@ from marshmallow import ValidationError
 from sqlalchemy.exc import DisconnectionError, SQLAlchemyError
 
 from packageship.libs.exception import Error
-from packageship.application.apps.package.function.constants import ResponseCode
+from packageship.libs.constants import ResponseCode
 from packageship.libs.dbutils.sqlalchemy_helper import DBHelper
 from packageship.application.models.package import PackagesIssue
 from packageship.application.models.package import Packages

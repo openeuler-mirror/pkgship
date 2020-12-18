@@ -19,7 +19,7 @@ import json
 
 
 from test.base_code.read_data_base import ReadTestBase
-from packageship.application.apps.package.function.constants import ResponseCode
+from packageship.libs.constants import ResponseCode
 
 
 class TestSelfDepend(ReadTestBase):

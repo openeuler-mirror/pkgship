@@ -16,7 +16,7 @@ test get database name
 import unittest
 from test.base_code.common_test_code import get_correct_json_by_filename, compare_two_values
 from test.base_code.read_data_base import ReadTestBase
-from packageship.application.apps.package.function.constants import ResponseCode
+from packageship.libs.constants import ResponseCode
 
 
 class TestBinPackageInfo(ReadTestBase):

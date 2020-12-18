@@ -20,7 +20,7 @@ class: SelfDepend, DictionaryOperations
 import copy
 from packageship.libs.log import Log
 from packageship.application.apps.package.function.searchdb import SearchDB
-from packageship.application.apps.package.function.constants import ResponseCode, ListNode
+from packageship.libs.constants import ResponseCode, ListNode
 from packageship.application.apps.package.function.install_depend import InstallDepend \
     as install_depend
 from packageship.application.apps.package.function.build_depend import BuildDepend as build_depend

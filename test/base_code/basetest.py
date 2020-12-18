@@ -64,7 +64,7 @@ class TestBase(unittest.TestCase):
         """
         Method of comparison of correct results
         """
-        from packageship.application.apps.package.function.constants import ResponseCode
+        from packageship.libs.constants import ResponseCode
 
         common_string = f"\nMethod:{method},\nparams:{method.REQUESTS_KWARGS}"
 
@@ -116,7 +116,7 @@ class TestBase(unittest.TestCase):
         When there is no database, expectations are compared to actual results
         """
         try:
-            from packageship.application.apps.package.function.constants import ResponseCode
+            from packageship.libs.constants import ResponseCode
 
             configuration.DATABASE_FOLDER_PATH = os.path.join(
                 os.path.dirname(BASE_PATH), 'test', 'common_files', 'empty_dbs')
