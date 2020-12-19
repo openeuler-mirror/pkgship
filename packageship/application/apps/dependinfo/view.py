@@ -308,6 +308,10 @@ class BeDependInfo(ParseDependPackageMethod):
         with_sub_pack = data.get("withsubpack")
         db_name = data.get("dbname")
 
+        # When user does not input level, the default value of level is -1,
+        # then query all install depend
+        level = int(data.get("level", -1))
+
         db_pri = db_priority()
         if not db_pri:
             return jsonify(
@@ -322,18 +326,30 @@ class BeDependInfo(ParseDependPackageMethod):
             )
         query_parameter = {"packagename": package_name,
                            "withsubpack": with_sub_pack,
-                           "dbname": db_name}
+                           "dbname": db_name,
+                           "level": level}
 
         result_data = bedepend(query_parameter)
         res_code = result_data["code"]
         res_dict = result_data["bedepend"]
+
         if not res_dict:
             return jsonify(
                 ResponseCode.response_json(res_code)
             )
+
+        not_found_packages = []
+        for p_name in package_name:
+            p_name_src = p_name + "_src"
+            if p_name_src not in res_dict:
+                not_found_packages.append(p_name)
+
         result_dict = self.parse_depend_package(res_dict, [db_name])
+
+        res_data = {"be_dict": result_dict, "not_found_packages": not_found_packages}
+
         return jsonify(
-            ResponseCode.response_json(ResponseCode.SUCCESS, data=result_dict)
+            ResponseCode.response_json(ResponseCode.SUCCESS, data=res_data)
         )
 
 
@@ -399,6 +415,10 @@ class InstallDependInfo(ParseDependPackageMethod):
             )
         pkg_name = data.get("binaryName")
 
+        # When user does not input level, the default value of level is -1,
+        # then query all install depend
+        level = int(data.get("level", -1))
+
         db_pri = db_priority()
         if not db_pri:
             return jsonify(
@@ -421,7 +441,8 @@ class InstallDependInfo(ParseDependPackageMethod):
             )
 
         query_parameter = {"binaryName": pkg_name,
-                           "db_list": db_list}
+                           "db_list": db_list,
+                           "level": level}
 
         result_data = install_depend(query_parameter)
         res_code = result_data["code"]
@@ -432,17 +453,26 @@ class InstallDependInfo(ParseDependPackageMethod):
             return jsonify(
                 ResponseCode.response_json(res_code)
             )
-        elif len(res_dict) == 1 and res_dict.get(pkg_name)[2] == 'NOT FOUND':
+        elif len(res_dict) == len(pkg_name) and res_dict.get(pkg_name[0])[2] == 'NOT FOUND':
             return jsonify(
                 ResponseCode.response_json(ResponseCode.PACK_NAME_NOT_FOUND)
             )
+
+        not_found_packagename_list = []
+        for p_name in pkg_name:
+            if p_name not in res_dict.keys():
+                not_found_packagename_list.append(p_name)
+            elif res_dict.get(p_name)[2] == 'NOT FOUND':
+                not_found_packagename_list.append(p_name)
+                del res_dict[p_name]
 
         install_dict = self.parse_depend_package(res_dict, db_list)
 
         return jsonify(
             ResponseCode.response_json(ResponseCode.SUCCESS, data={
                 "install_dict": install_dict,
-                'not_found_components': list(res_not_found_components)
+                'not_found_components': list(res_not_found_components),
+                "not_found_packages": not_found_packagename_list
             })
         )
 
@@ -482,6 +512,10 @@ class BuildDependInfo(ParseDependPackageMethod):
             )
         pkg_name = data.get("sourceName")
 
+        # When user does not input level, the default value of level is -1,
+        # then query all install depend
+        level = int(data.get("level", -1))
+
         db_pri = db_priority()
 
         if not db_pri:
@@ -500,15 +534,22 @@ class BuildDependInfo(ParseDependPackageMethod):
             )
 
         query_parameter = {"sourceName": pkg_name,
-                           "db_list": db_list}
+                           "db_list": db_list,
+                           "level": level}
 
         result_data = build_depend(query_parameter)
         res_code = result_data["code"]
         res_dict = result_data["build_dict"]
         res_not_found_components = result_data["not_found_components"]
 
+        not_found_packages = []
         if res_dict:
             res_code = ResponseCode.SUCCESS
+            for p_name in pkg_name:
+                p_name_src = p_name + "_src"
+                if p_name_src in res_dict and res_dict[p_name_src][2] == "NOT_FOUND":
+                    del res_dict[p_name_src]
+                    not_found_packages.append(p_name)
         else:
             return jsonify(
                 ResponseCode.response_json(
@@ -523,7 +564,8 @@ class BuildDependInfo(ParseDependPackageMethod):
                 res_code,
                 data={
                     'build_dict': res_dict,
-                    'not_found_components': list(res_not_found_components)
+                    'not_found_components': list(res_not_found_components),
+                    'not_found_packages': not_found_packages
                 }
             )
         )
