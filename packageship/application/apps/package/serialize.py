@@ -221,7 +221,8 @@ class SelfDependSchema(Schema):
     """
     Description: SelfDependSchema serialize
     """
-    packagename = fields.Str(
+    packagename = fields.List(
+        fields.String(),
         required=True,
         validate=validate.Length(
             min=1,

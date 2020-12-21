@@ -17,8 +17,9 @@ TestSelfDepend
 import unittest
 import json
 
-from test.base_code.dependinfo_base_test import DependInfo
 from packageship.libs.constants import ResponseCode
+from test.base_code.dependinfo_base_test import DependInfo
+
 
 
 class TestDependInfoSelfDepend(DependInfo):
@@ -38,7 +39,7 @@ class TestDependInfoSelfDepend(DependInfo):
         Returns:
 
         """
-        self.REQUESTS_KWARGS["data"] = json.dumps({"packagename": "A1"})
+        self.REQUESTS_KWARGS["data"] = json.dumps({"packagename": ["A1"]})
 
         self.without_dbs_folder(
             self.REQUESTS_KWARGS,
@@ -64,15 +65,15 @@ class TestDependInfoSelfDepend(DependInfo):
 
             json.dumps({"packagename": "CUnit",
                         "selfbuild": 1}),
-            json.dumps({"packagename": "CUnit",
+            json.dumps({"packagename": ["CUnit"],
                         "selfbuild": '3'}),
-            json.dumps({"packagename": "CUnit",
+            json.dumps({"packagename": ["CUnit"],
                         "selfbuild": "3",
                         "withsubpack":"test"}),
-            json.dumps({"packagename": "CUnit",
+            json.dumps({"packagename": ["CUnit"],
                         "selfbuild": "3",
                         "packtype": "test"}),
-            json.dumps({"packagename": "CUnit",
+            json.dumps({"packagename": ["CUnit"],
                         "db_list": [12, 3, 4]}),
         ]
 
@@ -90,7 +91,7 @@ class TestDependInfoSelfDepend(DependInfo):
 
         """
         self.REQUESTS_KWARGS["data"] = json.dumps(
-            {"packagename": "qitiandasheng"})
+            {"packagename": ["qitiandasheng"]})
         resp_dict = self.client_request(**self.REQUESTS_KWARGS)
 
         self.response_json_error_judge(
@@ -105,7 +106,7 @@ class TestDependInfoSelfDepend(DependInfo):
 
         """
         self.REQUESTS_KWARGS["data"] = json.dumps(
-            {"packagename": "CUnit", "db_list": ["shifu", "bajie"]})
+            {"packagename": ["CUnit"], "db_list": ["shifu", "bajie"]})
         resp_dict = self.client_request(**self.REQUESTS_KWARGS)
         self.response_json_error_judge(
             resp_dict, resp_code=ResponseCode.DB_NAME_ERROR, method=self)

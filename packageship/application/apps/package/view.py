@@ -23,7 +23,7 @@ from sqlalchemy.exc import DisconnectionError
 from sqlalchemy.exc import SQLAlchemyError
 
 from packageship.application.initsystem.data_import import InitDataBase
-from .function.searchdb import db_priority, SearchDB
+from .function.searchdb import db_priority, SearchDB, process_not_found_packages
 from packageship.libs.dbutils import DBHelper
 from packageship.libs.exception import Error
 from packageship.libs.exception import ContentNoneException
@@ -238,7 +238,9 @@ class InstallDepend(Resource):
 
         not_found_packagename_list = []
         for pkg_name in pkg_name_list:
-            if install_dict.get(pkg_name)[2] == 'NOT FOUND':
+            if pkg_name not in install_dict.keys():
+                not_found_packagename_list.append(pkg_name)
+            elif install_dict.get(pkg_name)[2] == 'NOT FOUND':
                 not_found_packagename_list.append(pkg_name)
                 del install_dict[pkg_name]
 
@@ -381,7 +383,7 @@ class SelfDepend(Resource):
                 ResponseCode.response_json(ResponseCode.PARAM_ERROR)
             )
 
-        pkg_name = data.get("packagename")
+        pkg_name_list  = data.get("packagename")
         db_pri = db_priority()
 
         if not db_pri:
@@ -402,19 +404,25 @@ class SelfDepend(Resource):
                 ResponseCode.response_json(ResponseCode.DB_NAME_ERROR)
             )
         response_code, binary_dicts, source_dicts, not_fd_components = \
-            self_depend(db_list).query_depend(pkg_name, int(self_build),
+            self_depend(db_list).query_depend(pkg_name_list, int(self_build),
                                               int(with_sub_pack), pack_type)
+
+        not_found_packages_list = []
+        for pkg_name in pkg_name_list:
+            process_not_found_packages(binary_dicts, pkg_name, not_found_packages_list, 2)
+            process_not_found_packages(source_dicts, pkg_name, not_found_packages_list, 0)
 
         if not all([binary_dicts, source_dicts]):
             return jsonify(
-                ResponseCode.response_json(response_code)
+                ResponseCode.response_json(ResponseCode.PACK_NAME_NOT_FOUND)
             )
 
         return jsonify(
             ResponseCode.response_json(ResponseCode.SUCCESS, data={
                 "binary_dicts": binary_dicts,
                 "source_dicts": source_dicts,
-                "not_found_components": list(not_fd_components)
+                "not_found_components": list(not_fd_components),
+                "not_found_packages": not_found_packages_list
             })
         )
 

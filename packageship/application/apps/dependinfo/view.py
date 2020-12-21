@@ -249,20 +249,21 @@ class SelfDependInfo(ParseDependPackageMethod):
                            "packtype": pack_type}
 
         result_data = selfbuild(query_parameter)
-        response_code = result_data["code"]
-        binary_dicts = result_data["binary_dicts"]
-        source_dicts = result_data["source_dicts"]
-        if not all([binary_dicts, source_dicts]):
-            return jsonify(
-                ResponseCode.response_json(response_code)
-            )
+        binary_dicts = result_data.get("binary_dicts")
+        source_dicts = result_data.get("source_dicts")
+        not_found_packages = result_data.get("not_found_packages")
+        code = result_data.get("code")
+        if code == ResponseCode.PACK_NAME_NOT_FOUND:
+            return jsonify(ResponseCode.response_json(code))
+
         bin_package, package_count = self._parse_bin_package(binary_dicts, db_list)
         src_package, statistics = self._parse_src_package(source_dicts, package_count)
         return jsonify(
             ResponseCode.response_json(ResponseCode.SUCCESS, data={
                 "binary_dicts": bin_package,
                 "source_dicts": src_package,
-                "statistics": statistics
+                "statistics": statistics,
+                "not_found_packages": not_found_packages
             })
         )
 

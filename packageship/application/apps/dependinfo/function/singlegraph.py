@@ -14,7 +14,7 @@
 Data analysis of dependency graph
 """
 import random
-from packageship.application.apps.package.function.searchdb import db_priority
+from packageship.application.apps.package.function.searchdb import db_priority, process_not_found_packages
 from packageship.libs.constants import ResponseCode
 from packageship.application.apps.package.serialize import BeDependSchema
 from packageship.application.apps.package.serialize import BuildDependSchema
@@ -78,11 +78,19 @@ class SelfBuildDep:
                                              selfbuild,
                                              withsubpack,
                                              packtype)
+        not_found_packages_list = []
+        for pkg_name in packagename:
+            process_not_found_packages(binary_dicts, pkg_name, not_found_packages_list, 2)
+            process_not_found_packages(source_dicts, pkg_name, not_found_packages_list, 0)
+        if not all([binary_dicts, source_dicts]):
+            return {"code": ResponseCode.PACK_NAME_NOT_FOUND}
+
         return {
             "code": _response_code,
             "binary_dicts": binary_dicts,
             "source_dicts": source_dicts,
-            "not_found_components": list(not_fd_components)
+            "not_found_components": list(not_fd_components),
+            "not_found_packages": not_found_packages_list
         }
 
     def __call__(self):
