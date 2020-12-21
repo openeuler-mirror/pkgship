@@ -315,3 +315,94 @@ class InstallDep(BaseDep):
             Quickly learn the contents of the object
         """
         return ' process {} {} data '.format(self.__class__, self.args[0])
+
+
+class BuildDep(BaseDep):
+    """
+    BuildDep
+    """
+
+    def __init__(self, json_data, *args):
+        """
+        Initializing attribute
+        Args:
+            json_data: json data
+            *args: args
+        """
+        super(BuildDep, self).__init__()
+        self.json_data = json_data
+        self.args = args
+        self.build_depends = []
+
+    @catch_error
+    def __init_data(self):
+        """
+        Get the data for build_dict
+        Returns:
+            None,Object update property
+        """
+        self.data = self.json_data["build_dict"]
+
+    def __process_parent_nodes(self, bin_name, parent_nodes):
+        """
+        Parsed data type
+        Args:
+            bin_name: Binary package name
+            parent_nodes: The parent node
+
+        Returns:
+            Object update property
+        """
+        for parent_name, depend_type in parent_nodes:
+
+            if parent_name == 'root':
+                continue
+
+            if depend_type == 'install':
+                self._process_install_dict(bin_name, parent_name)
+            if depend_type == 'build':
+                self.build_depends.append(bin_name)
+
+    def __process_data(self):
+        """
+        Parsed data
+        Returns:
+            Object update property
+        """
+        self.__init_data()
+        for bin_name, list_values in self.data.items():
+            parent_nodes = list_values[ListNode.TAIL]
+            if list_values[ListNode.SOURCE_NAME] == "source":
+                continue
+            self._init_install_data(bin_name, list_values)
+            self.__process_parent_nodes(bin_name, parent_nodes)
+
+    def run(self):
+        """
+        The main entrance to the method
+        Returns:
+            self.data: data
+            self.install_dict: install dict
+            dict(): An empty dictionary
+            list(): An empty list
+        """
+        self.__process_data()
+        # return all data and install data and empty data and the source
+        # package's first layer depends
+        return self.data, self.install_dict, dict(), self.build_depends
+
+    def __repr__(self):
+        """
+        The type, value, and so on of the object describe the information
+        Returns:
+            The type, value, and so on of the object describe the information
+        """
+        return ' process {} {} data '.format(self.__class__, self.args[0])
+
+    def __str__(self):
+        """
+        Quickly learn the contents of the object
+        Returns:
+            Quickly learn the contents of the object
+        """
+        return ' process {} {} data '.format(self.__class__, self.args[0])

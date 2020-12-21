@@ -1,13 +1,14 @@
-<<<<<<< HEAD
+* Tue Dec 17 2020 Pengju Jiang <jiangpengju2@huawei.com>
+- Four kinds of dependent zip download batch upload - build dependent data parsing
+
 * Thu Dec 17 2020 Chengqiang Bao <baochengqiang1@huawei.com>
 - Add not_found_packages in output result for be depend interface
-=======
+
 * Fri Dec 11 2020 Shaowei Cheng <chenshaowei3@huawei.com>
 - Echo effect optimization,constants file extraction
 
 * Fri Dec 4 2020 Shaowei Cheng <chenshaowei3@huawei.com>
 - Echo effect optimization
->>>>>>> bc2b7ab (命令行显示优化,constants文件提取)
 
 * Thu Dec 17 2020 Chengqiang Bao <baochengqiang1@huawei.com>
 - Add not_found_packages in output result for be depend interface
