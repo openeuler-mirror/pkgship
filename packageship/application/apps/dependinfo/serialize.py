@@ -143,8 +143,8 @@ class SingleGraphSchema(Schema):
     """
     Description: Check SingleGraph interface
     """
-    packagename = fields.Str(validate=validate.Length(min=1, max=200),
-                             required=True)
+    packagename = fields.List(fields.String(validate=validate.Length(min=1, max=200)),
+                              validate=validate.Length(max=1), required=True)
 
     dbname = fields.List(fields.String(), required=True, allow_none=True)
 
