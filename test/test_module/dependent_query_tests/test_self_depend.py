@@ -17,9 +17,9 @@ TestSelfDepend
 import unittest
 import json
 
-
-from test.base_code.read_data_base import ReadTestBase
 from packageship.libs.constants import ResponseCode
+from test.base_code.read_data_base import ReadTestBase
+
 
 
 class TestSelfDepend(ReadTestBase):
@@ -39,7 +39,7 @@ class TestSelfDepend(ReadTestBase):
         Returns:
 
         """
-        self.REQUESTS_KWARGS["data"] = json.dumps({"packagename": "A1"})
+        self.REQUESTS_KWARGS["data"] = json.dumps({"packagename": ["A1"]})
 
         self.without_dbs_folder(
             self.REQUESTS_KWARGS,
@@ -63,17 +63,17 @@ class TestSelfDepend(ReadTestBase):
             json.dumps({"packagename": "dsd" * 100}),
             json.dumps({"packagename": 0}),
 
-            json.dumps({"packagename": "CUnit",
+            json.dumps({"packagename": ["CUnit"],
                         "selfbuild": 1}),
-            json.dumps({"packagename": "CUnit",
+            json.dumps({"packagename": ["CUnit"],
                         "selfbuild": '3'}),
-            json.dumps({"packagename": "CUnit",
+            json.dumps({"packagename": ["CUnit"],
                         "selfbuild": "3",
                         "withsubpack":"test"}),
-            json.dumps({"packagename": "CUnit",
+            json.dumps({"packagename": ["CUnit"],
                         "selfbuild": "3",
                         "packtype": "test"}),
-            json.dumps({"packagename": "CUnit",
+            json.dumps({"packagename": ["CUnit"],
                         "db_list": [12, 3, 4]}),
         ]
 
@@ -91,7 +91,7 @@ class TestSelfDepend(ReadTestBase):
 
         """
         self.REQUESTS_KWARGS["data"] = json.dumps(
-            {"packagename": "qitiandasheng"})
+            {"packagename": ["qitiandasheng"]})
         resp_dict = self.client_request(**self.REQUESTS_KWARGS)
 
         self.response_json_error_judge(
@@ -106,7 +106,7 @@ class TestSelfDepend(ReadTestBase):
 
         """
         self.REQUESTS_KWARGS["data"] = json.dumps(
-            {"packagename": "CUnit", "db_list": ["shifu", "bajie"]})
+            {"packagename": ["CUnit"], "db_list": ["shifu", "bajie"]})
         resp_dict = self.client_request(**self.REQUESTS_KWARGS)
         self.response_json_error_judge(
             resp_dict, resp_code=ResponseCode.DB_NAME_ERROR, method=self)

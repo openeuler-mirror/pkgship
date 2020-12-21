@@ -105,7 +105,7 @@ class SelfDepend():
         return (response_code, self.binary_dict.dictionary,
                 self.source_dicts.dictionary, self.not_found_components)
 
-    def init_dict(self, packname, packtype):
+    def init_dict(self, packnames, packtype):
         """
         Description: init result dict
         Args:
@@ -116,32 +116,40 @@ class SelfDepend():
         Raises:
         """
         if packtype == 'source':
-            response_code, subpack_list = self.search_db.get_sub_pack([packname])
+            response_code, subpack_list = self.search_db.get_sub_pack(packnames)
             if not subpack_list:
                 return ResponseCode.PACK_NAME_NOT_FOUND
 
             for subpack_tuple, dbname in subpack_list:
-                self.source_dicts.append_src(packname, dbname, subpack_tuple.search_version)
+                self.source_dicts.append_src(subpack_tuple.search_name,
+                                             dbname, subpack_tuple.search_version)
                 if dbname == 'NOT FOUND':
                     continue
 
                 if subpack_tuple.subpack_name and subpack_tuple.subpack_name \
                         not in self.binary_dict.dictionary:
                     self.binary_dict.append_bin(key=subpack_tuple.subpack_name,
-                                                src=packname,
+                                                src=subpack_tuple.search_name,
                                                 version=subpack_tuple.search_version,
                                                 dbname=dbname)
-
         else:
-            response_code, dbname, source_name, version = \
-                self.search_db.get_src_name(packname)
+            response_code, source_info_list = \
+                self.search_db.get_src_name(packnames)
+
             if response_code != ResponseCode.SUCCESS:
                 return response_code
-            self.source_dicts.append_src(source_name, dbname, version)
-            self.binary_dict.append_bin(key=packname,
-                                        src=source_name,
-                                        version=version,
-                                        dbname=dbname)
+
+            searched_bin_packages = set()
+            for item in source_info_list:
+                self.source_dicts.append_src(item.source_name, item.db_name, item.source_version)
+                self.binary_dict.append_bin(key=item.search_bin_name,
+                                            src=item.source_name,
+                                            version=item.source_version,
+                                            dbname=item.db_name)
+                searched_bin_packages.add(item.search_bin_name)
+
+            for bin_name in set(packnames) - searched_bin_packages:
+                self.binary_dict.append_bin(key=bin_name, dbname="NOT FOUND")
         return response_code
 
     def query_install(self):
@@ -239,7 +247,7 @@ class SelfDepend():
             if not key:
                 LOGGER.logger.warning("key is NONE for value = %s", str(values))
                 continue
-            if key not in self.binary_dict.dictionary and values[0] != 'source':
+            if key not in self.binary_dict.dictionary and not key.endswith("_src"):
                 self.binary_dict.dictionary[key] = copy.deepcopy(values)
                 source_name = values[ListNode.SOURCE_NAME]
                 if not source_name:

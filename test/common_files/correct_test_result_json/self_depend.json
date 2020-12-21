@@ -1,7 +1,7 @@
 [
   {
     "input": {
-      "packagename": "A1"
+      "packagename": ["A1"]
     },
     "output": {
       "code": "2001",
@@ -104,14 +104,15 @@
             "0.11"
           ]
         },
-        "not_found_components": []
+        "not_found_components": [],
+        "not_found_packages": []
       },
       "msg": "Successful Operation!"
     }
   },
   {
     "input": {
-      "packagename": "C",
+      "packagename": ["C"],
       "packtype": "source"
     },
     "output": {
@@ -226,14 +227,15 @@
             "0.11"
           ]
         },
-        "not_found_components": []
+        "not_found_components": [],
+        "not_found_packages": []
       },
       "msg": "Successful Operation!"
     }
   },
   {
     "input": {
-      "packagename": "A2",
+      "packagename": ["A2"],
       "selfbuild": "0",
       "withsubpack": "1"
     },
@@ -364,14 +366,15 @@
             "0.11"
           ]
         },
-        "not_found_components": []
+        "not_found_components": [],
+        "not_found_packages": []
       },
       "msg": "Successful Operation!"
     }
   },
   {
     "input": {
-      "packagename": "A",
+      "packagename": ["A"],
       "selfbuild": "0",
       "withsubpack": "1",
       "packtype": "source"
@@ -507,9 +510,40 @@
             "0.11"
           ]
         },
-        "not_found_components": []
+        "not_found_components": [],
+        "not_found_packages": []
       },
       "msg": "Successful Operation!"
     }
+  },
+  {
+    "input": {"packagename": ["A1", "D2"]},
+    "output": {"code": "2001",
+               "data": {"binary_dicts": {"A1": ["A",
+                                                "0.0.23b",
+                                                "mainline",
+                                                [["root", null], ["D1", "install"]]],
+                                         "A2": ["A",
+                                                "0.0.23b",
+                                                "mainline",
+                                                [["A1", "install"], ["C1", "install"]]],
+                                         "B1": ["B",
+                                                "0.0.2",
+                                                "mainline",
+                                                [["A", "build"], ["D", "build"]]],
+                                         "B2": ["B", "0.0.2", "mainline", [["C", "build"]]],
+                                         "C1": ["C", "0.1", "mainline", [["A2", "install"]]],
+                                         "D1": ["D",
+                                                "0.11",
+                                                "mainline",
+                                                [["D2", "install"], ["A2", "install"]]],
+                                         "D2": ["D", "0.11", "mainline", [["root", null]]]},
+                        "not_found_components": [],
+                        "not_found_packages": [],
+                        "source_dicts": {"A": ["mainline", "0.0.23b"],
+                                         "B": ["mainline", "0.0.2"],
+                                         "C": ["mainline", "0.1"],
+                                         "D": ["mainline", "0.11"]}},
+               "msg": "Successful Operation!"}
   }
 ]

@@ -1,3 +1,6 @@
+* Tue Dec 15 2020 Shenmei Tu <tushenmei@huawei.com>
+- Add batch query for self depend interface and dependinfo self depend interface
+
 * Tue Dec 17 2020 Pengju Jiang <jiangpengju2@huawei.com>
 - Four kinds of dependent zip download batch upload - build dependent data parsing
 

@@ -110,8 +110,11 @@ class SelfDependSchema(Schema):
     """
     Description: Check selfdepend interface
     """
-    packagename = fields.Str(validate=validate.Length(min=1, max=200),
-                             required=True)
+    packagename = fields.List(fields.String(),
+                              required=True,
+                              validate=validate.Length(
+                                  min=1,
+                                  max=200))
     db_list = fields.List(fields.String(),
                           required=False, allow_none=True)
     selfbuild = fields.Str(validate=_validate_selfbuild,

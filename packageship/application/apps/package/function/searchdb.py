@@ -828,47 +828,65 @@ class SearchDB():
 
         return None, None
 
-    def get_src_name(self, binary_name):
+    def get_src_name(self, binary_name_list):
         """
         Description: get a package source name from database:
                      bianry_name ->binary_source_name -> source_name
         Args:
             binary_name: search package's name, database preority list
         Returns:
-             db_name: database name
-             source_name: source name
-             source_version: source version
+                object of database query result
         Raises:
             AttributeError: The object does not have this property
             SQLAlchemyError: sqlalchemy error
         """
+        bin_names_set = set(binary_name_list)
+        result_list = []
+        src_info_tuple = namedtuple(
+            "src_info", ["search_bin_name", "source_name", "source_version", "db_name"])
+        binary_name_set = {binary_name for binary_name in binary_name_list if binary_name}
+        if not binary_name_set:
+            return ResponseCode.INPUT_NONE, None
         for db_name, data_base in self.db_object_dict.items():
-            sql_str = """
-             SELECT DISTINCT
-                 src_pack.name AS source_name,
-                 src_pack.version AS source_version 
-             FROM
-                 bin_pack,
-                 src_pack 
-             WHERE
-                 src_pack.src_name = bin_pack.rpm_sourcerpm 
-                 AND bin_pack.name = :binary_name;
-             """
             try:
+                name_in = literal_column("name").in_(bin_names_set)
+
+                sql_str = """SELECT
+                              src_pack.name AS source_name,
+                              src_pack.version AS source_version,
+                              bin_pack.name AS search_bin_name 
+                             FROM
+                              bin_pack,
+                              src_pack 
+                             WHERE
+                              bin_pack.rpm_sourcerpm = src_pack.src_name 
+                              AND bin_pack.{};
+                 """.format(name_in)
+
                 bin_obj = data_base.session.execute(text(sql_str),
-                                                    {"binary_name": binary_name}
-                                                    ).fetchone()
-                source_name = bin_obj.source_name
-                source_version = bin_obj.source_version
-                if source_name is not None:
-                    return ResponseCode.SUCCESS, db_name, \
-                           source_name, source_version
+                                                    {"name_{}".format(i): v
+                                                     for i, v in enumerate(binary_name_set, 1)}
+                                                    ).fetchall()
+                local_names_set = set()
+                for obj in bin_obj:
+                    local_names_set.add(obj.search_bin_name)
+                    in_tuple = src_info_tuple(
+                        obj.search_bin_name,
+                        obj.source_name,
+                        obj.source_version,
+                        db_name
+                    )
+                    result_list.append(in_tuple)
+                bin_names_set.difference(local_names_set)
+
+                return ResponseCode.SUCCESS, result_list
+
             except AttributeError as error_msg:
                 LOGGER.logger.error(error_msg)
             except SQLAlchemyError as error_msg:
                 LOGGER.logger.error(error_msg)
-                return ResponseCode.DIS_CONNECTION_DB, None, None, None
-        return ResponseCode.PACK_NAME_NOT_FOUND, None, None, None
+                return ResponseCode.DIS_CONNECTION_DB, None
+        return ResponseCode.PACK_NAME_NOT_FOUND, None
 
     def get_sub_pack(self, source_name_list):
         """
@@ -1050,3 +1068,23 @@ def db_priority():
     except SQLAlchemyError as error:
         current_app.logger.error(error)
         return None
+
+
+def process_not_found_packages(dicts, key, not_found_packages_list, index):
+    """
+    delete "NOT FOUND" in dict result and then put this package in
+    not_found_packages_list
+    Args:
+        dicts: binary_dicts or source_dicts
+        key: packagename
+        index:
+
+    Returns:
+
+    """
+    try:
+        if dicts.get(key)[index] == "NOT FOUND":
+            not_found_packages_list.append(key)
+            del dicts[key]
+    except TypeError:
+        pass
