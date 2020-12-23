@@ -1,5 +1,5 @@
-* Tue Dec 15 2020 Shenmei Tu <tushenmei@huawei.com>
-- Add batch query for self depend interface and dependinfo self depend interface
+* Mon Dec 21 2020 Pengju Jiang <jiangpengju2@huawei.com>
+- Four kinds of dependent zip download batch upload - be_depend data parsing
 
 * Tue Dec 17 2020 Pengju Jiang <jiangpengju2@huawei.com>
 - Four kinds of dependent zip download batch upload - build dependent data parsing
@@ -7,17 +7,14 @@
 * Thu Dec 17 2020 Chengqiang Bao <baochengqiang1@huawei.com>
 - Add not_found_packages in output result for be depend interface
 
-* Fri Dec 11 2020 Shaowei Cheng <chenshaowei3@huawei.com>
-- Echo effect optimization,constants file extraction
-
-* Fri Dec 4 2020 Shaowei Cheng <chenshaowei3@huawei.com>
-- Echo effect optimization
-
 * Thu Dec 17 2020 Chengqiang Bao <baochengqiang1@huawei.com>
 - Add level and batch query for dependinfo bedepend,installdepend,builddepend interface
 
 * Thu Dec 17 2020 Chengqiang Bao <baochengqiang1@huawei.com>
 - Add not_found_packages in output result for be depend interface
+
+* Tue Dec 15 2020 Shenmei Tu <tushenmei@huawei.com>
+- Add batch query for self depend interface and dependinfo self depend interface
 
 * Mon Dec 14 2020 Chengqiang Bao <baochengqiang1@huawei.com>
 - Add level and batch query for build depend interface
@@ -25,8 +22,14 @@
 * Mon Dec 14 2020 Shenmei Tu <tushenmei@huawei.com>
 - Add not_found_packages in output result for install depend interface
 
+* Fri Dec 11 2020 Shaowei Cheng <chenshaowei3@huawei.com>
+- Echo effect optimization,constants file extraction
+
 * Tue Dec 8 2020 Pengju Jiang <jiangpengju2@huawei.com>
 - Four kinds of dependent zip download batch upload - dependent data parsing
+
+* Fri Dec 4 2020 Shaowei Cheng <chenshaowei3@huawei.com>
+- Echo effect optimization
 
 * Thu Dec 03 2020 Chengqiang Bao <baochengqiang1@huawei.com>
 - Add level and batch query for be depend interface
