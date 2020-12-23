@@ -1,3 +1,6 @@
+* Mon Dec 21 2020 Chengqiang Bao <baochengqiang1@huawei.com>
+- SingleGraph interface should be modified in response to the modification of Level and Batch
+
 * Mon Dec 21 2020 Pengju Jiang <jiangpengju2@huawei.com>
 - Four kinds of dependent zip download batch upload - be_depend data parsing
 

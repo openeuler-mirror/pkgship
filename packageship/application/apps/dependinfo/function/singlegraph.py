@@ -114,7 +114,7 @@ class InstallDep:
         self.query_parameter = {
             'binaryName': self.graph.packagename,
             'db_list': self.graph.dbname,
-            'level': self.graph.level
+            'level': self.graph.level or -1
         }
 
     def validate(self):
@@ -164,7 +164,7 @@ class BuildDep:
         self.query_parameter = {
             'sourceName': self.graph.packagename,
             'db_list': self.graph.dbname,
-            'level': self.graph.level
+            'level': self.graph.level or -1
         }
 
     def validate(self):
@@ -218,7 +218,7 @@ class BeDependOn:
             'packagename': self.graph.packagename,
             'dbname': dbname,
             'withsubpack': self.graph.withsubpack or 0,
-            'level': self.graph.level
+            'level': self.graph.level or -1
         }
 
     def validate(self):
