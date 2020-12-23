@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<codewrap type="science and engineering">
+<code label="success">
+    <status_code>200</status_code>
+    <message_zh>操作成功</message_zh>
+    <message_en>Operation success</message_en>
+</code>
+<code label="fail">
+    <status_code>500</status_code>
+    <message_zh>操作失败</message_zh>
+    <message_en>Operation failure</message_en>
+</code>
+<code label="param-error">
+    <status_code>400</status_code>
+    <message_zh>请求参数错误</message_zh>
+    <message_en>Request parameter error</message_en>
+</code>
+<code label="content-type-error">
+    <status_code>401</status_code>
+    <message_zh>请求类型错误</message_zh>
+    <message_en>Request type error</message_en>
+</code>
+<code label="validate-fail">
+    <status_code>402</status_code>
+    <message_zh>参数校验错误</message_zh>
+    <message_en>Parameter check error</message_en>
+</code>
+</codewrap>

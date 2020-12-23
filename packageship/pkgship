@@ -23,7 +23,7 @@ try:
 except:
     pass
 
-from packageship.pkgship import main
+from packageship.application.cli.cmd import main
 
 
 if __name__ == '__main__':
