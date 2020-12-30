@@ -92,7 +92,7 @@ class Log():
         self.__set_handler()
         self.__set_formatter()
 
-    def __new__(cls, *args, **kwargs):  # pylint: disable=unused-argument
+    def __new__(cls, *args, **kwargs):
         """
             Use the singleton pattern to create a thread-safe producer pattern
         """

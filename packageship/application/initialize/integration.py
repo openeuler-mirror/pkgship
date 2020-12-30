@@ -21,9 +21,15 @@ def del_temporary_file(path, folder=False):
 
 
 class InitializeService:
+    """
+        init service for importing depend data
+    """
 
     @property
     def success(self):
+        """
+            init result check
+        """
         pass
 
     def import_depend(self):
@@ -34,7 +40,9 @@ class InitializeService:
 
 
 class RepoConfig:
-
+    """
+        init service for reading config
+    """
     @property
     def validate(self):
         """

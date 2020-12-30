@@ -14,7 +14,9 @@
 
 
 class DispatchDepend:
-
+    """
+        Factory method, distributing operations of different depend search
+    """
     def __init__(self, depend):
         self._depend = depend
 
@@ -25,18 +27,29 @@ class DispatchDepend:
 class BaseDepend:
 
     def depend_list(self):
-        """depend list"""
+        """
+            get the depend relationship with list format
+        """
         pass
 
     def download_depend_files(self):
+        """
+            get the depend relationship with downloadable files
+        """
         pass
 
     def depend_info_graph(self):
+        """
+            get the depend relationship with graph format
+        """
         pass
 
 class DataProcess:
 
     def reverse(self):
+        """
+            reverse dict
+        """
         pass
 
     def filter_dict(self, root, level):

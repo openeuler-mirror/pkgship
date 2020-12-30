@@ -13,9 +13,14 @@
 
 
 class GraphInfo:
-
+    """
+        generate graph based on depend result
+    """
     def generate_graph(self):
         """
-        auto generate coordinates and graphs
+            auto generate coordinates and graphs
+            :param extend: suffix（compression method）
+            :param kwargs.file_path: compression files path
+            :param kwargs.save_file: decompress files pat
         """
         pass

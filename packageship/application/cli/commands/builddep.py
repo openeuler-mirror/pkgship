@@ -1,4 +1,4 @@
-#!/usr/bin/python3 # pylint: disable= too-many-lines
+#!/usr/bin/python3  
 # ******************************************************************************
 # Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
 # licensed under the Mulan PSL v2.

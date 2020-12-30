@@ -48,7 +48,7 @@ class XmlParse:
         try:
             self.xml = et.parse(xml_path)
         except parse_errors as e:
-            pass
+            raise e
 
     def clear_xml(self):
         self.xml = None
