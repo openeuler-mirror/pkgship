@@ -16,9 +16,9 @@ The root path of the project
 import os
 import sys
 
+
 if "SETTINGS_FILE_PATH" not in os.environ:
     os.environ["SETTINGS_FILE_PATH"] = '/etc/pkgship/package.ini'
-
 
 # The root directory where the system is running
 if getattr(sys, 'frozen', False):

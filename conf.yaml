@@ -10,17 +10,15 @@
 
 # bin_db_file:SQLite files related to the binary package provided in the repo source
 
-# lifecycle:Does the imported source package data need to be stored in the life cycle database
-# When you need to store in the life cycle, you need to set the value to enable
-# When you do not need to store in the life cycle, you need to set the value to disable
-
 # priority: The priority of the database,When querying dependencies, which library is
 # the first to find data the value can only be 1、 2、 3、 4
 
 - dbname: $database_name
   #src_db_file: file:///path
+  #src_db_file: .../xxx.sqlite
   src_db_file: http://remote-address
   # bin_db_file: file:///path
+  # bin_db_file: .../xxx.sqlite
   bin_db_file: http://remote-address
-  lifecycle: enable/disable
-  priority: 1/2/3/4
+  priority: 1/2/3/4/...
+ 
