@@ -216,6 +216,128 @@ class PkgshipCommand(BaseCommand):
         except Error:
             print('command error')
 
+    def _parse_depend_for(self, bin_list, bin_package, package_depend, directly_list, src_list):
+        """
+        Decompose the for loop that resolves Depend data
+        Args:
+            bin_list: Binary package list
+            bin_package: bin package
+            package_depend: package depend
+            directly_list: A list of direct dependencies
+            src_list: Source package list
+
+        Returns:
+            None, Update the value of the variable
+        """
+
+        for item in bin_list:
+            if item == bin_package:
+                row_data_indirect = [bin_package,
+                                     package_depend[ListNode.SOURCE_NAME],
+                                     package_depend[ListNode.VERSION],
+                                     package_depend[ListNode.DBNAME]]
+                if row_data_indirect not in directly_list:
+                    directly_list.append(row_data_indirect)
+        for item in src_list:
+            if item == package_depend[0]:
+                bin_data_directly = [bin_package,
+                                     package_depend[ListNode.SOURCE_NAME],
+                                     package_depend[ListNode.VERSION],
+                                     package_depend[ListNode.DBNAME]]
+                if bin_data_directly not in directly_list:
+                    directly_list.append(bin_data_directly)
+
+    def _count_bin_src(self, package_depend, bin_package, bin_package_count, src_package_count):
+        """
+        Count the number of binary package sources
+        Args:
+            package_depend: package depend
+            bin_package: binary package list
+            bin_package_count: The number of binary packages
+            src_package_count:  Number of source code packages
+
+        Returns:
+            bin_package_count: The number of binary packages
+            src_package_count:  Number of source code packages
+        """
+
+        if package_depend[ListNode.DBNAME] not in self.statistics:
+            self.statistics[package_depend[ListNode.DBNAME]] = {
+                'binary': [],
+                'source': []
+            }
+            # Determine whether the current binary package exists
+        if bin_package not in \
+                self.statistics[package_depend[ListNode.DBNAME]]['binary']:
+            self.statistics[package_depend[ListNode.DBNAME]
+            ]['binary'].append(bin_package)
+            bin_package_count += 1
+            # Determine whether the source package exists
+        if package_depend[ListNode.SOURCE_NAME] not in \
+                self.statistics[package_depend[ListNode.DBNAME]]['source']:
+            self.statistics[package_depend[ListNode.DBNAME]]['source'].append(
+                package_depend[ListNode.SOURCE_NAME])
+            src_package_count += 1
+        return bin_package_count, src_package_count
+
+    def parse_bedepend_package(self, package_all, bin_package_count, src_package_count, params):
+        """
+        Analytical data
+        Args:
+            package_all: Data data from JSON data
+            bin_package_count: The number of binary packages counted
+            src_package_count: Source code package count
+            params: params
+
+        Returns:
+            bin_package_count: The number of binary packages counted
+            src_package_count: Source code package count
+        """
+        directly_list = list()
+        indirect_list = list()
+        bin_list = list()
+        src_list = list()
+
+        def update_bin_src_list(package_depend_node, local_bin_list, local_src_list):
+            """
+            Internal methods
+            Returns:
+            	Update the contents of variables
+            """
+            for item in package_depend_node[-1]:
+                if item[ListNode.DEPEND_TYPE] == "install":
+                    local_bin_list.append(item[0])
+                elif item[ListNode.DEPEND_TYPE] == "build":
+                    local_src_list.append(item[0])
+
+        for bin_package, package_depend in package_all.items():
+            if isinstance(package_depend, list) and package_depend[0] != 'source':
+                if package_depend[ListNode.SOURCE_NAME] in params.packagename:
+                    row_data_directly = [bin_package,
+                                         package_depend[ListNode.SOURCE_NAME],
+                                         package_depend[ListNode.VERSION],
+                                         package_depend[ListNode.DBNAME]]
+                    directly_list.append(row_data_directly)
+                    update_bin_src_list(package_depend, bin_list, src_list)
+                self._parse_depend_for(bin_list, bin_package, package_depend, directly_list, src_list)
+                bin_data_indirect = [bin_package,
+                                     package_depend[ListNode.SOURCE_NAME],
+                                     package_depend[ListNode.VERSION],
+                                     package_depend[ListNode.DBNAME]]
+                if bin_data_indirect not in directly_list:
+                    indirect_list.append(bin_data_indirect)
+                bin_package_count, src_package_count = self._count_bin_src(package_depend,
+                                                                           bin_package,
+                                                                           bin_package_count,
+                                                                           src_package_count)
+        if hasattr(self, 'table') and self.table:
+            row_data = directly_list
+            if indirect_list:
+                row_data += [["", "", "", ""]] + indirect_list
+            for item in row_data:
+                self.table.add_row(item)
+        return bin_package_count, src_package_count
+
     def parse_depend_package(self, response_data, params=None):
         """
         Description: Parsing package data with dependencies
@@ -231,48 +353,13 @@ class PkgshipCommand(BaseCommand):
         src_package_count = 0
         if response_data.get('code') == ResponseCode.SUCCESS:
             package_all = response_data.get('data')
-            if isinstance(package_all, dict):
-                if params:
-                    if package_all.get("not_found_components"):
-                        print("Problem: Not Found Components")
-                        for not_found_com in package_all.get("not_found_components"):
-                            print("  - nothing provides {} needed by {} ".format(
-                                not_found_com, params.packagename))
-                    package_all = package_all.get("build_dict")
-
-                for bin_package, package_depend in package_all.items():
-                    # distinguish whether the current data is the data of the root node
-                    if isinstance(package_depend, list) and \
-                            package_depend[ListNode.SOURCE_NAME] != 'source':
-
-                        row_data = [bin_package,
-                                    package_depend[ListNode.SOURCE_NAME],
-                                    package_depend[ListNode.VERSION],
-                                    package_depend[ListNode.DBNAME]]
-                        # Whether the database exists
-                        if package_depend[ListNode.DBNAME] not in self.statistics:
-                            self.statistics[package_depend[ListNode.DBNAME]] = {
-                                'binary': [],
-                                'source': []
-                            }
-                        # Determine whether the current binary package exists
-                        if bin_package not in \
-                                self.statistics[package_depend[ListNode.DBNAME]]['binary']:
-                            self.statistics[package_depend[ListNode.DBNAME]]['binary']. \
-                                append(bin_package)
-                            bin_package_count += 1
-                        # Determine whether the source package exists
-                        if package_depend[ListNode.SOURCE_NAME] not in \
-                                self.statistics[package_depend[ListNode.DBNAME]]['source']:
-                            self.statistics[package_depend[ListNode.DBNAME]]['source'].append(
-                                package_depend[ListNode.SOURCE_NAME])
-                            src_package_count += 1
-
-                        if hasattr(self, 'table') and self.table:
-                            self.table.add_row(row_data)
+            self._print_not_packages(package_all, params)
+            bin_package_count, src_package_count = self.parse_bedepend_package(package_all.get("be_dict"),
+                                                                               bin_package_count,
+                                                                               src_package_count, params)
         else:
             LOGGER.logger.error(response_data.get('msg'))
-            self.output_error_formatted(response_data.get('msg'), response_data.get('code'))
+            print(response_data.get('msg'))
         statistics_table = self.statistics_table(
             bin_package_count, src_package_count)
         return statistics_table
@@ -1041,7 +1128,6 @@ class SelfBuildCommand(PkgshipCommand):
         self.src_package_table = self.create_table([
             'Source Name', 'Version', 'Database'])
         self.params = [
-            ('packagename', 'str', 'source package name', '', 'store'),
             ('-t', 'str', 'Source of data query', 'binary', 'store'),
             ('-w', 'str', 'whether to include other subpackages of binary', 0, 'store'),
             ('-s', 'str', 'whether it is self-compiled', 0, 'store'),
@@ -1049,7 +1135,8 @@ class SelfBuildCommand(PkgshipCommand):
         ]
 
         self.collection_params = [
-            ('-dbs', 'Operational database collection')
+            ('-dbs', 'Operational database collection'),
+            ('packagename', "Specifies the package name for multiple packages")
         ]
 
     def register(self):
@@ -1158,19 +1245,14 @@ class SelfBuildCommand(PkgshipCommand):
 
         if response_data.get('code') == ResponseCode.SUCCESS:
             package_all = response_data.get('data')
-            if isinstance(package_all, dict):
-                # Parsing binary result data
-                if package_all.get("not_found_components"):
-                    print("Problem: Not Found Components")
-                    for not_found_com in package_all.get("not_found_components"):
-                        print("  - nothing provides {} needed by {} ".format(
-                            not_found_com, params.packagename))
-                bin_package_count = self._parse_bin_package(
-                    package_all.get('binary_dicts'))
+            # Parsing binary result data
+            self._print_not_packages(package_all, params)
+            bin_package_count = self._parse_bin_package(
+                package_all.get('binary_dicts'))
 
-                # Source package data analysis
-                src_package_count = self._parse_src_package(
-                    package_all.get('source_dicts'))
+            # Source package data analysis
+            src_package_count = self._parse_src_package(
+                package_all.get('source_dicts'))
         else:
             LOGGER.logger.error(response_data.get('msg'))
             self.output_error_formatted(response_data.get('msg'), response_data.get('code'))
@@ -1215,8 +1297,10 @@ class SelfBuildCommand(PkgshipCommand):
                 else:
                     if getattr(self.bin_package_table, 'rowcount') \
                             and getattr(self.src_package_table, 'rowcount'):
+                        ret = self._existing_packages(
+                            json.loads(response.text), params)
                         self.print_('query {} selfDepend result display :'.format(
-                            params.packagename))
+                            ret))
                         print(self.bin_package_table)
                         self.print_(character='=')
                         print(self.src_package_table)
@@ -1242,12 +1326,15 @@ class BeDependCommand(PkgshipCommand):
         self.table = PkgshipCommand.create_table(
             ['Binary name', 'Source name', 'Version', 'Database name'])
         self.parse = PkgshipCommand.subparsers.add_parser(
-            'bedepend', help='dependency query for the specified package')
+            'bedepend', help='Query the source package which package is dependent on in a database')
         self.params = [
-            ('packagename', 'str', 'source package name', '', 'store'),
-            ('db', 'str', 'name of the database operated', '', 'store'),
-            ('-w', 'str', 'whether to include other subpackages of binary', 0, 'store'),
-            ('-remote', 'str', 'The address of the remote service', False, 'store_true')
+            ('db', 'str', 'Name of the database operated', '', 'store'),
+            ('-w', 'str', 'Whether to include other subpackages of binary', 0, 'store'),
+            ('-level', 'int', "Query the hierarchy of dependencies", -1, 'store'),
+            ('-remote', 'str', 'Specifies the remote service to query', False, 'store_true')
+        ]
+        self.collection_params = [
+            ('packagename', 'Specifies the name of the query for multiple packages')
         ]
 
     def register(self):
@@ -1261,6 +1348,9 @@ class BeDependCommand(PkgshipCommand):
 
         """
         super(BeDependCommand, self).register()
+        for cmd_params in self.collection_params:
+            self.parse.add_argument(
+                cmd_params[0], nargs='*', default=None, help=cmd_params[1])
         self.parse.set_defaults(func=self.do_command)
 
     def do_command(self, params):
@@ -1280,28 +1370,28 @@ class BeDependCommand(PkgshipCommand):
                 {
                     'packagename': params.packagename,
                     'dbname': params.db,
-                    'withsubpack': str(params.w)
+                    'withsubpack': str(params.w),
+                    'level': params.level,
                 }
             ), headers=self.headers)
         except ConnErr as conn_error:
             LOGGER.logger.error(conn_error)
-            self.output_error_formatted(str(conn_error), "CONN_ERROR")
+            print(str(conn_error))
         else:
             if response.status_code == 200:
                 try:
                     statistics_table = self.parse_depend_package(
-                        json.loads(response.text))
+                        json.loads(response.text), params)
                 except JSONDecodeError as json_error:
                     LOGGER.logger.error(json_error)
-                    self.output_error_formatted(response.text, "JSON_DECODE_ERROR")
                 else:
                     if getattr(self.table, 'rowcount'):
+                        ret = self._existing_packages(json.loads(response.text), params)
                         self.print_('query {} beDepend result display :'.format(
-                            params.packagename))
+                            ret))
                         print(self.table)
-                        self.print_('Statistics')
+                        self.print_('statistics')
                         print(statistics_table)
-
             else:
                 self.http_error(response)
 

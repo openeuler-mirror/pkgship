@@ -1,3 +1,6 @@
+* Tue Jan 5 2021 Shenmei Tu <tushenmei@huawei.com>
+- Analyze bedepend and selfbuild dependency result for command line
+
 * Wed Dec 23 2020 Pengju Jiang <jiangpengju2@huawei.com>
 - Four kinds of dependent zip download batch upload - Write the parsed data to CSV part of the code for uploading
 
