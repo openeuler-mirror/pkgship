@@ -14,7 +14,7 @@
 from . import view
 
 urls = [
-    (view.SourcePackages, '/dependinfo/dependlist', {'query': ('POST')}),
-    (view.BinaryPackages, '/dependinfo/downloadfiles', {'query': ('POST')}),
-    (view.BinaryPackages, '/dependinfo/dependgraph', {'query': ('POST')}),
+    (view.DependList, '/dependinfo/dependlist', {'query': ('POST')}),
+    (view.DownloadFiles, '/dependinfo/downloadfiles', {'query': ('POST')}),
+    (view.DependGraph, '/dependinfo/dependgraph', {'query': ('POST')}),
 ]
