@@ -1,3 +1,6 @@
+* Tue Dec 22 2020 Shenmei Tu <tushenmei@huawei.com>
+- Analyze install and build dependency result for command line
+
 * Mon Dec 21 2020 Chengqiang Bao <baochengqiang1@huawei.com>
 - SingleGraph interface should be modified in response to the modification of Level and Batch
 
