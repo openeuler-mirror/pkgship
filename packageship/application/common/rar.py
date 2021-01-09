@@ -10,46 +10,70 @@
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
+import lzma
+import bz2
+import gzip
+import tarfile
+import zipfile
 
 
 class Unpack:
+    """Decompression of documents"""
+
+    def __init__(self, file_path, save_file):
+        self.file_path = file_path
+        self.save_file = save_file
 
     @classmethod
     def dispatch(cls, extend, *args, **kwargs):
+        """Specific decompression methods are adopted for different compression packages
+
+        :param extend: Suffixes for compression packs (representing compression mode)
+        :param kwargs.file_path: path to the zip file
+        :param kwargs.save_file: path to the file saved after unzipping
         """
-        diff decompression funcs are called by mapping
-        :param extend: suffix（compression method）
-        :param kwargs.file_path: compression files path
-        :param kwargs.save_file: decompress files path
-        """
-        pass
+        self = cls(*args, **kwargs)
+        meth = getattr(self, extend[1:].lower(), None)
+        if meth is None:
+            raise Exception(
+                "Unzipping files in the current format is not supported：%s" % extend)
+        meth()
 
     def bz2(self):
-        """
-        bz2
-        """
-        pass
+        """Unzip the bZ2 form of the compression package"""
+        with open(self.save_file, 'wb') as file, bz2.BZ2File(self.file_path, 'rb') as bz_file:
+            for data in iter(lambda: bz_file.read(100 * 1024), b''):
+                file.write(data)
 
     def gz(self):
-        """
-        gz
-        """
-        pass
+        """Unzip the compressed package in GZIP format"""
+        with open(self.save_file, 'wb') as file, gzip.GzipFile(self.file_path) as gzip_file:
+            for data in iter(lambda: gzip_file.read(100 * 1024), b''):
+                file.write(data)
 
     def tar(self):
-        """
-        tar
-        """
-        pass
+        """Unzip the tar package"""
+        with open(self.save_file, 'wb') as file, tarfile.open(self.file_path) as tar_file:
+            file_names = tar_file.getnames()
+            if len(file_names) != 1:
+                raise IOError(
+                    "Too many files in the zip file, do not"
+                    " conform to the form of a single file：%s" % self.file_path)
+            _file = tar_file.extractfile(file_names[0])
+            for data in iter(lambda: _file.read(100 * 1024), b''):
+                file.write(data)
 
     def zip(self):
-        """
-        zip
-        """
-        pass
+        """Unzip the zip package"""
+        with open(self.save_file, 'wb') as file, zipfile.open(self.file_path) as zip_file:
+            file_names = zip_file.namelist()
+            if len(file_names) != 1:
+                raise IOError("Too many files in the zip file, do not"
+                              " conform to the form of a single file：%s" % self.file_path)
+            file.write(zip_file.read())
 
     def xz(self):
-        """
-        xz
-        """
-        pass
+        """Decompression of xz type files"""
+        with open(self.save_file, 'wb') as file, lzma.open(self.file_path) as xz_file:
+            for data in iter(lambda: xz_file.read(100 * 1024), b''):
+                file.write(data)
