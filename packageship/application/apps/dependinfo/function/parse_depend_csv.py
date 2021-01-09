@@ -13,9 +13,13 @@
 """
 Process the restful interface response data as required and save it to the corresponding csv file
 """
+import copy
+import csv
+import os
+import uuid
 from typing import List
 from functools import wraps
-
+from packageship.libs.conf import configuration
 from flask import current_app
 
 from packageship.libs.constants import ListNode
@@ -495,3 +499,151 @@ class BeDep(BaseDep):
 
         """
         return ' process {} {} data '.format(self.__class__, self.args[0])
+
+
+class DataToCsv:
+    """
+    Process the restful interface response data as required
+    and save it to the corresponding csv file
+    """
+    DATA_FACTORY = {
+        "self_build": SelfDep,
+        "install": InstallDep,
+        "build": BuildDep,
+        "be_depend": BeDep
+    }
+
+    def __init__(self,
+                 search_name,
+                 json_data,
+                 search_type: str,
+                 pack_type: str = None):
+        """
+
+        Args:
+            search_name:The name of the package being queried
+            json_data:Query result of the current package name,
+                      similar to the json data returned by the interface.
+                        examples:
+                            {
+                                "code":...,
+                                "data":{...},
+                            }
+            search_type:Dependency type of query，excepted in ['self_build','install','build']
+            pack_type:You need to specify pack_type=binary or
+                      source when the query dependency is self_build
+
+        Raises:
+            ValueError: The types that need to be queried are not within the supported scope
+
+        """
+
+        if search_type not in self.DATA_FACTORY:
+            raise ValueError(
+                "search_type is error,excepted in ['self_build','install','build','bedepend']")
+
+        if search_type == "self_build" and not pack_type:
+            raise ValueError(
+                "if search_type is self_build,excepted parameter pack_type in ['binary','source']"
+                " when you init this class")
+
+        self.current_process_class = self.DATA_FACTORY[search_type]
+
+        self.folder_path = os.path.join(
+            configuration.temporary_directory, f"{search_name}_csv_folder" + str(uuid.uuid1().hex))
+        self.json_data = json_data
+        self.pack_type = pack_type
+        self.search_name = search_name
+        self.search_type = search_type
+        self.data = dict()
+
+        self.install_dict = dict()
+        self.build_dict = dict()
+        self.binary_packages = []
+        try:
+            if not os.path.exists(self.folder_path):
+                os.makedirs(self.folder_path)
+        except IOError as io_error:
+            current_app.logger.error(io_error)
+            raise IOError("Failed to create folder")
+
+        self.install_csv_writer = None
+        self.build_csv_writer = None
+
+    def __get_processed_data(self):
+        """
+        get processed data
+        Returns:
+            None
+        """
+        process_ins = self.current_process_class(
+            self.json_data, self.pack_type)
+
+        (self.data,
+         self.install_dict,
+         self.build_dict,
+         self.binary_packages) = process_ins.run()
+
+    @catch_error
+    def __process_full_depend_data_to_csv(self):
+        """
+        The dependent data is stored in a CSV file
+        Returns:
+
+        """
+        full_depend_csv = open(os.path.join(self.folder_path,
+                                            self.search_name + "_full_amount_"
+                                            + self.search_type + ".csv"),
+                               "w", newline="")
+        full_depend_csv_writer = csv.writer(full_depend_csv)
+
+        for k, values in self.data.items():
+            csv_row = [k,
+                       values[ListNode.SOURCE_NAME],
+                       values[ListNode.VERSION],
+                       values[ListNode.DBNAME]]
+            for parent_name, parent_type in values[ListNode.TAIL]:
+                if parent_name != "root" and parent_name is not None:
+                    csv_row.append(parent_name + "__" + parent_type)
+            full_depend_csv_writer.writerow(csv_row)
+        full_depend_csv.close()
+
+    @catch_error
+    def __get_single_df_row(self, k: str, res_type: str):
+        """
+        get single df row
+        Args:
+            k: dict's key
+            res_type: install or build
+
+        Returns:
+            list: This includes the package name, version number, and database name
+        """
+        if res_type == "install":
+            return [
+                self.install_dict.get(k)["source_name"],
+                self.install_dict.get(k)["version"],
+                self.install_dict.get(k)["db_name"]
+            ]
+        return [
+            self.build_dict.get(k)["version"],
+            self.build_dict.get(k)["db_name"],
+        ]
+
+    @catch_error
+    def __get_depends(self, num, get_type):
+        """
+        get depend
+        Args:
+            num: dict's key
+            get_type: install or build
+        Returns:
+            this data[n]'s deepcopy
+        """
+        if get_type == 'build':
+            data = self.build_dict
+        else:
+            data = self.install_dict
+        if num not in data:
+            return None
+        return copy.deepcopy(data[num][get_type])

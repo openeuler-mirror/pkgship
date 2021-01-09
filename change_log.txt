@@ -1,3 +1,6 @@
+* Wed Dec 23 2020 Pengju Jiang <jiangpengju2@huawei.com>
+- Four kinds of dependent zip download batch upload - Write the parsed data to CSV part of the code for uploading
+
 * Tue Dec 22 2020 Shenmei Tu <tushenmei@huawei.com>
 - Analyze install and build dependency result for command line
 
