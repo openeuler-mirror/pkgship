@@ -69,7 +69,11 @@ class TerminalTable(PrettyTable):
         super()._compute_widths(rows, options)
         lpad, rpad = self._get_padding_widths(options)
         # Total number of columns
-        _columns = os.get_terminal_size().columns - len(self._widths) - 1
+        try:
+            window_width = os.get_terminal_size().columns
+        except OSError as io_error:
+            window_width = 100
+        _columns = window_width - len(self._widths) - 1
         if _columns < sum(map(lambda x: x + lpad + rpad, self._widths)):
             coefficient = 1
             self._reduce_widths(_columns, lpad, rpad)
@@ -79,5 +83,5 @@ class TerminalTable(PrettyTable):
                 map(lambda x: round(x * coefficient - lpad - rpad), self._widths))
             if sum(map(lambda x: x + lpad + rpad, self._widths)) > _columns:
                 _max_val = max(self._widths)
-                self._widths[self._widths.index(_max_val)] =\
+                self._widths[self._widths.index(_max_val)] = \
                     _max_val - (sum(map(lambda x: x + lpad + rpad, self._widths)) - _columns)
