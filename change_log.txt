@@ -1,2 +1,5 @@
-* Thu Dec 17 2020 Yiru Wang  <wangyiru1@huawei.com> 
+* Thu Jan 14 2021 Shenmei Tu  <tushenmei@huawei.com>
+- Add unit test for all src packages interface
+
+* Thu Dec 17 2020 Yiru Wang  <wangyiru1@huawei.com>
 - Add the basic schema file for pkgship
