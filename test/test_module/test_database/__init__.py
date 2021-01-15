@@ -10,6 +10,3 @@
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
-from .read_mock_data import *
-
-__all__ = ["MockData"]
