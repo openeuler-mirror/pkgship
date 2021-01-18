@@ -1,0 +1,63 @@
+{
+  "took": 1,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 1,
+      "relation": "eq"
+    },
+    "max_score": 0.0,
+    "hits": [
+      {
+        "_index": "openeuler-source",
+        "_type": "_doc",
+        "_id": "0n9Y-XYBamC2Cm-gXQvP",
+        "_score": 0.0,
+        "_source": {
+          "name": "Judy",
+          "version": "1.0.5",
+          "requires": [
+            {
+              "pkgKey": 14,
+              "pre": "FALSE",
+              "requires_type": "build",
+              "release": null,
+              "name": "coreutils",
+              "flags": null,
+              "epoch": null,
+              "version": null,
+              "relation": [
+                {
+                  "bin_name": "coreutils",
+                  "src_name": "coreutils"
+                }
+              ]
+            },
+            {
+              "pkgKey": 14,
+              "pre": "FALSE",
+              "requires_type": "build",
+              "release": null,
+              "name": "gawk",
+              "flags": null,
+              "epoch": null,
+              "version": null,
+              "relation": [
+                {
+                  "bin_name": "gawk",
+                  "src_name": "gawk"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
