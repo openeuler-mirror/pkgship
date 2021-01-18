@@ -14,6 +14,7 @@ from unittest import TestCase, mock
 
 from elasticsearch import Elasticsearch, helpers
 
+from packageship.application.common.exc import ElasticSearchQueryException, DatabaseConfigException
 from packageship.application.database.engines.elastic import ElasticSearch
 
 
@@ -41,10 +42,9 @@ class TestEsQuery(TestCase):
         Returns:
         """
         es = self._es_init()
-        result = es.query(index='test', body='test')
 
-        expect_value = dict()
-        self.assertEqual(result, expect_value)
+        with self.assertRaises(ElasticSearchQueryException):
+            es.query(index='test', body='test')
 
     @mock.patch.object(helpers, "scan")
     def test_normal_es_scan(self, mock_scan):
@@ -68,10 +68,17 @@ class TestEsQuery(TestCase):
         Returns:
         """
         es = self._es_init()
-        result = es.scan(index='test', body={"query": {"match_all": {}}})
 
-        expect_value = []
-        self.assertEqual(result, expect_value)
+        with self.assertRaises(ElasticSearchQueryException):
+            es.scan(index='test', body={"query": {"match_all": {}}})
+
+    def test_no_host(self):
+        """
+        Test config elasticsearch's host is empty
+        Returns:
+        """
+        with self.assertRaises(DatabaseConfigException):
+            ElasticSearch(host="", port="9200", user_name=None, password=None)
 
     @staticmethod
     def _es_init():

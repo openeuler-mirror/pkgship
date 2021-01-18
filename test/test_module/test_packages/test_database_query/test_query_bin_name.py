@@ -14,27 +14,25 @@ from unittest import TestCase
 from unittest.mock import MagicMock
 
 from packageship.application.query.pkg import QueryPackage
-from test.test_module.test_packages.mock_db_data import MockData
+from test.test_module.test_packages.test_database_query.get_mock_data import ObtainMockData
 
 
 class TestQueryBinName(TestCase):
-    query_package = QueryPackage(database_list=['openeuler', 'fedora'])
+
+    def setUp(self):
+        self.query_package = QueryPackage(database_list=['openeuler', 'fedora'])
+        self.session = self.query_package._db_session
 
     def test_query_specify(self):
         """
         Test query specify binary package
         Returns:
         """
-        self.query_package._db_session.query = MagicMock(return_value=MockData.read_mock_data('JudySource.json'))
+        self.session.query = MagicMock(
+            return_value=ObtainMockData.get_data('JudySource.json'))
         source_list = ['Judy']
         result = self.query_package.get_bin_name(source_list=source_list)
-        expect_value = {'source_name': 'Judy',
-                        'src_version': '1.0.5',
-                        'database': 'openeuler',
-                        'binary_infos': [{'bin_name': 'Judy', 'bin_version': '1.0.5'},
-                                         {'bin_name': 'Judy-devel', 'bin_version': '1.0.5'},
-                                         {'bin_name': 'Judy-help', 'bin_version': '1.0.5'}]
-                        }
+        expect_value = ObtainMockData.get_data('returnJudyResult.json')
 
         self.assertEqual(result[0], expect_value)
 

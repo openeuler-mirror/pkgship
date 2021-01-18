@@ -1,0 +1,1000 @@
+[
+  {
+    "_index": "openeuler-binary",
+    "_type": "_doc",
+    "_id": "1n9Y-XYBamC2Cm-g8xgg",
+    "_score": 1.0,
+    "_source": {
+      "pkgKey": 1,
+      "rpm_header_end": 50140,
+      "size_installed": 8650174,
+      "release": "2.oe1",
+      "time_file": 1601222038,
+      "size_package": 2082668,
+      "description": "389-ds-base is an LDAPv3 compliant server which includes the LDAP server and command line utilities for server administration.",
+      "epoch": "0",
+      "rpm_vendor": "http://openeuler.org",
+      "src_name": "389-ds-base",
+      "location_href": "Packages/389-ds-base-1.4.0.31-2.oe1.aarch64.rpm",
+      "src_version": "1.4.0.31",
+      "rpm_sourcerpm": "389-ds-base-1.4.0.31-2.oe1.src.rpm",
+      "checksum_type": "sha256",
+      "size_archive": 8678252,
+      "pkgId": "3d58ae6a980ea57191bc69fe3f535591bcb9d9561232a989b93f5b5298aa43db",
+      "summary": "Base 389 Directory Server",
+      "filelists": [
+        {
+          "pkgKey": 1,
+          "filetypes": "d",
+          "filenames": "dirsrv",
+          "dirname": "/var/lock"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "fff",
+          "filenames": "certmap.conf/slapd-collations.conf/template-initconfig",
+          "dirname": "/etc/dirsrv/config"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "d",
+          "filenames": "sbin",
+          "dirname": "/usr/share/gdb/auto-load/usr"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "d",
+          "filenames": "dirsrv",
+          "dirname": "/etc"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "ff",
+          "filenames": "failedbinds.py/logregex.py",
+          "dirname": "/usr/lib64/dirsrv/python"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "d",
+          "filenames": "system",
+          "dirname": "/usr/lib/systemd"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "d",
+          "filenames": "dirsrv",
+          "dirname": "/var/lib"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "d",
+          "filenames": "dirsrv",
+          "dirname": "/var/log"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "f",
+          "filenames": "jeprof",
+          "dirname": "/usr/lib64/dirsrv/bin"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "ff",
+          "filenames": "libsvrcore.so.0/libsvrcore.so.0.0.0",
+          "dirname": "/usr/lib64"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "f",
+          "filenames": "libjemalloc.so.2",
+          "dirname": "/usr/lib64/dirsrv/lib"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "ffff",
+          "filenames": "COPYING.jemalloc/LICENSE/LICENSE.GPLv3+/LICENSE.openssl",
+          "dirname": "/usr/share/doc/389-ds-base"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "f",
+          "filenames": "redhat-directory.mib",
+          "dirname": "/usr/share/dirsrv/mibs"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "f",
+          "filenames": "0-metadata_list-compact-389-ds-base-1.4.0.31-2.oe1.aarch64",
+          "dirname": "/etc/ima/digest_lists"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "f",
+          "filenames": "0-metadata_list-compact_tlv-389-ds-base-1.4.0.31-2.oe1.aarch64",
+          "dirname": "/etc/ima/digest_lists.tlv"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "d",
+          "filenames": "389-ds-base",
+          "dirname": "/usr/share/doc"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "ddddd",
+          "filenames": "data/inf/mibs/properties/schema",
+          "dirname": "/usr/share/dirsrv"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "fffffffffffffffffffffffffffffffffff",
+          "filenames": "libacctpolicy-plugin.so/libacctusability-plugin.so/libacl-plugin.so/libaddn-plugin.so/libattr-unique-plugin.so/libautomember-plugin.so/libback-ldbm.so/libbitwise-plugin.so/libchainingdb-plugin.so/libcollation-plugin.so/libcontentsync-plugin.so/libcos-plugin.so/libderef-plugin.so/libdistrib-plugin.so/libdna-plugin.so/libhttp-client-plugin.so/liblinkedattrs-plugin.so/libmanagedentries-plugin.so/libmemberof-plugin.so/libpam-passthru-plugin.so/libpassthru-plugin.so/libpbe-plugin.so/libposix-winsync-plugin.so/libpwdstorage-plugin.so/libreferint-plugin.so/libreplication-plugin.so/libretrocl-plugin.so/libroles-plugin.so/librootdn-access-plugin.so/libschemareload-plugin.so/libstatechange-plugin.so/libsyntax-plugin.so/libusn-plugin.so/libviews-plugin.so/libwhoami-plugin.so",
+          "dirname": "/usr/lib64/dirsrv/plugins"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "ffffffffffffff",
+          "filenames": "bak2db/db2bak/db2index/db2ldif/dbverify/ldif2db/ldif2ldap/ns-slapd/restart-dirsrv/start-dirsrv/status-dirsrv/stop-dirsrv/upgradedb/vlvindex",
+          "dirname": "/usr/sbin"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "d",
+          "filenames": "dirsrv",
+          "dirname": "/usr/share"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "ff",
+          "filenames": "dirsrv.target/dirsrv@.service",
+          "dirname": "/usr/lib/systemd/system"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "f",
+          "filenames": "99user.ldif",
+          "dirname": "/etc/dirsrv/schema"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "ddfffffffffdd",
+          "filenames": "bin/lib/libldaputil.so.0/libldaputil.so.0.0.0/libns-dshttpd-1.4.0.31.so/libnunc-stans.so.0/libnunc-stans.so.0.1.0/libsds.so.0/libsds.so.0.0.0/libslapd.so.0/libslapd.so.0.1.0/plugins/python",
+          "dirname": "/usr/lib64/dirsrv"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "dd",
+          "filenames": "config/schema",
+          "dirname": "/etc/dirsrv"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "d",
+          "filenames": "usr",
+          "dirname": "/usr/share/gdb/auto-load"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "d",
+          "filenames": "dirsrv.target.wants",
+          "dirname": "/etc/systemd/system"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "f",
+          "filenames": "ns-slapd.properties",
+          "dirname": "/usr/share/dirsrv/properties"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "fffff",
+          "filenames": "defaults.inf/dscreate.map/dsorgentries.map/dsupdate.map/slapd.inf",
+          "dirname": "/usr/share/dirsrv/inf"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "fffffff",
+          "filenames": "dbscan/ds-logpipe.py/ds-replcheck/ldclt/logconv.pl/pwdhash/readnsstate",
+          "dirname": "/usr/bin"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "f",
+          "filenames": "70-dirsrv.conf",
+          "dirname": "/usr/lib/sysctl.d"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "fffffffffffffffffffffffffffffffffffff",
+          "filenames": "10rfc2307bis.ldif/60changelog.ldif/60inetmail.ldif/60kerberos.ldif/60krb5kdc.ldif/60nis.ldif/60qmail.ldif/60radius.ldif/60rfc4876.ldif/60samba.ldif/60samba3.ldif/60sendmail.ldif/Ace.ldif/DSSharedLib/European.ldif/Eurosuffix.ldif/Example-roles.ldif/Example-views.ldif/Example.ldif/dbgen-FamilyNames/dbgen-GivenNames/dbgen-OrgUnits/template-baseacis.ldif/template-country.ldif/template-domain.ldif/template-dse-minimal.ldif/template-dse.ldif/template-ldapi-autobind.ldif/template-ldapi-default.ldif/template-ldapi.ldif/template-locality.ldif/template-org.ldif/template-orgunit.ldif/template-sasl.ldif/template-state.ldif/template-suffix-db.ldif/template.ldif",
+          "dirname": "/usr/share/dirsrv/data"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "f",
+          "filenames": "ds_systemd_ask_password_acl",
+          "dirname": "/usr/libexec/dirsrv"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "ffffffffffffffffffffffffffffffffff",
+          "filenames": "00core.ldif/01core389.ldif/02common.ldif/05rfc2927.ldif/05rfc4523.ldif/05rfc4524.ldif/06inetorgperson.ldif/10automember-plugin.ldif/10dna-plugin.ldif/10mep-plugin.ldif/10rfc2307.ldif/20subscriber.ldif/25java-object.ldif/28pilot.ldif/30ns-common.ldif/50ns-admin.ldif/50ns-certificate.ldif/50ns-directory.ldif/50ns-mail.ldif/50ns-value.ldif/50ns-web.ldif/60acctpolicy.ldif/60autofs.ldif/60eduperson.ldif/60mozilla.ldif/60nss-ldap.ldif/60pam-plugin.ldif/60posix-winsync-plugin.ldif/60pureftpd.ldif/60rfc2739.ldif/60rfc3712.ldif/60sabayon.ldif/60sudo.ldif/60trust.ldif",
+          "dirname": "/usr/share/dirsrv/schema"
+        },
+        {
+          "pkgKey": 1,
+          "filetypes": "f",
+          "filenames": "ns-slapd-gdb.py",
+          "dirname": "/usr/share/gdb/auto-load/usr/sbin"
+        }
+      ],
+      "rpm_packager": "http://openeuler.org",
+      "version": "1.4.0.31",
+      "rpm_license": "GPLv3+",
+      "url": "https://www.port389.org",
+      "rpm_group": "Unspecified",
+      "name": "389-ds-base",
+      "files": [
+        {
+          "pkgKey": 1,
+          "name": "/etc/dirsrv",
+          "type": "dir"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/etc/dirsrv/config",
+          "type": "dir"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/etc/dirsrv/config/certmap.conf",
+          "type": "file"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/etc/dirsrv/config/slapd-collations.conf",
+          "type": "file"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/etc/dirsrv/config/template-initconfig",
+          "type": "file"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/etc/dirsrv/schema",
+          "type": "dir"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/etc/dirsrv/schema/99user.ldif",
+          "type": "file"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/etc/systemd/system/dirsrv.target.wants",
+          "type": "dir"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/usr/bin/dbscan",
+          "type": "file"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/usr/bin/ds-logpipe.py",
+          "type": "file"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/usr/bin/ds-replcheck",
+          "type": "file"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/usr/bin/ldclt",
+          "type": "file"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/usr/bin/logconv.pl",
+          "type": "file"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/usr/bin/pwdhash",
+          "type": "file"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/usr/bin/readnsstate",
+          "type": "file"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/usr/lib64/dirsrv/bin/jeprof",
+          "type": "file"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/usr/sbin/bak2db",
+          "type": "file"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/usr/sbin/db2bak",
+          "type": "file"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/usr/sbin/db2index",
+          "type": "file"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/usr/sbin/db2ldif",
+          "type": "file"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/usr/sbin/dbverify",
+          "type": "file"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/usr/sbin/ldif2db",
+          "type": "file"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/usr/sbin/ldif2ldap",
+          "type": "file"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/usr/sbin/ns-slapd",
+          "type": "file"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/usr/sbin/restart-dirsrv",
+          "type": "file"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/usr/sbin/start-dirsrv",
+          "type": "file"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/usr/sbin/status-dirsrv",
+          "type": "file"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/usr/sbin/stop-dirsrv",
+          "type": "file"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/usr/sbin/upgradedb",
+          "type": "file"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/usr/sbin/vlvindex",
+          "type": "file"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/usr/share/gdb/auto-load/usr/sbin/ns-slapd-gdb.py",
+          "type": "file"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/etc/ima/digest_lists/0-metadata_list-compact-389-ds-base-1.4.0.31-2.oe1.aarch64",
+          "type": "file"
+        },
+        {
+          "pkgKey": 1,
+          "name": "/etc/ima/digest_lists.tlv/0-metadata_list-compact_tlv-389-ds-base-1.4.0.31-2.oe1.aarch64",
+          "type": "file"
+        }
+      ],
+      "time_build": 1601221743,
+      "rpm_header_start": 5096,
+      "location_base": null,
+      "arch": "aarch64",
+      "rpm_buildhost": "obs-worker-003"
+    }
+  },
+  {
+    "_index": "openeuler-binary",
+    "_type": "_doc",
+    "_id": "139Y-XYBamC2Cm-g8xgg",
+    "_score": 1.0,
+    "_source": {
+      "pkgKey": 2,
+      "rpm_header_end": 11200,
+      "size_installed": 481732,
+      "release": "2.oe1",
+      "time_file": 1601222039,
+      "size_package": 109360,
+      "description": "Development Libraries and headers for the 389 Directory Server.",
+      "epoch": "0",
+      "rpm_vendor": "http://openeuler.org",
+      "src_name": "389-ds-base",
+      "location_href": "Packages/389-ds-base-devel-1.4.0.31-2.oe1.aarch64.rpm",
+      "src_version": "1.4.0.31",
+      "rpm_sourcerpm": "389-ds-base-1.4.0.31-2.oe1.src.rpm",
+      "checksum_type": "sha256",
+      "size_archive": 485624,
+      "pkgId": "a624e6060df25a0e70f5ceca27e5a04fedd56636b497256d32644d7fbf7ad1c9",
+      "summary": "Development libraries for 389 Directory Server",
+      "filelists": [
+        {
+          "pkgKey": 2,
+          "filetypes": "f",
+          "filenames": "libsvrcore.so",
+          "dirname": "/usr/lib64"
+        },
+        {
+          "pkgKey": 2,
+          "filetypes": "d",
+          "filenames": "389-ds-base-devel",
+          "dirname": "/usr/share/doc"
+        },
+        {
+          "pkgKey": 2,
+          "filetypes": "f",
+          "filenames": "0-metadata_list-compact_tlv-389-ds-base-devel-1.4.0.31-2.oe1.aarch64",
+          "dirname": "/etc/ima/digest_lists.tlv"
+        },
+        {
+          "pkgKey": 2,
+          "filetypes": "fff",
+          "filenames": "LICENSE/LICENSE.GPLv3+/LICENSE.openssl",
+          "dirname": "/usr/share/doc/389-ds-base-devel"
+        },
+        {
+          "pkgKey": 2,
+          "filetypes": "ffffff",
+          "filenames": "nunc-stans.h/repl-session-plugin.h/sds.h/slapi-plugin.h/slapi_pal.h/winsync-plugin.h",
+          "dirname": "/usr/include/dirsrv"
+        },
+        {
+          "pkgKey": 2,
+          "filetypes": "f",
+          "filenames": "0-metadata_list-compact-389-ds-base-devel-1.4.0.31-2.oe1.aarch64",
+          "dirname": "/etc/ima/digest_lists"
+        },
+        {
+          "pkgKey": 2,
+          "filetypes": "df",
+          "filenames": "dirsrv/svrcore.h",
+          "dirname": "/usr/include"
+        },
+        {
+          "pkgKey": 2,
+          "filetypes": "fffff",
+          "filenames": "libldaputil.so/libns-dshttpd.so/libnunc-stans.so/libsds.so/libslapd.so",
+          "dirname": "/usr/lib64/dirsrv"
+        },
+        {
+          "pkgKey": 2,
+          "filetypes": "ffff",
+          "filenames": "dirsrv.pc/libsds.pc/nunc-stans.pc/svrcore.pc",
+          "dirname": "/usr/lib64/pkgconfig"
+        }
+      ],
+      "rpm_packager": "http://openeuler.org",
+      "version": "1.4.0.31",
+      "rpm_license": "GPLv3+",
+      "url": "https://www.port389.org",
+      "rpm_group": "Unspecified",
+      "name": "389-ds-base-devel",
+      "files": [
+        {
+          "pkgKey": 2,
+          "name": "/etc/ima/digest_lists/0-metadata_list-compact-389-ds-base-devel-1.4.0.31-2.oe1.aarch64",
+          "type": "file"
+        },
+        {
+          "pkgKey": 2,
+          "name": "/etc/ima/digest_lists.tlv/0-metadata_list-compact_tlv-389-ds-base-devel-1.4.0.31-2.oe1.aarch64",
+          "type": "file"
+        }
+      ],
+      "time_build": 1601221743,
+      "rpm_header_start": 5096,
+      "location_base": null,
+      "arch": "aarch64",
+      "rpm_buildhost": "obs-worker-003"
+    }
+  },
+  {
+    "_index": "openeuler-binary",
+    "_type": "_doc",
+    "_id": "2H9Y-XYBamC2Cm-g8xgg",
+    "_score": 1.0,
+    "_source": {
+      "pkgKey": 3,
+      "rpm_header_end": 19928,
+      "size_installed": 155667,
+      "release": "2.oe1",
+      "time_file": 1601222039,
+      "size_package": 176268,
+      "description": "Documentation for 389 Directory Server.",
+      "epoch": "0",
+      "rpm_vendor": "http://openeuler.org",
+      "src_name": "389-ds-base",
+      "location_href": "Packages/389-ds-base-help-1.4.0.31-2.oe1.aarch64.rpm",
+      "src_version": "1.4.0.31",
+      "rpm_sourcerpm": "389-ds-base-1.4.0.31-2.oe1.src.rpm",
+      "checksum_type": "sha256",
+      "size_archive": 169740,
+      "pkgId": "95676455d066c5fa568701cf1928a8299b42f3e2836fbc8e190a18cc3fcc2d23",
+      "summary": "Documentation for 389 Directory Server",
+      "filelists": [
+        {
+          "pkgKey": 3,
+          "filetypes": "d",
+          "filenames": "389-ds-base-help",
+          "dirname": "/usr/share/doc"
+        },
+        {
+          "pkgKey": 3,
+          "filetypes": "fff",
+          "filenames": "README.devel/README.jemalloc/README.md",
+          "dirname": "/usr/share/doc/389-ds-base-help"
+        },
+        {
+          "pkgKey": 3,
+          "filetypes": "ffffffffffffffffff",
+          "filenames": "cl-dump.1.gz/cl-dump.pl.1.gz/dbgen.pl.1.gz/dbscan.1.gz/ds-logpipe.py.1.gz/ds-replcheck.1.gz/infadd.1.gz/ldap-agent.1.gz/ldclt.1.gz/ldif.1.gz/logconv.pl.1.gz/migratecred.1.gz/mmldif.1.gz/pwdhash.1.gz/readnsstate.1.gz/repl-monitor.1.gz/repl-monitor.pl.1.gz/rsearch.1.gz",
+          "dirname": "/usr/share/man/man1"
+        },
+        {
+          "pkgKey": 3,
+          "filetypes": "ffffff",
+          "filenames": "99user.ldif.5.gz/certmap.conf.5.gz/dirsrv.5.gz/dirsrv.systemd.5.gz/slapd-collations.conf.5.gz/template-initconfig.5.gz",
+          "dirname": "/usr/share/man/man5"
+        },
+        {
+          "pkgKey": 3,
+          "filetypes": "ffffffffffffffffffff",
+          "filenames": "md_docs_job-safety.3.gz/ns_job_t.3.gz/ns_thrpool_config.3.gz/nunc-stans.h.3.gz/sds_bptree.3.gz/sds_bptree_cow.3.gz/sds_bptree_cow_instance.3.gz/sds_bptree_instance.3.gz/sds_bptree_node.3.gz/sds_bptree_node_list.3.gz/sds_bptree_transaction.3.gz/sds_ht_instance.3.gz/sds_ht_node.3.gz/sds_ht_slot.3.gz/sds_ht_value.3.gz/sds_lqueue.3.gz/sds_misc.3.gz/sds_queue.3.gz/sds_queue_node.3.gz/sds_tqueue.3.gz",
+          "dirname": "/usr/share/man/man3"
+        },
+        {
+          "pkgKey": 3,
+          "filetypes": "ffffffffffffffffffffffffffffffffffffffffffff",
+          "filenames": "bak2db.8.gz/bak2db.pl.8.gz/cleanallruv.pl.8.gz/db2bak.8.gz/db2bak.pl.8.gz/db2index.8.gz/db2index.pl.8.gz/db2ldif.8.gz/db2ldif.pl.8.gz/dbmon.sh.8.gz/dbverify.8.gz/dn2rdn.8.gz/dsconf.8.gz/dscreate.8.gz/dsctl.8.gz/dsidm.8.gz/fixup-linkedattrs.pl.8.gz/fixup-memberof.pl.8.gz/ldif2db.8.gz/ldif2db.pl.8.gz/ldif2ldap.8.gz/migrate-ds.pl.8.gz/monitor.8.gz/ns-accountstatus.pl.8.gz/ns-activate.pl.8.gz/ns-inactivate.pl.8.gz/ns-newpwpolicy.pl.8.gz/ns-slapd.8.gz/remove-ds.pl.8.gz/restart-dirsrv.8.gz/restoreconfig.8.gz/saveconfig.8.gz/schema-reload.pl.8.gz/setup-ds.pl.8.gz/start-dirsrv.8.gz/status-dirsrv.8.gz/stop-dirsrv.8.gz/suffix2instance.8.gz/syntax-validate.pl.8.gz/upgradedb.8.gz/upgradednformat.8.gz/usn-tombstone-cleanup.pl.8.gz/verify-db.pl.8.gz/vlvindex.8.gz",
+          "dirname": "/usr/share/man/man8"
+        }
+      ],
+      "rpm_packager": "http://openeuler.org",
+      "version": "1.4.0.31",
+      "rpm_license": "GPLv3+",
+      "url": "https://www.port389.org",
+      "rpm_group": "Unspecified",
+      "name": "389-ds-base-help",
+      "files": [],
+      "time_build": 1601221743,
+      "rpm_header_start": 5096,
+      "location_base": null,
+      "arch": "aarch64",
+      "rpm_buildhost": "obs-worker-003"
+    }
+  },
+  {
+    "_index": "openeuler-binary",
+    "_type": "_doc",
+    "_id": "2X9Y-XYBamC2Cm-g8xgg",
+    "_score": 1.0,
+    "_source": {
+      "pkgKey": 4,
+      "rpm_header_end": 36032,
+      "size_installed": 1005972,
+      "release": "2.oe1",
+      "time_file": 1601222039,
+      "size_package": 200808,
+      "description": "Legacy and deprecated utilities for 389 Directory Server.",
+      "epoch": "0",
+      "rpm_vendor": "http://openeuler.org",
+      "src_name": "389-ds-base",
+      "location_href": "Packages/389-ds-base-legacy-tools-1.4.0.31-2.oe1.aarch64.rpm",
+      "src_version": "1.4.0.31",
+      "rpm_sourcerpm": "389-ds-base-1.4.0.31-2.oe1.src.rpm",
+      "checksum_type": "sha256",
+      "size_archive": 1029872,
+      "pkgId": "30f592ea67970de9831048574f40dc6338aaff8298bc3c4bbbf7aa5d29889607",
+      "summary": "Legacy utilities for 389 Directory Server",
+      "filelists": [
+        {
+          "pkgKey": 4,
+          "filetypes": "ffffffffffffffffffffffffff",
+          "filenames": "bak2db.pl/cleanallruv.pl/db2bak.pl/db2index.pl/db2ldif.pl/dbmon.sh/dn2rdn/fixup-linkedattrs.pl/fixup-memberof.pl/ldif2db.pl/migrate-ds.pl/monitor/ns-accountstatus.pl/ns-activate.pl/ns-inactivate.pl/ns-newpwpolicy.pl/remove-ds.pl/restoreconfig/saveconfig/schema-reload.pl/setup-ds.pl/suffix2instance/syntax-validate.pl/upgradednformat/usn-tombstone-cleanup.pl/verify-db.pl",
+          "dirname": "/usr/sbin"
+        },
+        {
+          "pkgKey": 4,
+          "filetypes": "fffffffffffffffffffffffffffffffffffffffffffffffffffff",
+          "filenames": "10cleanupldapi.pl/10delautodnsuffix.pl/10fixrundir.pl/20betxn.pl/50AES-pbe-plugin.ldif/50acctusabilityplugin.ldif/50addchainingsaslpwroles.ldif/50automemberplugin.ldif/50bitstringsyntaxplugin.ldif/50contentsync.ldif/50deliverymethodsyntaxplugin.ldif/50derefplugin.ldif/50disableurisyntaxplugin.ldif/50enhancedguidesyntaxplugin.ldif/50entryusnindex.ldif/50faxnumbersyntaxplugin.ldif/50faxsyntaxplugin.ldif/50fixNsState.pl/50guidesyntaxplugin.ldif/50linkedattrsplugin.ldif/50managedentriesplugin.ldif/50memberofindex.ldif/50memberofplugin.ldif/50nameuidsyntaxplugin.ldif/50nstombstonecsn.ldif/50numericstringsyntaxplugin.ldif/50printablestringsyntaxplugin.ldif/50refintprecedence.ldif/50retroclprecedence.ldif/50rootdnaccesscontrolplugin.ldif/50schemareloadplugin.ldif/50smd5pwdstorageplugin.ldif/50syntaxvalidplugin.ldif/50targetuniqueid.ldif/50teletexterminalidsyntaxplugin.ldif/50telexnumbersyntaxplugin.ldif/50updateconfig.ldif/50usnplugin.ldif/52updateAESplugin.pl/60removeLegacyReplication.ldif/60upgradeconfigfiles.pl/60upgradeschemafiles.pl/70upgradefromldif.pl/80upgradednformat.pl/81changelog.pl/82targetuniqueidindex.pl/90subtreerename.pl/91reindex.pl/91subtreereindex.pl/dnaplugindepends.ldif/exampleupdate.ldif/exampleupdate.pl/exampleupdate.sh",
+          "dirname": "/usr/share/dirsrv/updates"
+        },
+        {
+          "pkgKey": 4,
+          "filetypes": "dd",
+          "filenames": "script-templates/updates",
+          "dirname": "/usr/share/dirsrv"
+        },
+        {
+          "pkgKey": 4,
+          "filetypes": "ffffffffffffffffffffffffffffffffff",
+          "filenames": "template-bak2db/template-bak2db.pl/template-cleanallruv.pl/template-db2bak/template-db2bak.pl/template-db2index/template-db2index.pl/template-db2ldif/template-db2ldif.pl/template-dbverify/template-dn2rdn/template-fixup-linkedattrs.pl/template-fixup-memberof.pl/template-fixup-memberuid.pl/template-ldif2db/template-ldif2db.pl/template-ldif2ldap/template-monitor/template-ns-accountstatus.pl/template-ns-activate.pl/template-ns-inactivate.pl/template-ns-newpwpolicy.pl/template-restart-slapd/template-restoreconfig/template-saveconfig/template-schema-reload.pl/template-start-slapd/template-stop-slapd/template-suffix2instance/template-syntax-validate.pl/template-upgradednformat/template-usn-tombstone-cleanup.pl/template-verify-db.pl/template-vlvindex",
+          "dirname": "/usr/share/dirsrv/script-templates"
+        },
+        {
+          "pkgKey": 4,
+          "filetypes": "f",
+          "filenames": "0-metadata_list-compact_tlv-389-ds-base-legacy-tools-1.4.0.31-2.oe1.aarch64",
+          "dirname": "/etc/ima/digest_lists.tlv"
+        },
+        {
+          "pkgKey": 4,
+          "filetypes": "ffffffffff",
+          "filenames": "cl-dump/cl-dump.pl/dbgen.pl/infadd/ldif/migratecred/mmldif/repl-monitor/repl-monitor.pl/rsearch",
+          "dirname": "/usr/bin"
+        },
+        {
+          "pkgKey": 4,
+          "filetypes": "f",
+          "filenames": "0-metadata_list-compact-389-ds-base-legacy-tools-1.4.0.31-2.oe1.aarch64",
+          "dirname": "/etc/ima/digest_lists"
+        },
+        {
+          "pkgKey": 4,
+          "filetypes": "ff",
+          "filenames": "ds_selinux_enabled/ds_selinux_port_query",
+          "dirname": "/usr/libexec/dirsrv"
+        },
+        {
+          "pkgKey": 4,
+          "filetypes": "ff",
+          "filenames": "migrate-ds.res/setup-ds.res",
+          "dirname": "/usr/share/dirsrv/properties"
+        },
+        {
+          "pkgKey": 4,
+          "filetypes": "d",
+          "filenames": "perl",
+          "dirname": "/usr/lib64/dirsrv"
+        },
+        {
+          "pkgKey": 4,
+          "filetypes": "fffffffffffffff",
+          "filenames": "DSCreate.pm/DSDialogs.pm/DSMigration.pm/DSUpdate.pm/DSUpdateDialogs.pm/DSUtil.pm/Dialog.pm/DialogManager.pm/FileConn.pm/Inf.pm/Migration.pm/Resource.pm/Setup.pm/SetupDialogs.pm/SetupLog.pm",
+          "dirname": "/usr/lib64/dirsrv/perl"
+        },
+        {
+          "pkgKey": 4,
+          "filetypes": "d",
+          "filenames": "389-ds-base-legacy-tools",
+          "dirname": "/usr/share/doc"
+        },
+        {
+          "pkgKey": 4,
+          "filetypes": "fff",
+          "filenames": "LICENSE/LICENSE.GPLv3+/LICENSE.openssl",
+          "dirname": "/usr/share/doc/389-ds-base-legacy-tools"
+        }
+      ],
+      "rpm_packager": "http://openeuler.org",
+      "version": "1.4.0.31",
+      "rpm_license": "GPLv3+",
+      "url": "https://www.port389.org",
+      "rpm_group": "Unspecified",
+      "name": "389-ds-base-legacy-tools",
+      "files": [
+        {
+          "pkgKey": 4,
+          "name": "/usr/bin/cl-dump",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/bin/cl-dump.pl",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/bin/dbgen.pl",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/bin/infadd",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/bin/ldif",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/bin/migratecred",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/bin/mmldif",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/bin/repl-monitor",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/bin/repl-monitor.pl",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/bin/rsearch",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/sbin/bak2db.pl",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/sbin/cleanallruv.pl",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/sbin/db2bak.pl",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/sbin/db2index.pl",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/sbin/db2ldif.pl",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/sbin/dbmon.sh",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/sbin/dn2rdn",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/sbin/fixup-linkedattrs.pl",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/sbin/fixup-memberof.pl",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/sbin/ldif2db.pl",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/sbin/migrate-ds.pl",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/sbin/monitor",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/sbin/ns-accountstatus.pl",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/sbin/ns-activate.pl",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/sbin/ns-inactivate.pl",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/sbin/ns-newpwpolicy.pl",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/sbin/remove-ds.pl",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/sbin/restoreconfig",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/sbin/saveconfig",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/sbin/schema-reload.pl",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/sbin/setup-ds.pl",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/sbin/suffix2instance",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/sbin/syntax-validate.pl",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/sbin/upgradednformat",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/sbin/usn-tombstone-cleanup.pl",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/usr/sbin/verify-db.pl",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/etc/ima/digest_lists/0-metadata_list-compact-389-ds-base-legacy-tools-1.4.0.31-2.oe1.aarch64",
+          "type": "file"
+        },
+        {
+          "pkgKey": 4,
+          "name": "/etc/ima/digest_lists.tlv/0-metadata_list-compact_tlv-389-ds-base-legacy-tools-1.4.0.31-2.oe1.aarch64",
+          "type": "file"
+        }
+      ],
+      "time_build": 1601221743,
+      "rpm_header_start": 5096,
+      "location_base": null,
+      "arch": "aarch64",
+      "rpm_buildhost": "obs-worker-003"
+    }
+  },
+  {
+    "_index": "openeuler-binary",
+    "_type": "_doc",
+    "_id": "2n9Y-XYBamC2Cm-g8xgg",
+    "_score": 1.0,
+    "_source": {
+      "pkgKey": 5,
+      "rpm_header_end": 10648,
+      "size_installed": 107101,
+      "release": "2.oe1",
+      "time_file": 1601222039,
+      "size_package": 33860,
+      "description": "SNMP Agent for the 389 Directory Server.",
+      "epoch": "0",
+      "rpm_vendor": "http://openeuler.org",
+      "src_name": "389-ds-base",
+      "location_href": "Packages/389-ds-base-snmp-1.4.0.31-2.oe1.aarch64.rpm",
+      "src_version": "1.4.0.31",
+      "rpm_sourcerpm": "389-ds-base-1.4.0.31-2.oe1.src.rpm",
+      "checksum_type": "sha256",
+      "size_archive": 108696,
+      "pkgId": "8c4bb5c677de1fd31eb77845e42a021ca78f35e7c62e84ec67bdd28f171d78f6",
+      "summary": "SNMP Agent for 389 Directory Server",
+      "filelists": [
+        {
+          "pkgKey": 5,
+          "filetypes": "fff",
+          "filenames": "LICENSE/LICENSE.GPLv3+/LICENSE.openssl",
+          "dirname": "/usr/share/doc/389-ds-base-snmp"
+        },
+        {
+          "pkgKey": 5,
+          "filetypes": "d",
+          "filenames": "389-ds-base-snmp",
+          "dirname": "/usr/share/doc"
+        },
+        {
+          "pkgKey": 5,
+          "filetypes": "f",
+          "filenames": "0-metadata_list-compact_tlv-389-ds-base-snmp-1.4.0.31-2.oe1.aarch64",
+          "dirname": "/etc/ima/digest_lists.tlv"
+        },
+        {
+          "pkgKey": 5,
+          "filetypes": "f",
+          "filenames": "dirsrv-snmp.service",
+          "dirname": "/usr/lib/systemd/system"
+        },
+        {
+          "pkgKey": 5,
+          "filetypes": "f",
+          "filenames": "0-metadata_list-compact-389-ds-base-snmp-1.4.0.31-2.oe1.aarch64",
+          "dirname": "/etc/ima/digest_lists"
+        },
+        {
+          "pkgKey": 5,
+          "filetypes": "f",
+          "filenames": "ldap-agent.conf",
+          "dirname": "/etc/dirsrv/config"
+        },
+        {
+          "pkgKey": 5,
+          "filetypes": "f",
+          "filenames": "ldap-agent",
+          "dirname": "/usr/sbin"
+        }
+      ],
+      "rpm_packager": "http://openeuler.org",
+      "version": "1.4.0.31",
+      "rpm_license": "GPLv3+",
+      "url": "https://www.port389.org",
+      "rpm_group": "Unspecified",
+      "name": "389-ds-base-snmp",
+      "files": [
+        {
+          "pkgKey": 5,
+          "name": "/etc/dirsrv/config/ldap-agent.conf",
+          "type": "file"
+        },
+        {
+          "pkgKey": 5,
+          "name": "/usr/sbin/ldap-agent",
+          "type": "file"
+        },
+        {
+          "pkgKey": 5,
+          "name": "/etc/ima/digest_lists/0-metadata_list-compact-389-ds-base-snmp-1.4.0.31-2.oe1.aarch64",
+          "type": "file"
+        },
+        {
+          "pkgKey": 5,
+          "name": "/etc/ima/digest_lists.tlv/0-metadata_list-compact_tlv-389-ds-base-snmp-1.4.0.31-2.oe1.aarch64",
+          "type": "file"
+        }
+      ],
+      "time_build": 1601221743,
+      "rpm_header_start": 5096,
+      "location_base": null,
+      "arch": "aarch64",
+      "rpm_buildhost": "obs-worker-003"
+    }
+  }
+]

@@ -14,18 +14,21 @@ from unittest import TestCase
 from unittest.mock import MagicMock
 
 from packageship.application.query.pkg import QueryPackage
-from test.test_module.test_packages.mock_db_data import MockData
+from test.test_module.test_packages.test_database_query.get_mock_data import ObtainMockData
 
 
 class TestQuerySrcName(TestCase):
-    query_package = QueryPackage(database_list=['openeuler', 'fedora'])
+
+    def setUp(self):
+        self.query_package = QueryPackage(database_list=['openeuler', 'fedora'])
+        self.session = self.query_package._db_session
 
     def test_query_specify(self):
         """
         Test query specify binary package requires to install
         Returns:
         """
-        self.query_package._db_session.query = MagicMock(return_value=MockData.read_mock_data('JudyBinary.json'))
+        self.session.query = MagicMock(return_value=ObtainMockData.get_data('JudyBinary.json'))
         binary_list = ['Judy']
         result = self.query_package.get_src_name(binary_list=binary_list)
         expect_value = {'binary_name': 'Judy',
@@ -53,7 +56,7 @@ class TestQuerySrcName(TestCase):
         Returns:
 
         """
-        self.query_package._db_session.query = MagicMock(return_value={})
+        self.session.query = MagicMock(return_value={})
         binary_list = ["Test123"]
         result = self.query_package.get_src_name(binary_list=binary_list)
 
