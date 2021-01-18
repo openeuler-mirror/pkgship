@@ -17,7 +17,7 @@ import copy
 import csv
 import os
 import uuid
-from typing import List
+from typing import List, Set
 from functools import wraps
 from packageship.libs.conf import configuration
 from flask import current_app
@@ -647,3 +647,115 @@ class DataToCsv:
         if num not in data:
             return None
         return copy.deepcopy(data[num][get_type])
+
+    def __write_csv_update_df_row(
+            self,
+            lst,
+            res_type,
+            names_set: Set,
+            pkg=None):
+        """
+        to write csv row and return new csv row list
+        Args:
+            lst:old csv row list
+            res_type:install or build
+            names_set:Store a list of package names that have been found
+            pkg:package name
+
+        Returns:new csv row list
+
+        """
+        local_lst = copy.deepcopy(lst)
+        csv_writer = self.install_csv_writer if res_type == "install" else self.build_csv_writer
+        if not pkg:
+            csv_writer.writerow(local_lst)
+            return lst
+
+        names_set.add(pkg)
+        local_lst.extend([pkg, *self.__get_single_df_row(pkg, res_type)])
+        if pkg in lst:
+            # When a dependency chain is closed, add 1 to the end of a line in the CSV file
+            local_lst.append("1")
+
+        csv_writer.writerow(local_lst)
+
+        return lst
+
+    def __data_to_csv(self, pkg_name: str, res_type="install"):
+        """
+        process json data to save csv
+        Args:
+            pkg_name:search package name
+            res_type:install or build
+
+        Returns:
+
+        """
+        # When generating csv, need to pop up some contents of the data stack.
+        # The pop-up number of install is 4. The number of pop-ups of  build is
+        # 3.
+        num = ListNode.INSTALL_POP_COUNT if res_type == "install" else ListNode.BUILD_POP_COUNT
+        names_set = set()
+
+        _stack = [self.__get_depends(pkg_name, res_type)]
+
+        df_row = [pkg_name, *self.__get_single_df_row(pkg_name, res_type)]
+
+        while _stack:
+            while not _stack[ListNode.TAIL]:
+                if len(_stack) == 1:
+                    _stack.pop()
+                    break
+                _stack.pop()
+                df_row = df_row[:-num]
+
+            if not _stack:
+                break
+
+            next_pkg = _stack[ListNode.TAIL].pop()
+
+            if not next_pkg:
+                continue
+
+            if next_pkg not in df_row and next_pkg not in names_set:
+                names_set.add(next_pkg)
+                df_row.extend(
+                    [next_pkg, *self.__get_single_df_row(next_pkg, res_type)])
+
+                depends = self.__get_depends(next_pkg, res_type)
+                if depends:
+                    _stack.append(depends)
+                else:
+                    df_row = self.__write_csv_update_df_row(
+                        df_row, res_type, names_set)
+                    df_row = df_row[:-num]
+                    continue
+            else:
+                df_row = self.__write_csv_update_df_row(df_row,
+                                                        res_type,
+                                                        names_set,
+                                                        pkg=next_pkg)
+
+    def __write_install_csv(self):
+        """
+        Writes the data of the installed fetch to CSV
+        Returns:
+
+        """
+        install_path = os.path.join(
+            self.folder_path,
+            f"{self.search_name}_{self.search_type}_install.csv")
+        install_csv = open(
+            install_path,
+            "w",
+            encoding="utf-8",
+            newline="")
+        self.install_csv_writer = csv.writer(install_csv)
+
+        if self.binary_packages:
+            for name in self.binary_packages:
+                self.__data_to_csv(name)
+        else:
+            self.__data_to_csv(self.search_name)
+
+        install_csv.close()
