@@ -84,37 +84,53 @@ Mulan V2
 
 |规格名称|规格指标|
 |:--|:-------|
-|内存占用|  |
+|内存占用| 初始化阶段，初始化一个150M的数据库，占用内存量1.68G；运行阶段，。。。 |
 |启动时间| 初始化两个数据库（openEuler-20.09和fedora），启动时间为：120s |
 |响应时间|  3个数据库，80%的查询在5s内给出结果|
+|文件规格|  tmp目录下峰值为1G|
+|日志规格|  10份日志文件，每份300M（根据时间淘汰）|
 
 ### 3.5.2、 系统可靠性设计
 
-1. 数据库持久化、备份的方案：
-系统增加定时任务，在特定的时间段内，对系统中的数据做备份，保留最新或最近的数据，便于后期恢复
+1. 数据库：
+
+    持久化：系统增加定时任务，在特定的时间段内，对系统中的数据做备份，保留最新或最近的数据，便于后期恢复  
+
+    redis淘汰机制： 从设置了过期时间（20分钟）的数据集中挑选最近最少使用的数据淘汰，淘汰算法的控制由redis内部实现  
+
+    导入：导入一个150M的数据库，占用内存量1.68G
+
+    重新初始化后与redis的同步机制：每次初始化时清空redis；或者先清空redis，后台将更新后的数据存入redis。（redis可以基于特定前缀统一删除，避免误删其他服务的缓存内容）
 
 2. 服务挂掉自动拉起方案：
 systemctl 实现服务自启动（开发相关），容器挂掉，可以使用k8s自动重启（部署相关）
 
 3. 分布式情况、由es去考虑：
-es数据库支持主从节点的配置，数据库可以使用分布式搭建，以主节点的形式进行连接
+    目前已满足单机运行诉求。
+
+    es数据库支持主从节点的配置，数据库可以使用分布式搭建，以主节点的形式进行连接。具体的es配置方案（分布式，配置几个节点等）缺少参考对象及后续规划诉求。
 
 4. 多请求并发场景处理方：
-增加redis缓存处理，减少服务器查询带来的计算型压力
-多台服务器分布式部署
+    增加redis缓存处理，减少服务器查询带来的计算型压力；
+
+    增加截流、限流机制，在请求之前控制，同一个ip，同接口，60s内请求次数不得超过20次。
 
 ### 3.5.3、 安全性设计
 
 1. 数据库链接：
 系统中设置数据库连接超时时间，数据库的用户名、密码、连接ip
-遗留问题：安装pkgship时，es是否需要自动化安装部署？
+安装pkgship时，提供es自动化安装部署脚本。
 
 2. 数据库容错：初始化数据库失败时，需要删除已经插入的数据，可能存在：插入数据没有删除干净的情况，如何判断已经删除干净、如果保证数据删除干净
 
 3. 读写、权限问题：
-分为读服务和写服务，写入服务部署在内网中，不对公网用户开放，读服务发布在公网中，用户只能读取系统中的数据
+    分为读服务和写服务，写入服务部署在本地中，不对公网用户开放，读服务发布在公网中，用户只能读取系统中的数据  
+
+    服务启动权限最小化：需要将所有文件移动至非root用户也可访问的文件夹中
 
 ### 3.5.4、 兼容性设计
+
+v1.x内数据兼容，v2.x与v1.x数据不可兼容
 
 ### 3.5.5、 可服务性设计
 
@@ -908,10 +924,10 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
 - 请求参数：
   | 参数名 | 必选 | 类型 | 说明 |
   |    - |   - |    - |   - |
-
   | packagename | True | string | 数据库表里的包名，如：Cunit, dnf|
   | depend_type   | 是  | str | 需要查询依赖的类型（installdep/builddep/selfdep/bedep） |
   | node_name | True | string | 查询的节点（某一个层级中包名称）名称 |
+  | node_type | True | string | 查询的节点（某一个层级中包名称）类型（binary/source） |
   | -parameter   | 否  | dict | 查询依赖的相关参数 |
   - parameter
     | 参数名 | 必选 | 类型 | 说明 |
@@ -930,6 +946,7 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
       "packagename": "Judy",
       "depend_type": "builddep",
       "node_name": "glibc",
+      "node_type": "binary",
       "parameter": {
         "db_priority": ["Mainline","fedora"],
         "level": 2,
@@ -1053,6 +1070,26 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
 * **举例**
   
   * `pkgship init -filepath ~/.conf.yaml`
+
+  conf.yaml格式：
+
+  ```yaml
+  # repo源初始化模式 —— 本地repo源
+  - dbname: fedora
+    src_db_file: file:///root/public/initdb/fedora/src
+    bin_db_file: file:///root/public/initdb/fedora/bin
+    priority: 1
+  # repo源初始化模式 ——远端repo源
+  - dbname: openEuler-20.09-OS
+    src_db_file: https://repo.openeuler.org/openEuler-20.09/source
+    bin_db_file: https://repo.openeuler.org/openEuler-20.09/everything/aarch64
+    priority: 2
+  # sqlite初始化模式
+  - dbname: openEuler-20.03
+    src_db_file: /etc/pkgship/dbfiles/source_repodata.sqlite 
+    bin_db_file: /etc/pkgship/dbfiles/everything_aarch64.sqlite 
+    priority: 3
+  ```
 
 ##### 3.7.2.2  单包查询
 
