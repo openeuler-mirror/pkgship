@@ -13,10 +13,10 @@
 """
 test get pkgship version and release info
 """
-import unittest
 import os
+import unittest
 from unittest import mock
-from mock import patch
+from mock import patch, MagicMock
 from packageship.application.core. pkginfo.pkg import Package
 from packageship.application.query.pkg import QueryPackage
 from packageship.application.query import database
@@ -25,9 +25,9 @@ from test.base_code.read_mock_data import MockData
 pkg = Package()
 MOCK_DATA_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 
-class TestAllSrcPackage(unittest.TestCase):
+class TestAllBinPackage(unittest.TestCase):
     """
-    class for test all src package
+    class for test all bin package
     """
 
     def setUp(self) -> None:
@@ -40,36 +40,37 @@ class TestAllSrcPackage(unittest.TestCase):
         Returns:
 
         """
-        res = pkg.all_src_packages("openEuler1", page_num=1, page_size=20)
+        res = pkg.all_bin_packages("openEuler1", page_num=1, page_size=20)
         self.assertEqual(res, {}, "Error in testing wrong parameter.")
 
-        res = pkg.all_src_packages("openeuler", page_num=0, page_size=1)
+        res = pkg.all_bin_packages("openeuler", page_num=0, page_size=1)
         self.assertEqual(res, {}, "Error in testing wrong parameter.")
 
-        res = pkg.all_src_packages("openeuler", page_num=1, page_size=0)
+        res = pkg.all_bin_packages("openeuler", page_num=1, page_size=0)
         self.assertEqual(res, {}, "Error in testing wrong parameter.")
 
-        res = pkg.all_src_packages("openeuler", page_num="a", page_size=0)
+        res = pkg.all_bin_packages("openeuler", page_num="a", page_size=0)
         self.assertEqual(res, {}, "Error in testing wrong parameter.")
 
-        res = pkg.all_src_packages("openeuler", page_num=1, page_size=201)
+        res = pkg.all_bin_packages("openeuler", page_num=1, page_size=201)
         self.assertEqual(res, {}, "Error in testing wrong parameter.")
 
-    @patch.object(QueryPackage, "get_src_info")
-    def test_get_empty_src_info(self, mock1):
+    @patch.object(QueryPackage, "get_bin_info")
+    def test_get_empty_bin_info(self, mock1):
         mock1.return_value = {}
-        res = pkg.all_src_packages("openeuler", page_num=1, page_size=20)
-        self.assertEqual(res, {}, "Error in testing empty src info.")
+        res = pkg.all_bin_packages("openeuler", page_num=1, page_size=20)
+        self.assertEqual(res, {}, "Error in testing empty bin info.")
 
-    @patch.object(QueryPackage, "get_src_info")
+    @patch.object(QueryPackage, "get_bin_info")
     def test_wrong_result(self, mock1):
-        mock1.return_value = {"total":2}
-        res = pkg.all_src_packages("openeuler", page_num=1, page_size=20)
-        self.assertEqual(res, {}, "Error in testing wrong src info res.")
+        mock1.return_value = {"total": 2}
+        res = pkg.all_bin_packages("openeuler", page_num=1, page_size=20)
+        self.assertEqual(res, {}, "Error in testing wrong bin info res.")
 
-    @patch.object(QueryPackage, "get_src_info")
+    @patch.object(QueryPackage, "get_bin_info")
     def test_true_result(self, mock1):
-        ALL_SRC_INFO = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE, "all_src_package_info.json"))
-        mock1.return_value = ALL_SRC_INFO
-        res = pkg.all_src_packages("openeuler", page_num=1, page_size=20)
+        ALL_BIN_INFO = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE, "all_bin_package_info.json"))
+        mock1.return_value = ALL_BIN_INFO
+        res = pkg.all_bin_packages("openeuler", page_num=1, page_size=20)
         self.assertNotEqual(res, {}, "Error in testing true response.")
+

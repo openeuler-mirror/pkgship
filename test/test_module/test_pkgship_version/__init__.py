@@ -10,16 +10,4 @@
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
-import json
-import os
-
-MOCK_DATA_FILE_PATH = os.path.dirname(os.path.abspath(__file__))
-
-
-class MockData:
-
-    @staticmethod
-    def read_mock_data(file_name):
-        file = os.path.join(MOCK_DATA_FILE_PATH, file_name)
-        with open(file, 'r', encoding='utf-8') as f:
-            return json.load(f)
+# -*- coding:utf-8 -*-
