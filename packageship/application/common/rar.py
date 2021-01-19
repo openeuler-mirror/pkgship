@@ -35,7 +35,7 @@ class Unpack:
         self = cls(*args, **kwargs)
         meth = getattr(self, extend[1:].lower(), None)
         if meth is None:
-            raise Exception(
+            raise IOError(
                 "Unzipping files in the current format is not supported：%s" % extend)
         meth()
 
