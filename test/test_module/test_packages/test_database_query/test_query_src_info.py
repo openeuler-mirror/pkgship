@@ -14,11 +14,14 @@ from unittest import TestCase
 from unittest.mock import MagicMock
 
 from packageship.application.query.pkg import QueryPackage
-from test.test_module.test_packages.mock_db_data import MockData
+from test.test_module.test_packages.test_database_query.get_mock_data import ObtainMockData
 
 
 class TestQuerySourcePkgInfo(TestCase):
-    query_package = QueryPackage()
+
+    def setUp(self):
+        self.query_package = QueryPackage()
+        self.session = self.query_package._db_session
 
     def test_query_specify(self):
         """
@@ -26,7 +29,7 @@ class TestQuerySourcePkgInfo(TestCase):
         Returns:
 
         """
-        self.query_package._db_session.query = MagicMock(return_value=MockData.read_mock_data("JudySource.json"))
+        self.session.query = MagicMock(return_value=ObtainMockData.get_data("JudySource.json"))
         result = self.query_package.get_src_info(src_list=['Judy'], database='openeuler', page_num=1, page_size=20,
                                                  query_all=False)
 
