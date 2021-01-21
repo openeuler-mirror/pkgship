@@ -82,3 +82,13 @@ class ConfigurationException(Error):
 
     def __init__(self, message):
         Error.__init__(self, 'Configuration exception : %r' % (message,))
+
+
+class UnpackError(Error):
+    """
+    Description:An error occurred extracting the file
+
+    """
+
+    def __init__(self, message):
+        Error.__init__(self, 'Unpack file failed: %r' % (message,))
