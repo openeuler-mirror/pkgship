@@ -156,15 +156,15 @@ v1.x内数据兼容，v2.x与v1.x数据不可兼容
 |:--|:-------|:------|:----|
 | 1 | 获取默认的版本库排序 | 0.3k | |
 | 2 | 获取pkgship的 version 和 release 号 | 0.3k | |
-| 3 | 服务初始化，包含数据库导入依赖关系以及软件包信息，配置文件读取等操作 | 1.5k | |
-| 4 | 获取所有rpm源码包的基本信息，包括license、version、所属版本库等 | 0.5k | |
-| 5 | 获取所有rpm二进制包的基本信息，包括license、version、所属版本库等 | 0.5k | |
-| 6 | 查询单个源码包信息和编译依赖以及对应二进制包的一层安装依赖、被依赖的接口 | 0.8k | |
-| 7 | 查询单个二进制包信息和对应二进制包的一层安装依赖、被依赖、文件列表的接口 | 0.8k | |
+| 3 | 服务初始化，包含数据库导入conf.yaml中配置的远程repo源中的sqlite文件（不支持repo源中无sqlite文件的导入），pkgship配置文件读取解析的操作 | 1.5k | |
+| 4 | 获取所有rpm源码包的基本信息（源码包名称、源码包版本号、源码包所在的版本仓、源码包license和源码包的url地址） | 0.5k | |
+| 5 | 获取所有rpm二进制包的基本信息（二进制包名称、二进制包版本号、二进制包所在的版本仓、二进制包license、二进制包的url地址和二进制包的源码名） | 0.5k | |
+| 6 | 查询单个源码包详细信息（源码包名、 源码包版本号、license、url、summary、description、源码包的编译依赖包列表、源码包提供的二进制包、以及源码包提供的二进制包提供的组件名和依赖的组件名、以及提供的组件名[provides]被哪些二进制包安装依赖[install required by]和被哪些源码包编译依赖[build requied by]，依赖的组件名[requires]被哪些二进制包提供[privided by]） | 0.8k | |
+| 7 | 查询单个二进制包详细信息（二进制包名、 二进制包版本号、license、url、summary、description、二进制包的源码包名、二进制包提供的文件名列表[filelist]、二进制包提供的组件名和依赖的组件名、以及提供的组件名[provides]被哪些二进制包安装依赖[install required by]和被哪些源码包编译依赖[build requied by]，依赖的组件名[requires]被哪些二进制包提供[privided by]） | 0.8k | |
 | 8 | 输入一个（或多个）二进制rpm包名，返回该rpm包的全量（或指定层数）的依赖（安装、编译、自依赖、被依赖）列表 | 3.5k | |
 | 9 | 获取包含详细依赖关系的压缩文件，可提供安装、编译、自依赖和被依赖关系的文件下载 | 1.5k | |
 | 10 | 点击列表中的二进制（源码）rpm包名，获取包含上下两层（共四层）详细依赖关系的图谱，可提供安装、编译、自依赖和被依赖关系的图谱展示 | 1.5k | |
-
+| 11 | 使用systemctl控制pkgship服务的开启和关闭，实现服务挂掉自动拉起，且启动程序时，建立一个服务管理员用户。 | 0.1k | |
 总：11.2k
 
 ### 3.7、 外部接口清单
@@ -175,11 +175,11 @@ v1.x内数据兼容，v2.x与v1.x数据不可兼容
 |    - |   - |    - |   - |  - |
 | 1 | /db_priority | GET | 获取默认的版本库排序 | 1 |
 | 2 | /version | GET | 获取pkgship的version号| 2 |
-| 3 | /init | POST | 服务初始化，包含数据库导入依赖关系以及软件包信息，配置文件读取等操作| 3 |
-| 4 | /packages/src | GET |  获取所有rpm源码包的基本信息 | 4 |
-| 5 | /packages/bin | GET |   获取所有rpm二进制包的基本信息 | 5 |
-| 6 | /packages/src/$src_name | GET | 查询单个源码包详细信息 | 6 |
-| 7 | /packages/bin/$bin_name | GET | 查询单个二进制包详细信息 | 7 |
+| 3 | /init（删除） | POST | 服务初始化，包含数据库导入conf.yaml中配置的远程repo源中的sqlite文件（不支持repo源中无sqlite文件的导入），pkgship配置文件读取解析的操作| 3 |
+| 4 | /packages/src | GET |  获取所有rpm源码包的基本信息（源码包名称、源码包版本号、源码包所在的版本仓、源码包license和源码包的url地址） | 4 |
+| 5 | /packages/bin | GET |   获取所有rpm二进制包的基本信息（二进制包名称、二进制包版本号、二进制包所在的版本仓、二进制包license、二进制包的url地址和二进制包的源码名） | 5 |
+| 6 | /packages/src/$src_name | GET | 查询单个源码包详细信息（源码包名、 源码包版本号、license、url、summary、description、源码包的编译依赖包列表、源码包提供的二进制包、以及源码包提供的二进制包提供的组件名和依赖的组件名、以及提供的组件名[provides]被哪些二进制包安装依赖[install required by]和被哪些源码包编译依赖[build requied by]，依赖的组件名[requires]被哪些二进制包提供[privided by]） | 6 |
+| 7 | /packages/bin/$bin_name | GET | 查询单个二进制包详细信息（二进制包名、 二进制包版本号、license、url、summary、description、二进制包的源码包名、二进制包提供的文件名列表[filelist]、二进制包提供的组件名和依赖的组件名、以及提供的组件名[provides]被哪些二进制包安装依赖[install required by]和被哪些源码包编译依赖[build requied by]，依赖的组件名[requires]被哪些二进制包提供[privided by]） | 7 |
 | 8 | /dependinfo/dependlist | POST | 获取安装、编译、自依赖和被依赖查询结果的列表 |  8 |
 | 9 | /dependinfo/downloadfiles | POST | 获取包含详细依赖关系的压缩文件 | 9 |
 | 10 | /dependinfo/dependgraph | POST | 获取包含上下两层（共四层）详细依赖关系的图谱 |  10 |
@@ -888,12 +888,12 @@ v1.x内数据兼容，v2.x与v1.x数据不可兼容
   | 参数名 | 必选 | 类型 | 说明 |
   |    - |   - |    - |   - |
   | packagename | True | string | 数据库表里的包名，如：Cunit, dnf|
-  | depend_type   | 是  | str | 需要查询依赖的类型（installdep/builddep/selfdep/bedep） |
+  | download_type   | 是  | str | 需要查询依赖的类型（installdep/builddep/selfdep/bedep/src/bin） |
   | -parameter   | 否  | dict | 查询依赖的相关参数 |
   - parameter
     | 参数名 | 必选 | 类型 | 说明 |
     |    - |   - |    - |   - |
-    | db_priority | False  | list | database的优先级，在be_depend情况下为必选，list长度为1（只有一个版本仓名字）_适用于所有查询_ |
+    | db_list | False  | list | database的优先级，在bedep/src/bin情况下为必选，list长度为1（只有一个版本仓名字）_适用于所有查询_ |
     | level | False | int | 需要查找的依赖层级,传值需>0,不传默认查到底、_适用于 install 和 build 查询_ |
     | packtype     | False  | str source/binary | 指定查询的包是源码包还是二进制,默认binary；_适用于 self和be查询_ |
     | self_build | False  | bool | 指定是否需要查询自编译依赖 默认Flase;_适用于build和self查询_ |
@@ -1278,6 +1278,13 @@ v1.x内数据兼容，v2.x与v1.x数据不可兼容
 
 `pkgship -v`
 
+##### 3.7.2.9  服务启动和停止
+
+启动pkgship服务：`systemctl start pkgship.service`
+查看pkgship状态：`systemctl status pkgship.service`
+停止pkgship服务：`systemctl stop pkgship.service`
+
+
 ### 3.8、 内部模块间接口清单
 
 |所属模块| 接口名称 | 接口描述 |
@@ -1290,6 +1297,7 @@ v1.x内数据兼容，v2.x与v1.x数据不可兼容
 |```DataBase()```| db_priority() | 用于获取版本仓的默认优先级 |
 |```Package()```| all_src_packages() | 用于获取所有rpm源码包的基本信息，包括license、version、所属版本库等 |
 |```Package()```| all_bin_packages() | 用于获取所有rpm二进制包的基本信息，包括license、version、所属版本库等 |
+|```Package()```| download_pkg_files() | 用于获取所有rpm（源码）二进制包的信息，包括license、version、所属版本库等 |
 |```SourcePackage()```| src_package_info() | 用于查询源码包信息和编译依赖以及对应二进制包的一层安装依赖、被依赖的接口 |
 |```BinaryPackage()```| bin_package_info() | 用于查二进制包信息和对应二进制包的一层安装依赖、被依赖、文件列表的接口 |
 | | 安装依赖模块 | 处理安装依赖的具体业务|
