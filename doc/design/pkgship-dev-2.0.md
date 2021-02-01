@@ -1205,7 +1205,7 @@ v1.x内数据兼容，v2.x与v1.x数据不可兼容
 
 ##### 3.7.2.5 自依赖
 
-​`pkgship selfbuild [$pkgName1 $pkgName2 $pkgName3 ..] [-dbs] [db1 db2..] [-b] [-s] [-w]`
+​`pkgship selfdepend [$pkgName1 $pkgName2 $pkgName3 ..] [-dbs] [db1 db2..] [-b] [-s] [-w]`
 
 * **必选参数**
 
@@ -1234,7 +1234,7 @@ v1.x内数据兼容，v2.x与v1.x数据不可兼容
 
   * 查询`Judy`,`CUnit`源码包有哪些自依赖,指定仓库优先级`[mainline,20.09]`,查找自编译依赖
 
-    `pkgship selfbuild Judy Cunit -dbs mainline 20.09 -s`
+    `pkgship selfdepend Judy Cunit -dbs mainline 20.09 -s`
 
 ##### 3.7.2.6 被依赖
 
