@@ -262,7 +262,8 @@ v1.x内数据兼容，v2.x与v1.x数据不可兼容
   | database_name | True | string | 数据库pkginfo下的表名，如：mainline, bringInRely|
   | page_num | True | int | 当前所在页数|
   | page_size | True | int | 每页显示的条数|
-  | query_pkg_name | False | string | 源码包名，模糊匹配 |
+  | query_pkg_name | False | string | 源码包名，精确匹配 |
+  | command_line | bool | string | 确定请求url是否来自命令行 |
 
 - 请求参数示例：
 
@@ -271,7 +272,8 @@ v1.x内数据兼容，v2.x与v1.x数据不可兼容
       "database_name" : "Mainline",
       "page_num": "1",
       "page_size": "2",
-      "query_pkg_name" : "dnf"
+      "query_pkg_name" : "dnf",
+      "command_line ": "False"
   }
   ```
 
@@ -338,7 +340,8 @@ v1.x内数据兼容，v2.x与v1.x数据不可兼容
   | database_name | True | string | 版本库名，如：mainline, bringInRely|
   | page_num | True | int | 当前所在页数|
   | page_size | True | int | 每页显示的条数|
-  | query_pkg_name | False | string | 二进制包名，模糊匹配 |
+  | query_pkg_name | False | string | 二进制包名，精确匹配 |
+  | command_line | bool | string | 确定请求url是否来自命令行 |
 
 - 请求参数示例：
 
@@ -347,7 +350,8 @@ v1.x内数据兼容，v2.x与v1.x数据不可兼容
       "database_name" : "Mainline",
       "page_num": "1",
       "page_size": "2",
-      "query_pkg_name" : "dnf"
+      "query_pkg_name" : "dnf",
+      "command_line ": "False"
   }
   ```
 
@@ -1386,20 +1390,27 @@ v1.x内数据兼容，v2.x与v1.x数据不可兼容
   | 参数名 | 必选 | 类型 | 说明 |
   |    - |   - |    - |   - |
   | database | 是 | str | 需要查询的某个版本仓的名字 |
+  | page_num | 是 | int |  分页查询的页码（>=1） |
+  | page_size | 是 | int | 分页查询每页大小（1<=page_size<=200) |
+  | package_list | 是 | list | 要查询的源码包的列表，为空列表时表示查询全部源码包 |
+  | command_line | 是 | bool | 是否是命令行场景，默认为False |
 
 - 请求示例：
 
   ```python
-  all_src_packages('Mainline')
+  all_src_packages('Mainline',1,20,package_list=["Judy"], command_line=False)
   ```
 
 - 预期返回参数
+  | 参数名 | 类型       | 说明           |
+  | ------ | ---------- | -------------- |
+  | total  | int        | 返回数据的数量 |
+  | data   | list(dict) | 返回的具体数据 |
 
-  | 参数名 | 类型 | 说明 |
-  |    - |   - |    - |
-  | package_dict | dict | 包含包基本信息的字典 |
+    
 
-  - package_dict参数：
+- data    
+  
     | 参数名 | 类型 | 说明 |
     |    - |    - |   - |
     | pkg_name | -str | -rpm name |
@@ -1411,23 +1422,25 @@ v1.x内数据兼容，v2.x与v1.x数据不可兼容
 - 返回示例：
 
 ```json
-resp = [
-  {
-    "pkg_name": "Judy",
-    "license": "Apache 2.0",
-    "version": "2.0.0",
-    "url":"http://www.xxx.com",
-    "database": "Mainline"
-  },
-  ....
-]
+resp = {"total":2300,
+		[
+		  {
+			"pkg_name": "Judy",
+			"license": "Apache 2.0",
+			"version": "2.0.0",
+			"url":"http://www.xxx.com",
+			"database": "Mainline"
+		  },
+		  ....
+		]
+}
 ```
-
-- 异常返回
-  
-    ```python
-    resp = []
-    ```
+    
+- 异常返回参数
+    
+    | 异常名                      | 类型   | 说明                                                        |
+    | --------------------------- | ------ | ----------------------------------------------------------- |
+    | ParametersError     | 自定义 | 参数错误        |
 
 ##### 3.8.2.2、 all_bin_packages
 
@@ -1444,19 +1457,25 @@ resp = [
     | 参数名 | 必选 | 类型 | 说明 |
     |    - |   - |    - |   - |
     | database | 是 | str | 需要查询的某个版本仓的名字 |
+	| page_num | 是 | int |  分页查询的页码（>=1） |
+    | page_size | 是 | int | 分页查询每页大小（1<=page_size<=200) |
+    | package_list | 是 | list | 要查询的二进制包的列表，为空列表时表示查询全部二进制包 |
+    | command_line | 是 | bool | 是否是命令行场景，默认为False |
 
 - 请求示例：
 
   ```python
-  all_bin_packages('Mainline')
+  all_bin_packages('Mainline',1,20,package_list=["Judy"], command_line=False)
   ```
 
 - 预期返回参数
 
-  | 参数名 | 类型 | 说明 |
-  |    - |   - |    - |
-  | package_dict | dict | 包含包基本信息的字典 |
+  | 参数名 | 类型       | 说明           |
+  | ------ | ---------- | -------------- |
+  | total  | int        | 返回数据的数量 |
+  | data   | list(dict) | 返回的具体数据 |
 
+- data
   - package_dict参数：
     | 参数名 | 类型 | 说明 |
     |    - |    - |   - |
@@ -1470,24 +1489,26 @@ resp = [
 - 返回示例：
 
 ```json
-resp = [
-  {
-    "pkg_name": "Judy",
-    "license": "Apache 2.0",
-    "version": "2.0.0",
-    "url":"http://www.xxx.com",
-    "source_name": "Judy",
-    "database": "Mainline"
-  },
-  ....
-]
+resp = {"total":2300,
+		[
+		  {
+			"pkg_name": "Judy",
+			"license": "Apache 2.0",
+			"version": "2.0.0",
+			"url":"http://www.xxx.com",
+			"source_name": "Judy",
+			"database": "Mainline"
+		  },
+		  ....
+		]
+}
 ```
 
-- 异常返回
-  
-    ```python
-    resp = []
-    ```
+- 异常返回参数
+    
+    | 异常名                      | 类型   | 说明                                                        |
+    | --------------------------- | ------ | ----------------------------------------------------------- |
+    | ParametersError     | 自定义 | 参数错误        |
 
 #### 3.8.3、 SourcePackage()
 
@@ -2782,8 +2803,11 @@ binary_data = {
 ```
 
 - 异常返回参数
-    | 参数名 | 类型 | 异常说明 |
-    |    - |   - |    - |
+    
+    | 异常名                      | 类型   | 说明                                                        |
+    | --------------------------- | ------ | ----------------------------------------------------------- |
+    | DatabaseConfigException     | 自定义 | 数据库配置异常，例如数据库地址为空，数据库类型不支持        |
+    | ElasticSearchQueryException | 自定义 | ES数据库查询异常，例如数据库连接失败，连接超时，index不存在 |
 
 ##### 3.8.12.2 get_build_req
 
@@ -2886,8 +2910,11 @@ binary_data = {
 ```
 
 - 异常返回参数
-    | 参数名 | 类型 | 异常说明 |
-    |    - |   - |    - |
+    
+    | 异常名                      | 类型   | 说明                                                        |
+    | --------------------------- | ------ | ----------------------------------------------------------- |
+    | DatabaseConfigException     | 自定义 | 数据库配置异常，例如数据库地址为空，数据库类型不支持        |
+    | ElasticSearchQueryException | 自定义 | ES数据库查询异常，例如数据库连接失败，连接超时，index不存在 |
 
 ##### 3.8.12.3 get_be_req
 
@@ -3029,8 +3056,11 @@ binary_data = {
  ```
 
 - 异常返回参数
-    | 参数名 | 类型 | 异常说明 |
-    |    - |   - |    - |
+    
+    | 异常名                      | 类型   | 说明                                                        |
+    | --------------------------- | ------ | ----------------------------------------------------------- |
+    | DatabaseConfigException     | 自定义 | 数据库配置异常，例如数据库地址为空，数据库类型不支持        |
+    | ElasticSearchQueryException | 自定义 | ES数据库查询异常，例如数据库连接失败，连接超时，index不存在 |
 
 ##### 3.8.12.4 get_src_name
 
@@ -3042,16 +3072,18 @@ binary_data = {
     |    - |   - |
 
 - 请求参数：
-    参数名 | 是否必填 | 类型 | 说明
-    ---------|----------|---------|---------
-    binary_list | 是 | list | 要查询的二进制包的列表
+
+   |参数名 | 是否必填 | 类型 | 说明 |
+   |---------|----------|---------|---------|
+   |binary_list | 是 | list | 要查询的二进制包的列表 |
+   |specify_db | 否 | str | 指定的数据库，当上层调用已知软件包所在数据库时，指定该字段可能加快查询速度 |
 
 > 查询数据所在的数据库列表用初始化方式赋值给所在类的属性，入参中忽略。
 
 - 调用实例：
   
 ```python
-  get_src_name(["Judy","CUnit"]) 隐式参数 self.database_list
+  get_src_name(["Judy","CUnit"], specify_db = "openeuler") 隐式参数 self.database_list
 ```
 
 - 预期返回参数 （如果和安装、编译依赖的信息有重复，可以考虑移除该方法）
@@ -3085,8 +3117,11 @@ binary_data = {
 ```
 
 - 异常返回参数
-    | 参数名 | 类型 | 异常说明 |
-    |    - |   - |    - |
+    
+    | 异常名                      | 类型   | 说明                                                        |
+    | --------------------------- | ------ | ----------------------------------------------------------- |
+    | DatabaseConfigException     | 自定义 | 数据库配置异常，例如数据库地址为空，数据库类型不支持        |
+    | ElasticSearchQueryException | 自定义 | ES数据库查询异常，例如数据库连接失败，连接超时，index不存在 |
 
 ##### 3.8.12.5 get_bin_name
 
@@ -3099,16 +3134,17 @@ binary_data = {
 
 - 请求参数：
 
-参数名 | 是否必填 | 类型 | 说明
----------|----------|---------|---------
- source_list | 是 | list | 要查询的源码包的列表
+    |参数名 | 是否必填 | 类型 | 说明 |
+    |---------|----------|---------|--------- |
+    |source_list | 是 | list | 要查询的源码包的列表 |
+    |specify_db | 否 | str | 指定的数据库，当上层调用已知软件包所在数据库时，指定该字段可能加快查询速度 |
 
 > 查询数据所在的数据库列表用初始化方式赋值给所在类的属性，入参中忽略。
 
 - 请求示例：
   
 ```python
-  get_bin_name(["Judy","CUnit"]) 隐式参数 self.database_list
+  get_bin_name(["Judy","CUnit"], specify_db = "openeuler") 隐式参数 self.database_list
 ```
 
 - 预期返回参数：
@@ -3165,8 +3201,11 @@ binary_data = {
 ```
 
 - 异常返回参数
-    | 参数名 | 类型 | 异常说明 |
-    |    - |   - |    - |
+    
+    | 异常名                      | 类型   | 说明                                                        |
+    | --------------------------- | ------ | ----------------------------------------------------------- |
+    | DatabaseConfigException     | 自定义 | 数据库配置异常，例如数据库地址为空，数据库类型不支持        |
+    | ElasticSearchQueryException | 自定义 | ES数据库查询异常，例如数据库连接失败，连接超时，index不存在 |
 
 ##### 3.8.12.6 get_src_info
 
@@ -3182,16 +3221,28 @@ binary_data = {
   
     | 参数名 | 必选 | 类型 | 说明 |
     | ----------- | -------- | ---- | ----------- |
-    | src_list | 是  | list(str) | 要查询的源码包的列表  |
+    | src_list | 是  | list | 要查询的源码包的列表，为空列表时表示查询全部源码包 |
     | database    | 是       | str  | 查询源码包所在数据库，只支持在单个数据库中查询 |
-
+    | page_num | 是 | int | 分页查询的页码（>=1） |
+    | page_size | 是 | int | 分页查询每页大小（1<=page_size<=200) |
+    | command_line | 否 | bool | 是否是命令行场景，如果是命令行场景，不分页；UI场景，分页，默认为False |
+  
 - 请求示例：
 
     ```json
-    get_src_info(["Judy","CUnit"],"openeuler-20.09")
+    get_src_info(src_list=["Judy","CUnit"],database="openeuler-20.09",page_num=1,page_size=20,command_line=False)
     ```
 
 - 预期返回参数
+
+    | 参数名 | 类型       | 说明           |
+    | ------ | ---------- | -------------- |
+    | total  | int        | 返回数据的数量 |
+    | data   | list(dict) | 返回的具体数据 |
+
+    
+
+    - data     key值： src_name
 
     | 参数名        | 类型      | 说明                   |
     | ----------- | --------- | ---------------------- |
@@ -3209,37 +3260,50 @@ binary_data = {
 - 返回示例:
 
 ```json
-  resp:{
-    "Judy":{
-      "src_name": "Judy",
-      "version": "1.0.5",
-      "release": "19.oe1",
-      "url": "http://sourceforge.net/projects/judy/",
-      "license": "LGPLv2+",
-      "summary": "Judy",
-      "description": "Judy",
-      "vendor": "http://openeuler.org",
-      "href": "Packages/Judy-1.0.5-19.oe1.src.rpm",
-      "subpacks": ["Judy", "Judy-devel"]
-    },
-    "CUnit":{
-      "src_name": "CUnit",
-      "version": "1.0.5",
-      "release": "19.oe1",
-      "url": "http://sourceforge.net/projects/judy/",
-      "license": "LGPLv2+",
-      "summary": "A Unit Testing Framework for C",
-      "description": "CUnit is a lightweight system for writing, administering, and running .",
-      "vendor": "http://openeuler.org",
-      "href": "Packages/CUnit-2.1.3-21.oe1.src.rpm",
-      "subpacks": ["CUnit", "CUnit-devel", "CUnit-help"]
+{
+    "total": 2020,
+    "data": {
+        "Judy": {
+            "src_name": "Judy",
+            "version": "1.0.5",
+            "release": "19.oe1",
+            "url": "http://sourceforge.net/projects/judy/",
+            "license": "LGPLv2+",
+            "summary": "Judy",
+            "description": "Judy",
+            "vendor": "http://openeuler.org",
+            "href": "Packages/Judy-1.0.5-19.oe1.src.rpm",
+            "subpacks": [
+                "Judy",
+                "Judy-devel"
+            ]
+        },
+        "CUnit": {
+            "src_name": "CUnit",
+            "version": "1.0.5",
+            "release": "19.oe1",
+            "url": "http://sourceforge.net/projects/judy/",
+            "license": "LGPLv2+",
+            "summary": "A Unit Testing Framework for C",
+            "description": "CUnit is a lightweight system for writing, administering, and running .",
+            "vendor": "http://openeuler.org",
+            "href": "Packages/CUnit-2.1.3-21.oe1.src.rpm",
+            "subpacks": [
+                "CUnit",
+                "CUnit-devel",
+                "CUnit-help"
+            ]
+        }
     }
-  }
+}
 ```
 
 - 异常返回参数
-    | 参数名 | 类型 | 异常说明 |
-    |    - |   - |    - |
+
+    | 异常名                      | 类型   | 说明                                                        |
+    | --------------------------- | ------ | ----------------------------------------------------------- |
+    | DatabaseConfigException     | 自定义 | 数据库配置异常，例如数据库地址为空，数据库类型不支持        |
+    | ElasticSearchQueryException | 自定义 | ES数据库查询异常，例如数据库连接失败，连接超时，index不存在 |
 
 ##### 3.8.12.7 get_bin_info
 
@@ -3255,16 +3319,26 @@ binary_data = {
 
     | 参数名        | 必选 | 类型 | 说明        |
     | ----------- | -------- | ---- | -------------- |
-    | binary_list | 是       | list(str) | 要查询的二进制包的列表                           |
+    | binary_list | 是       | list | 要查询的二进制包的列表                           |
     | database    | 是       | str  | 查询二进制包所在数据库，只支持在单个数据库中查询 |
+    | page_num | 是 | int | 分页查询的页码（>=1） |
+    | page_size | 是 | int | 分页查询每页大小（1<=page_size<=200) |
+    | command_line | 否   | bool      | 是否是命令行场景，如果是命令行场景，不分页；UI场景，分页，默认为False |
 
 - 请求示例：
   
 ```python
-  get_bin_info(["Judy-devel"],"fedora32")
+  get_bin_info(bin_list=["Judy","CUnit"],database="openeuler-20.09",page_num=1,page_size=20,command_line=False)
 ```
 
 - 预期返回参数
+
+| 参数名 | 类型       | 说明           |
+| ------ | ---------- | -------------- |
+| total  | int        | 返回数据的数量 |
+| data   | list(dict) | 返回的具体数据 |
+
+- data   key值： bin_name
 
 | 名称        | 类型      | 说明                   |
 | ----------- | --------- | ---------------------- |
@@ -3276,34 +3350,59 @@ binary_data = {
 | summary | str | 二进制包的概要|
 | description | str | 二进制包的详细描述|
 | vendor | str | 二进制包提供者 |
-| sourcerpm | str | 提供二进制包的源码包全称
-| src_name | str | 提供二进制包的源码包名称
-| href | str | 二进制包全路径
+| sourcerpm | str | 提供二进制包的源码包全称 |
+| src_name | str | 提供二进制包的源码包名称 |
+| href | str | 二进制包全路径 |
+| -file_list | list(dict) | 二进制包提供的文件列表 |
+- file_list(dict): 
+
+  | 名称      | 类型 | 说明                                                 |
+  | --------- | ---- | ---------------------------------------------------- |
+  | filenames | str  | 文件名称(可能有多个，以字符串形式返回，业务处理分隔) |
+  | dirname   | str  | 文件所在路径                                         |
+  | filetypes | str  | 文件类型(可能有多个，以字符串形式返回，业务处理分隔) |
 
 - 返回示例：
 
 ```json
-  resp:{
-    "Judy-devel":{
-      "bin_name": "Judy-devel",
-      "version": "1.0.5",
-      "release": "22.fc32",
-      "url": "http://sourceforge.net/projects/judy/",
-      "license": "LGPLv2+",
-      "summary": "Development libraries and headers for Judy",
-      "description": "Thisuse the Judy library.",
-      "vendor": "Fedora Project",
-      "sourcerpm": "Judy-1.0.5-22.fc32.src.rpm",
-      "src_name": "Judy",
-      "href": "Packages/j/Judy-devel-1.0.5-22.fc32.aarch64.rpm"
+{
+    "total": 2020,
+    "data": {
+        "Judy-devel": {
+            "bin_name": "Judy-devel",
+            "version": "1.0.5",
+            "release": "22.fc32",
+            "url": "http://sourceforge.net/projects/judy/",
+            "license": "LGPLv2+",
+            "summary": "Development libraries and headers for Judy",
+            "description": "Thisuse the Judy library.",
+            "vendor": "Fedora Project",
+            "sourcerpm": "Judy-1.0.5-22.fc32.src.rpm",
+            "src_name": "Judy",
+            "href": "Packages/j/Judy-devel-1.0.5-22.fc32.aarch64.rpm",
+            "file_list": [
+                {
+                    "filenames": "ext/int",
+                    "dirname": "/usr/share/doc/Judy-devel/doc",
+                    "filetypes": "dd"
+                },
+                {
+                    "filenames": "libJudy.so",
+                    "dirname": "/usr/lib64",
+                    "filetypes": "f"
+                }
+            ]
+        }
     }
-  }
+}
 ```
 
 - 异常返回参数
 
-    | 参数名 | 类型 | 异常说明 |
-    |    - |   - |    - |
+    | 异常名                      | 类型   | 说明                                                        |
+    | --------------------------- | ------ | ----------------------------------------------------------- |
+    | DatabaseConfigException     | 自定义 | 数据库配置异常，例如数据库地址为空，数据库类型不支持        |
+    | ElasticSearchQueryException | 自定义 | ES数据库查询异常，例如数据库连接失败，连接超时，index不存在 |
 
 ## 4、修改日志
 
