@@ -78,8 +78,40 @@ class TestEsQuery(TestCase):
         Returns:
         """
         with self.assertRaises(DatabaseConfigException):
-            ElasticSearch(host="", port="9200", user_name=None, password=None)
+            ElasticSearch(host="", port="9200")
+
+    @mock.patch.object(Elasticsearch, "count")
+    def test_get_count(self, mock_count):
+        """
+        Test obtain data volume
+        Returns:
+        """
+        es = self._es_init()
+        mock_count.return_value = 5
+
+        result = es.count(index="test", body="test")
+        self.assertEqual(result, 5)
+
+    def test_get_count_fail(self):
+        """
+        Test obtain data volume failed
+        Returns:
+        """
+        es = self._es_init()
+
+        with self.assertRaises(ElasticSearchQueryException):
+            es.count(index='test', body={"query": {"match_all": {}}})
+
+    def test_single_instance(self):
+        """
+        Test signal instance of database class
+        Returns:
+
+        """
+        es1 = ElasticSearch(host="127.0.0.1", port=None)
+        es2 = ElasticSearch(host="127.0.0.1")
+        self.assertIs(es1, es2)
 
     @staticmethod
     def _es_init():
-        return ElasticSearch(host="127.0.0.1", port="9200", user_name=None, password=None)
+        return ElasticSearch(host="127.0.0.1", port="9200")

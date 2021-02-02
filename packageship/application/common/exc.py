@@ -18,7 +18,6 @@ Class:Error,ContentNoneException,DbnameNoneException,
 
 
 class Error(Exception):
-
     """
     Description: Read the configuration file base class in the system
     Attributes:
@@ -92,3 +91,24 @@ class UnpackError(Error):
 
     def __init__(self, message):
         Error.__init__(self, 'Unpack file failed: %r' % (message,))
+
+
+class DatabaseConfigException(Error):
+    """
+    Description: dataBase config error
+    Attributes:
+    """
+
+    def __init__(self, message):
+        Error.__init__(self, 'Database config error: %r' % (message,))
+
+
+class ElasticSearchQueryException(Error):
+    """
+    Description: An exception occurred when using the Elasticsearch search
+    Attributes:
+    """
+
+    def __init__(self, message):
+        Error.__init__(self, 'Database query failed, please check database configuration and connection status,'
+                             'reason is : %r' % (message,))
