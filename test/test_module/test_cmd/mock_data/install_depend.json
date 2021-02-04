@@ -1,0 +1,50 @@
+{
+    "code": "200",
+    "message": "Successful Operation",
+    "resp": {
+        "binary_list": [
+            {
+                "binary_name": "Judy",
+                "database": "openeuler",
+                "source_name": "Judy",
+                "version": "1.0.5"
+            },
+            {
+                "binary_name": "bash",
+                "database": "openeuler",
+                "source_name": "bash",
+                "version": "5.0"
+            },
+            {
+                "binary_name": "glibc",
+                "database": "openeuler",
+                "source_name": "glibc",
+                "version": "2.31"
+            }
+        ],
+        "source_list": [
+            {
+                "database": "openeuler",
+                "source_name": "Judy",
+                "version": "1.0.5"
+            },
+            {
+                "database": "openeuler",
+                "source_name": "bash",
+                "version": "5.0"
+            },
+            {
+                "database": "openeuler",
+                "source_name": "glibc",
+                "version": "2.31"
+            }
+        ],
+        "statistics": [
+            {
+                "binary_sum": 3,
+                "database": "openeuler",
+                "source_sum": 3
+            }
+        ]
+    }
+}

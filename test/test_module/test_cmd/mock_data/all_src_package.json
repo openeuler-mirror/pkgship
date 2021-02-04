@@ -1,0 +1,78 @@
+{
+    "code": "200",
+    "message": "Successful Operation",
+    "resp": [
+        {
+            "database": "openeuler",
+            "license": "GPLv3+",
+            "pkg_name": "389-ds-base",
+            "url": "https://www.port389.org",
+            "version": "1.4.0.31"
+        },
+        {
+            "database": "openeuler",
+            "license": "Public Domain",
+            "pkg_name": "BareBonesBrowserLaunch",
+            "url": "http://www.centerkey.com/java/browser/",
+            "version": "3.1"
+        },
+        {
+            "database": "openeuler",
+            "license": "LGPLv2+",
+            "pkg_name": "CUnit",
+            "url": "http://cunit.sourceforge.net/",
+            "version": "2.1.3"
+        },
+        {
+            "database": "openeuler",
+            "license": "MIT",
+            "pkg_name": "ComputeLibrary",
+            "url": "https://developer.arm.com/technologies/compute-library",
+            "version": "20.02.1"
+        },
+        {
+            "database": "openeuler",
+            "license": "Huawei Software License",
+            "pkg_name": "CreateImage",
+            "url": null,
+            "version": "0.0.5"
+        },
+        {
+            "database": "openeuler",
+            "license": "Apache 2.0",
+            "pkg_name": "Cython",
+            "url": "https://cython.org/",
+            "version": "0.29.14"
+        },
+        {
+            "database": "openeuler",
+            "license": "LGPLv2+ and GPLv2+",
+            "pkg_name": "GConf2",
+            "url": "http://projects.gnome.org/gconf/",
+            "version": "3.2.6"
+        },
+        {
+            "database": "openeuler",
+            "license": "LGPLv2+",
+            "pkg_name": "GeoIP",
+            "url": "http://www.maxmind.com/app/c",
+            "version": "1.6.12"
+        },
+        {
+            "database": "openeuler",
+            "license": "CC-BY-SA",
+            "pkg_name": "GeoIP-GeoLite-data",
+            "url": "http://dev.maxmind.com/geoip/legacy/geolite/",
+            "version": "2018.06"
+        },
+        {
+            "database": "openeuler",
+            "license": "MIT",
+            "pkg_name": "GraphicsMagick",
+            "url": "http://www.graphicsmagick.org/",
+            "version": "1.3.30"
+        }
+    ],
+    "total_count": 3345,
+    "total_page": 335
+}

@@ -1,0 +1,40 @@
+{
+  "code": "200",
+  "message": "Successful Operation",
+  "resp": {
+    "binary_list": [
+      {
+        "binary_name": "Judy-devel",
+        "database": "openeuler",
+        "source_name": "Judy",
+        "version": "1.0.5"
+      },
+      {
+        "binary_name": "Judy-help",
+        "database": "openeuler",
+        "source_name": "Judy",
+        "version": "1.0.5"
+      },
+      {
+        "binary_name": "Judy",
+        "database": "openeuler",
+        "source_name": "Judy",
+        "version": "1.0.5"
+      },
+      {
+        "binary_name": "mariadb-oqgraph-engine",
+        "database": "openeuler",
+        "source_name": "mariadb",
+        "version": "10.3.9"
+      }
+    ],
+    "source_list": [],
+    "statistics": [
+      {
+        "binary_sum": 4,
+        "database": "openeuler",
+        "source_sum": 0
+      }
+    ]
+  }
+}

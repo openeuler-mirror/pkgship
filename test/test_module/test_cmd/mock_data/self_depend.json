@@ -1,0 +1,46 @@
+{
+  "code": "200",
+  "message": "Successful Operation",
+  "resp": {
+    "binary_list": [
+      {
+        "binary_name": "Judy",
+        "database": "openeuler",
+        "source_name": "Judy",
+        "version": "1.0.5"
+      },
+      {
+        "binary_name": "Judy-devel",
+        "database": "openeuler",
+        "source_name": "Judy",
+        "version": "1.0.5"
+      },
+      {
+        "binary_name": "Judy-help",
+        "database": "openeuler",
+        "source_name": "Judy",
+        "version": "1.0.5"
+      },
+      {
+        "binary_name": "bash",
+        "database": "openeuler",
+        "source_name": "bash",
+        "version": "5.0"
+      }
+    ],
+    "source_list": [
+      {
+        "database": "openeuler",
+        "source_name": "Judy",
+        "version": "1.0.5"
+      }
+    ],
+    "statistics": [
+      {
+        "binary_sum": 4,
+        "database": "openeuler",
+        "source_sum": 1
+      }
+    ]
+  }
+}
