@@ -23,17 +23,17 @@ INIT_CONF_PATH = os.path.join('/', 'etc', 'pkgship', 'conf.yaml')
 # configuration in the system is used by default
 DATABASE_FOLDER_PATH = os.path.join('/', 'var', 'run', 'pkgship_dbs')
 
-# The database engine supported in the system is sqlite database by default
-DATABASE_ENGINE_TYPE = 'sqlite'
+# The database engines supported in the system is sqlite database by default
+DATABASE_ENGINE_TYPE = 'elastic'
 
-# Port managed by the administrator, with write permission
-WRITE_PORT = 8080
+# Default ip address of database
+DATABASE_HOST = '127.0.0.1'
+
+# Default port of database
+DATABASE_PORT = '9200'
 
 # Ordinary user query port, only the right to query data, no permission to write data
 QUERY_PORT = 8090
-
-# IP address path with write permission
-WRITE_IP_ADDR = '127.0.0.1'
 
 # IP address path with permission to query data
 QUERY_IP_ADDR = '127.0.0.1'

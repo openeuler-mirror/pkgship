@@ -27,8 +27,7 @@ class TestConnect(TestCase):
         db = DatabaseSession()
         db_session = db.connection()
 
-        es_session = ElasticSearch(host=db.host, port=db.port,
-                                   user_name=db.user_name, password=db.password)
+        es_session = ElasticSearch(host=db._host, port=db._port)
 
         self.assertIs(db_session, es_session)
 
@@ -60,8 +59,7 @@ class TestConnect(TestCase):
         Returns:
 
         """
-        es_instance = ElasticSearch(host="127.0.0.1", port="9200",
-                                    user_name="", password="")
+        es_instance = ElasticSearch(host="127.0.0.1", port="9200")
         mock_connection.return_value = es_instance
 
         db = DatabaseSession()
