@@ -11,46 +11,43 @@
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
 # -*- coding:utf-8 -*-
-"""
-Statistical coverage
-"""
-
-import unittest
 import os
+import sys
+import unittest
+
 import coverage
 from coverage import CoverageException
 
-
-base_path = os.path.join(os.path.dirname(os.path.abspath(
-    os.path.dirname(__file__))), "packageship")
-
 suite = unittest.TestSuite()
+BASE_PATH = os.path.join(os.path.dirname(os.path.abspath(
+    os.path.dirname(__file__))), "packageship")
+TEST_CASE_PATH = os.path.join(BASE_PATH, "../test")
+sys.path.insert(0, os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 
-cov = coverage.coverage(
-    data_suffix='init',
-    include=[
-        base_path + '/*'],
-    omit=["*__init__.py"],
-    data_file='./.coverage')
+cov = coverage.coverage(data_suffix='init', include=[BASE_PATH + '/application/*'],
+                        omit=["*__init__.py"], data_file='./.coverage')
 
 
-def all_case():
+def specify_case(file_path):
     """
+    Test specify test cases
     Args:
+        file_path: test cases file path
 
-    Returns:
-        All test cases
+    Returns: discover result
     """
     discover = unittest.defaultTestLoader.discover(
-        ".", pattern="test*.py", top_level_dir=None)
+        file_path, pattern="test*.py", top_level_dir=None)
     return discover
 
 
 if __name__ == "__main__":
-
     runner = unittest.TextTestRunner()
+    args = sys.argv
     cov.start()
-    runner.run(all_case())
+    test_case_files = [os.path.join(TEST_CASE_PATH, "test_module/test_database/")]
+    for file in test_case_files:
+        runner.run(specify_case(file))
     cov.stop()
     try:
         cov.report(show_missing=True)
