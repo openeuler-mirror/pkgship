@@ -10,3 +10,11 @@
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
+from redis import Redis, ConnectionPool
+from packageship.libs.conf import configuration
+
+REDIS_CONN = Redis(connection_pool=ConnectionPool(
+    host=configuration.REDIS_HOST,
+    port=configuration.REDIS_PORT,
+    max_connections=configuration.REDIS_MAX_CONNECTIONS,
+    decode_responses=True))
