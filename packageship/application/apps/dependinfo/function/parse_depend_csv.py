@@ -17,11 +17,14 @@ import copy
 import csv
 import os
 import uuid
-from typing import List, Set
+import zipfile
+from io import BytesIO
+from typing import List, Set, Dict
 from functools import wraps
-from packageship.libs.conf import configuration
 from flask import current_app
+from flask import send_file
 
+from packageship.libs.conf import configuration
 from packageship.libs.constants import ListNode
 
 
@@ -759,3 +762,103 @@ class DataToCsv:
             self.__data_to_csv(self.search_name)
 
         install_csv.close()
+
+    @catch_error
+    def __write_build_csv(self):
+        """
+        Writes the retrieved build data to CSV
+        Returns:
+            None
+        """
+
+        build_path = os.path.join(
+            self.folder_path,
+            f"{self.search_name}_{self.search_type}_build.csv")
+        build_csv = open(
+            build_path, "w", encoding="utf-8", newline="")
+        self.build_csv_writer = csv.writer(build_csv)
+
+        self.__data_to_csv(self.search_name, res_type="build")
+        build_csv.close()
+
+    def __run(self):
+        """
+        main of this Class to run process data logic
+        Returns:
+            Updates the properties of the object
+        """
+        self.__get_processed_data()
+        self.__process_full_depend_data_to_csv()
+        self.__write_install_csv()
+        if self.build_dict:
+            self.__write_build_csv()
+
+    @catch_error
+    def main(self):
+        """
+        The main function
+        Returns:
+            self.folder_path: Path to the folder
+        """
+        self.__run()
+        return self.folder_path
+
+
+class MakeZipFileResponse:
+    """
+    Compress the data into IO and write to the IO stream and return
+    """
+    def __init__(
+            self,
+            search_name,
+            json_data: Dict,
+            search_type,
+            pack_type=None):
+        """
+        Initializing attribute
+        Args:
+            search_name: search name
+            json_data: json data
+            search_type: search type
+            pack_type: pack type
+        """
+        self.folder_path = None
+        self.search_name = search_name
+        self.json_data = json_data
+        self.search_type = search_type
+        self.pack_type = pack_type
+
+    def __process_data_to_csv(self):
+        """
+        Writes the data to a CSV file
+        Returns:
+            Update the properties of some objects
+        """
+        data_process_handler = DataToCsv(
+            self.search_name,
+            self.json_data,
+            self.search_type,
+            pack_type=self.pack_type)
+        self.folder_path = data_process_handler.main()
+
+    @catch_error
+    def get_zipfile(self):
+        """
+        Compress the data into IO and write to the IO stream and return
+        Returns:
+            zip file
+        """
+        self.__process_data_to_csv()
+        file_list = os.listdir(self.folder_path)
+        memory_file = BytesIO()
+        with zipfile.ZipFile(memory_file, "w", zipfile.ZIP_DEFLATED) as zip_file:
+            for _file in file_list:
+                with open(os.path.join(self.folder_path, _file), 'rb') as file_content:
+                    zip_file.writestr(_file, file_content.read())
+        memory_file.seek(ListNode.SOURCE_NAME)
+        return send_file(
+            memory_file,
+            attachment_filename="{search_name}_{file_type}.zip".format(
+                search_name=self.search_name,
+                file_type=self.search_type),
+            as_attachment=True)
