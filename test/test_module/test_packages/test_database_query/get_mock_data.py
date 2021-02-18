@@ -18,7 +18,19 @@ MOCK_DATA_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data"
 
 
 class ObtainMockData:
+    """
+    Get mock data class
+    """
+
     @staticmethod
     def get_data(file_name):
+        """
+        get mock data
+        Args:
+            file_name:  mock data file
+
+        Returns: file content
+
+        """
         file_path = os.path.join(MOCK_DATA_FILE, file_name)
         return MockData.read_mock_json_data(file_path)
