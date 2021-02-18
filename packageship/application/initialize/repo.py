@@ -20,7 +20,7 @@ import shutil
 import requests
 from packageship.libs.conf import configuration
 from packageship.application.common.exc import UnpackError
-from ..common.rar import Unpack
+from ..common.compress import Unpack
 from ..common.remote import RemoteService
 
 
@@ -92,7 +92,7 @@ class RepoFile:
         request = RemoteService()
         request.request(remote_url, "get")
         if request.status_code != requests.codes["ok"]:
-            raise FileNotFoundError("file not fuound")
+            raise FileNotFoundError("File download failed : %s ." % remote_url)
         try:
             _file_path = os.path.join(
                 self._temporary_directory, remote_url.split('/')[-1])
@@ -118,11 +118,18 @@ class RepoFile:
             list_dir = os.listdir(url)
         except (FileNotFoundError, NotADirectoryError):
             return file_path
+        right_files = []
         for file in list_dir:
             if os.path.isfile(os.path.join(url, file)) and re.match(regex, file):
-                file_path = os.path.join(self._temporary_directory, file)
-                shutil.copyfile(os.path.join(url, file), file_path)
-                break
+                right_files.append(file)
+
+        if len(right_files) > 1 or not right_files:
+            raise ValueError(
+                "More than one file in the specified directory conforms to"
+                " the rule or the correct file was not found .")
+
+        file_path = os.path.join(self._temporary_directory, right_files[0])
+        shutil.copyfile(os.path.join(url, right_files[0]), file_path)
         return file_path
 
     def location_file(self, path, file_type="primary"):
@@ -137,7 +144,7 @@ class RepoFile:
         """
         # A file that matches the end of a particular character
         if not path:
-            raise ValueError("The value of path cannot be null")
+            raise ValueError("The value of path cannot be null .")
         regex = r'.*?%s.sqlite.{3,4}' % file_type
         path = path.split('file://')[-1]
         try:
@@ -145,7 +152,7 @@ class RepoFile:
             if not file_path:
                 return file_path
             file_path = self._unzip_file(file_path)
-        except (FileNotFoundError, IOError) as error:
+        except (FileNotFoundError, IOError, ValueError) as error:
             raise FileNotFoundError(error) from error
 
         return file_path
@@ -187,8 +194,11 @@ class RepoFile:
         request.request(url, "get")
         if request.status_code != requests.codes["ok"]:
             return None
-        result = re.search(file_regex, request.text)
-        if not result:
+        results = re.findall(file_regex, request.text)
+        if not results:
             return None
-        remote_url = url + result.group(1)
+        if len(results) > 1:
+            raise ValueError(
+                "More than one file in the specified directory conforms to the rule .")
+        remote_url = url + results[0]
         return remote_url

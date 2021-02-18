@@ -16,7 +16,7 @@
 import os
 from flask import Flask
 from packageship.application.settings import Config
-from packageship.libs.log import setup_log
+from packageship.libs.log import Log
 from packageship.application import apps
 
 
@@ -27,7 +27,7 @@ def init_app():
     app = Flask(__name__)
 
     # log configuration
-    app.logger.addHandler(setup_log(Config()))
+    app.logger.addHandler(Log(__name__).file_handler)
 
     # Load configuration items
     app.config.from_object(Config())

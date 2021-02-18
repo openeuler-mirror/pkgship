@@ -43,7 +43,7 @@ setup(
         'packageship.application.common.constant',
         'packageship.application.common.exc',
         'packageship.application.common.export',
-        'packageship.application.common.rar',
+        'packageship.application.common.compress',
         'packageship.application.common.remote',
         'packageship.application.common.rsp.content',
         'packageship.application.common.rsp.xmlmap',

@@ -78,8 +78,8 @@ class Unpack:
                 self._write(file, bz_file)
         except OSError as error:
             raise UnpackError(
-                "Invalid data stream, %s file is not properly formatted ."
-                % self.file_path) from error
+                "Invalid data stream, %s file is not properly formatted ." %
+                self.file_path) from error
 
     def _gz(self):
         """
@@ -90,8 +90,8 @@ class Unpack:
             with open(self.save_file, 'wb') as file, gzip.GzipFile(self.file_path) as gzip_file:
                 self._write(file, gzip_file)
         except gzip.BadGzipFile as error:
-            raise UnpackError(
-                "Not a gzipped file :%s" % self.file_path) from error
+            raise UnpackError("Not a gzipped file :%s" %
+                              self.file_path) from error
 
     def _tar(self):
         """
@@ -101,8 +101,8 @@ class Unpack:
         try:
             tar_file = tarfile.open(self.file_path)
         except tarfile.ReadError as error:
-            raise IOError("The file '%s'  is not a proper tar file ."
-                          % self.file_path) from error
+            raise IOError("The file '%s'  is not a proper tar file ." %
+                          self.file_path) from error
 
         with open(self.save_file, 'wb') as file:
             file_names = tar_file.getnames()
@@ -132,8 +132,8 @@ class Unpack:
                 if not os.path.exists(configuration.TEMPORARY_DIRECTORY):
                     os.makedirs(configuration.TEMPORARY_DIRECTORY)
             except IOError as error:
-                raise IOError("Failed to create temporary folder %s ."
-                              % configuration.TEMPORARY_DIRECTORY) from error
+                raise IOError("Failed to create temporary folder %s ." %
+                              configuration.TEMPORARY_DIRECTORY) from error
             else:
 
                 temporary_extract_file = os.path.join(
@@ -154,5 +154,5 @@ class Unpack:
             with open(self.save_file, 'wb') as file, lzma.open(self.file_path) as xz_file:
                 self._write(file, xz_file)
         except lzma.LZMAError as error:
-            raise UnpackError("The file '%s' is not a correct xz format ."
-                              % self.file_path) from error
+            raise UnpackError("The file '%s' is not a correct xz format ." %
+                              self.file_path) from error
