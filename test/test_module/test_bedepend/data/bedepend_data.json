@@ -1,0 +1,257 @@
+{
+    "param": {
+        "packagename": [
+            "Judy"
+        ],
+        "depend_type": "bedep",
+        "parameter": {
+            "db_priority": [
+                "Mainline"
+            ],
+            "packtype": "install",
+            "search_type": "install",
+            "with_subpack": false
+        }
+    },
+    "be_dep_data": [
+        {
+            "binary_name": "Judy",
+            "bin_version": "1.1.0",
+            "src_name": "Judy",
+            "src_version": "1.1.0",
+            "provides": [
+                {
+                    "component": "comp1",
+                    "build_require": [
+                        {
+                            "req_src_name": "T",
+                            "req_src_version": "1.0"
+                        },
+                        {
+                            "req_src_name": "R",
+                            "req_src_version": "2.0"
+                        }
+                    ],
+                    "install_require": [
+                        {
+                            "req_bin_name": "A1",
+                            "req_bin_version": "1.1",
+                            "req_src_name": "A",
+                            "req_src_version": "1.1"
+                        },
+                        {
+                            "req_bin_name": null,
+                            "req_bin_version": null,
+                            "req_src_name": null,
+                            "req_src_version": null
+                        },
+                        {
+                            "req_bin_name": "B1",
+                            "req_bin_version": "1.1",
+                            "req_src_name": null,
+                            "req_src_version": null
+                        }
+                    ]
+                },
+                {
+                    "component": "comp2",
+                    "build_require": [],
+                    "install_require": []
+                }
+            ]
+        },
+        {}
+    ],
+    "excepted_install_data": {
+        "A1": {
+            "database": "Mainline",
+            "install": [
+                "Judy"
+            ],
+            "name": "A1",
+            "source_name": "A",
+            "version": "1.1"
+        },
+        "B1": {
+            "database": "Mainline",
+            "install": [
+                "ADY",
+                "Judy"
+            ],
+            "name": "B1",
+            "source_name": "B",
+            "version": "1.1"
+        },
+        "Judy": {
+            "database": "Mainline",
+            "install": [],
+            "name": "Judy",
+            "source_name": "Judy",
+            "version": "1.1.0"
+        }
+    },
+    "excepted_source_dict": {
+        "Judy": {
+            "build": [],
+            "database": "Mainline",
+            "name": "Judy",
+            "version": "1.1.0"
+        },
+        "R": {
+            "build": [
+                "Judy"
+            ],
+            "database": "Mainline",
+            "name": "R",
+            "version": "2.0"
+        },
+        "T": {
+            "build": [
+                "ADY",
+                "Judy"
+            ],
+            "database": "Mainline",
+            "name": "B1",
+            "source_name": "B",
+            "version": "1.1"
+        }
+    },
+    "excepted_both_data": [
+        {
+            "A1": {
+                "database": "Mainline",
+                "install": [
+                    "Judy"
+                ],
+                "name": "A1",
+                "source_name": "A",
+                "version": "1.1"
+            },
+            "B1": {
+                "database": "Mainline",
+                "install": [
+                    "Judy"
+                ],
+                "name": "B1",
+                "source_name": null,
+                "version": "1.1"
+            },
+            "Judy": {
+                "database": "Mainline",
+                "install": [],
+                "name": "Judy",
+                "source_name": "Judy",
+                "version": "1.1.0"
+            }
+        },
+        {
+            "Judy": {
+                "build": [],
+                "database": "Mainline",
+                "name": "Judy",
+                "version": "1.1.0"
+            },
+            "R": {
+                "build": [
+                    "Judy"
+                ],
+                "database": "Mainline",
+                "name": "R",
+                "version": "2.0"
+            },
+            "T": {
+                "build": [
+                    "Judy"
+                ],
+                "database": "Mainline",
+                "name": "T",
+                "version": "1.0"
+            }
+        }
+    ],
+    "excepted_bedepend_dict": {
+        "A1": {
+            "build": [],
+            "database": "Mainline",
+            "install": [
+                "B1",
+                "Judy"
+            ],
+            "name": "A1",
+            "source_name": "A",
+            "version": "1.1"
+        },
+        "B1": {
+            "build": [],
+            "database": "fedora",
+            "install": [
+                "A1"
+            ],
+            "name": "B1",
+            "source_name": "B",
+            "version": "1.1"
+        },
+        "Judy": {
+            "build": [
+                "A"
+            ],
+            "database": "Mainline",
+            "install": [
+                "B1"
+            ],
+            "name": "Judy",
+            "source_name": "Judy",
+            "version": "1.2"
+        }
+    },
+    "binary_source_dict": [
+        {
+            "A1": {
+                "database": "Mainline",
+                "install": [
+                    "B1"
+                ],
+                "name": "A1",
+                "source_name": "A",
+                "version": "1.1"
+            },
+            "B1": {
+                "database": "fedora",
+                "install": [
+                    "Judy"
+                ],
+                "name": "B1",
+                "source_name": "B",
+                "version": "1.1"
+            },
+            "Judy": {
+                "database": "Mainline",
+                "install": [
+                    "A1",
+                    "glibc"
+                ],
+                "name": "Judy",
+                "source_name": "Judy",
+                "version": "1.2"
+            }
+        },
+        {
+            "A": {
+                "build": [
+                    "Judy"
+                ],
+                "database": "Mainline",
+                "name": "A",
+                "version": "2.0"
+            },
+            "Judy": {
+                "build": [
+                    "B"
+                ],
+                "database": "Mainline",
+                "name": "Judy",
+                "version": "1.0"
+            }
+        }
+    ]
+}
