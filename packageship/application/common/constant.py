@@ -18,3 +18,17 @@ REDIS_CONN = Redis(connection_pool=ConnectionPool(
     port=configuration.REDIS_PORT,
     max_connections=configuration.REDIS_MAX_CONNECTIONS,
     decode_responses=True))
+# es page size max value
+MAX_PAGE_SIZE = 10000
+
+# default page num
+DEFAULT_PAGE_NUM = 1
+
+# under line char
+UNDERLINE = "-"
+
+# binary database,used for query binary rpm
+BINARY_DB_TYPE = "binary"
+
+# source database,used for query source rpm
+SOURCE_DB_TYPE = "source"

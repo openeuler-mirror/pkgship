@@ -18,12 +18,20 @@ from test.test_module.test_packages.test_database_query.get_mock_data import Obt
 
 
 class TestQueryBinName(TestCase):
+    """
+    Test query binary packages‘ sources package
+    """
 
     def setUp(self):
+        """
+        set up function
+        Returns:
+
+        """
         self.query_package = QueryPackage(database_list=['openeuler', 'fedora'])
         self.session = self.query_package._db_session
 
-    def test_query_specify(self):
+    def test_query_specify_rpm(self):
         """
         Test query specify binary package
         Returns:

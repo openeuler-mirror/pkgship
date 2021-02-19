@@ -18,14 +18,22 @@ from test.test_module.test_packages.test_database_query.get_mock_data import Obt
 
 
 class TestQuerySrcName(TestCase):
+    """
+    Test query sources packages' binary packages
+    """
 
     def setUp(self):
+        """
+        set up function
+        Returns:
+
+        """
         self.query_package = QueryPackage(database_list=['openeuler', 'fedora'])
         self.session = self.query_package._db_session
 
-    def test_query_specify(self):
+    def test_query_specify_rpm(self):
         """
-        Test query specify binary package requires to install
+        Test query specify binary package
         Returns:
         """
         self.session.query = MagicMock(return_value=ObtainMockData.get_data('JudyBinary.json'))
@@ -59,5 +67,17 @@ class TestQuerySrcName(TestCase):
         self.session.query = MagicMock(return_value={})
         binary_list = ["Test123"]
         result = self.query_package.get_src_name(binary_list=binary_list)
+
+        self.assertListEqual(result, [])
+
+    def test_query_specify_database(self):
+        """
+        Test query binary package and specify database
+        Returns:
+
+        """
+        self.session.query = MagicMock(return_value={})
+        binary_list = ["Test123"]
+        result = self.query_package.get_src_name(binary_list=binary_list, specify_db='openeuler')
 
         self.assertListEqual(result, [])
