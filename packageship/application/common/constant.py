@@ -32,3 +32,6 @@ BINARY_DB_TYPE = "binary"
 
 # source database,used for query source rpm
 SOURCE_DB_TYPE = "source"
+
+# index of default databases
+DB_INFO_INDEX = "databaseinfo"
