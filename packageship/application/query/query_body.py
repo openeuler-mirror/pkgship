@@ -30,6 +30,51 @@ class QueryBody(object):
             "match_all": {}
         }
     }
+    # Paging query all data
+    PAGING_QUERY_ALL = {
+        "query": {
+            "match_all": {}
+        },
+        "from": 0,
+        "size": 20
+    }
+
+    @property
+    def query_terms(self):
+        """
+        Filter queries for multiple individual data
+        Returns: query body
+
+        """
+        return self._query_terms
+
+    @query_terms.setter
+    def query_terms(self, param):
+        """
+        The setter of query_terms
+        Args:
+            param: query content
+
+        Returns: query body
+
+        """
+        self.__dict__.update(dict(_query_terms={
+            "query": {
+                "bool": {
+                    "filter": {
+                        "terms": {
+
+                        }
+                    }
+                }
+            }
+        }))
+        self._query_terms["query"]["bool"]["filter"]["terms"] = param.get('name')
+        if param.get('_source'):
+            self._query_terms['_source'] = param.get('_source')
+        if isinstance(param.get('page_num'), int) and isinstance(param.get('page_size'), int):
+            self._query_terms['from'] = param.get('page_num')
+            self._query_terms['size'] = param.get('page_size')
 
     @property
     def query_term(self):
@@ -56,7 +101,6 @@ class QueryBody(object):
                 }
             }
         }))
-        if isinstance(param, dict):
-            self._query_term["query"]["bool"]["filter"]["term"] = param.get('name')
+        self._query_term["query"]["bool"]["filter"]["term"] = param.get('name')
         if param.get('_source'):
             self._query_term['_source'] = param.get('_source')
