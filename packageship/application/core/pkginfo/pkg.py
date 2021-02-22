@@ -124,11 +124,64 @@ class Package:
             return {}
 
 
-    def all_bin_packages(self):
+    def all_bin_packages(self, database, page_num=1, page_size=20,
+                         package_list=None, command_line=False):
         """
-            get all binary rpm packages base info
+        get all binary package info
+        Args:
+            database: database
+            page_num: paging query index
+            page_size: paging query size
+            package_list: package list name
+            command_line： command_line or UI
+        Returns:
+            all_bin_dict: all binary package information dict
+            for example::
+                {
+                "total": "",
+                "data": ""
+                }
+        Attributes:
+            AttributeError: Cannot find the attribute of the corresponding object
+            IndexError: list index out of range
+            TypeError: object does not support this property or method
+            ElasticSearchQueryException: dataBase connect failed
+            DatabaseConfigException: dataBase config error
+
+        Raises:
+            ParametersError: parameter error
         """
-        pass
+        if not self.validate_parameter(database, page_num, page_size, command_line):
+            _msg = "Parameters error, please check the parameters."
+            raise ParametersError(_msg)
+        try:
+            # query all binary package info from database
+            query_package = QueryPackage()
+            all_bin_info = query_package.get_bin_info(
+                package_list, database, page_num, page_size, command_line)
+
+            if not all_bin_info or not isinstance(all_bin_info, dict):
+                _msg = "Error in querying binary package info."
+                LOGGER.error(_msg)
+                return {}
+
+            parsed_all_bin_info = []
+            total_num = all_bin_info.get("total")
+            for pkg_info in all_bin_info.get("data"):
+                pkgname = list(pkg_info.keys())[0]
+                parsed_pkg_info = self.parse_pkg_info(
+                    pkg_info.get(pkgname), pkgname, database)
+                parsed_pkg_info["source_name"] = pkg_info.get(
+                    pkgname).get("src_name")
+                parsed_all_bin_info.append(parsed_pkg_info)
+            all_bin_dict = {"total": total_num, "data": parsed_all_bin_info}
+            return all_bin_dict
+        except (AttributeError, IndexError, TypeError,
+                DatabaseConfigException, ElasticSearchQueryException):
+            _msg = "Error in querying binary package info."
+            LOGGER.error(_msg)
+            return {}
+
 
 class SourcePackage:
 
