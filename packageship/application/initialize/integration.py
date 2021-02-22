@@ -24,7 +24,7 @@ from elasticsearch.exceptions import ElasticsearchException
 from packageship.application.common.exc import InitializeError, ResourceCompetitionError
 from packageship.libs.log import LOGGER
 from packageship.libs.conf import configuration
-# from packageship.application.query import database
+from packageship.application.query import database as db
 from packageship.application.database.session import DatabaseSession
 from packageship.application.common import constant
 from .repo import RepoFile
@@ -131,8 +131,7 @@ class InitializeService:
         Description: Clears all indexes associated with initialization
 
         """
-        # databases = database.get_db_priority()
-        databases = None
+        databases = db.get_db_priority()
         del_databases = []
         if databases:
             for database_name in databases:
@@ -548,10 +547,11 @@ class InitializeService:
 
         def combination_binary(row_data):
             try:
-                src_package_name = row_data.get('rpm_sourcerpm').split(
-                    '-' + row_data.get('version'))[0]
-                if src_package_name == row_data.get('rpm_sourcerpm'):
-                    src_package_name = None
+                src_package_name = None
+                _pkgs = row_data.get('rpm_sourcerpm').split(
+                    '-' + row_data.get('version'))
+                if len(_pkgs) != 1:
+                    src_package_name = ''.join(_pkgs[0:-1])
             except AttributeError:
                 src_package_name = None
             row_data["src_name"] = src_package_name
