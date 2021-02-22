@@ -18,8 +18,16 @@ from test.test_module.test_packages.test_database_query.get_mock_data import Obt
 
 
 class TestQuerySourcePkgInfo(TestCase):
+    """
+    Test query source packages' detail
+    """
 
     def setUp(self):
+        """
+        set up function
+        Returns:
+
+        """
         self.query_package = QueryPackage()
         self.session = self.query_package._db_session
 
@@ -31,6 +39,6 @@ class TestQuerySourcePkgInfo(TestCase):
         """
         self.session.query = MagicMock(return_value=ObtainMockData.get_data("JudySource.json"))
         result = self.query_package.get_src_info(src_list=['Judy'], database='openeuler', page_num=1, page_size=20,
-                                                 query_all=False)
+                                                 command_line=False)
 
         self.assertIsNotNone(result['data'][0]['Judy'])
