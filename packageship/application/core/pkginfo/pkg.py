@@ -123,7 +123,6 @@ class Package:
             LOGGER.error(_msg)
             return {}
 
-
     def all_bin_packages(self, database, page_num=1, page_size=20,
                          package_list=None, command_line=False):
         """
