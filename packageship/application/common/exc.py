@@ -130,3 +130,10 @@ class ResourceCompetitionError(Error):
 
     def __init__(self, message):
         Error.__init__(self, message)
+
+
+class ParametersError(Error):
+    """parameter """
+
+    def __init__(self, message):
+        Error.__init__(self, 'parameter: %r' % (message,))
