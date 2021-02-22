@@ -112,3 +112,21 @@ class ElasticSearchQueryException(Error):
     def __init__(self, message):
         Error.__init__(self, 'Database query failed, please check database configuration and connection status,'
                              'reason is : %r' % (message,))
+
+
+class InitializeError(Error):
+    """
+    Data initializes the exception information
+    """
+
+    def __init__(self, message):
+        Error.__init__(self, message)
+
+
+class ResourceCompetitionError(Error):
+    """
+    Multiple processes perform initialization at the same time, resulting in resource contention
+    """
+
+    def __init__(self, message):
+        Error.__init__(self, message)

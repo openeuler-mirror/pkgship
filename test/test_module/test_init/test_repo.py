@@ -16,7 +16,7 @@ import unittest
 import shutil
 from unittest import mock
 from packageship.application.initialize.repo import RepoFile
-from packageship.application.common.rar import Unpack
+from packageship.application.common.compress import Unpack
 
 
 class TestRepoFile(unittest.TestCase):

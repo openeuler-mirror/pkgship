@@ -14,7 +14,6 @@
 import requests
 from requests.exceptions import RequestException, HTTPError
 from retrying import retry
-from packageship.libs.log import LOGGER
 
 
 class RemoteService:
@@ -24,9 +23,12 @@ class RemoteService:
 
     def __init__(self, max_delay=1000):
         self._retry = 3
+        if not isinstance(max_delay, int):
+            max_delay = 1000
         self._max_delay = max_delay
         self._body = None
         self._response = None
+        self._request_error = None
 
     @property
     def status_code(self):
@@ -67,13 +69,14 @@ class RemoteService:
                 raise HTTPError(_msg)
             return response
 
-        method = getattr(self, method)
+        method = getattr(self, method, None)
         if method is None:
-            raise RequestException("")
+            raise RequestException(
+                "Request mode error, temporarily only support POST, GET")
         try:
             self._response = http(url)
-        except HTTPError as error:
-            raise RequestException("") from error
+        except RequestException as error:
+            raise RequestException from error
 
     def request(self, url, method, body=None, max_retry=3, **kwargs):
         """ Request a remote http service
@@ -84,12 +87,14 @@ class RemoteService:
         :param max_retry: The number of times the request failed to retry
         :param kwargs: Request the relevant parameters
         """
+        if not isinstance(max_retry, int):
+            max_retry = 3
         self._retry = max_retry
         self._body = body
         try:
             self._dispatch(method=method, url=url, **kwargs)
         except RequestException as error:
-            LOGGER.error(error)
+            self._request_error = str(error)
 
     def get(self, url, **kwargs):
         """ HTTP get request method
@@ -101,5 +106,6 @@ class RemoteService:
     def post(self, url, **kwargs):
         """HTTP post request method
         """
-        response = requests.post(url=url, data=self._body, **kwargs)
+        data = kwargs.get('data') or self._body
+        response = requests.post(url=url, data=data, **kwargs)
         return response
