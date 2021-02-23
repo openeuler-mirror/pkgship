@@ -26,14 +26,14 @@ class Package:
 
     def __parse_pkg_info(self, package_info_dict, pkgname, database):
         """
-            Parse the info of the source package or binary package
-            Args:
-                package_info_dict: source package info or binary package info
-                name: package name
-                database: database
+        Parse the info of the source package or binary package
+        Args:
+            package_info_dict: source package info or binary package info
+            name: package name
+            database: database
 
-            Returns:
-                    pkg_info: parsed package info
+        Returns:
+                pkg_info: parsed package info
         """
         pkg_info = {
             "pkg_name": pkgname,
