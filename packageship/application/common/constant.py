@@ -35,3 +35,17 @@ SOURCE_DB_TYPE = "source"
 
 # index of default databases
 DB_INFO_INDEX = "databaseinfo"
+# index suffix of bedepend require
+BE_DEPEND_TYPE = "bedepend"
+
+# index suffix of install require
+INSTALL_DEPEND_TYPE = "install"
+
+# index suffix of build require
+BUILD_DEPEND_TYPE = "build"
+
+# components from provides field
+PROVIDES_NAME = "provides.name"
+
+# components from files field
+FILES_NAME = "files.name"

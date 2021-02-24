@@ -10,3 +10,42 @@
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
+import time
+
+from packageship.application.common.constant import DB_INFO_INDEX, SOURCE_DB_TYPE, BINARY_DB_TYPE, BE_DEPEND_TYPE
+from packageship.application.database.session import DatabaseSession
+from packageship.application.query.query_body import QueryBody
+
+
+class Query:
+    """
+        查询方法的封装
+    """
+    session = DatabaseSession().connection()
+
+    def __init__(self):
+        self._index = ""
+
+    @property
+    def db_info(self):
+        """database priority index"""
+        return DB_INFO_INDEX
+
+    @property
+    def source_index(self):
+        """source package index"""
+        return self._index + '-' + SOURCE_DB_TYPE
+
+    @property
+    def binary_index(self):
+        """binary package index"""
+        return self._index + "-" + BINARY_DB_TYPE
+
+    @property
+    def bedepend_index(self):
+        """bedepend index"""
+        return self._index + "-" + BE_DEPEND_TYPE
+
+    def set_index(self, index):
+        """Sets the ES index to be queried"""
+        self._index = index
