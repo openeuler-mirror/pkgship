@@ -17,9 +17,9 @@ from packageship.application.database.session import DatabaseSession
 from packageship.application.query.query_body import QueryBody
 
 
-class Query:
+class Query(object):
     """
-        查询方法的封装
+        common function used for query depend
     """
     session = DatabaseSession().connection()
 
