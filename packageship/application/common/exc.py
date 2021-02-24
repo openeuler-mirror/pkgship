@@ -130,3 +130,19 @@ class ResourceCompetitionError(Error):
 
     def __init__(self, message):
         Error.__init__(self, message)
+
+
+class ParametersError(Error):
+    """parameter """
+
+    def __init__(self, message):
+        Error.__init__(self, 'parameter: %r' % (message,))
+
+
+class PackageInfoGettingError(Error):
+    """
+    An error occurred when getting package info
+    """
+
+    def __init__(self, message):
+        Error.__init__(self, message)

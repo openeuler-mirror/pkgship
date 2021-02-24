@@ -18,7 +18,8 @@ import os
 from unittest import mock
 from mock import patch
 
-from packageship.application.common.exc import ParametersError
+from packageship.application.common.exc import PackageInfoGettingError, DatabaseConfigException, \
+    ElasticSearchQueryException
 from packageship.application.core.pkginfo.pkg import Package
 from packageship.application.query.pkg import QueryPackage
 from packageship.application.query import database
@@ -34,32 +35,7 @@ class TestAllSrcPackage(unittest.TestCase):
 
     def setUp(self) -> None:
         database.get_db_priority = mock.Mock(
-            return_value=["openeuler", "fedora33333"])
-
-    def test_wrong_parameters(self):
-        """
-        test wrong parameters
-        Returns:
-
-        """
-
-        with self.assertRaises(ParametersError):
-            pkg.all_src_packages("openEuler1", page_num=1, page_size=20)
-
-        with self.assertRaises(ParametersError):
-            pkg.all_src_packages("openeuler", page_num=0, page_size=1)
-
-        with self.assertRaises(ParametersError):
-            pkg.all_src_packages("openeuler", page_num=1, page_size=0)
-
-        with self.assertRaises(ParametersError):
-            pkg.all_src_packages("openeuler", page_num="a", page_size=0)
-
-        with self.assertRaises(ParametersError):
-            pkg.all_src_packages("openeuler", page_num=1, page_size=201)
-
-        with self.assertRaises(ParametersError):
-            pkg.all_src_packages("openeuler", page_num=1, page_size=1, command_line="111")
+            return_value=["openeuler", "fedora"])
 
     @patch.object(QueryPackage, "get_src_info")
     def test_get_empty_src_info(self, mock1):
@@ -68,9 +44,32 @@ class TestAllSrcPackage(unittest.TestCase):
         Returns:
 
         """
-        mock1.return_value = {}
-        res = pkg.all_src_packages("openeuler", page_num=1, page_size=20)
-        self.assertEqual(res, {}, "Error in testing empty src info.")
+        with self.assertRaises(PackageInfoGettingError):
+            mock1.return_value = {}
+            pkg.all_src_packages("openEuler", page_num=1, page_size=20)
+
+
+    @mock.patch.object(QueryPackage, "get_src_info")
+    def test_config_exception(self, mock1):
+        """
+        test config exception
+        Returns:
+        """
+        with self.assertRaises(DatabaseConfigException):
+            mock1.side_effect = DatabaseConfigException("")
+            pkg.all_src_packages("openEuler", page_num=1, page_size=20)
+
+    @mock.patch.object(QueryPackage, "get_src_info")
+    def test_es_query_exception(self, mock1):
+        """
+        test es query exception
+        Returns:
+
+        """
+        with self.assertRaises(ElasticSearchQueryException):
+            mock1.side_effect = ElasticSearchQueryException("")
+            pkg.all_src_packages("openEuler", page_num=1, page_size=20)
+
 
     @patch.object(QueryPackage, "get_src_info")
     def test_wrong_src_info(self, mock1):
@@ -94,4 +93,5 @@ class TestAllSrcPackage(unittest.TestCase):
         mock1.return_value = ALL_SRC_INFO
         res = pkg.all_src_packages("openeuler", page_num=1, page_size=20)
         self.assertNotEqual(res, {}, "Error in testing true result.")
+
 
