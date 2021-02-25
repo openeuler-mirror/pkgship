@@ -135,3 +135,88 @@ class BaseDepend:
             _update_install_lst(bin_name, values)
         _update_build_lst()
         return bedep_dict
+    
+    def filter_dict(self, root: str, level: int, direction: str = "bothward"):
+        """get filter dict data
+
+        Args:
+            root (str): The name of the root node binary package
+            level (int): The level of dependency that needs to be acquired
+            direction (str, optional): [description]. Defaults to 'bothward'.
+
+        Raises:
+            ValueError: [level must gte 1]
+            ValueError: [root not in this depend relations]
+            ValueError: [Error direction,excepted in ["bothward","upward","downward"]]
+
+        Returns:
+            [dict]: [result dict data]
+        """
+
+        if level < 1:
+            raise ValueError("level must gte 1")
+        if root not in self.binary_dict:
+            raise ValueError(f"{root} not in this depend relations")
+
+        if direction not in ["bothward", "upward", "downward"]:
+            raise ValueError(
+                f'Error direction,excepted in ["bothward","upward","downward"],but given {direction}'
+            )
+        filter_data = dict()
+
+        def update_upward(pkg, l, s):
+            for upward_root in filter_data[pkg]["be_requires"]:
+                if upward_root in filter_data:
+                    continue
+                inner(upward_root, l, s, "upward")
+
+        def update_downward(pkg, l, s):
+            for downward_root in filter_data[pkg]["requires"]:
+                if downward_root in filter_data:
+                    continue
+                inner(downward_root, l, s, "downward")
+
+        def update_bothward(pkg, l, s):
+            update_upward(pkg, l, s)
+            update_downward(pkg, l, s)
+
+        if direction == "bothward":
+            update_meth = update_bothward
+        elif direction == "upward":
+            update_meth = update_upward
+        else:
+            update_meth = update_downward
+
+        def inner(
+            curr_root: str, curr_level: int, curr_layer: int, inner_direction: str
+        ):
+            if curr_level < 0:
+                return
+
+            try:
+                pkg_info = self.binary_dict[curr_root]
+            except KeyError:
+                return
+            else:
+                if curr_root not in filter_data:
+                    filter_data[curr_root] = {
+                        "name": curr_root,
+                        "source_name": pkg_info.get("source_name"),
+                        "version": pkg_info.get("version"),
+                        "level": curr_layer,
+                        "database": pkg_info.get("database"),
+                        "requires": copy.deepcopy(pkg_info.get("install", [])),
+                        "direction": inner_direction,
+                        "be_requires": [],
+                    }
+
+                for key, values in self.binary_dict.items():
+                    if (
+                        curr_root in values["install"]
+                        and key not in filter_data[curr_root]["be_requires"]
+                    ):
+                        filter_data[curr_root]["be_requires"].append(key)
+
+        inner(root, level, 0, "root")
+        update_meth(root, level - 1, 1)
+        return filter_data
