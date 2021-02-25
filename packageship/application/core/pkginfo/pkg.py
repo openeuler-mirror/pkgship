@@ -365,11 +365,123 @@ class SourcePackage(SinglePackage):
             return {}
 
 
+class BinaryPackage(SinglePackage):
+    """
+    class for query single binary package
+    """
 
-class BinaryPackage:
+    def parse_filelist_info(self, filelists):
+        """
+            Get filelist info include dir, file, ghost for package
+            Args:
+                filelists:
 
-    def bin_package_info(self):
+            Returns:
+                filelist_dict
+                for example:
+                {'dir': ['/usr/share/ext', '/usr/share/int'],
+                'file': ['/usr/lib64/libJudy.so'],
+                'ghost': []}
+            Raises:
+                KeyError: key that doesn't exist in the dictionary
+                IndexError: index is out of range
         """
-            get a binary package info (provides, requires, etc)
+        if not filelists:
+            _msg = "Error in getting filelist info."
+            LOGGER.error(_msg)
+            return {}
+
+        def is_append(lst, data):
+            if data not in lst:
+                lst.append(data)
+            return lst
+
+        filelist_dict = {
+            "dir": [],
+            "file": [],
+            "ghost": []
+        }
+        try:
+            for info in filelists:
+                all_list = list(
+                    map(lambda x: info["dirname"] + '/' + x, info["filenames"].split("/")))
+
+                for index, type_ in enumerate(info["filetypes"]):
+                    if type_ == "d":
+                        is_append(filelist_dict["dir"], all_list[index])
+                    elif type_ == "f":
+                        is_append(filelist_dict["file"], all_list[index])
+                    elif type_ == "g":
+                        is_append(filelist_dict["ghost"], all_list[index])
+                    else:
+                        _msg = "The filetype of filelist is not in ['d', 'f', 'g']"
+                        LOGGER.error(_msg)
+                        return {}
+            return filelist_dict
+        except (KeyError, IndexError) as e:
+            LOGGER.error(e)
+            return {}
+
+    def bin_package_info(self, bin_name_list, database_list=None):
         """
-        pass
+        Query for binary package details
+        Args:
+            bin_name_list: binary package name list
+            database_list: database list
+
+        Returns:
+                binary package detail info
+
+        Attributes:
+            AttributeError: Cannot find the attribute of the corresponding object
+            IndexError: list index out of range
+            TypeError: object does not support this property or method
+        Raises：
+            ElasticSearchQueryException: dataBase connect failed
+            DatabaseConfigException: dataBase config error
+
+        """
+        try:
+            default_db_list = db.get_db_priority()
+            if not database_list:
+                database_list = default_db_list
+
+            query_package = QueryPackage()
+            bin_package_info_res = {}
+            for database in database_list:
+
+                single_db_bin_info = query_package.get_bin_info(
+                    bin_name_list, database, 1, 20).get("data")
+                if not single_db_bin_info:
+                    return {}
+
+                database_bin_info_list = []
+                for pkg_info in single_db_bin_info:
+                    pkgname = list(pkg_info.keys())[0]
+
+                    # get provides from bedepend info
+                    provides_info = self.get_provides(pkgname, database)
+                    # get requires from install info
+                    requires_info = self.get_requires(pkgname, database)
+
+                    database_bin_info_list.append({
+                        "bin_name": pkgname,
+                        "version": pkg_info[pkgname].get("version"),
+                        "url": pkg_info[pkgname].get("url"),
+                        "summary": pkg_info[pkgname].get("summary"),
+                        "description": pkg_info[pkgname].get("description"),
+                        "src_name": pkg_info[pkgname].get("src_name"),
+                        "provides": provides_info,
+                        "requires": requires_info,
+                        "filelist": self.parse_filelist_info(pkg_info[pkgname].get("file_list"))
+                    })
+                bin_package_info_res[database] = database_bin_info_list
+            return bin_package_info_res
+        except DatabaseConfigException:
+            raise DatabaseConfigException()
+        except ElasticSearchQueryException:
+            raise ElasticSearchQueryException()
+        except (AttributeError, IndexError, TypeError) as e:
+            LOGGER.error(e)
+            return {}
+
