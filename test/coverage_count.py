@@ -49,7 +49,8 @@ if __name__ == "__main__":
                        os.path.join(TEST_CASE_PATH, "test_module/test_packages/test_database_query/"),
                        os.path.join(TEST_CASE_PATH, "test_module/test_db_priority/"),
                        os.path.join(TEST_CASE_PATH, "test_module/test_packages/test_all_src_package"),
-                       os.path.join(TEST_CASE_PATH, "test_module/test_packages/test_all_bin_package")]
+                       os.path.join(TEST_CASE_PATH, "test_module/test_packages/test_all_bin_package"),
+                       os.path.join(TEST_CASE_PATH, "test_module/test_single_package_info")]
     for file in test_case_files:
         runner.run(specify_case(file))
     cov.stop()
