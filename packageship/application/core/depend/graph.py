@@ -148,17 +148,17 @@ class GraphInfo:
 
         return _upward_node
 
-    def _graph(self, root_node, depend_data, level):
+    def _graph(self, root_node, depend_data):
         _downward = set([root_node])
         _upward = set([root_node])
-        while (_downward or _upward) and level != 0:
+        while _downward or _upward:
+
             if _downward:
                 _downward = self._downward(_downward, depend_data)
             if _upward:
                 _upward = self._upward(_upward, depend_data)
             _downward = _downward - self._down
             _upward = _upward - self._up
-            level -= 1
 
     def generate_graph(self, root_node, package_type, level=2):
         """
@@ -170,12 +170,12 @@ class GraphInfo:
         builds = [root_node]
         if package_type == "source":
             _binary, _source_data = self._depend.depend_dict
-            builds = []
-            for _source, data in _source_data.items():
-                try:
-                    builds.extend(data["build"])
-                except KeyError:
-                    continue
+            try:
+                builds = [build for build in _source_data[root_node]["build"]]
+            except KeyError:
+                self.nodes = root_node
+                return dict(edges=self.edges, nodes=self.nodes)
+
             self.nodes = root_node
             for require in builds:
                 self.edges = {"source": root_node, "target": require}
@@ -188,10 +188,14 @@ class GraphInfo:
                 continue
             if depend_data:
                 for package, _depend in depend_data.items():
+                    if _depend["level"] > level - 1:
+                        continue
                     self.nodes = package
                     for require in _depend["requires"]:
-                        self.nodes = require
+                        if require in depend_data:
+                            self.nodes = require
                     for be_require in _depend["be_requires"]:
-                        self.nodes = be_require
-                self._graph(pkg, depend_data, level)
+                        if be_require in depend_data:
+                            self.nodes = be_require
+                self._graph(pkg, depend_data)
         return dict(edges=self.edges, nodes=self.nodes)
