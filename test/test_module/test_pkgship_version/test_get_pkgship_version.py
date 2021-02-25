@@ -14,51 +14,41 @@
 test get pkgship version and release info
 """
 import unittest
-import shutil
 import os
-from packageship.application.core.baseinfo.pkg_version import get_pkgship_version
-from packageship import BASE_PATH
-try:
-    spec_path = os.path.join(os.path.dirname(BASE_PATH), "pkgship.spec")
-    shutil.copyfile(spec_path, spec_path + '.bak')
-except FileNotFoundError:
-    print("pkgship spec file does not exist.")
+
+BASE_PATH = os.path.join(os.path.dirname(os.path.abspath(
+        os.path.dirname(__file__))), "test_version")
+version_path = os.path.join(os.path.dirname(BASE_PATH), "test_pkgship_version\\data\\", "version.yaml")
+from packageship.application.core.baseinfo import pkg_version
 
 
 class TestVersionInfo(unittest.TestCase):
     """
     class for test get pkgship version and release info
     """
-
-    def test_wrong_spec_path(self):
+    def test_file_not_exists(self):
         """
-        test not found database info response
+        test yaml not exists
         Returns:
 
         """
-        try:
-            os.remove(spec_path)
-            version, release = get_pkgship_version()
-            self.assertIsNone(
-                version, "An error occurred when testing wrong spec path.")
-            self.assertIsNone(
-                version, "An error occurred when testing wrong spec path.")
-        except (TypeError, FileNotFoundError):
-            print("An error occurred when testing wrong spec path.")
-        finally:
-            if os.path.exists(spec_path + ".bak"):
-                os.rename(spec_path + '.bak', spec_path)
+        output_version, output_release = pkg_version.get_pkgship_version()
+        self.assertIsNone(output_version,
+                         msg="Error in testing file not exists")
+        self.assertIsNone(output_release,
+                         msg="Error in testing file not exists")
+
 
     def test_true_result(self):
         """
-        test_true_params_result
+        test_true_result
         Returns:
 
         """
-        correct_version, correct_release = "1.1.0", "1"
-        output_version, output_release = get_pkgship_version()
+        pkg_version.file_path = version_path
+        correct_version, correct_release = "1.1.0", "1.oe1"
+        output_version, output_release = pkg_version.get_pkgship_version()
         self.assertEqual(correct_version, output_version,
-                         msg="Error in getting pkgship version")
+                         msg="Error getting pkgship version")
         self.assertEqual(correct_release, output_release,
-                         msg="Error in getting pkgship release")
-
+                         msg="Error getting pkgship release")
