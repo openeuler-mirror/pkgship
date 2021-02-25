@@ -220,3 +220,16 @@ class BaseDepend:
         inner(root, level, 0, "root")
         update_meth(root, level - 1, 1)
         return filter_data
+    
+    def download_depend_files(self):
+        """
+        get the depend relationship with downloadable files
+        """
+        down_load = Download(depend=self)
+        return down_load.run()
+
+    def depend_info_graph(self, source, package_type):
+        """get the depend relationship with graph format"""
+        graph_info = GraphInfo(depend=self)
+
+        return graph_info.generate_graph(root_node=source, package_type=package_type)
