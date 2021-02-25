@@ -13,15 +13,11 @@
 """
 Module of query require relation
 """
-try:
-    import gevent
-    from gevent import monkey
+import gevent
+from gevent import monkey
 
-    monkey.patch_all()
-except:
-    pass
+monkey.patch_all()
 
-from collections import Counter
 from packageship.application.common.constant import PROVIDES_NAME, FILES_NAME
 from packageship.application.query import Query
 from packageship.application.query.query_body import QueryBody
