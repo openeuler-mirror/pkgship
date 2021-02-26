@@ -127,7 +127,7 @@ class BuildDepend(BaseDepend):
                 continue
             # check the input packages searched result
             if self.__level == 1:
-                searched_pkg.remove(src_name)
+                searched_pkg.discard(src_name)
 
             if not self._has_searched_dep(src_name, "build"):
                 depend_set = set()
