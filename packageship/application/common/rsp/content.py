@@ -11,17 +11,23 @@
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
 """
-    Response content
+Response content
 """
 from .xmlmap import xml
 
 
 class RspMsg:
     """
-        Response content
+    Response content
     """
 
     def __init__(self, label="success", **kwargs):
+        """
+
+        Args:
+            label:
+            **kwargs:
+        """
         self._label = label
         self.response_body = {
             "message": kwargs.get("message"),
@@ -30,12 +36,27 @@ class RspMsg:
 
     def _code(self, label):
         """
-            Response Code
+        Response code
+        Args:
+            label: label
+
+        Returns:
+            response body
         """
         response_body = xml.content(label)
         return response_body
 
     def _body(self, body, label, zh=False):
+        """
+        Response body
+        Args:
+            body: response body
+            label: label
+            zh: Whether to display Chinese
+
+        Returns:
+
+        """
         if body:
             if not hasattr(self.response_body, "message") or self.response_body["message"] is None:
                 self.response_body["message"] = body["message_zh"] if zh else body["message_en"]
@@ -45,7 +66,14 @@ class RspMsg:
 
     def body(self, label, zh=False, **kwargs):
         """
-            get the response body
+        get the response body
+        Args:
+            label: label
+            zh: Whether to display Chinese
+            **kwargs: content
+
+        Returns:
+            response body
         """
         self.response_body.update(**kwargs)
         self._body(self._code(label), label, zh)

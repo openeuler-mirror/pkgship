@@ -23,11 +23,17 @@ except ImportError:
 
 class XmlParse:
     """
-        loading msg in xml based on the diff code
+    loading msg in xml based on the diff code
     """
     _lock = threading.Lock()
 
     def __new__(cls, *args, **kwargs):
+        """
+
+        Args:
+            *args:
+            **kwargs:
+        """
         with cls._lock:
             if not hasattr(cls, "__instance"):
                 cls.__instance = object.__new__(cls)
@@ -38,9 +44,12 @@ class XmlParse:
 
     def _load_xml(self, xml_path):
         """
-            loading content in xml
-            :param xml_path: xml path
-            :param tag: parse the node
+        loading content in xml
+        Args:
+            xml_path: xml path
+
+        Returns:
+
         """
         if not xml_path:
             self.xml = None
@@ -53,15 +62,37 @@ class XmlParse:
 
     @property
     def root(self):
+        """
+        get root
+        Returns:
+
+        """
         return self.xml.getroot()
 
     def _todict(self, tag):
+        """
+        Generate dictionary
+        Args:
+            tag: tag
+
+        Returns:
+            msg
+        """
         msg = {}
         for child in tag.findall("*"):
             msg[child.tag] = child.text
         return msg
 
     def content(self, label, xml_path="mapping.xml"):
+        """
+        Generate content
+        Args:
+            label: label
+            xml_path: xml path
+
+        Returns:
+            tag or dict
+        """
         if not self.xml:
             self._load_xml(xml_path)
         tag = self.root.find("./code/[@label='%s']" % label)
