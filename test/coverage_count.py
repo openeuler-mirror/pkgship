@@ -59,7 +59,8 @@ if __name__ == "__main__":
                        os.path.join(TEST_CASE_PATH, "test_module/test_selfbuild/"),
                        os.path.join(TEST_CASE_PATH, "test_module/test_install/"),
                        os.path.join(TEST_CASE_PATH, "test_module/test_build/"),
-                       os.path.join(TEST_CASE_PATH, "test_module/test_bedepend/test_database_query/")]
+                    #    os.path.join(TEST_CASE_PATH, "test_module/test_bedepend/test_database_query/")
+                       ]
     for file in test_case_files:
         runner.run(specify_case(file))
     cov.stop()
