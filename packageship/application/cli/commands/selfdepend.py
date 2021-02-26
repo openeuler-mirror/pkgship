@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python3  
 # ******************************************************************************
 # Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
 # licensed under the Mulan PSL v2.
@@ -18,38 +18,44 @@ from packageship.application.cli.base import BaseCommand
 
 from packageship.libs.log import LOGGER
 from packageship.application.common.constant import ResponseCode
+from packageship.application.query import database
 
+db_list = database.get_db_priority()
 DB_NAME = 0
 
 
-class BeDependCommand(BaseCommand):
+class SelfDependCommand(BaseCommand):
     """
-    Description: dependent query
+    Description: self-compiled dependency query
     Attributes:
         parse: Command line parsing example
         params: Command line parameters
+        collection: Is there a collection parameter
+        collection_params: Command line collection parameters
     """
 
     def __init__(self):
         """
         Description: Class instance initialization
         """
-        super(BeDependCommand, self).__init__()
+        super(SelfDependCommand, self).__init__()
+
         self.parse = BaseCommand.subparsers.add_parser(
-            'bedepend', help='dependency query for the specified package')
+            'selfdepend', help='query the self-compiled dependencies of the specified package')
         self.collection = True
         self.params = [
-            ('-w', 'str', 'Specifying -w means that you need to find sub-packages, not required by default', False,
-             'store_true'),
-            ('-b', 'str', 'the queried package is binary, and the source package is queried by default', False,
-             'store_true'),
-            ('-install', 'str', 'Specify -install means that the query is dependent on the installation',
-             False, 'store_true'),
-             ('-build', 'str', 'Specify -build means that the query is compiled to be dependent',
-             False, 'store_true'),
-            ('-remote', 'str', 'The address of the remote service', False, 'store_true')]
-        self.collection_params = [('pkgName', 'source package name'),
-                                  ('-dbs', 'need to query the repositories of dependencies,must be assigned')]
+            ('-b', 'str',
+             'Specify -b to indicate that the queried package is binary, and the source package is queried by default',
+             'source', 'store'),
+            ('-w', 'str', 'Specify -w means you need to find the sub-package relationship', False, 'store'),
+            ('-s', 'str', 'Specify -s to find self-compiled dependencies', False, 'store'),
+            ('-remote', 'str', 'The address of the remote service', False, 'store_true')
+        ]
+
+        self.collection_params = [
+            ('pkgName', 'source package name'),
+            ('-dbs', 'Operational database collection')
+        ]
 
     def register(self):
         """
@@ -61,7 +67,9 @@ class BeDependCommand(BaseCommand):
         Raises:
 
         """
-        super(BeDependCommand, self).register()
+        super(SelfDependCommand, self).register()
+        # collection parameters
+
         for cmd_params in self.collection_params:
             self.parse.add_argument(
                 cmd_params[0], nargs='*', default=None, help=cmd_params[1])
@@ -71,34 +79,24 @@ class BeDependCommand(BaseCommand):
         """
         Description: Action to execute command
         Args:
-            params: command lines params
+            params: commands lines params
         Returns:
 
         Raises:
             ConnectionError: self.request connection error
         """
         self._set_read_host(params.remote)
-        if params.b:
-            pack_type = 'binary'
-        else:
-            pack_type = 'source'
-        if params.install:
-            install_or_build = "install"
-        elif params.build:
-            install_or_build = "build"
-        else:
-            install_or_build = ""
         _url = self.read_host + '/dependinfo/dependlist'
         try:
-            self.request.request(_url, 'post', body=json.dumps(
-                {
+            self.request.request(_url,
+                                 'post', body=json.dumps({
                     'packagename': params.pkgName,
-                    'depend_type': 'bedep',
+                    'depend_type': 'selfdep',
                     "parameter": {
-                        "db_priority": params.dbs,
-                        "packtype":pack_type,
+                        "db_priority": params.dbs if params.dbs else db_list,
+                        "self_build": params.s,
+                        "packtype": params.b,
                         "with_subpack": params.w,
-                        "search_type": install_or_build
                     }}), headers=self.headers)
         except ConnErr as conn_error:
             LOGGER.error(conn_error)
@@ -119,7 +117,7 @@ class BeDependCommand(BaseCommand):
                 else:
                     if getattr(self.bin_table, 'rowcount') or getattr(self.src_table, 'rowcount') or getattr(
                             self.statistics_table, 'rowcount'):
-                        self.print_('query {} beDepend result display:'.format(
+                        self.print_('query {} selfDepend result display:'.format(
                             params.pkgName))
                         self.print_('Binary')
                         print(self.bin_table)
