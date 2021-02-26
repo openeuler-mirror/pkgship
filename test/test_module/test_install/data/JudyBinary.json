@@ -130,75 +130,7 @@
               "pre": "FALSE",
               "requires_type": "install",
               "release": null,
-              "name": "/bin/sh",
-              "flags": null,
-              "epoch": null,
-              "version": null,
-              "relation": [
-                {
-                  "bin_name": "bash",
-                  "src_name": "bash"
-                },
-                {
-                  "bin_name": "coreutils",
-                  "src_name": "coreutils"
-                }
-              ]
-            },
-            {
-              "pkgKey": 35,
-              "pre": "FALSE",
-              "requires_type": "install",
-              "release": null,
               "name": "ld-linux-aarch64.so.1()(64bit)",
-              "flags": null,
-              "epoch": null,
-              "version": null,
-              "relation": [
-                {
-                  "bin_name": "glibc",
-                  "src_name": "glibc"
-                }
-              ]
-            },
-            {
-              "pkgKey": 35,
-              "pre": "FALSE",
-              "requires_type": "install",
-              "release": null,
-              "name": "ld-linux-aarch64.so.1(GLIBC_2.17)(64bit)",
-              "flags": null,
-              "epoch": null,
-              "version": null,
-              "relation": [
-                {
-                  "bin_name": "glibc",
-                  "src_name": "glibc"
-                }
-              ]
-            },
-            {
-              "pkgKey": 35,
-              "pre": "FALSE",
-              "requires_type": "install",
-              "release": null,
-              "name": "rtld(GNU_HASH)",
-              "flags": null,
-              "epoch": null,
-              "version": null,
-              "relation": [
-                {
-                  "bin_name": "glibc",
-                  "src_name": "glibc"
-                }
-              ]
-            },
-            {
-              "pkgKey": 35,
-              "pre": "FALSE",
-              "requires_type": "install",
-              "release": null,
-              "name": "libc.so.6(GLIBC_2.17)(64bit)",
               "flags": null,
               "epoch": null,
               "version": null,
