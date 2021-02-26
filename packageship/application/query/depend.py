@@ -27,6 +27,12 @@ class RequireBase(Query):
     """
     Base class query require relation
     """
+    # Data size processed by Ctrip each time,For larger data
+    BATCH_SIZE_200 = 200
+    # Data size processed by Ctrip each time,For smaller data
+    BATCH_SIZE_100 = 100
+    # Data size processed by Ctrip each time,For smallest data
+    BATCH_SIZE_50 = 50
 
     def __init__(self):
         super(RequireBase, self).__init__()
@@ -52,7 +58,8 @@ class RequireBase(Query):
         all_components_info_dict = dict()
         for databse in self.db_list:
             # First query all components of not found by "provides.name"
-            component_batch_list = [component_list[i:i + 200] for i in range(0, len(component_list), 200)]
+            component_batch_list = [component_list[i:i + self.BATCH_SIZE_200] for i in
+                                    range(0, len(component_list), self.BATCH_SIZE_200)]
             next_query_rpms = []
             works = [
                 gevent.spawn(self._gevent_component_job, databse, components, all_components_info_dict,
@@ -64,8 +71,9 @@ class RequireBase(Query):
                 break
 
             # if not found by "provides.name",query components by "files.name"
-            query_files_rpms = [next_query_rpms[i:i + 100]
-                                for i in range(0, len(next_query_rpms), 100) if next_query_rpms[i:i + 100]]
+            query_files_rpms = [next_query_rpms[i:i + self.BATCH_SIZE_100]
+                                for i in range(0, len(next_query_rpms), self.BATCH_SIZE_100) if
+                                next_query_rpms[i:i + self.BATCH_SIZE_100]]
             works = [
                 gevent.spawn(self._gevent_component_job, databse, components, all_components_info_dict, FILES_NAME)
                 for components in query_files_rpms]
@@ -159,10 +167,10 @@ class RequireBase(Query):
             # If the component is provided by the only binary package, directly add the result list
             if len(component_info) <= 1:
                 new_requires_list.extend(component_info)
-                return
-            # If the component is provided by multiple binary packages, record first and then filter
+            else:
+                # If the component is provided by multiple binary packages, record first and then filter
+                multi_binary_component_list.append(component_info)
             # Construct a dictionary of occurrences of binary packages
-            multi_binary_component_list.append(component_info)
             for component in component_info:
                 try:
                     com_bin_name_count = component_bin_count_dict[component.get('com_bin_name')]
@@ -303,7 +311,8 @@ class BuildRequires(RequireBase):
         if not self.db_list or not source_list:
             return response
         # Use multi-ctrip query
-        source_rpm_batch_list = [source_list[i:i + 100] for i in range(0, len(source_list), 100)]
+        source_rpm_batch_list = [source_list[i:i + self.BATCH_SIZE_100] for i in
+                                 range(0, len(source_list), self.BATCH_SIZE_100)]
         # If specify database, query requires according to database
         if specify_db:
             works = [gevent.spawn(self._query_build_requires, source_batch_rpms, specify_db) for source_batch_rpms in
@@ -327,8 +336,8 @@ class BuildRequires(RequireBase):
                 if not next_query_binary_rpms:
                     break
                 # Continue to search for packages not found
-                source_rpm_batch_list = [next_query_binary_rpms[i:i + 50] for i in
-                                         range(0, len(next_query_binary_rpms), 50)]
+                source_rpm_batch_list = [next_query_binary_rpms[i:i + self.BATCH_SIZE_50] for i in
+                                         range(0, len(next_query_binary_rpms), self.BATCH_SIZE_50)]
 
         self._process_requires(response)
         return response
@@ -403,7 +412,8 @@ class InstallRequires(RequireBase):
         if not self.db_list or not binary_list:
             return response
         # Use multi-ctrip query
-        batch_binary_list = [binary_list[i:i + 100] for i in range(0, len(binary_list), 100)]
+        batch_binary_list = [binary_list[i:i + self.BATCH_SIZE_100] for i in
+                             range(0, len(binary_list), self.BATCH_SIZE_100)]
         # If specify database, query requires according to database
         if specify_db:
             works = [gevent.spawn(self._query_install_requires, binary_rpms, specify_db)
@@ -426,7 +436,8 @@ class InstallRequires(RequireBase):
                 if not next_query_rpms:
                     break
                 # Continue to search for packages not found
-                batch_binary_list = [next_query_rpms[i:i + 50] for i in range(0, len(next_query_rpms), 50)]
+                batch_binary_list = [next_query_rpms[i:i + self.BATCH_SIZE_50] for i in
+                                     range(0, len(next_query_rpms), self.BATCH_SIZE_50)]
 
         self._process_requires(response)
 
@@ -483,6 +494,8 @@ class InstallRequires(RequireBase):
 
 class BeDependRequires(Query):
     """query bedepend infos"""
+    # Data size processed by Ctrip each time
+    BATCH_SIZE_300 = 300
 
     def get_be_req(self, binary_list, database):
         """
@@ -515,8 +528,8 @@ class BeDependRequires(Query):
 
         binary_list = list(binary_list)
 
-        binary_names = [binary_list[i:i + 300]
-                        for i in range(0, len(binary_list), 300)]
+        binary_names = [binary_list[i:i + self.BATCH_SIZE_300]
+                        for i in range(0, len(binary_list), self.BATCH_SIZE_300)]
         works = [gevent.spawn(job, binarys) for binarys in binary_names]
         gevent.joinall(works)
         bedepends = [value for work in works
