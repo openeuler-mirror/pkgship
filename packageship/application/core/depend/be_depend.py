@@ -10,7 +10,7 @@
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
-from .depend import BaseDepend
+from .basedepend import BaseDepend
 
 
 class BeDepend(BaseDepend):
