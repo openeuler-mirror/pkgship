@@ -18,7 +18,8 @@ import sqlite3
 from unittest import mock
 from elasticsearch import helpers, Elasticsearch
 from elasticsearch.exceptions import ElasticsearchException
-from packageship.application.initialize.integration import ESJson, InitializeService, del_temporary_file, RepoConfig, ESJson
+from packageship.application.initialize.integration import ESJson
+from packageship.application.initialize.integration import InitializeService, del_temporary_file, RepoConfig
 from packageship.application.common.exc import InitializeError
 from packageship.application.database.session import DatabaseSession
 from packageship.application.database.engines.elastic import ElasticSearch
