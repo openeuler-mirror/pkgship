@@ -1,0 +1,237 @@
+{
+    "mappings": {
+        "properties": {
+            "arch": {
+                "type": "keyword",
+                "ignore_above": 256,
+                "index": false
+            },
+            "checksum_type": {
+                "type": "keyword",
+                "ignore_above": 256,
+                "index": false
+            },
+            "description": {
+                "type": "keyword",
+                "ignore_above": 256
+            },
+            "epoch": {
+                "type": "keyword",
+                "ignore_above": 256
+            },
+            "src_version": {
+                "type": "keyword",
+                "ignore_above": 256
+            },
+            "filelists": {
+                "properties": {
+                    "dirname": {
+                        "type": "keyword",
+                        "ignore_above": 256,
+                        "index": false
+                    },
+                    "filenames": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    },
+                    "filetypes": {
+                        "type": "keyword",
+                        "ignore_above": 256,
+                        "index": false
+                    },
+                    "pkgKey": {
+                        "type": "long"
+                    }
+                }
+            },
+            "files": {
+                "properties": {
+                    "name": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    },
+                    "pkgKey": {
+                        "type": "long"
+                    },
+                    "type": {
+                        "type": "keyword",
+                        "ignore_above": 256,
+                        "index": false
+                    }
+                }
+            },
+            "location_href": {
+                "type": "keyword",
+                "ignore_above": 256,
+                "index": false
+            },
+            "name": {
+                "type": "keyword",
+                "ignore_above": 256
+            },
+            "pkgId": {
+                "type": "keyword",
+                "ignore_above": 256,
+                "index": false
+            },
+            "pkgKey": {
+                "type": "long"
+            },
+            "provides": {
+                "properties": {
+                    "epoch": {
+                        "type": "keyword",
+                        "ignore_above": 256,
+                        "index": false
+                    },
+                    "flags": {
+                        "type": "keyword",
+                        "ignore_above": 256,
+                        "index": false
+                    },
+                    "name": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    },
+                    "pkgKey": {
+                        "type": "long"
+                    },
+                    "release": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    },
+                    "version": {
+                        "type": "keyword",
+                        "ignore_above": 256,
+                        "index": false
+                    }
+                }
+            },
+            "release": {
+                "type": "keyword",
+                "ignore_above": 256
+            },
+            "requires": {
+                "properties": {
+                    "epoch": {
+                        "type": "keyword",
+                        "ignore_above": 256,
+                        "index": false
+                    },
+                    "flags": {
+                        "type": "keyword",
+                        "ignore_above": 256,
+                        "index": false
+                    },
+                    "name": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    },
+                    "pkgKey": {
+                        "type": "long"
+                    },
+                    "pre": {
+                        "type": "keyword",
+                        "ignore_above": 256,
+                        "index": false
+                    },
+                    "relation": {
+                        "properties": {
+                            "bin_name": {
+                                "type": "keyword",
+                                "ignore_above": 256
+                            },
+                            "src_name": {
+                                "type": "keyword",
+                                "ignore_above": 256
+                            }
+                        }
+                    },
+                    "release": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    },
+                    "requires_type": {
+                        "type": "keyword",
+                        "ignore_above": 256,
+                        "index": false
+                    },
+                    "version": {
+                        "type": "keyword",
+                        "ignore_above": 256,
+                        "index": false
+                    }
+                }
+            },
+            "rpm_buildhost": {
+                "type": "keyword",
+                "ignore_above": 256,
+                "index": false
+            },
+            "rpm_group": {
+                "type": "keyword",
+                "ignore_above": 256,
+                "index": false
+            },
+            "rpm_header_end": {
+                "type": "long"
+            },
+            "rpm_header_start": {
+                "type": "long"
+            },
+            "rpm_license": {
+                "type": "keyword",
+                "ignore_above": 256,
+                "index": false
+            },
+            "rpm_packager": {
+                "type": "keyword",
+                "ignore_above": 256,
+                "index": false
+            },
+            "rpm_sourcerpm": {
+                "type": "keyword",
+                "ignore_above": 256,
+                "index": false
+            },
+            "rpm_vendor": {
+                "type": "keyword",
+                "ignore_above": 256
+            },
+            "size_archive": {
+                "type": "long"
+            },
+            "size_installed": {
+                "type": "long"
+            },
+            "size_package": {
+                "type": "long"
+            },
+            "src_name": {
+                "type": "keyword",
+                "ignore_above": 256
+            },
+            "summary": {
+                "type": "keyword",
+                "ignore_above": 256,
+                "index": false
+            },
+            "time_build": {
+                "type": "long"
+            },
+            "time_file": {
+                "type": "long"
+            },
+            "url": {
+                "type": "keyword",
+                "ignore_above": 256,
+                "index": false
+            },
+            "version": {
+                "type": "keyword",
+                "ignore_above": 256,
+                "index": false
+            }
+        }
+    }
+}

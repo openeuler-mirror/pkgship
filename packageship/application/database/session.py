@@ -16,6 +16,7 @@ Parse config file, create database engines, obtains a specify database connectio
 from packageship.application.common.exc import DatabaseConfigException
 from packageship.application.database import engine
 from packageship.libs.conf import configuration
+from packageship.libs.log import LOGGER
 
 
 class DatabaseSession(object):
@@ -28,7 +29,8 @@ class DatabaseSession(object):
     def __init__(self, db_engine=None, host=None, port=None):
         self.db_engine = db_engine or configuration.DATABASE_ENGINE_TYPE
         if self.db_engine not in self.__DATABASE_ENGINE_TYPE:
-            raise DatabaseConfigException("DataBase %s is not support" % self.db_engine)
+            LOGGER.error("DataBase %s is not support" % self.db_engine)
+            raise DatabaseConfigException()
         self._host = host or configuration.DATABASE_HOST
         self._port = port or configuration.DATABASE_PORT
         self.session = None
@@ -40,8 +42,8 @@ class DatabaseSession(object):
         """
         self.session = engine.create_engine(db_engine=self.db_engine, host=self._host, port=self._port)
         if self.session is None:
-            raise DatabaseConfigException(
-                "Failed to create database engine %s, please check database configuration" % self.db_engine)
+            LOGGER.error("Failed to create database engine %s, please check database configuration" % self.db_engine)
+            raise DatabaseConfigException()
 
         return self.session
 

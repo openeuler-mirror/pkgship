@@ -36,8 +36,7 @@ MOCK_DATA_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data"
 class TestBuildRequireDbQuery(TestCase):
     DATABASE_LIST = ['openeuler', 'fedora']
     JUDY_SOURCE_INFO = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE, "JudySource.json"))
-    COREUTILS_SOURCE_INFO = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE, "coreutils.json"))
-    GAWK_SOURCE_INFO = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE, "gawk.json"))
+    COMPONENTS_INFO = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE, "components_info,json"))
     EXCEPT_RETURN_VALUE = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE, "returnJudyResult.json"))
 
     def setUp(self):
@@ -65,8 +64,7 @@ class TestBuildRequireDbQuery(TestCase):
         """
         self.query_instance.session.query = MagicMock(side_effect=[
             self.JUDY_SOURCE_INFO,
-            self.COREUTILS_SOURCE_INFO,
-            self.GAWK_SOURCE_INFO
+            self.COMPONENTS_INFO
         ])
 
         result = self.build_instance.get_build_req(source_list=['Judy'], specify_db='openeuler')
@@ -80,8 +78,7 @@ class TestBuildRequireDbQuery(TestCase):
          """
         self.query_instance.session.query = MagicMock(side_effect=[
             self.JUDY_SOURCE_INFO,
-            self.COREUTILS_SOURCE_INFO,
-            self.GAWK_SOURCE_INFO
+            self.COMPONENTS_INFO
         ])
 
         result = self.build_instance.get_build_req(source_list=['Judy'])
