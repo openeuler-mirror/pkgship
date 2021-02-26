@@ -129,13 +129,14 @@ class BaseDepend:
                         continue
 
         for bin_name, values in self.binary_dict.items():
-            if bin_name not in bedep_dict:
-                bedep_dict[bin_name] = copy.deepcopy(values)
-                bedep_dict[bin_name].update({"build": []})
+            bedep_dict[bin_name] = copy.deepcopy(values)
+            bedep_dict[bin_name].setdefault("build", [])
+            bedep_dict[bin_name].setdefault("install", [])
             _update_install_lst(bin_name, values)
+
         _update_build_lst()
         return bedep_dict
-    
+
     def filter_dict(self, root: str, level: int, direction: str = "bothward"):
         """get filter dict data
 
@@ -162,65 +163,102 @@ class BaseDepend:
             raise ValueError(
                 f'Error direction,excepted in ["bothward","upward","downward"],but given {direction}'
             )
+
         filter_data = dict()
 
-        def update_upward(pkg, l, s):
-            for upward_root in filter_data[pkg]["be_requires"]:
-                if upward_root in filter_data:
-                    continue
-                inner(upward_root, l, s, "upward")
+        def _update_direction(pkg, level, layer, req_type, local_direction):
+            """update direction data
 
-        def update_downward(pkg, l, s):
-            for downward_root in filter_data[pkg]["requires"]:
-                if downward_root in filter_data:
-                    continue
-                inner(downward_root, l, s, "downward")
-
-        def update_bothward(pkg, l, s):
-            update_upward(pkg, l, s)
-            update_downward(pkg, l, s)
-
-        if direction == "bothward":
-            update_meth = update_bothward
-        elif direction == "upward":
-            update_meth = update_upward
-        else:
-            update_meth = update_downward
-
-        def inner(
-            curr_root: str, curr_level: int, curr_layer: int, inner_direction: str
-        ):
-            if curr_level < 0:
+            Args:
+                pkg (str): the root node 
+                level (int): filter level
+                layer (int): current depend layer
+                req_type (str): requires or be_requires
+                local_direction (str): upward or downward
+            """
+            if level < 1:
                 return
+            level -= 1
 
+            other_req = "requires" if req_type == "be_requires" else "be_requires"
+            curr_layer = []
+            for root_node in filter_data[pkg][req_type]:
+                if root_node in filter_data:
+                    if other_req not in filter_data[root_node]:
+                        continue
+                    req = filter_data[root_node].setdefault(other_req, [])
+                    if pkg not in req:
+                        req.append(pkg)
+                    root_info = filter_data[root_node]
+                    root_info["direction"] = (
+                        "both" if root_info["direction"] != "root" else "root"
+                    )
+                curr_layer.append(root_node)
+                update_data_func(root_node, layer, local_direction)
+            for nlayer in curr_layer:
+                _update_direction(nlayer, level, layer + 1, req_type, local_direction)
+
+        def _update_be_reqs(pkg):
+            """update data's be_requires value
+
+            Args:
+                pkg (str): root node
+            """
+            filter_data[pkg].setdefault("be_requires", [])
+            for key, values in self.binary_dict.items():
+                if (
+                    pkg in values.get("install",[])
+                    and key not in filter_data[pkg]["be_requires"]
+                ):
+                    filter_data[pkg]["be_requires"].append(key)
+
+        def update_data_func(pkg, layer, local_direction):
+            """update data miain function
+
+            Args:
+                pkg (str): root node
+                layer (str): current depend layer
+                local_direction (str): to search direction
+            """
             try:
-                pkg_info = self.binary_dict[curr_root]
+                pkg_info = self.binary_dict[pkg]
             except KeyError:
                 return
             else:
-                if curr_root not in filter_data:
-                    filter_data[curr_root] = {
-                        "name": curr_root,
+                if pkg not in filter_data:
+                    filter_data[pkg] = {
+                        "name": pkg,
                         "source_name": pkg_info.get("source_name"),
                         "version": pkg_info.get("version"),
-                        "level": curr_layer,
+                        "level": layer,
                         "database": pkg_info.get("database"),
-                        "requires": copy.deepcopy(pkg_info.get("install", [])),
-                        "direction": inner_direction,
-                        "be_requires": [],
+                        "direction": local_direction,
                     }
 
-                for key, values in self.binary_dict.items():
-                    if (
-                        curr_root in values["install"]
-                        and key not in filter_data[curr_root]["be_requires"]
-                    ):
-                        filter_data[curr_root]["be_requires"].append(key)
+                if local_direction == "upward":
+                    _update_be_reqs(pkg)
+                elif local_direction == "downward":
+                    filter_data[pkg]["requires"] = copy.deepcopy(
+                        pkg_info.get("install", [])
+                    )
+                else:
+                    filter_data[pkg]["requires"] = copy.deepcopy(
+                        pkg_info.get("install", [])
+                    )
+                    _update_be_reqs(pkg)
 
-        inner(root, level, 0, "root")
-        update_meth(root, level - 1, 1)
+        # start layer is 1
+        update_data_func(root, 1, "root")
+        # next level is level-1 and next layer is 2
+        if direction == "bothward":
+            _update_direction(root, level - 1, 2, "be_requires", "upward")
+            _update_direction(root, level - 1, 2, "requires", "downward")
+        elif direction == "upward":
+            _update_direction(root, level - 1, 2, "be_requires", "upward")
+        else:
+            _update_direction(root, level - 1, 2, "requires", "downward")
         return filter_data
-    
+
     def download_depend_files(self):
         """
         get the depend relationship with downloadable files
