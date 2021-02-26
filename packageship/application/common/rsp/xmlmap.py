@@ -13,6 +13,7 @@
 
 import os
 import threading
+
 try:
     import xml.parsers.expat.errors as parse_errors
     import xml.etree.cElementTree as et
@@ -50,9 +51,6 @@ class XmlParse:
         except parse_errors as e:
             raise e
 
-    def clear_xml(self):
-        self.xml = None
-
     @property
     def root(self):
         return self.xml.getroot()
@@ -63,9 +61,9 @@ class XmlParse:
             msg[child.tag] = child.text
         return msg
 
-    def content(self, label):
+    def content(self, label, xml_path="mapping.xml"):
         if not self.xml:
-            self._load_xml("mapping.xml")
+            self._load_xml(xml_path)
         tag = self.root.find("./code/[@label='%s']" % label)
         if tag is None:
             return tag

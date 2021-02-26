@@ -15,15 +15,17 @@
 """
 from .xmlmap import xml
 
+
 class RspMsg:
     """
         Response content
     """
+
     def __init__(self, label="success", **kwargs):
         self._label = label
         self.response_body = {
             "message": kwargs.get("message"),
-            "tip": kwargs.get("tip") or True
+            "resp": None
         }
 
     def _code(self, label):
@@ -33,26 +35,20 @@ class RspMsg:
         response_body = xml.content(label)
         return response_body
 
-    @property
-    def response(self):
-        """
-            get the detailed content based on the Code
-        """
-        body = self._code(self._label)
-        self._body(body)
-        return self.response_body
+    def _body(self, body, label, zh=False):
+        if body:
+            if not hasattr(self.response_body, "message") or self.response_body["message"] is None:
+                self.response_body["message"] = body["message_zh"] if zh else body["message_en"]
+            self.response_body["code"] = body["status_code"]
+            if label != "success":
+                self.response_body["tip"] = body["tip_zh"] if zh else body["tip_en"]
 
-    def _body(self, body, zh=True):
-        if not hasattr(self.response_body, "message") or self.response_body["message"] is None:
-            self.response_body["message"] = body["message_zh"] if zh else body["message_en"]
-        self.response_body["code"] = body["status_code"]
-
-    def body(self, label, zh=True, **kwargs):
+    def body(self, label, zh=False, **kwargs):
         """
             get the response body
         """
         self.response_body.update(**kwargs)
-        self._body(self._code(label), zh)
+        self._body(self._code(label), label, zh)
         return self.response_body
 
 
