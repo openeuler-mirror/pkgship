@@ -153,8 +153,6 @@ class InstallDepend(BaseDepend):
         return resp
 
     def __call__(self, **kwargs):
-        # self.packagename = kwargs["packagename"]
-        # self.dependency_type = "installdep"
         self.__dict__.update(
             dict(packagename=kwargs["packagename"], dependency_type="installdep"))
 

@@ -166,8 +166,6 @@ class BuildDepend(BaseDepend):
         self._search_set.clear()
 
     def __call__(self, **kwargs):
-        # self.packagename = kwargs["packagename"]
-        # self.dependency_type = "builddep"
         self.__dict__.update(
             dict(packagename=kwargs["packagename"], dependency_type="builddep"))
         @buffer_cache(depend=self)
