@@ -24,6 +24,9 @@ MAX_PAGE_SIZE = 10000
 # default page num
 DEFAULT_PAGE_NUM = 1
 
+# maximum page number allowed
+MAXIMUM_PAGE_SIZE = 200
+
 # under line char
 UNDERLINE = "-"
 
