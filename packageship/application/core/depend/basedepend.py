@@ -13,7 +13,7 @@
 import copy
 from .graph import GraphInfo
 from packageship.libs.log import LOGGER
-from packageship.application.common.export import Download
+from packageship.application.core.depend.down_load import Download
 
 class BaseDepend:
     """
