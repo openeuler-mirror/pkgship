@@ -50,7 +50,9 @@ if __name__ == "__main__":
                        os.path.join(TEST_CASE_PATH, "test_module/test_db_priority/"),
                        os.path.join(TEST_CASE_PATH, "test_module/test_packages/test_all_src_package"),
                        os.path.join(TEST_CASE_PATH, "test_module/test_packages/test_all_bin_package"),
-                       os.path.join(TEST_CASE_PATH, "test_module/test_basedepend/"),]
+                       os.path.join(TEST_CASE_PATH, "test_module/test_basedepend/"),
+                       os.path.join(TEST_CASE_PATH, "test_module/test_bedepend/"),
+                       ]
     for file in test_case_files:
         runner.run(specify_case(file))
     cov.stop()
