@@ -11,6 +11,11 @@
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
 # -*- coding:utf-8 -*-
+import os
+import json
+from unittest import mock
+from requests import Response
+from packageship import BASE_PATH
 
 
 def compare_two_values(obj1, obj2):
@@ -25,6 +30,62 @@ def compare_two_values(obj1, obj2):
 
     """
     # With the help of the str() method provided by python,It's so powerful
-
     return obj1 == obj2 or (isinstance(obj1, type(obj2)) and
                             "".join(sorted(str(obj1))) == "".join(sorted(str(obj2))))
+
+
+def get_correct_json_by_filename(filename):
+    """
+
+    Args:
+        filename: Correct JSON file name without suffix
+
+    Returns: list this json file's content
+
+    """
+    json_path = os.path.join(os.path.dirname(BASE_PATH),
+                             "test",
+                             "common_files",
+                             "correct_test_result_json",
+                             "{}.json".format(filename))
+    try:
+        with open(json_path, "r", encoding='utf-8') as json_fp:
+            correct_list = json.loads(json_fp.read())
+    except FileNotFoundError:
+        return []
+
+    return correct_list
+
+
+def mock_post_response(data, status_code, my_text):
+    """
+    Args:
+        data: Simulated data
+        status_code: status code
+        my_text: Simulated text
+    Returns: Mock response
+
+    """
+    mock_result = Response()
+    mock_result.status_code = status_code
+    type(mock_result).text = mock.PropertyMock(return_value=my_text)
+
+    def json_func():
+        return data
+
+    mock_result.json = json_func
+    return mock_result
+
+
+def mock_get_response(status_code, my_text):
+    """
+    Args:
+        my_text: Simulated data
+        status_code: status code
+    Returns: Mock response
+
+    """
+    mock_result = Response()
+    mock_result.status_code = status_code
+    type(mock_result).text = mock.PropertyMock(return_value=my_text)
+    return mock_result

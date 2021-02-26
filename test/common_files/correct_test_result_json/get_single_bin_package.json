@@ -1,0 +1,78 @@
+{
+  "openeuler": [
+    {
+      "bin_name": "Judy",
+      "description": "The package provides the most advanced core technology, the main\nadvantages are scalability, high performance and memory efficiency.",
+      "filelist": {
+        "dir": [
+          "/usr/share/licenses/Judy"
+        ],
+        "file": [
+          "/usr/share/licenses/Judy/COPYING",
+          "/etc/ima/digest_lists.tlv/0-metadata_list-compact_tlv-Judy-1.0.5-19.oe1.aarch64",
+          "/usr/lib64/libJudy.so.1",
+          "/usr/lib64/libJudy.so.1.0.3",
+          "/etc/ima/digest_lists/0-metadata_list-compact-Judy-1.0.5-19.oe1.aarch64"
+        ],
+        "ghost": []
+      },
+      "provides": [
+        {
+          "component": "Judy",
+          "required_by_bin": [
+            "Judy-devel"
+          ],
+          "required_by_src": []
+        },
+        {
+          "component": "Judy(aarch-64)",
+          "required_by_bin": [],
+          "required_by_src": []
+        },
+        {
+          "component": "libJudy.so.1()(64bit)",
+          "required_by_bin": [
+            "mariadb-oqgraph-engine"
+          ],
+          "required_by_src": []
+        }
+      ],
+      "requires": [
+        {
+          "component": "/bin/sh",
+          "provided_by": [
+            "bash"
+          ]
+        },
+        {
+          "component": "ld-linux-aarch64.so.1()(64bit)",
+          "provided_by": [
+            "glibc"
+          ]
+        },
+        {
+          "component": "ld-linux-aarch64.so.1(GLIBC_2.17)(64bit)",
+          "provided_by": [
+            "glibc"
+          ]
+        },
+        {
+          "component": "rtld(GNU_HASH)",
+          "provided_by": [
+            "glibc"
+          ]
+        },
+        {
+          "component": "libc.so.6(GLIBC_2.17)(64bit)",
+          "provided_by": [
+            "glibc"
+          ]
+        }
+      ],
+      "src_name": "Judy",
+      "summary": "C library array",
+      "url": "http://sourceforge.net/projects/judy/",
+      "version": "1.0.5"
+    }
+  ]
+}
