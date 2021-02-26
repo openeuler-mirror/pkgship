@@ -53,7 +53,7 @@ class BufferCache:
                   for key in sorted(self._kwargs)}
         kwargs["args"] = ",".join(self._args)
 
-        hash_str = str(kwargs).encode('utf-8')
+        hash_str = "".join(sorted(str(kwargs))).encode('utf-8')
 
         return hashlib.sha256(hash_str).hexdigest()
 

@@ -49,3 +49,9 @@ PROVIDES_NAME = "provides.name"
 
 # components from files field
 FILES_NAME = "files.name"
+
+# Depends on the radius of the sphere of the graph
+LEVEL_RADIUS = 30
+
+# node size shown in the map
+NODE_SIZE = 25
