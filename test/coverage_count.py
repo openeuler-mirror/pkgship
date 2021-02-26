@@ -50,7 +50,7 @@ if __name__ == "__main__":
                        os.path.join(TEST_CASE_PATH, "test_module/test_db_priority/"),
                        os.path.join(TEST_CASE_PATH, "test_module/test_packages/test_all_src_package/"),
                        os.path.join(TEST_CASE_PATH, "test_module/test_packages/test_all_bin_package/"),
-                       os.path.join(TEST_CASE_PATH, "test_module/test_single_package_info/"),
+                       os.path.join(TEST_CASE_PATH, "test_module/test_packages/test_single_package_info/"),
                        os.path.join(TEST_CASE_PATH, "test_module/test_pkgship_version/"),
                        os.path.join(TEST_CASE_PATH, "test_module/test_selfbuild/"),
                        os.path.join(TEST_CASE_PATH, "test_module/test_install/"),
