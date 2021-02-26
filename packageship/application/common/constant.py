@@ -35,3 +35,9 @@ SOURCE_DB_TYPE = "source"
 
 # index of default databases
 DB_INFO_INDEX = "databaseinfo"
+
+# Depends on the radius of the sphere of the graph
+LEVEL_RADIUS = 30
+
+# node size shown in the map
+NODE_SIZE = 25
