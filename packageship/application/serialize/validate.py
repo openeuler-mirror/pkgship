@@ -10,27 +10,49 @@
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
-
+"""
+Verification method
+"""
 from marshmallow import ValidationError
 
 
 def _load(*args, **kwargs):
     """
-
+    Validation after serialization
+    Args:
+        verifier: The class name of the validator
+        data: data
+    Returns:
+        result: Verify the dictionary after success
+        errors: The dictionary
+    Raise:
+        ValidationError: Validation error
     """
+    result = {}
+    errors = {}
     try:
         verifier, data = args
         result = verifier().load(data, partial=kwargs.get("partial", ()))
     except ValidationError as err:
         errors = err.messages
-
-    val = result["databases"]
-    return None, None
+    return result, errors
 
 
 def validate(verifier, data, load=False, partial=()):
     """
+    Validation method
+    Args:
+        verifier:The name of the validator's class
+        data: Passed parameter
+        load: Defaults to False.
+        partial: Specifies the field to validate
 
+    Raises:
+        TypeError: Type error
+
+    Returns:
+        result: Verify the dictionary after success
+        errors: The dictionary
     """
     if not isinstance(data, dict):
         raise TypeError(

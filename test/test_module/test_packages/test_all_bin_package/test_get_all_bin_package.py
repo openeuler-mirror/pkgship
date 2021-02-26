@@ -55,7 +55,7 @@ class TestAllBinPackage(unittest.TestCase):
         Returns:
         """
         with self.assertRaises(DatabaseConfigException):
-            mock1.side_effect = DatabaseConfigException("")
+            mock1.side_effect = DatabaseConfigException()
             pkg.all_bin_packages("openEuler", page_num=1, page_size=20)
 
     @mock.patch.object(QueryPackage, "get_bin_info")
@@ -66,7 +66,7 @@ class TestAllBinPackage(unittest.TestCase):
 
         """
         with self.assertRaises(ElasticSearchQueryException):
-            mock1.side_effect = ElasticSearchQueryException("")
+            mock1.side_effect = ElasticSearchQueryException()
             pkg.all_bin_packages("openEuler", page_num=1, page_size=20)
 
     @patch.object(QueryPackage, "get_bin_info")

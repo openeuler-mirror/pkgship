@@ -1,0 +1,578 @@
+{
+  "took": 1,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 1,
+      "relation": "eq"
+    },
+    "max_score": 0.0,
+    "hits": [
+      {
+        "_index": "openeuler-binary",
+        "_type": "_doc",
+        "_id": "OZvNx3cBamC2Cm-g8gUh",
+        "_score": 0.0,
+        "_source": {
+          "src_version": "2.31",
+          "provides": [
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "bundled(gnulib)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": "5.oe1",
+              "name": "config(glibc)",
+              "flags": "EQ",
+              "epoch": "0",
+              "version": "2.31"
+            },
+            {
+              "pkgKey": 1719,
+              "release": "5.oe1",
+              "name": "glibc",
+              "flags": "EQ",
+              "epoch": "0",
+              "version": "2.31"
+            },
+            {
+              "pkgKey": 1719,
+              "release": "5.oe1",
+              "name": "glibc(aarch-64)",
+              "flags": "EQ",
+              "epoch": "0",
+              "version": "2.31"
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "ld-linux-aarch64.so.1(GLIBC_2.17)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "ldconfig",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libBrokenLocale.so.1()(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libBrokenLocale.so.1(GLIBC_2.17)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libCNS.so()(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libGB.so()(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libISOIR165.so()(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libJIS.so()(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libJISX0213.so()(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libKSC.so()(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libSegFault.so()(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libanl.so.1()(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libanl.so.1(GLIBC_2.17)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libc.so.6()(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libc.so.6(GLIBC_2.17)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libc.so.6(GLIBC_2.18)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libc.so.6(GLIBC_2.22)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libc.so.6(GLIBC_2.23)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libc.so.6(GLIBC_2.24)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libc.so.6(GLIBC_2.25)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libc.so.6(GLIBC_2.26)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libc.so.6(GLIBC_2.27)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libc.so.6(GLIBC_2.28)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libc.so.6(GLIBC_2.29)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libc.so.6(GLIBC_2.30)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libdl.so.2()(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libdl.so.2(GLIBC_2.17)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libm.so.6()(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libm.so.6(GLIBC_2.17)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libm.so.6(GLIBC_2.18)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libm.so.6(GLIBC_2.23)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libm.so.6(GLIBC_2.24)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libm.so.6(GLIBC_2.25)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libm.so.6(GLIBC_2.27)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libm.so.6(GLIBC_2.28)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libm.so.6(GLIBC_2.29)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libm.so.6(GLIBC_2.31)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libmemusage.so()(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libnss_compat.so.2()(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libnss_dns.so.2()(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libnss_files.so.2()(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libpcprofile.so()(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libpthread.so.0()(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libpthread.so.0(GLIBC_2.17)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libpthread.so.0(GLIBC_2.18)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libpthread.so.0(GLIBC_2.28)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libpthread.so.0(GLIBC_2.30)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libpthread.so.0(GLIBC_2.31)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libresolv.so.2()(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libresolv.so.2(GLIBC_2.17)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "librt.so.1()(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "librt.so.1(GLIBC_2.17)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libthread_db.so.1()(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libthread_db.so.1(GLIBC_2.17)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libutil.so.1()(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "libutil.so.1(GLIBC_2.17)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            },
+            {
+              "pkgKey": 1719,
+              "release": null,
+              "name": "rtld(GNU_HASH)",
+              "flags": null,
+              "epoch": null,
+              "version": null
+            }
+          ],
+          "name": "glibc",
+          "files": [
+            {
+              "pkgKey": 1719,
+              "name": "/etc/gai.conf",
+              "type": "ghost"
+            },
+            {
+              "pkgKey": 1719,
+              "name": "/etc/ld.so.cache",
+              "type": "ghost"
+            },
+            {
+              "pkgKey": 1720,
+              "name": "ld-linux-aarch64.so.1()(64bit)",
+              "type": "ghost"
+            },
+            {
+              "pkgKey": 1719,
+              "name": "/etc/ld.so.conf",
+              "type": "file"
+            },
+            {
+              "pkgKey": 1719,
+              "name": "/etc/ld.so.conf.d",
+              "type": "dir"
+            },
+            {
+              "pkgKey": 1719,
+              "name": "/etc/nsswitch.conf",
+              "type": "file"
+            },
+            {
+              "pkgKey": 1719,
+              "name": "/etc/rpc",
+              "type": "file"
+            },
+            {
+              "pkgKey": 1719,
+              "name": "/sbin/ldconfig",
+              "type": "file"
+            },
+            {
+              "pkgKey": 1719,
+              "name": "/usr/sbin/iconvconfig",
+              "type": "file"
+            },
+            {
+              "pkgKey": 1719,
+              "name": "/etc/ima/digest_lists/0-metadata_list-compact-glibc-2.31-5.oe1.aarch64",
+              "type": "file"
+            },
+            {
+              "pkgKey": 1719,
+              "name": "/etc/ima/digest_lists.tlv/0-metadata_list-compact_tlv-glibc-2.31-5.oe1.aarch64",
+              "type": "file"
+            }
+          ],
+          "src_name": "glibc",
+          "version": "2.31"
+        }
+      }
+    ]
+  }
+}

@@ -17,6 +17,8 @@ import unittest
 import os
 from unittest import mock
 from mock import patch
+
+from packageship.application.common.exc import DatabaseConfigException, ElasticSearchQueryException
 from packageship.application.core. pkginfo.pkg import SourcePackage
 from packageship.application.query.depend import BuildRequires, BeDependRequires, InstallRequires
 from packageship.application.query.pkg import QueryPackage
@@ -42,14 +44,6 @@ class TestSrcPackageInfo(unittest.TestCase):
         database.get_db_priority = mock.Mock(
             return_value=["openeuler", "fedora"])
 
-    def test_database_not_exists(self):
-        """
-        test database does not exists
-
-        """
-        src_pkg = SourcePackage()
-        res = src_pkg.src_package_info(["Judy"], ["openeuler1"])
-        self.assertEqual(res, {}, "Error in testing database does not exists.")
 
     @patch.object(QueryPackage, "get_src_info")
     def test_get_empty_src_info(self, mock1):
@@ -83,7 +77,6 @@ class TestSrcPackageInfo(unittest.TestCase):
         mock1.return_value = {None}
         res = src_pkg.src_package_info(["Judy"], ["openeuler"])
         self.assertEqual(res, {}, "Error in testing wrong src info.")
-
 
     @patch.object(QueryPackage, "get_src_info")
     @patch.object(BuildRequires, "get_build_req")
@@ -231,7 +224,7 @@ class TestSrcPackageInfo(unittest.TestCase):
         TRUE_INSTALL_RES = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE,
                                                                  "true_install_for_res.json"))
         self.assertDictEqual(output_res, TRUE_INSTALL_RES, "Error in testing true install info.")
-    #
+
     @patch.object(QueryPackage, "get_src_info")
     @patch.object(BuildRequires, "get_build_req")
     @patch.object(BeDependRequires, "get_be_req")
@@ -250,4 +243,29 @@ class TestSrcPackageInfo(unittest.TestCase):
         EXPECT_RES = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE,
                                                                  "true_result_with_input_database.json"))
         self.assertEqual(output_res, EXPECT_RES, "Error in testing true result with input database.")
+
+    @mock.patch.object(QueryPackage, "get_src_info")
+    def test_config_exception(self, mock1):
+        """
+        test config exception
+
+        """
+        with self.assertRaises(DatabaseConfigException):
+            mock1.side_effect = DatabaseConfigException()
+            src_pkg = SourcePackage()
+            res = src_pkg.src_package_info(["Judy"], ["openeuler"])
+            self.assertEqual(res, {}, "Error in testing config exception.")
+
+    @mock.patch.object(QueryPackage, "get_src_info")
+    def test_es_query_exception(self, mock1):
+        """
+        test es query exception
+        Returns:
+
+        """
+        with self.assertRaises(ElasticSearchQueryException):
+            mock1.side_effect = ElasticSearchQueryException()
+            src_pkg = SourcePackage()
+            res = src_pkg.src_package_info(["Judy"], ["openeuler"])
+            self.assertEqual(res, {}, "Error in testing es query exception.")
 

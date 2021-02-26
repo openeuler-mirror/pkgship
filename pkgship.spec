@@ -20,6 +20,18 @@ Pkgship implements rpm package dependence ,maintainer, patch query and so no.
 
 %build
 %py3_build
+current_path=`pwd`
+cd $current_path'/packageship'
+version_=%{version}
+release_=%{release}
+version_file=version.yaml
+if [ -f "$version_file" ];then
+        rm -rf $version_file
+fi
+touch $version_file
+echo "create version.yaml successfully."
+echo "Version: $version_" >> $version_file
+echo "Release: $release_" >> $version_file
 
 %install
 %py3_install

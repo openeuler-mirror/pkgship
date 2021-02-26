@@ -19,6 +19,13 @@ from retrying import retry
 class RemoteService:
     """
     HTTP request service
+
+    Attributes:
+        _max_delay:Maximum interval time
+        _retry:Retry count
+        _body:Request body
+        _response:Response info
+        _request_error: request error
     """
 
     def __init__(self, max_delay=1000):
@@ -32,32 +39,35 @@ class RemoteService:
 
     @property
     def status_code(self):
-        """status code of the response"""
+        """
+        Description: status code of the response
+        """
         if self._response is None:
             return requests.codes["internal_server_error"]
         return self._response.status_code
 
     @property
     def content(self):
-        """ original content of the response """
+        """
+        Description: original content of the response
+        """
         return self._response.content if self._response else None
 
     @property
     def text(self):
-        """content of the decoded response"""
+        """
+        Description: content of the decoded response
+        """
         return self._response.content.decode('utf-8') if self._response else None
 
-    @property
-    def response_headers(self):
-        """request header for the response"""
-        pass
-
     def _dispatch(self, method, url, **kwargs):
-        """Request remote services in different ways
+        """
+        Description: Request remote services in different ways
 
-        :param method: request method， GET、 POST 、PUT 、DELETE
-        :param url:Remote request address
-        :param kwargs:parameters associated with the request
+        Args:
+            method: request method， GET、 POST 、PUT 、DELETE
+            url:Remote request address
+            kwargs:parameters associated with the request
         """
         @retry(stop_max_attempt_number=self._retry, stop_max_delay=self._max_delay)
         def http(url):
@@ -79,13 +89,15 @@ class RemoteService:
             raise RequestException from error
 
     def request(self, url, method, body=None, max_retry=3, **kwargs):
-        """ Request a remote http service
+        """
+        Description: Request a remote http service
 
-        :param url: http service address
-        :param method: mode of request ,only GET、 POST、 DELETE、 PUT is supported
-        :param body: Request body content
-        :param max_retry: The number of times the request failed to retry
-        :param kwargs: Request the relevant parameters
+        Args:
+            url: http service address
+            method: mode of request ,only GET、 POST、 DELETE、 PUT is supported
+            body: Request body content
+            max_retry: The number of times the request failed to retry
+            kwargs: Request the relevant parameters
         """
         if not isinstance(max_retry, int):
             max_retry = 3
@@ -97,14 +109,23 @@ class RemoteService:
             self._request_error = str(error)
 
     def get(self, url, **kwargs):
-        """ HTTP get request method
-        :param kwargs: requests parameters
+        """
+        Description: HTTP get request method
+
+        Args:
+            kwargs: requests parameters
+            url: requested remote address
         """
         response = requests.get(url=url, **kwargs)
         return response
 
     def post(self, url, **kwargs):
-        """HTTP post request method
+        """
+        Description: HTTP post request method
+
+        Args:
+            kwargs: requests parameters
+            url: requested remote address
         """
         data = kwargs.get('data') or self._body
         response = requests.post(url=url, data=data, **kwargs)

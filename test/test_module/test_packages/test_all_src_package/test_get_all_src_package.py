@@ -28,6 +28,7 @@ from test.base_code.read_mock_data import MockData
 pkg = Package()
 MOCK_DATA_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
 
+
 class TestAllSrcPackage(unittest.TestCase):
     """
     class for test all src package
@@ -48,7 +49,6 @@ class TestAllSrcPackage(unittest.TestCase):
             mock1.return_value = {}
             pkg.all_src_packages("openEuler", page_num=1, page_size=20)
 
-
     @mock.patch.object(QueryPackage, "get_src_info")
     def test_config_exception(self, mock1):
         """
@@ -56,7 +56,7 @@ class TestAllSrcPackage(unittest.TestCase):
         Returns:
         """
         with self.assertRaises(DatabaseConfigException):
-            mock1.side_effect = DatabaseConfigException("")
+            mock1.side_effect = DatabaseConfigException()
             pkg.all_src_packages("openEuler", page_num=1, page_size=20)
 
     @mock.patch.object(QueryPackage, "get_src_info")
@@ -67,9 +67,8 @@ class TestAllSrcPackage(unittest.TestCase):
 
         """
         with self.assertRaises(ElasticSearchQueryException):
-            mock1.side_effect = ElasticSearchQueryException("")
+            mock1.side_effect = ElasticSearchQueryException()
             pkg.all_src_packages("openEuler", page_num=1, page_size=20)
-
 
     @patch.object(QueryPackage, "get_src_info")
     def test_wrong_src_info(self, mock1):
@@ -78,7 +77,7 @@ class TestAllSrcPackage(unittest.TestCase):
         Returns:
 
         """
-        mock1.return_value = {"total":2}
+        mock1.return_value = {"total": 2}
         res = pkg.all_src_packages("openeuler", page_num=1, page_size=20)
         self.assertEqual(res, {}, "Error in testing wrong src info.")
 
@@ -93,5 +92,3 @@ class TestAllSrcPackage(unittest.TestCase):
         mock1.return_value = ALL_SRC_INFO
         res = pkg.all_src_packages("openeuler", page_num=1, page_size=20)
         self.assertNotEqual(res, {}, "Error in testing true result.")
-
-

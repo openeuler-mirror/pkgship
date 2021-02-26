@@ -24,10 +24,8 @@ MOCK_DATA_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data"
 class TestInstallRequireDbQuery(TestCase):
     DATABASE_LIST = ['openeuler', 'fedora']
     JUDY_BINARY_INFO = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE, "JudyBinary.json"))
-    JUDY_BINARY_INFO_NO_RELATION = MockData.read_mock_json_data(
-        os.path.join(MOCK_DATA_FILE, "JudyBinaryNoRelation.json"))
-    BASH_BINARY_INFO = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE, "bashBinary.json"))
-    GLIBC_BINARY_INFO = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE, "glibcBinary.json"))
+    PROVIDES_COMPONENTS_INFO = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE, "providesComponentsInfo.json"))
+    FILES_COMPONENTS_INFO = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE, "filesComponentsInfo.json"))
     EXPECT_VALUE = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE, "returnJudyResult.json"))
 
     def setUp(self):
@@ -55,12 +53,14 @@ class TestInstallRequireDbQuery(TestCase):
         """
         self.query_instance.session.query = MagicMock(
             side_effect=[self.JUDY_BINARY_INFO,
-                         self.BASH_BINARY_INFO,
-                         self.GLIBC_BINARY_INFO])
+                         self.PROVIDES_COMPONENTS_INFO,
+                         self.FILES_COMPONENTS_INFO])
 
         result = self.install_instance.get_install_req(binary_list=['Judy'])
+        result_require = self._format_return(result)
+        expect_require = self._format_return(self.EXPECT_VALUE)
 
-        self.assertEqual(self.EXPECT_VALUE, result)
+        self.assertEqual(expect_require, result_require)
 
     def test_specify_db(self):
         """
@@ -69,24 +69,14 @@ class TestInstallRequireDbQuery(TestCase):
         """
         self.query_instance.session.query = MagicMock(
             side_effect=[self.JUDY_BINARY_INFO,
-                         self.BASH_BINARY_INFO,
-                         self.GLIBC_BINARY_INFO])
+                         self.PROVIDES_COMPONENTS_INFO,
+                         self.FILES_COMPONENTS_INFO])
 
         result = self.install_instance.get_install_req(binary_list=['Judy'], specify_db='openeuler')
-        self.assertEqual(self.EXPECT_VALUE, result)
+        result_require = self._format_return(result)
+        expect_require = self._format_return(self.EXPECT_VALUE)
 
-    def test_no_relation(self):
-        """
-        Test binary package requires info no relation
-        Returns:
-        """
-        self.query_instance.session.query = MagicMock(
-            side_effect=[self.JUDY_BINARY_INFO_NO_RELATION,
-                         self.BASH_BINARY_INFO,
-                         self.GLIBC_BINARY_INFO])
-
-        result = self.install_instance.get_install_req(binary_list=['Judy'], specify_db='openeuler')
-        self.assertEqual(self.EXPECT_VALUE, result)
+        self.assertEqual(expect_require, result_require)
 
     def test_query_no_data(self):
         """
@@ -97,3 +87,15 @@ class TestInstallRequireDbQuery(TestCase):
         result = self.install_instance.get_install_req(binary_list=['Judy'], specify_db='openeuler')
 
         self.assertEqual(result, [])
+
+    @staticmethod
+    def _format_return(return_data):
+        format_data = [dict(binary_name=data.get('binary_name'),
+                            bin_version=data.get('bin_version'),
+                            database=data.get('database'),
+                            src_name=data.get('src_name'),
+                            src_version=data.get('src_version'),
+                            requires=data.get('requires').sort(key=lambda x: x.get('component')))
+                       for data in return_data
+                       ]
+        return format_data
