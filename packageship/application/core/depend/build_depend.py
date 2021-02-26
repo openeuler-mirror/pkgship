@@ -54,7 +54,7 @@ class BuildDepend(BaseDepend):
         self.__level = 0
         self.__query_buildreq = BuildRequires(db_list)
 
-        if depend and isinstance(depend, BaseDepend):
+        if isinstance(depend, BaseDepend):
             self.depend_history = depend
             self.binary_dict = depend.binary_dict
             self.source_dict = depend.source_dict
@@ -122,40 +122,40 @@ class BuildDepend(BaseDepend):
                 LOGGER.warning("There is a None type in resp")
                 continue
             src_name = pkg_info.get("source_name")
-
+            
+            if not src_name:
+                continue
             # check the input packages searched result
-            if self.__level == 1 and src_name not in searched_pkg:
-                LOGGER.warning("Can not find the packages:" +
-                               src_name + "in all databases")
+            if self.__level == 1:
+                searched_pkg.remove(src_name)
 
-            if src_name and not self._search_dep_before(src_name, "build"):
+            if not self._has_searched_dep(src_name, "build"):
                 depend_set = set()
                 #for non build depend, the list would be empty
                 build_list = []
-                if pkg_info.get("requires"):
-                    for req in pkg_info.get("requires"):
-                        com_bin_name = req.get("com_bin_name")
-                        com_src_name = req.get("com_src_name")
-                        com_db = req.get("com_database")
-                        # for self build, need to update the search dict for next search loop
-                        if self.depend_history:
-                            self.depend_history.add_search_dict(
-                                "build",
-                                com_db,
-                                update_bin_name=com_bin_name,
-                                update_src_name=com_src_name)
+                for req in pkg_info.get("requires"):
+                    com_bin_name = req.get("com_bin_name")
+                    com_src_name = req.get("com_src_name")
+                    com_db = req.get("com_database")
+                    # for self build, need to update the search dict for next search loop
+                    if self.depend_history:
+                        self.depend_history.add_search_dict(
+                            "build",
+                            com_db,
+                            com_bin_name=com_bin_name,
+                            com_src_name=com_src_name)
 
-                        # insert req info in last level loop
-                        if not self_build and self.__level == level:
-                            self._insert_com_info(req)
+                    # insert req info in last level loop
+                    if not self_build and self.__level == level:
+                        self._insert_com_info(req)
 
-                        # add the bin name into depend set
-                        if self._check_com_value(
-                                req,
-                                self.search_build_dict,
-                                self_build=self_build):
-                            depend_set.add(com_bin_name)
-                    build_list = list(depend_set)
+                    # add the bin name into depend set
+                    if self._checka_and_add_com_value(
+                            req,
+                            self.search_build_dict,
+                            self_build=self_build):
+                        depend_set.add(com_bin_name)
+                build_list = list(depend_set)
 
                 self._insert_into_source_dict(
                     name=src_name,
@@ -164,6 +164,9 @@ class BuildDepend(BaseDepend):
                     build=build_list
                 )
         self._search_set.clear()
+        if self.__level == 1 and searched_pkg:
+            LOGGER.warning("Can not find the packages:" +
+                            str(searched_pkg) + "in all databases")
 
     def __call__(self, **kwargs):
         self.__dict__.update(

@@ -122,29 +122,29 @@ class SelfDepend(BaseDepend):
                 if bin_name and bin_name not in self.binary_dict:
                     self.search_install_dict[db_name].add(bin_name)
 
-    def add_search_dict(self, update_type, update_db, update_bin_name=None, update_src_name=None):
+    def add_search_dict(self, add_type, com_db, com_bin_name=None, com_src_name=None):
         """
         Description: check wheather the package name insert into next search loop
         Args:
-            update_type: "build" would influence next install search
+            add_type: "build" would influence next install search
                          "install" would influence next build search
-            update_db: database name which update pkg seached in
-            update_bin_name: the bianry package name for check
-            update_src_name: the source package name for check
+            com_db: database name which update pkg seached in
+            com_bin_name: the bianry package name for check
+            com_src_name: the source package name for check
         """
 
-        if update_db not in self.db_list:
+        if com_db not in self.db_list:
             return
-        if update_type == "build" and update_bin_name \
-                and not self._search_dep_before(update_bin_name, "install"):
-            self.search_install_dict.get(update_db).add(update_bin_name)
-        elif update_type == "install" and update_src_name \
-                and not self._search_dep_before(update_src_name, "build"):
-            self.search_build_dict.get(update_db).add(update_src_name)
+        if add_type == "build" and com_bin_name \
+                and not self._has_searched_dep(com_bin_name, "install"):
+            self.search_install_dict.get(com_db).add(com_bin_name)
+        elif add_type == "install" and com_src_name \
+                and not self._has_searched_dep(com_src_name, "build"):
+            self.search_build_dict.get(com_db).add(com_src_name)
 
-        if self.subpack and update_src_name \
-                and not self._search_dep_before(update_src_name, "build"):
-            self.search_subpack_dict.get(update_db).add(update_src_name)
+        if self.subpack and com_src_name \
+                and not self._has_searched_dep(com_src_name, "build"):
+            self.search_subpack_dict.get(com_db).add(com_src_name)
 
     def __call__(self, **kwargs):
         # self.packagename = kwargs["packagename"]

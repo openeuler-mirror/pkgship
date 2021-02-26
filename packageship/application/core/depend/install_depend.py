@@ -13,6 +13,7 @@
 """
 Install depend
 """
+import copy
 from packageship.libs.log import LOGGER
 from packageship.application.query.depend import InstallRequires
 from packageship.application.database.cache import buffer_cache
@@ -51,7 +52,7 @@ class InstallDepend(BaseDepend):
         self.__query_installreq = InstallRequires(db_list)
 
         # for build and self depend, get the previous result from the input cls
-        if depend and isinstance(depend, BaseDepend):
+        if isinstance(depend, BaseDepend):
             self.depend_history = depend
             self.binary_dict = depend.binary_dict
             self.source_dict = depend.source_dict
@@ -97,6 +98,9 @@ class InstallDepend(BaseDepend):
             search_dict=self.search_install_dict,
             func=self.__query_installreq.get_install_req)
 
+        if self.__level == 1:
+            searched_pkg = copy.deepcopy(self._search_set)
+
         for pkg_info in resp:
             if not pkg_info:
                 LOGGER.warning("There is a None type in resp")
@@ -104,27 +108,27 @@ class InstallDepend(BaseDepend):
             bin_name = pkg_info.get("binary_name")
             src_name = pkg_info.get("src_name")
 
+            if not bin_name:
+                continue
             # check the input packages searched result
-            if self.__level == 1 and bin_name not in self._search_set:
-                LOGGER.warning("Can not find the packages:" +
-                               bin_name + "in all databases")
+            if self.__level == 1:
+                searched_pkg.remove(bin_name)
 
-            if bin_name and not self._search_dep_before(bin_name, "install"):
+            if not self._has_searched_dep(bin_name, "install"):
                 # binary pkg which has not query the installdep yet,
                 # put it into search dict based on the database which found it
                 depend_set = set()
                 #for non install depend, the list would be empty
                 install_list = []
-                if pkg_info.get("requires"):
-                    for req in pkg_info.get("requires"):
-                        com_bin_name = req.get("com_bin_name")
-                        # insert req info in last level loop
-                        if self.__level == level:
-                            self._insert_com_info(req)
+                for req in pkg_info.get("requires"):
+                    com_bin_name = req.get("com_bin_name")
+                    # insert req info in last level loop
+                    if self.__level == level:
+                        self._insert_com_info(req)
 
-                        if self._check_com_value(req, self.search_install_dict):
-                            depend_set.add(com_bin_name)
-                    install_list = list(depend_set)
+                    if self._checka_and_add_com_value(req, self.search_install_dict):
+                        depend_set.add(com_bin_name)
+                install_list = list(depend_set)
 
                 # put the package binary info into binary result dict
                 self._insert_into_binary_dict(
@@ -147,10 +151,12 @@ class InstallDepend(BaseDepend):
                 self.depend_history.add_search_dict(
                     "install",
                     pkg_info.get("database"),
-                    update_src_name=src_name)
+                    com_src_name=src_name)
 
         self._search_set.clear()
-        return resp
+        if self.__level == 1 and searched_pkg:
+            LOGGER.warning("Can not find the packages:" +
+                            str(searched_pkg) + "in all databases")
 
     def __call__(self, **kwargs):
         self.__dict__.update(

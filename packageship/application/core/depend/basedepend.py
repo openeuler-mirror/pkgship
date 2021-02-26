@@ -84,7 +84,7 @@ class BaseDepend:
         if isinstance(kwargs.get("build"), list):
             self.source_dict[name]["build"] = kwargs.get("build")
 
-    def _check_com_value(self, req: dict, search_dict: dict, self_build=False):
+    def _checka_and_add_com_value(self, req: dict, search_dict: dict, self_build=False):
         """
         Description:parse the req dict, refresh the search dict for next search loop
         and update the com_not_found_pro set if need
@@ -153,7 +153,7 @@ class BaseDepend:
                 return True
         return False
 
-    def _search_dep_before(self, key, search_type):
+    def _has_searched_dep(self, key, search_type):
         """
         Description:check the package was searched before
         """
