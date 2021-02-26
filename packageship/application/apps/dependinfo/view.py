@@ -12,8 +12,7 @@
 # ******************************************************************************/
 """
 description: Interface processing
-class: BeDepend, BuildDepend, InitSystem, InstallDepend, Packages,
-Repodatas, SelfDepend, SinglePack
+class: DependList, DownloadFiles, DependGraph
 """
 from flask import send_file
 from flask import request

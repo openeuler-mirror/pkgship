@@ -10,6 +10,11 @@
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
+"""
+description: Interface processing
+class: SourcePackages, BinaryPackages, SourcePackageInfo,BinaryPackageInfo,DatabasePriority
+PkgshipVersion,TableColView
+"""
 import math
 from flask import request
 from flask import jsonify

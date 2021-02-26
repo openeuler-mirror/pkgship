@@ -10,7 +10,10 @@
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
-
+"""
+Description: Entry method for custom commands
+Class: AllPackageCommand
+"""
 import json
 from packageship.libs.log import LOGGER
 from json.decoder import JSONDecodeError

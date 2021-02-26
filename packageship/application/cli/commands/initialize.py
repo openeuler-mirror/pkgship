@@ -10,6 +10,10 @@
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
+"""
+Description: Entry method for custom commands
+Class: InitDatabaseCommand
+"""
 import os
 from packageship.application.cli.base import BaseCommand
 from packageship.application.initialize.integration import InitializeService

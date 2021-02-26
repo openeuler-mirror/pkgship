@@ -10,6 +10,10 @@
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
+"""
+Description: Entry method for custom commands
+Class: BeDependCommand
+"""
 import json
 from json.decoder import JSONDecodeError
 from requests.exceptions import ConnectionError as ConnErr
