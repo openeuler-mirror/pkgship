@@ -1,0 +1,1 @@
+{"bash": {"name": "bash", "version": "5.0", "source_name": "bash", "database": "openeuler"}, "glibc": {"name": "glibc", "version": "2.31", "source_name": "glibc", "database": "openeuler"}, "Judy": {"name": "Judy", "version": "1.0.5", "source_name": "Judy", "database": "openeuler", "install": ["bash", "glibc"]}}
