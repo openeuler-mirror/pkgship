@@ -28,13 +28,13 @@ def _load(*args, **kwargs):
     Raise:
         ValidationError: Validation error
     """
+    result = {}
+    errors = {}
     try:
         verifier, data = args
         result = verifier().load(data, partial=kwargs.get("partial", ()))
-        errors = {}
     except ValidationError as err:
         errors = err.messages
-        result = {}
     return result, errors
 
 

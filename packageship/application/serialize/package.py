@@ -19,6 +19,7 @@ from marshmallow import Schema
 from marshmallow import validates
 from marshmallow import ValidationError
 from packageship.application.query import database
+from packageship.application.common import constant
 db_list = database.get_db_priority()
 
 
@@ -30,7 +31,7 @@ class PackageSchema(Schema):
     page_num = fields.Integer(
         required=True, validate=lambda x: x >= 1, default=1)
     page_size = fields.Integer(
-        required=True, validate=lambda x: 200 >= x >= 1, default=20)
+        required=True, validate=lambda x: constant.MAXIMUM_PAGE_SIZE >= x >= 1, default=20)
     query_pkg_name = fields.String(required=False)
     command_line = fields.Boolean(required=False)
 
