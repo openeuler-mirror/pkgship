@@ -10,3 +10,137 @@
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
+"""
+Depends and downloads the interface's parameter validator
+"""
+from marshmallow import Schema
+from marshmallow import fields
+from marshmallow import validate
+from marshmallow import pre_load
+from marshmallow import validates
+from marshmallow import ValidationError
+from packageship.application.query import database
+
+db_list = database.get_db_priority()
+db_list = [db_name.lower() for db_name in db_list]
+
+
+class BaseParameterSchema(Schema):
+    """
+    Basic parameter validator
+    """
+    level = fields.Integer(
+        required=False, validate=lambda x: x >= 0, missing=0)
+    packtype = fields.String(required=False, validate=validate.OneOf(
+        ["source", "binary", ""]), missing="")
+    self_build = fields.Boolean(required=False, missing=False)
+    with_subpack = fields.Boolean(required=False, missing=False)
+    search_type = fields.String(required=False, validate=validate.OneOf(["install", "build", ""]),
+                                missing="")
+
+
+class OtherdependSchema(BaseParameterSchema):
+    """
+    Install dependencies, build dependencies, and selfdepen validators
+    """
+    db_priority = fields.List(fields.String(),
+                              required=False, missing=db_list, default=db_list)
+
+    @validates("db_priority")
+    def validate_name(self, db_priority):
+        """
+        The database is a database in the system
+        Args:
+            db_priority: The priority of the database
+
+        Returns:
+            None
+        Raises:
+            ValidationError: Validation fails
+        """
+        res = any(filter(lambda db_name: db_name not in db_list, db_priority))
+        if len(db_priority) < 1 or res:
+            raise ValidationError(
+                "db_priority length less than one or Database priority error")
+
+
+class BedependSchema(BaseParameterSchema):
+    """
+    The validator of the dependent parameter
+    """
+    db_priority = fields.List(fields.String(),
+                              required=True)
+
+    @validates("db_priority")
+    def validate_name(self, db_priority):
+        """
+        The database is a database in the system
+        Args:
+            db_priority: The priority of the database
+
+        Returns:
+            None
+        Raises:
+            ValidationError: Validation fails
+        """
+        res = any(filter(lambda db_name: db_name not in db_list, db_priority))
+        if len(db_priority) != 1 or res:
+            raise ValidationError(
+                "db_priority length less than one or Database priority error")
+
+
+class DependSchema(Schema):
+    """
+    Install, build, selfbuild, bedepend validators
+    """
+
+    packagename = fields.List(
+        fields.String(), required=True, validate=validate.Length(min=1))
+    depend_type = fields.String(required=True, validate=validate.OneOf(
+        ["installdep", "builddep", "selfdep", "bedep"]))
+    node_name = fields.String(required=True)
+    node_type = fields.String(
+        required=True, validate=validate.OneOf(["binary", "source"]))
+    parameter = fields.Nested(OtherdependSchema, required=False)
+
+    @pre_load
+    def _update_paramter(self, data, **kwargs):
+        """
+        update_paramter
+        Args:
+            data: parameter
+        Returns:
+            data: Parameters after processing
+        """
+        if data.get('depend_type') in ["bedep"]:
+            self.__dict__["load_fields"]["parameter"] = \
+                fields.Nested(BedependSchema, required=True)
+
+        return data
+
+
+class DownSchema(Schema):
+    """
+    Download the parameter validator for the interface
+    """
+
+    packagename = fields.List(
+        fields.String(), required=True, validate=validate.Length(min=1))
+    depend_type = fields.String(required=True, validate=validate.OneOf(
+        ["installdep", "builddep", "selfdep", "bedep", "src", "bin"]))
+    parameter = fields.Nested(OtherdependSchema, required=False)
+
+    @pre_load
+    def _update_paramter(self, data, **kwargs):
+        """
+        update_paramter
+        Args:
+            data: parameter
+        Returns:
+            data: Parameters after processing
+        """
+        if data.get('depend_type') in ["bedep", "src", "bin"]:
+            self.__dict__["load_fields"]["parameter"] = \
+                fields.Nested(BedependSchema, required=True)
+
+        return data
