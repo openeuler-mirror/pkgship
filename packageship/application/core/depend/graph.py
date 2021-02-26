@@ -120,6 +120,7 @@ class GraphInfo:
             try:
                 for require in depend_data[node]["requires"]:
                     self.edges = {"source": node, "target": require}
+                    self.nodes = require
                     _downward_node.add(require)
             except KeyError:
                 continue
@@ -142,16 +143,17 @@ class GraphInfo:
             try:
                 for require in depend_data[node]["be_requires"]:
                     self.edges = {"source": require, "target": node}
+                    self.nodes = require
                     _upward_node.add(require)
             except KeyError:
                 continue
 
         return _upward_node
 
-    def _graph(self, root_node, depend_data):
+    def _graph(self, root_node, depend_data, level):
         _downward = set([root_node])
         _upward = set([root_node])
-        while _downward or _upward:
+        while (_downward or _upward) and level != 0:
 
             if _downward:
                 _downward = self._downward(_downward, depend_data)
@@ -159,6 +161,7 @@ class GraphInfo:
                 _upward = self._upward(_upward, depend_data)
             _downward = _downward - self._down
             _upward = _upward - self._up
+            level -= 1
 
     def generate_graph(self, root_node, package_type, level=2):
         """
@@ -187,15 +190,6 @@ class GraphInfo:
             except ValueError:
                 continue
             if depend_data:
-                for package, _depend in depend_data.items():
-                    if _depend["level"] > level - 1:
-                        continue
-                    self.nodes = package
-                    for require in _depend["requires"]:
-                        if require in depend_data:
-                            self.nodes = require
-                    for be_require in _depend["be_requires"]:
-                        if be_require in depend_data:
-                            self.nodes = be_require
-                self._graph(pkg, depend_data)
+                self.nodes = pkg
+                self._graph(pkg, depend_data, level)
         return dict(edges=self.edges, nodes=self.nodes)
