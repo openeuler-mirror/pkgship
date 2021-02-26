@@ -73,8 +73,8 @@ class TestBuildDdepend(unittest.TestCase):
         build = BuildDepend(db_list=['openeuler'])
         build.build_depend(src_name=["Judy"], level=1)
         binary, source = build.depend_dict
-        EXCEPT_BIN = {'sed': {'name': 'sed', 'version': '4.8', 'source_name': 'sed', 'database': 'openeuler'}}
-        self.assertDictEqual(binary, EXCEPT_BIN, "Error in testing build level 1.")
+        EXCEPT_BIN_INFO = {'sed': {'name': 'sed', 'version': '4.8', 'source_name': 'sed', 'database': 'openeuler'}}
+        self.assertDictEqual(binary, EXCEPT_BIN_INFO, "Error in testing build level 1.")
         self.assertDictEqual(source, LEVEL_1_EXCEPT_SRC, "Error in testing build level 1.")
 
 
@@ -143,9 +143,9 @@ class TestBuildDdepend(unittest.TestCase):
         build = BuildDepend(db_list=['openeuler'])
         build.build_depend(src_name=["Judy"], level=2, self_build=True)
         binary, source = build.depend_dict
-        EXCEPT_SRC = {'Judy': {'name': 'Judy', 'version': '1.0.5', 'database': 'openeuler', 'build': []}}
+        EXCEPT_SRC_INFO = {'Judy': {'name': 'Judy', 'version': '1.0.5', 'database': 'openeuler', 'build': []}}
         self.assertDictEqual(binary, {}, "Error in testing not found component.")
-        self.assertDictEqual(source, EXCEPT_SRC, "Error in testing not found component.")
+        self.assertDictEqual(source, EXCEPT_SRC_INFO, "Error in testing not found component.")
 
     @patch.object(BuildRequires, "get_build_req")
     @patch.object(InstallRequires, "get_install_req")
@@ -159,9 +159,9 @@ class TestBuildDdepend(unittest.TestCase):
         build = BuildDepend(db_list=['openeuler'])
         build.build_depend(src_name=["Judy"], level=2, self_build=True)
         binary, source = build.depend_dict
-        EXCEPT_SRC = {'Judy11': {'name': 'Judy11', 'version': '1.0.5', 'database': 'openeuler', 'build': ['sed']}}
+        EXCEPT_SRC_INFO = {'Judy11': {'name': 'Judy11', 'version': '1.0.5', 'database': 'openeuler', 'build': ['sed']}}
         self.assertDictEqual(binary, {}, "Error in testing srcname not in searched packages.")
-        self.assertDictEqual(source, EXCEPT_SRC, "Error in testing srcname not in searched packages.")
+        self.assertDictEqual(source, EXCEPT_SRC_INFO, "Error in testing srcname not in searched packages.")
 
 
     @mock.patch.object(Redis, "exists")
