@@ -88,6 +88,12 @@ class BaseDepend:
         """
         Description:parse the req dict, refresh the search dict for next search loop
         and update the com_not_found_pro set if need
+        Attributes:
+            req: requires dictionary contains install (or build) depend relation
+            search_dict: install_search_dict or build_search_dict, com_bin_name may
+                         insert into those dict for next search loop
+            self_build: for self_build is True, would check the source name instand
+                        of binary name
         """
         com_bin_name = req.get("com_bin_name")
         com_db = req.get("com_database")
@@ -115,6 +121,8 @@ class BaseDepend:
     def _insert_com_info(self, req):
         """
         Description:insert component info into dictionary
+        Attributes:
+            req: requires dictionary contains install (or build) depend relation
         """
         com_bin_name = req.get("com_bin_name")
         com_src_name = req.get("com_src_name")
@@ -136,6 +144,9 @@ class BaseDepend:
     def _check_search(search_dict: dict):
         """
         Description:check the search dictionary value for next loop
+        Attributes:
+            search_dict: install, build, subpack dict, when the values is None,
+                         means no packages search this loop
         """
         for value in search_dict.values():
             if value:
@@ -175,9 +186,13 @@ class BaseDepend:
         search_dict["non_db"] = set()
 
     @staticmethod
-    def job(func, search_set, db_name):
+    def __job(func, search_set, db_name):
         """
         Description: process the query database job
+        Attributes:
+            func: get_install_req, get_build_req or get_bin_name
+            search_set: a set of package would searched as input
+            db_name: specifed the db_name while searching, None means use db_list
         """
         _depend = []
         _depend = func(list(search_set), db_name)
@@ -194,7 +209,7 @@ class BaseDepend:
                 db_name = None
             if pkg_set:
                 pkg_set_tmp = copy.deepcopy(pkg_set)
-                resp.extend(self.job(func, pkg_set_tmp, db_name))
+                resp.extend(self.__job(func, pkg_set_tmp, db_name))
                 self._search_set.update(pkg_set)
                 pkg_set.clear()
         return resp

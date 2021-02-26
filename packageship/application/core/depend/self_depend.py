@@ -44,7 +44,11 @@ class SelfDepend(BaseDepend):
         Args:
             db_list: database priority list
         """
-        self.db_list = db_list
+        if db_list:
+            self.db_list = db_list
+        else:
+            raise AttributeError("the input of db_list is none")
+
         super(SelfDepend, self).__init__()
         self._init_search_dict(self.search_install_dict, self.db_list)
         self._init_search_dict(self.search_build_dict, self.db_list)
@@ -54,7 +58,6 @@ class SelfDepend(BaseDepend):
         self.subpack = False
 
     def self_depend(self, pkg_name, pkgtype="binary", self_build=False, with_subpack=False):
-        #todo： 注释风格要统一成
         """
         Description: get source(binary) rpm package(s) self depend relation
         Args:
@@ -80,6 +83,7 @@ class SelfDepend(BaseDepend):
                     self.search_install_dict.get("non_db").add(pkg)
         if pkgtype == "source":
             self.__query_subpack()
+        # end this loop while those three dictionry's value are None
         while self._check_search(self.search_install_dict) \
                 or self._check_search(self.search_build_dict) \
                 or self._check_search(self.search_subpack_dict):
