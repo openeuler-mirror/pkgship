@@ -99,8 +99,8 @@ class DatabaseConfigException(Error):
     Attributes:
     """
 
-    def __init__(self, message):
-        Error.__init__(self, 'Database config error: %r' % (message,))
+    def __init__(self):
+        Error.__init__(self, 'Database config error,please check package.ini')
 
 
 class ElasticSearchQueryException(Error):
@@ -109,9 +109,8 @@ class ElasticSearchQueryException(Error):
     Attributes:
     """
 
-    def __init__(self, message):
-        Error.__init__(self, 'Database query failed, please check database configuration and connection status,'
-                             'reason is : %r' % (message,))
+    def __init__(self):
+        Error.__init__(self, 'Database query failed, please check database configuration and connection status')
 
 
 class InitializeError(Error):

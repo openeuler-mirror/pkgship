@@ -22,6 +22,7 @@ from urllib3.exceptions import LocationValueError
 
 from packageship.application.common.exc import DatabaseConfigException, ElasticSearchQueryException
 from packageship.application.common.singleton import singleton
+from packageship.libs.log import LOGGER
 
 
 @singleton
@@ -37,7 +38,8 @@ class ElasticSearch(object):
             self.client = Elasticsearch(
                 [{"host": self._host, "port": self._port}])
         except LocationValueError:
-            raise DatabaseConfigException("The elasticsearch address is empty")
+            LOGGER.error("The host of database in package.ini is empty")
+            raise DatabaseConfigException()
 
     def query(self, index, body):
         """
@@ -53,7 +55,8 @@ class ElasticSearch(object):
             result = self.client.search(index=index, body=body)
             return result
         except ElasticsearchException as e:
-            raise ElasticSearchQueryException(e)
+            LOGGER.error(str(e))
+            raise ElasticSearchQueryException()
 
     def scan(self, index, body):
         """
@@ -71,7 +74,8 @@ class ElasticSearch(object):
             result_list = [res for res in result]
             return result_list
         except ElasticsearchException as e:
-            raise ElasticSearchQueryException(e)
+            LOGGER.error(str(e))
+            raise ElasticSearchQueryException()
 
     def count(self, index, body):
         """
@@ -87,7 +91,8 @@ class ElasticSearch(object):
             data_count = self.client.count(index=index, body=body)
             return data_count
         except ElasticsearchException as e:
-            raise ElasticSearchQueryException(e)
+            LOGGER.error(str(e))
+            raise ElasticSearchQueryException()
 
     @staticmethod
     def _load_mappings(mappings_file):
@@ -112,7 +117,8 @@ class ElasticSearch(object):
         try:
             self.client.index(index=index, body=body, doc_type=doc_type)
         except ElasticsearchException as e:
-            raise ElasticSearchQueryException(e)
+            LOGGER.error(str(e))
+            raise ElasticSearchQueryException()
 
     def create_index(self, indexs):
         """
