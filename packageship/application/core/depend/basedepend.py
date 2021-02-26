@@ -289,9 +289,6 @@ class BaseDepend:
         graph_info = GraphInfo(depend=self)
 
         return graph_info.generate_graph(root_node=source, package_type=package_type)
-            binary_dict [dict]: [bianry package dict data]
-            source_dict [dict]: [source package dict data]
-        return self.binary_dict, self.source_dict
 
     def _insert_into_binary_dict(self, name, **kwargs):
         """
