@@ -10,14 +10,61 @@
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
-from marshmallow import fields, Schema
+"""
+Validators for all package and single package interfaces
+"""
+from marshmallow import fields
+from marshmallow import validate
+from marshmallow import Schema
+from marshmallow import validates
+from marshmallow import ValidationError
+from packageship.application.query import database
+db_list = database.get_db_priority()
 
 
-class DatabasesSchema(Schema):
-    databases = fields.Method("get_balance", deserialize="load_balance")
+class PackageSchema(Schema):
+    """
+    Validators for all packages (source, binary)
+    """
+    database_name = fields.String(required=True)
+    page_num = fields.Integer(
+        required=True, validate=lambda x: x >= 1, default=1)
+    page_size = fields.Integer(
+        required=True, validate=lambda x: 200 >= x >= 1, default=20)
+    query_pkg_name = fields.String(required=False)
+    command_line = fields.Boolean(required=False)
 
-    def get_balance(self, obj):
-        return None
+    @validates("database_name")
+    def validate_name(self, database_name):
+        """
+        validate database name
+        Args:
+            database_name : database name
 
-    def load_balance(self, value):
-        return value.split(',')
+        Raises:
+            ValidationError: The exception that failed to validate
+        """
+        if database_name not in db_list:
+            raise ValidationError("The name is not passed in the database")
+
+
+class SingleSchema(Schema):
+    """
+    Single package (source, binary) validator
+    """
+    database_name = fields.String(
+        required=True, validate=validate.Length(min=1))
+    pkg_name = fields.String(required=True, validate=validate.Length(min=1))
+
+    @validates("database_name")
+    def validate_name(self, database_name):
+        """
+        validate database name
+        Args:
+            database_name : database name
+
+        Raises:
+            ValidationError: The exception that failed to validate
+        """
+        if database_name not in db_list:
+            raise ValidationError("The name is not passed in the database")
