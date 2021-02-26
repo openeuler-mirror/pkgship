@@ -18,7 +18,7 @@ import os
 
 BASE_PATH = os.path.join(os.path.dirname(os.path.abspath(
         os.path.dirname(__file__))), "test_version")
-version_path = os.path.join(os.path.dirname(BASE_PATH), "test_pkgship_version\\data\\", "version.yaml")
+version_path = os.path.join(os.path.dirname(BASE_PATH), "test_pkgship_version", "data", "version.yaml")
 from packageship.application.core.baseinfo import pkg_version
 
 
