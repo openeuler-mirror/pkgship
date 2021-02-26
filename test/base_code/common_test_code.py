@@ -57,35 +57,3 @@ def get_correct_json_by_filename(filename):
     return correct_list
 
 
-def mock_post_response(data, status_code, my_text):
-    """
-    Args:
-        data: Simulated data
-        status_code: status code
-        my_text: Simulated text
-    Returns: Mock response
-
-    """
-    mock_result = Response()
-    mock_result.status_code = status_code
-    type(mock_result).text = mock.PropertyMock(return_value=my_text)
-
-    def json_func():
-        return data
-
-    mock_result.json = json_func
-    return mock_result
-
-
-def mock_get_response(status_code, my_text):
-    """
-    Args:
-        my_text: Simulated data
-        status_code: status code
-    Returns: Mock response
-
-    """
-    mock_result = Response()
-    mock_result.status_code = status_code
-    type(mock_result).text = mock.PropertyMock(return_value=my_text)
-    return mock_result

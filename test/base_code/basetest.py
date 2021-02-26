@@ -157,21 +157,4 @@ class TestBase(unittest.TestCase):
                     resp_dict),
                 msg=f"The answer is not correct \n Method:{met},Params:{met.REQUESTS_KWARGS}")
 
-    # def compare_response_get_out(self, file_name, resp_dict):
-    #     """
-    #     A comparison between the output and the actual result
-    #     """
-    #     correct_list = get_correct_json_by_filename(file_name)
-    #     self.assertNotEqual(
-    #         [],
-    #         correct_list,
-    #         msg=f"Error reading JSON file name {file_name}")
-    #     self.assertIn("code", resp_dict, msg="Error in data format return")
-    #     self.assertIn("resp", resp_dict, msg="Error in data format return")
-    #     self.assertIn("message", resp_dict, msg="Error in data format return")
-    #     self.assertTrue(
-    #         compare_two_values(
-    #             resp_dict.get("resp"),
-    #             correct_list),
-    #         msg="Error in data information return")
 
