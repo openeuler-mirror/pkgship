@@ -1,0 +1,1 @@
+[{"source_name": "Judy", "src_version": "1.0.5", "database": "openeuler", "requires": [{"component": "sed", "com_bin_name": "sed", "com_bin_version": "4.8", "com_src_name": "sed", "com_src_version": "4.8", "com_database": "openeuler"}]}]
