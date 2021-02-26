@@ -112,7 +112,7 @@ class DependSchema(Schema):
         Returns:
             data: Parameters after processing
         """
-        if data.get('depend_type') in ["bedep"]:
+        if data.get('depend_type') == "bedep":
             self.__dict__["load_fields"]["parameter"] = \
                 fields.Nested(BedependSchema, required=True)
 
