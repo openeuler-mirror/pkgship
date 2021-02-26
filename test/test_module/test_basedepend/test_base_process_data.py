@@ -71,10 +71,10 @@ class TestBaseDep(unittest.TestCase):
         if the filter_dict method with true parameter and direction is bothward 
         returns the expected value
         """
-        res = self.ins.filter_dict("B1", level=2)
+        res = self.ins.filter_dict("B1", level=3)
         self.assertTrue(
             compare_two_values(
-                res, excepted_data.get('excepted_bothward_B1_level2')))
+                res, excepted_data.get('excepted_bothward_B1_level3')))
 
     def test_depend_filter_upward_dict(self):
         """test_depend_filter_upward_dict

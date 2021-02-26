@@ -182,19 +182,24 @@ class BaseDepend:
 
             other_req = "requires" if req_type == "be_requires" else "be_requires"
             curr_layer = []
-            for root_node in filter_data[pkg][req_type]:
-                if root_node in filter_data:
+            try:
+                for root_node in filter_data[pkg][req_type]:
+                    curr_layer.append(root_node)
+                    update_data_func(root_node, layer, local_direction)
+                    
+                    if root_node not in filter_data:
+                        continue
+                    
                     if other_req not in filter_data[root_node]:
                         continue
-                    req = filter_data[root_node].setdefault(other_req, [])
-                    if pkg not in req:
-                        req.append(pkg)
+
                     root_info = filter_data[root_node]
                     root_info["direction"] = (
                         "both" if root_info["direction"] != "root" else "root"
                     )
-                curr_layer.append(root_node)
-                update_data_func(root_node, layer, local_direction)
+                   
+            except KeyError:
+                return
             for nlayer in curr_layer:
                 _update_direction(nlayer, level, layer + 1, req_type, local_direction)
 
