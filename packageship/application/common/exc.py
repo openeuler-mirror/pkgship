@@ -34,26 +34,6 @@ class Error(Exception):
     __str__ = __repr__
 
 
-class ContentNoneException(Error):
-    """
-    Description: Content is empty exception
-    Attributes:
-    """
-
-    def __init__(self, message):
-        Error.__init__(self, 'No content: %r' % (message,))
-
-
-class DbnameNoneException(ContentNoneException):
-    """
-    Description: Exception with empty database name
-    Attributes:
-    """
-
-    def __init__(self, message):
-        ContentNoneException.__init__(self, '%r' % (message,))
-
-
 class DatabaseRepeatException(Error):
     """
     Description: There are duplicate exceptions in the database
@@ -62,25 +42,6 @@ class DatabaseRepeatException(Error):
 
     def __init__(self, message):
         Error.__init__(self, 'Database repeat: %r' % (message,))
-
-
-class DataMergeException(Error):
-    """
-    Description: abnormal integration data
-    Attributes:
-    """
-
-    def __init__(self, message):
-        Error.__init__(self, 'DataMerge exception: %r' % (message,))
-
-
-class ConfigurationException(Error):
-    """
-    Description: Configuration file exception information
-    """
-
-    def __init__(self, message):
-        Error.__init__(self, 'Configuration exception : %r' % (message,))
 
 
 class UnpackError(Error):
@@ -129,13 +90,6 @@ class ResourceCompetitionError(Error):
 
     def __init__(self, message):
         Error.__init__(self, message)
-
-
-class ParametersError(Error):
-    """parameter """
-
-    def __init__(self, message):
-        Error.__init__(self, 'parameter: %r' % (message,))
 
 
 class PackageInfoGettingError(Error):
