@@ -14,12 +14,12 @@ from unittest import TestCase
 from unittest.mock import MagicMock
 
 from packageship.application.query.pkg import QueryPackage
-from test.test_module.test_packages.test_database_query.get_mock_data import ObtainMockData
+from test.test_module.test_database_query.test_database_query_package.get_mock_data import ObtainMockData
 
 
-class TestQuerySourcePkgInfo(TestCase):
+class TestQueryBinName(TestCase):
     """
-    Test query source packages' detail
+    Test query binary packages‘ sources package
     """
 
     def setUp(self):
@@ -28,17 +28,28 @@ class TestQuerySourcePkgInfo(TestCase):
         Returns:
 
         """
-        self.query_package = QueryPackage()
+        self.query_package = QueryPackage(database_list=['openeuler', 'fedora'])
         self.session = self.query_package._db_session
 
-    def test_query_specify(self):
+    def test_query_specify_rpm(self):
         """
-        Test query specify source package
+        Test query specify binary package
         Returns:
-
         """
-        self.session.query = MagicMock(return_value=ObtainMockData.get_data("JudySource.json"))
-        result = self.query_package.get_src_info(src_list=['Judy'], database='openeuler', page_num=1, page_size=20,
-                                                 command_line=False)
+        self.session.query = MagicMock(
+            return_value=ObtainMockData.get_data('JudySource.json'))
+        source_list = ['Judy']
+        result = self.query_package.get_bin_name(source_list=source_list)
+        expect_value = ObtainMockData.get_data('returnJudyResult.json')
 
-        self.assertIsNotNone(result['data'][0]['Judy'])
+        self.assertEqual(result[0], expect_value)
+
+    def test_src_list_empty(self):
+        """
+        Test input a empty binary packages list
+        Returns:
+        """
+        source_list = []
+        result = self.query_package.get_bin_name(source_list=source_list)
+
+        self.assertListEqual(result, [])

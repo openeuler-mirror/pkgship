@@ -46,7 +46,7 @@ if __name__ == "__main__":
     args = sys.argv
     cov.start()
     test_case_files = [os.path.join(TEST_CASE_PATH, "test_module/test_database/"),
-                       os.path.join(TEST_CASE_PATH, "test_module/test_packages/test_database_query/"),
+                       os.path.join(TEST_CASE_PATH, "test_module/test_database_query/"),
                        os.path.join(TEST_CASE_PATH, "test_module/test_db_priority/"),
                        os.path.join(TEST_CASE_PATH, "test_module/test_packages/test_all_src_package/"),
                        os.path.join(TEST_CASE_PATH, "test_module/test_packages/test_all_bin_package/"),
@@ -54,8 +54,7 @@ if __name__ == "__main__":
                        os.path.join(TEST_CASE_PATH, "test_module/test_pkgship_version/"),
                        os.path.join(TEST_CASE_PATH, "test_module/test_selfbuild/"),
                        os.path.join(TEST_CASE_PATH, "test_module/test_install/"),
-                       os.path.join(TEST_CASE_PATH, "test_module/test_build/"),
-                       os.path.join(TEST_CASE_PATH, "test_module/test_bedepend/test_database_query/")]
+                       os.path.join(TEST_CASE_PATH, "test_module/test_build/")]
     for file in test_case_files:
         runner.run(specify_case(file))
     cov.stop()

@@ -14,7 +14,7 @@ from unittest import TestCase
 from unittest.mock import MagicMock
 
 from packageship.application.query.pkg import QueryPackage
-from test.test_module.test_packages.test_database_query.get_mock_data import ObtainMockData
+from test.test_module.test_database_query.test_database_query_package.get_mock_data import ObtainMockData
 
 
 class TestQuerySrcName(TestCase):
