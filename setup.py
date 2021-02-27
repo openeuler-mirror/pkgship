@@ -16,8 +16,8 @@ file for software packaging
 """
 import os
 
-from setuptools import setup, find_packages
 from distutils.sysconfig import get_python_lib
+from setuptools import setup, find_packages
 
 _CONFIG_PATH = "/etc/pkgship/"
 PACKAGE_PATH = get_python_lib()
@@ -50,7 +50,7 @@ setup(
         ('/usr/bin', ['packageship/pkgshipd', 'packageship/pkgship']),
         ('/lib/systemd/system/', ['packageship/pkgship.service']),
         (MAPPING_PATH, ['packageship/application/common/rsp/mapping.xml']),
-        (PACKAGESHIP_PATH,['packageship/version.yaml'])
+        (PACKAGESHIP_PATH, ['packageship/version.yaml'])
     ],
     zip_safe=False
 )
