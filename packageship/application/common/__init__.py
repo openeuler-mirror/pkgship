@@ -10,3 +10,15 @@
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
+from flask_restful import Resource
+from packageship.application import LIMITER
+
+
+class FlaskRestful(Resource):
+    """
+    flask restful
+    """
+    decorators = [LIMITER.limit('20/minute',
+                                error_message='Visit too fast :20/minute,please try again later .'),
+                  LIMITER.limit('500/day',
+                                error_message='Visit too fast :500/day,please try again later .')]
