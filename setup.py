@@ -46,7 +46,7 @@ setup(
     long_description=open('README.md', encoding='utf-8').read(),
     author='wangyiru',
     data_files=[
-        (_CONFIG_PATH, ['packageship/package.ini', 'conf.yaml','packageship/auto_install_pkgship_requires.sh']),
+        (_CONFIG_PATH, ['packageship/package.ini', 'conf.yaml', 'packageship/auto_install_pkgship_requires.sh']),
         ('/usr/bin', ['packageship/pkgshipd', 'packageship/pkgship']),
         ('/lib/systemd/system/', ['packageship/pkgship.service']),
         (MAPPING_PATH, ['packageship/application/common/rsp/mapping.xml']),
