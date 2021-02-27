@@ -185,7 +185,7 @@
             "build": [],
             "database": "fedora",
             "install": [
-                "A1"
+                "Judy"
             ],
             "name": "B1",
             "source_name": "B",
@@ -197,7 +197,8 @@
             ],
             "database": "Mainline",
             "install": [
-                "B1"
+                "A1",
+                "glibc"
             ],
             "name": "Judy",
             "source_name": "Judy",

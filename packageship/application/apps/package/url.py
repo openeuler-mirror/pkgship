@@ -21,5 +21,5 @@ urls = [
     (view.BinaryPackageInfo, '/packages/bin/<pkg_name>', {'query': ('GET')}),
     (view.DatabasePriority, '/db_priority', {'query': ('GET')}),
     (view.PkgshipVersion, '/version', {'query': ('GET')}),
-    (view.InitSystem, '/init', {'write': ('POST')})
+    (view.TableColView, '/packages/tablecol', {'query': ('GET')})
 ]
