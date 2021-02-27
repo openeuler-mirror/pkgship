@@ -27,7 +27,7 @@ PACKAGESHIP_PATH = os.path.join(PACKAGE_PATH, "packageship")
 
 setup(
     name='packageship',
-    version='1.0',
+    version='2.1.0',
     packages=find_packages(),
     requires=['prettytable (==0.7.2)',
               'Flask_RESTful (==0.3.8)',
