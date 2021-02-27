@@ -14,77 +14,43 @@
 Package management program installation configuration
 file for software packaging
 """
-from distutils.core import setup
+import os
+
+from setuptools import setup, find_packages
+from distutils.sysconfig import get_python_lib
 
 _CONFIG_PATH = "/etc/pkgship/"
+PACKAGE_PATH = get_python_lib()
+JSON_PATH = os.path.join(PACKAGE_PATH, "packageship", "application", "initialize")
+MAPPING_PATH = os.path.join(PACKAGE_PATH, "packageship", "application", "common", "rsp")
+PACKAGESHIP_PATH = os.path.join(PACKAGE_PATH, "packageship")
 
 setup(
     name='packageship',
     version='1.0',
-    py_modules=[
-        'packageship.application.__init__',
-        'packageship.application.appglobal',
-        'packageship.application.settings',
-        'packageship.application.apps.__init__',
-        'packageship.application.apps.package.url',
-        'packageship.application.apps.package.view',
-        'packageship.application.apps.dependinfo.view',
-        'packageship.application.apps.dependinfo.url',
-        'packageship.application.cli.base',
-        'packageship.application.cli.cmd',
-        'packageship.application.cli.commands.bedepend',
-        'packageship.application.cli.commands.builddep',
-        'packageship.application.cli.commands.db',
-        'packageship.application.cli.commands.initialize',
-        'packageship.application.cli.commands.installdep',
-        'packageship.application.cli.commands.srcpkg',
-        'packageship.application.cli.commands.binpkg',
-        'packageship.application.cli.commands.selfbuild',
-        'packageship.application.common.constant',
-        'packageship.application.common.exc',
-        'packageship.application.common.export',
-        'packageship.application.common.compress',
-        'packageship.application.common.remote',
-        'packageship.application.common.rsp.content',
-        'packageship.application.common.rsp.xmlmap',
-        'packageship.application.core.depend.be_depend',
-        'packageship.application.core.depend.build_depend',
-        'packageship.application.core.depend.depend',
-        'packageship.application.core.depend.graph',
-        'packageship.application.core.depend.install_depend',
-        'packageship.application.core.depend.self_depend',
-        'packageship.application.core.pkginfo.pkg',
-        'packageship.application.core.db_info',
-        'packageship.application.initialize.integration',
-        'packageship.application.initialize.repo',
-        'packageship.application.query.depend',
-        'packageship.application.query.pkg',
-        'packageship.application.serialize.dependinfo',
-        'packageship.application.serialize.package',
-        'packageship.application.serialize.validate',
-        'packageship.application.database.cache',
-        'packageship.application.database.search',
-        'packageship.application.database.session',
-        'packageship.application.database.engine.__init__',
-        'packageship.application.database.engine.elastic.__init__',
-        'packageship.libs.log',
-        'packageship.libs.conf.global_config',
-        'packageship.manage',
-        'packageship.selfpkg'
-    ],
+    packages=find_packages(),
     requires=['prettytable (==0.7.2)',
               'Flask_RESTful (==0.3.8)',
               'Flask_Script (==2.0.6)',
               'Flask (==1.1.2)',
               'marshmallow (==3.5.1)',
               'PyYAML (==5.3.1)',
-              'concurrent_log_handler (==0.9.17)',
               'requests (==2.21.0)',
-              'uwsgi (==2.0.18)'],
+              'uwsgi (==2.0.18)',
+              'gevent(==20.12.1)',
+              'Flask_Limiter(==1.4)',
+              'elasticsearch(==7.10.1)',
+              'redis(==3.5.3)',
+              'retrying(==1.3.3)'],
     license='Dependency package management',
     long_description=open('README.md', encoding='utf-8').read(),
-    author='gongzt',
+    author='wangyiru',
     data_files=[
-        (_CONFIG_PATH, ['packageship/package.ini', 'conf.yaml']),
-        ('/usr/bin', ['packageship/pkgshipd', 'packageship/pkgship'])]
+        (_CONFIG_PATH, ['packageship/package.ini', 'conf.yaml','packageship/auto_install_pkgship_requires.sh']),
+        ('/usr/bin', ['packageship/pkgshipd', 'packageship/pkgship']),
+        ('/lib/systemd/system/', ['packageship/pkgship.service']),
+        (MAPPING_PATH, ['packageship/application/common/rsp/mapping.xml']),
+        (PACKAGE_PATH,['packageship/version.yaml'])
+    ],
+    zip_safe=False
 )
