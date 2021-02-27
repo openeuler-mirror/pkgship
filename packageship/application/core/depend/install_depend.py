@@ -112,7 +112,7 @@ class InstallDepend(BaseDepend):
                 continue
             # check the input packages searched result
             if self.__level == 1:
-                searched_pkg.remove(bin_name)
+                searched_pkg.discard(bin_name)
 
             if not self._has_searched_dep(bin_name, "install"):
                 # binary pkg which has not query the installdep yet,
