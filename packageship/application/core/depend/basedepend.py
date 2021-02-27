@@ -10,6 +10,10 @@
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
+"""
+Depend Base Class
+"""
+
 import copy
 from .graph import GraphInfo
 from packageship.libs.log import LOGGER
@@ -105,8 +109,8 @@ class BaseDepend:
         """[get depend dict]
 
         Returns:
-            binary_dict [dict]: [description]
-            source_dict [dict]: [description]
+            binary_dict [dict]: [bianry package dict data]
+            source_dict [dict]: [source package dict data]
         """
         return self.binary_dict, self.source_dict
 
@@ -208,7 +212,7 @@ class BaseDepend:
 
                     root_info = filter_data[root_node]
                     root_info["direction"] = (
-                        "both" if root_info["direction"] != "root" else "root"
+                        "bothward" if root_info["direction"] != "root" else "root"
                     )
                    
             except KeyError:
