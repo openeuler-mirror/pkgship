@@ -1,0 +1,411 @@
+{
+  "input": {
+    "packagename": [
+      "Judy"
+    ],
+    "depend_type": "builddep",
+    "node_name": "Judy",
+    "node_type": "source",
+    "parameter": {
+      "db_priority": [
+        "openeuler"
+      ],
+      "level": 2,
+      "self_build": false
+    }
+  },
+  "output": {
+    "edges": [
+      {
+        "sourceID": "Judy",
+        "targetID": "make"
+      },
+      {
+        "sourceID": "Judy",
+        "targetID": "gawk"
+      },
+      {
+        "sourceID": "Judy",
+        "targetID": "coreutils"
+      },
+      {
+        "sourceID": "Judy",
+        "targetID": "sed"
+      },
+      {
+        "sourceID": "Judy",
+        "targetID": "gcc"
+      },
+      {
+        "sourceID": "make",
+        "targetID": "info"
+      },
+      {
+        "sourceID": "make",
+        "targetID": "glibc"
+      },
+      {
+        "sourceID": "make",
+        "targetID": "guile"
+      },
+      {
+        "sourceID": "make",
+        "targetID": "bash"
+      },
+      {
+        "sourceID": "gawk",
+        "targetID": "gmp"
+      },
+      {
+        "sourceID": "gawk",
+        "targetID": "glibc"
+      },
+      {
+        "sourceID": "gawk",
+        "targetID": "filesystem"
+      },
+      {
+        "sourceID": "gawk",
+        "targetID": "libsigsegv"
+      },
+      {
+        "sourceID": "gawk",
+        "targetID": "mpfr"
+      },
+      {
+        "sourceID": "gawk",
+        "targetID": "readline"
+      },
+      {
+        "sourceID": "coreutils",
+        "targetID": "gmp"
+      },
+      {
+        "sourceID": "coreutils",
+        "targetID": "attr"
+      },
+      {
+        "sourceID": "coreutils",
+        "targetID": "info"
+      },
+      {
+        "sourceID": "coreutils",
+        "targetID": "glibc"
+      },
+      {
+        "sourceID": "coreutils",
+        "targetID": "libselinux"
+      },
+      {
+        "sourceID": "coreutils",
+        "targetID": "ncurses"
+      },
+      {
+        "sourceID": "coreutils",
+        "targetID": "libcap"
+      },
+      {
+        "sourceID": "coreutils",
+        "targetID": "libacl"
+      },
+      {
+        "sourceID": "coreutils",
+        "targetID": "openssl-libs"
+      },
+      {
+        "sourceID": "sed",
+        "targetID": "libselinux"
+      },
+      {
+        "sourceID": "sed",
+        "targetID": "glibc"
+      },
+      {
+        "sourceID": "sed",
+        "targetID": "libacl"
+      },
+      {
+        "sourceID": "gcc",
+        "targetID": "gmp"
+      },
+      {
+        "sourceID": "gcc",
+        "targetID": "libstdc++"
+      },
+      {
+        "sourceID": "gcc",
+        "targetID": "libgcc"
+      },
+      {
+        "sourceID": "gcc",
+        "targetID": "glibc"
+      },
+      {
+        "sourceID": "gcc",
+        "targetID": "libmpc"
+      },
+      {
+        "sourceID": "gcc",
+        "targetID": "libgomp"
+      },
+      {
+        "sourceID": "gcc",
+        "targetID": "cpp"
+      },
+      {
+        "sourceID": "gcc",
+        "targetID": "binutils"
+      },
+      {
+        "sourceID": "gcc",
+        "targetID": "zlib"
+      },
+      {
+        "sourceID": "gcc",
+        "targetID": "glibc-devel"
+      },
+      {
+        "sourceID": "gcc",
+        "targetID": "mpfr"
+      },
+      {
+        "sourceID": "gcc",
+        "targetID": "bash"
+      }
+    ],
+    "nodes": [
+      {
+        "color": "#6DD400",
+        "id": "Judy",
+        "label": "Judy",
+        "size": 10.272126360942458,
+        "x": -21.024255123754127,
+        "y": 1.5044992157737835
+      },
+      {
+        "color": "#32C5FF",
+        "id": "make",
+        "label": "make",
+        "size": 20.248069387718193,
+        "x": 15.526895464460697,
+        "y": -11.993329495526408
+      },
+      {
+        "color": "#B620E0",
+        "id": "info",
+        "label": "info",
+        "size": 17.776059495778526,
+        "x": -7.9098955988587125,
+        "y": -24.227687544897083
+      },
+      {
+        "color": "#F78500",
+        "id": "glibc",
+        "label": "glibc",
+        "size": 16.97346681282901,
+        "x": -21.397360168833224,
+        "y": -18.48277194144656
+      },
+      {
+        "color": "#32C5FF",
+        "id": "guile",
+        "label": "guile",
+        "size": 15.361588181112873,
+        "x": -25.95262514019208,
+        "y": 25.366424626333423
+      },
+      {
+        "color": "#44D7B6",
+        "id": "bash",
+        "label": "bash",
+        "size": 2.2889276668435308,
+        "x": -7.302286147877468,
+        "y": -17.837924744495915
+      },
+      {
+        "color": "#6D7278",
+        "id": "gawk",
+        "label": "gawk",
+        "size": 15.368059554932282,
+        "x": 8.697678310750739,
+        "y": -20.533928889660597
+      },
+      {
+        "color": "#44D7B6",
+        "id": "gmp",
+        "label": "gmp",
+        "size": 17.699433175015432,
+        "x": -10.12454080927837,
+        "y": -25.411978462029435
+      },
+      {
+        "color": "#6236FF",
+        "id": "filesystem",
+        "label": "filesystem",
+        "size": 19.562576489414933,
+        "x": 2.7796147459220446,
+        "y": 1.9658148834158284
+      },
+      {
+        "color": "#6236FF",
+        "id": "libsigsegv",
+        "label": "libsigsegv",
+        "size": 18.008760999788226,
+        "x": -16.15488343780856,
+        "y": 3.3553006030547916
+      },
+      {
+        "color": "#0091FF",
+        "id": "mpfr",
+        "label": "mpfr",
+        "size": 8.623992558241707,
+        "x": 25.495619025703398,
+        "y": -28.6413163691196
+      },
+      {
+        "color": "#E02020",
+        "id": "readline",
+        "label": "readline",
+        "size": 18.020119896211618,
+        "x": 13.413230317235788,
+        "y": -2.9190351191986705
+      },
+      {
+        "color": "#6DD400",
+        "id": "coreutils",
+        "label": "coreutils",
+        "size": 6.168882725637197,
+        "x": -24.0553821165109,
+        "y": -3.984652458052996
+      },
+      {
+        "color": "#B620E0",
+        "id": "attr",
+        "label": "attr",
+        "size": 18.93329269992597,
+        "x": -21.814344076153525,
+        "y": 10.241296415585378
+      },
+      {
+        "color": "#0091FF",
+        "id": "libselinux",
+        "label": "libselinux",
+        "size": 14.948992885020834,
+        "x": 23.65550263158073,
+        "y": 7.165706883081816
+      },
+      {
+        "color": "#6DD400",
+        "id": "ncurses",
+        "label": "ncurses",
+        "size": 11.249037015125761,
+        "x": 25.13127038372359,
+        "y": -12.598266288822298
+      },
+      {
+        "color": "#6DD400",
+        "id": "libcap",
+        "label": "libcap",
+        "size": 16.059358772520447,
+        "x": -26.223971040777503,
+        "y": -2.8066820037571727
+      },
+      {
+        "color": "#F78500",
+        "id": "libacl",
+        "label": "libacl",
+        "size": 1.829515575973315,
+        "x": -23.843887043513117,
+        "y": 7.2094047713875
+      },
+      {
+        "color": "#FA6400",
+        "id": "openssl-libs",
+        "label": "openssl-libs",
+        "size": 23.877109049786938,
+        "x": 7.08897934613082,
+        "y": 17.417454291502125
+      },
+      {
+        "color": "#32C5FF",
+        "id": "sed",
+        "label": "sed",
+        "size": 7.683810585459057,
+        "x": -3.967852844251686,
+        "y": -27.21266327571133
+      },
+      {
+        "color": "#B620E0",
+        "id": "gcc",
+        "label": "gcc",
+        "size": 1.567734295459469,
+        "x": 20.180737998423453,
+        "y": -21.80632476294662
+      },
+      {
+        "color": "#6D7278",
+        "id": "libstdc++",
+        "label": "libstdc++",
+        "size": 11.438299647993013,
+        "x": -23.416573800273717,
+        "y": 1.5991999704913362
+      },
+      {
+        "color": "#FA6400",
+        "id": "libgcc",
+        "label": "libgcc",
+        "size": 6.1134012581317725,
+        "x": -12.239153787054555,
+        "y": -6.3180178295058855
+      },
+      {
+        "color": "#6236FF",
+        "id": "libmpc",
+        "label": "libmpc",
+        "size": 11.194790047116236,
+        "x": 3.239401929583802,
+        "y": -14.741815432976324
+      },
+      {
+        "color": "#44D7B6",
+        "id": "libgomp",
+        "label": "libgomp",
+        "size": 10.451672310392627,
+        "x": 21.205336576156736,
+        "y": 28.101860629583086
+      },
+      {
+        "color": "#6DD400",
+        "id": "cpp",
+        "label": "cpp",
+        "size": 11.534172844947703,
+        "x": -16.70426974904678,
+        "y": -13.44670835987802
+      },
+      {
+        "color": "#44D7B6",
+        "id": "binutils",
+        "label": "binutils",
+        "size": 6.065355572332304,
+        "x": -21.925358187238512,
+        "y": 2.4598993764391555
+      },
+      {
+        "color": "#6D7278",
+        "id": "zlib",
+        "label": "zlib",
+        "size": 24.784558450258135,
+        "x": -2.158394313105533,
+        "y": -24.429094363282797
+      },
+      {
+        "color": "#FA6400",
+        "id": "glibc-devel",
+        "label": "glibc-devel",
+        "size": 19.082028001908764,
+        "x": 6.486499518866919,
+        "y": 8.55554428410411
+      }
+    ]
+  }
+}

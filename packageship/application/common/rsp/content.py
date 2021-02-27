@@ -11,48 +11,72 @@
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
 """
-    Response content
+Response content
 """
 from .xmlmap import xml
 
+
 class RspMsg:
     """
-        Response content
+    Response content
     """
+
     def __init__(self, label="success", **kwargs):
+        """
+
+        Args:
+            label:
+            **kwargs:
+        """
         self._label = label
         self.response_body = {
             "message": kwargs.get("message"),
-            "tip": kwargs.get("tip") or True
+            "resp": None
         }
 
     def _code(self, label):
         """
-            Response Code
+        Response code
+        Args:
+            label: label
+
+        Returns:
+            response body
         """
         response_body = xml.content(label)
         return response_body
 
-    @property
-    def response(self):
+    def _body(self, body, label, zh=False):
         """
-            get the detailed content based on the Code
-        """
-        body = self._code(self._label)
-        self._body(body)
-        return self.response_body
+        Response body
+        Args:
+            body: response body
+            label: label
+            zh: Whether to display Chinese
 
-    def _body(self, body, zh=True):
-        if not hasattr(self.response_body, "message") or self.response_body["message"] is None:
-            self.response_body["message"] = body["message_zh"] if zh else body["message_en"]
-        self.response_body["code"] = body["status_code"]
+        Returns:
 
-    def body(self, label, zh=True, **kwargs):
         """
-            get the response body
+        if body:
+            if not hasattr(self.response_body, "message") or self.response_body["message"] is None:
+                self.response_body["message"] = body["message_zh"] if zh else body["message_en"]
+            self.response_body["code"] = body["status_code"]
+            if label != "success":
+                self.response_body["tip"] = body["tip_zh"] if zh else body["tip_en"]
+
+    def body(self, label, zh=False, **kwargs):
+        """
+        get the response body
+        Args:
+            label: label
+            zh: Whether to display Chinese
+            **kwargs: content
+
+        Returns:
+            response body
         """
         self.response_body.update(**kwargs)
-        self._body(self._code(label), zh)
+        self._body(self._code(label), label, zh)
         return self.response_body
 
 

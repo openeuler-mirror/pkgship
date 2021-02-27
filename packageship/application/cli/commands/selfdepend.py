@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python3  
 # ******************************************************************************
 # Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
 # licensed under the Mulan PSL v2.
@@ -12,13 +12,14 @@
 # ******************************************************************************/
 """
 Description: Entry method for custom commands
-Class: BuildDepCommand
+Class: SelfDependCommand
 """
 import json
 from json.decoder import JSONDecodeError
 from requests.exceptions import ConnectionError as ConnErr
 
 from packageship.application.cli.base import BaseCommand
+
 from packageship.libs.log import LOGGER
 from packageship.application.common.constant import ResponseCode
 from packageship.application.query import database
@@ -27,9 +28,9 @@ db_list = database.get_db_priority()
 DB_NAME = 0
 
 
-class BuildDepCommand(BaseCommand):
+class SelfDependCommand(BaseCommand):
     """
-    Description: query the compilation dependencies of the specified package
+    Description: self-compiled dependency query
     Attributes:
         parse: Command line parsing example
         params: Command line parameters
@@ -41,16 +42,22 @@ class BuildDepCommand(BaseCommand):
         """
         Description: Class instance initialization
         """
-        super(BuildDepCommand, self).__init__()
+        super(SelfDependCommand, self).__init__()
+
         self.parse = BaseCommand.subparsers.add_parser(
-            'builddep', help='query the compilation dependencies of the specified package')
+            'selfdepend', help='query the self-compiled dependencies of the specified package')
         self.collection = True
         self.params = [
-            ('-level', 'str', 'Specify the dependency level that needs to be queried, by default to the last', 0,
-             'store'),
-            ('-remote', 'str', 'The address of the remote service', False, 'store_true')]
+            ('-b', 'str',
+             'Specify -b to indicate that the queried package is binary, and the source package is queried by default',
+             'source', 'store'),
+            ('-w', 'str', 'Specify -w means you need to find the sub-package relationship', False, 'store'),
+            ('-s', 'str', 'Specify -s to find self-compiled dependencies', False, 'store'),
+            ('-remote', 'str', 'The address of the remote service', False, 'store_true')
+        ]
+
         self.collection_params = [
-            ('sourceName', 'source package name'),
+            ('pkgName', 'source package name'),
             ('-dbs', 'Operational database collection')
         ]
 
@@ -64,8 +71,9 @@ class BuildDepCommand(BaseCommand):
         Raises:
 
         """
-        super(BuildDepCommand, self).register()
+        super(SelfDependCommand, self).register()
         # collection parameters
+
         for cmd_params in self.collection_params:
             self.parse.add_argument(
                 cmd_params[0], nargs='*', default=None, help=cmd_params[1])
@@ -75,25 +83,25 @@ class BuildDepCommand(BaseCommand):
         """
         Description: Action to execute command
         Args:
-            params: Command line parameters
+            params: commands lines params
         Returns:
 
         Raises:
-            ConnectionError: Request connection error
+            ConnectionError: self.request connection error
         """
         self._set_read_host(params.remote)
         _url = self.read_host + '/dependinfo/dependlist'
         try:
-            self.request.request(
-                _url, 'post', body=json.dumps({
-                    'packagename': params.sourceName,
-                    'depend_type': 'builddep',
+            self.request.request(_url,
+                                 'post', body=json.dumps({
+                    'packagename': params.pkgName,
+                    'depend_type': 'selfdep',
                     "parameter": {
                         "db_priority": params.dbs if params.dbs else db_list,
-                        "level": params.level
-                    }
-                }),
-                headers=self.headers)
+                        "self_build": params.s,
+                        "packtype": params.b,
+                        "with_subpack": params.w,
+                    }}), headers=self.headers)
         except ConnErr as conn_error:
             LOGGER.error(conn_error)
             self.output_error_formatted(str(conn_error), "CONN_ERROR")
@@ -113,8 +121,8 @@ class BuildDepCommand(BaseCommand):
                 else:
                     if getattr(self.bin_table, 'rowcount') or getattr(self.src_table, 'rowcount') or getattr(
                             self.statistics_table, 'rowcount'):
-                        self.print_('query {} buildDepend result display:'.format(
-                            params.sourceName))
+                        self.print_('query {} selfDepend result display:'.format(
+                            params.pkgName))
                         self.print_('Binary')
                         print(self.bin_table)
                         self.print_('Source')

@@ -1,0 +1,21 @@
+{
+  "input": {
+    "packagename": [
+      "Judy"
+    ],
+    "depend_type": "installdep",
+    "parameter": {
+      "db_priority": [
+        "openeuler"
+      ],
+      "level": 2
+    }
+  },
+  "output": {
+
+      "binary_list": [],
+      "source_list": [],
+      "statistics": []
+
+    }
+  }

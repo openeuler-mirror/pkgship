@@ -12,20 +12,19 @@
 # ******************************************************************************/
 """
 Description: Entry method for custom commands
-Class: DbPriorityCommand
+Class: VersionCommand
 """
 import json
 from json.decoder import JSONDecodeError
-from requests.exceptions import ConnectionError as ConnErr
 from packageship.application.cli.base import BaseCommand
-
+from requests.exceptions import ConnectionError as ConnErr
 from packageship.libs.log import LOGGER
 from packageship.application.common.constant import ResponseCode
 
 
-class DbPriorityCommand(BaseCommand):
+class VersionCommand(BaseCommand):
     """
-    Description: Get all data tables in the current life cycle
+    Description: Issue and life cycle information involved in batch processing packages
     Attributes:
         parse: Command line parsing example
         params: Command line parameters
@@ -35,11 +34,13 @@ class DbPriorityCommand(BaseCommand):
         """
         Description: Class instance initialization
         """
-        super(DbPriorityCommand, self).__init__()
+        super(VersionCommand, self).__init__()
 
-        self.parse = BaseCommand.subparsers.add_parser(
-            'dbs', help='Get all data tables in the current life cycle')
+        # self.parse = BaseCommand.subparsers.add_parser(
+        #     'v', help='Get version information')
+        self.parse = BaseCommand.parser
         self.params = [
+            ('-v', 'str', 'Get version information', None, 'store_true'),
             ('-remote', 'str', 'The address of the remote service', False, 'store_true')
         ]
 
@@ -48,7 +49,7 @@ class DbPriorityCommand(BaseCommand):
         Description: Command line parameter injection
 
         """
-        super(DbPriorityCommand, self).register()
+        super(VersionCommand, self).register()
         self.parse.set_defaults(func=self.do_command)
 
     def do_command(self, params):
@@ -62,7 +63,11 @@ class DbPriorityCommand(BaseCommand):
             ConnectionError: self.request connection error
         """
         self._set_read_host(params.remote)
-        _url = self.read_host + '/db_priority'
+        if not params.v:
+            print(self.parse.parse_args(['-h']))
+            return
+        _url = self.read_host + '/version'
+
         try:
             response = self.request.get(_url, headers=self.headers)
         except ConnErr as conn_error:
@@ -73,12 +78,12 @@ class DbPriorityCommand(BaseCommand):
                 try:
                     _response_content = json.loads(response.text)
                     if _response_content.get('code') == ResponseCode.SUCCESS:
-                        self.print_('DB priority')
-                        print(_response_content.get('resp', []))
+                        print('Version:{}'.format(_response_content.get('version', [])))
+                        print('Release:{}'.format(_response_content.get('release', [])))
                     else:
                         self.output_error_formatted(_response_content.get('msg'),
                                                     _response_content.get('code'))
-                        print('Failed to get the DB priority')
+                        print('Failed to get the version')
                 except JSONDecodeError as json_error:
                     LOGGER.error(json_error)
                     self.output_error_formatted(response.text, "JSON_DECODE_ERROR")

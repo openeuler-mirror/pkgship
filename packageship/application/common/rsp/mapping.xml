@@ -3,26 +3,197 @@
 <code label="success">
     <status_code>200</status_code>
     <message_zh>操作成功</message_zh>
-    <message_en>Operation success</message_en>
+    <message_en>Successful Operation</message_en>
+
 </code>
-<code label="fail">
-    <status_code>500</status_code>
-    <message_zh>操作失败</message_zh>
-    <message_en>Operation failure</message_en>
-</code>
-<code label="param-error">
-    <status_code>400</status_code>
+
+<code label="param_error">
+    <status_code>4001</status_code>
     <message_zh>请求参数错误</message_zh>
     <message_en>Request parameter error</message_en>
+    <tip_zh>确保请求参数是合法的</tip_zh>
+    <tip_en>Please check the parameter is valid and query again</tip_en>
 </code>
-<code label="content-type-error">
-    <status_code>401</status_code>
-    <message_zh>请求类型错误</message_zh>
-    <message_en>Request type error</message_en>
+<code label="db_name_error">
+    <status_code>4002</status_code>
+    <message_zh>数据库不存在</message_zh>
+    <message_en>Database does not exist</message_en>
+    <tip_zh>请使用正确的数据库名</tip_zh>
+    <tip_en>Use the correct database name</tip_en>
 </code>
-<code label="validate-fail">
-    <status_code>402</status_code>
-    <message_zh>参数校验错误</message_zh>
-    <message_en>Parameter check error</message_en>
+<code label="pack_name_not_found">
+    <status_code>4003</status_code>
+    <message_zh>查询的包不存在</message_zh>
+    <message_en>The querying package does not exist in the databases</message_en>
+    <tip_zh>请使用正确的包名并重试</tip_zh>
+    <tip_en>Use the correct package name and try again</tip_en>
+</code>
+<code label="connect_db_error">
+    <status_code>4004</status_code>
+    <message_zh>连接数据库失败</message_zh>
+    <message_en>Failed to Connect the database</message_en>
+    <tip_zh>请检查数据库连接</tip_zh>
+    <tip_en>Check the connection</tip_en>
+</code>
+<code label="input_none">
+    <status_code>4005</status_code>
+    <message_zh>输入为空</message_zh>
+    <message_en>The input is None</message_en>
+    <tip_zh>确保输入是合法的</tip_zh>
+    <tip_en>Make sure the input value is valid</tip_en>
+</code>
+<code label="file_not_found">
+    <status_code>4006</status_code>
+    <message_zh>文件不存在</message_zh>
+    <message_en>File does not exist</message_en>
+    <tip_zh>确保文件存在</tip_zh>
+    <tip_en>Make sure the file exists</tip_en>
+</code>
+<code label="specified_file_not_exist">
+    <status_code>4007</status_code>
+    <message_zh>指定文件不存在</message_zh>
+    <message_en>The specified file does not exist</message_en>
+    <tip_zh>确保指定文件存在</tip_zh>
+    <tip_en>Make sure the specified file exists</tip_en>
+</code>
+<code label="update_or_add_data_failed">
+    <status_code>4008</status_code>
+    <message_zh>升级或添加数据失败</message_zh>
+    <message_en>Failed to update or add data</message_en>
+    <tip_zh>请检查命令/数据合法并重试</tip_zh>
+    <tip_en>Please check the command/data and try again</tip_en>
+</code>
+<code label="table_name_not_exist">
+    <status_code>4009</status_code>
+    <message_zh>数据库中查无此表</message_zh>
+    <message_en>There is no such table in the database</message_en>
+    <tip_zh>确保表名是合法的</tip_zh>
+    <tip_en>Make sure the table is valid</tip_en>
+</code>
+<code label="update_data_failed">
+    <status_code>4010</status_code>
+    <message_zh>升级数据失败</message_zh>
+    <message_en>Failed to update data</message_en>
+    <tip_zh>检查并重试</tip_zh>
+    <tip_en>Please check and try again</tip_en>
+</code>
+<code label="not_found_database_info">
+    <status_code>4011</status_code>
+    <message_zh>无法获取生成的数据库信息</message_zh>
+    <message_en>Unable to get the generated database information</message_en>
+    <tip_zh>确保生成的数据库信息有效</tip_zh>
+    <tip_en>Make sure the generated database information is valid</tip_en>
+</code>
+<code label="delete_db_error">
+    <status_code>40051</status_code>
+    <message_zh>删除数据库失败</message_zh>
+    <message_en>Failed to delete database</message_en>
+    <tip_zh>检查并重试</tip_zh>
+    <tip_en>Please check and try again</tip_en>
+</code>
+<code label="service_error">
+    <status_code>50000</status_code>
+    <message_zh>系统中发生异常</message_zh>
+    <message_en>An exception occurred in the system</message_en>
+    <tip_zh>检查并重试</tip_zh>
+    <tip_en>Please check and try again</tip_en>
+</code>
+<code label="configfile_path_empty">
+    <status_code>50001</status_code>
+    <message_zh>初始化配置文件不存在</message_zh>
+    <message_en>Initialization profile does not exist or cannot be found</message_en>
+    <tip_zh>确保初始化文件合法</tip_zh>
+    <tip_en>Make sure the initialization profile is valid</tip_en>
+</code>
+<code label="failed_create_database_table">
+    <status_code>50002</status_code>
+    <message_zh>创建数据库或表失败</message_zh>
+    <message_en>Failed to create database or table</message_en>
+    <tip_zh>请检查初始化配置文件并重试</tip_zh>
+    <tip_en>Please check the initialization profile and try again</tip_en>
+</code>
+<code label="type_error">
+    <status_code>50003</status_code>
+    <message_zh>初始化文件中的源代码和二进制路径类型异常</message_zh>
+    <message_en>The source code and binary path types in the initialization file are abnormal</message_en>
+    <tip_zh>确保初始化文件中的源代码和二进制路径类型有效</tip_zh>
+    <tip_en>Make sure the source code and binary path types in the initialization file are valid</tip_en>
+</code>
+<code label="data_merge_error">
+    <status_code>50004</status_code>
+    <message_zh>数据合并错误</message_zh>
+    <message_en>Multi-file database integration error</message_en>
+    <tip_zh>检查并重试</tip_zh>
+    <tip_en>Please check and try again</tip_en>
+</code>
+<code label="file_not_find_error">
+    <status_code>50005</status_code>
+    <message_zh>系统初始化配置文件不存在</message_zh>
+    <message_en>system initialization configuration file does not exist</message_en>
+    <tip_zh>确保系统初始化配置文件存在</tip_zh>
+    <tip_en>Make sure system initialization configuration file exists</tip_en>
+</code>
+<code label="dis_connection_db">
+    <status_code>50006</status_code>
+    <message_zh>无法连接到数据库</message_zh>
+    <message_en>Unable to connect to the database</message_en>
+    <tip_zh>请检查数据库配置并重试</tip_zh>
+    <tip_en>Please check the database configuration and try again</tip_en>
+</code>
+<code label="filelist_type_error">
+    <status_code>50007</status_code>
+    <message_zh>软件包文件类型不在['d'，'f'，'g']中</message_zh>
+    <message_en>The package filetype is not in ['d', 'f', 'g']</message_en>
+    <tip_zh>确保包文件类型有效</tip_zh>
+    <tip_en>Make sure the package filetype is valid</tip_en>
+</code>
+<code label="no_packages_table">
+    <status_code>60001</status_code>
+    <message_zh>数据库中未查询到包</message_zh>
+    <message_en>There is no packages table in the database</message_en>
+    <tip_zh>确保包名有效</tip_zh>
+    <tip_en>Make sure the packages table is valid</tip_en>
+</code>
+<code label="database_not_found">
+    <status_code>60002</status_code>
+    <message_zh>系统中未查询到此数据库</message_zh>
+    <message_en>There is no such database in the system</message_en>
+    <tip_zh>确保数据库有效</tip_zh>
+    <tip_en>Make sure the database is valid</tip_en>
+</code>
+<code label="table_name_not_exist_in_database">
+    <status_code>60003</status_code>
+    <message_zh>表名与现有数据库不匹配</message_zh>
+    <message_en>Table name dose not match the existed database</message_en>
+    <tip_zh>确保表名存在</tip_zh>
+    <tip_en>Make sure the table name is valid</tip_en>
+</code>
+<code label="yaml_file_error">
+    <status_code>70001</status_code>
+    <message_zh>Yaml文件中的数据错误</message_zh>
+    <message_en>Data error in yaml file</message_en>
+    <tip_zh>确保yaml文件有效</tip_zh>
+    <tip_en>Make sure the yaml file valid</tip_en>
+    </code>
+<code label="empty_folder">
+    <status_code>70002</status_code>
+    <message_zh>查询到空文件夹</message_zh>
+    <message_en>This is an empty folder</message_en>
+    <tip_zh>确保文件夹有效</tip_zh>
+    <tip_en>Make sure the folder is valid</tip_en>
+</code>
+<code label="empty_parsed_data">
+    <status_code>70003</status_code>
+    <message_zh>解析的Yaml数据为空</message_zh>
+    <message_en>The parsed yaml data is empty</message_en>
+    <tip_zh>确保yaml文件有效</tip_zh>
+    <tip_en>Make sure the yaml file is valid</tip_en>
+    </code>
+<code label="download_failed">
+    <status_code>70004</status_code>
+    <message_zh>下载失败</message_zh>
+    <message_en>"An error occurred and the download failed"</message_en>
+     <tip_zh>确保文件路径有效</tip_zh>
+    <tip_en>Make sure the file is valid</tip_en>
 </code>
 </codewrap>

@@ -1,0 +1,39 @@
+{
+    "data": [
+        {
+            "AA": {
+                "src_name": "zziplib",
+                "version": "0.13.69",
+                "release": "5.fc30",
+                "url": "http://zziplib.sourceforge.net/",
+                "license": "LGPLv2+ or MPLv1.1",
+                "summary": "Lightweight library to easily extract data from zip files",
+                "description": "The zziplib library is intentionally lightweight, it offers the ability to\neasily extract data from files archived in a single zip file. Applications\ncan bundle files into a single zip archive and access them. The implementation\nis based only on the (free) subset of compression with the zlib algorithm\nwhich is actually used by the zip/unzip tools.",
+                "vendor": "Fedora Project",
+                "href": "Packages/z/zziplib-0.13.69-5.fc30.src.rpm",
+                "subpacks": [
+                    "zziplib",
+                    "zziplib-devel",
+                    "zziplib-utils"
+                ]
+            }
+        },
+        {
+            "zzuf": {
+                "src_name": "zzuf",
+                "version": "0.15",
+                "release": "10.fc30",
+                "url": "http://sam.zoy.org/zzuf/",
+                "license": "WTFPL",
+                "summary": "Transparent application input fuzzer",
+                "description": "zzuf is a transparent application input fuzzer.  It works by\nintercepting file operations and changing random bits in the program",
+                "vendor": "Fedora Project",
+                "href": "Packages/z/zzuf-0.15-10.fc30.src.rpm",
+                "subpacks": [
+                    "zzuf"
+                ]
+            }
+        }
+    ],
+    "total": 2
+}
