@@ -51,7 +51,7 @@ class DispatchDepend:
     @classmethod
     def execute(cls, **kwargs):
         """Execute the map to return the dependent instance
-        Distribute the method through the corresponding value of depend_type key
+        Distribute the method through the corresponding value of depend_type key in kwargs
         The value of depend_type must be in ['instaldep','builddep','selfdep','bedep']
         """
         
