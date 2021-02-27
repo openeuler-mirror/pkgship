@@ -182,7 +182,10 @@ class BaseDepend:
             )
 
         filter_data = dict()
-
+        
+        # start layer is 1
+        layer = 1
+        
         def _update_direction(pkg, level, layer, req_type, local_direction):
             """update direction data
 
@@ -204,10 +207,9 @@ class BaseDepend:
                     curr_layer.append(root_node)
                     update_data_func(root_node, layer, local_direction)
                     
-                    if root_node not in filter_data:
-                        continue
-                    
-                    if other_req not in filter_data[root_node]:
+                    if (root_node not in filter_data) or (
+                        other_req not in filter_data.get(root_node, [])
+                    ):
                         continue
 
                     root_info = filter_data[root_node]
@@ -269,16 +271,16 @@ class BaseDepend:
                     )
                     _update_be_reqs(pkg)
 
-        # start layer is 1
-        update_data_func(root, 1, "root")
-        # next level is level-1 and next layer is 2
+        # init root node,layer is 1
+        update_data_func(root, layer, "root")
+        # next level is level-1 and next layer is layer + 1
         if direction == "bothward":
-            _update_direction(root, level - 1, 2, "be_requires", "upward")
-            _update_direction(root, level - 1, 2, "requires", "downward")
+            _update_direction(root, level - 1, layer + 1, "be_requires", "upward")
+            _update_direction(root, level - 1, layer + 1, "requires", "downward")
         elif direction == "upward":
-            _update_direction(root, level - 1, 2, "be_requires", "upward")
+            _update_direction(root, level - 1, layer + 1, "be_requires", "upward")
         else:
-            _update_direction(root, level - 1, 2, "requires", "downward")
+            _update_direction(root, level - 1, layer + 1, "requires", "downward")
         return filter_data
 
     def download_depend_files(self):
