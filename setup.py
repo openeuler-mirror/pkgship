@@ -50,7 +50,7 @@ setup(
         ('/usr/bin', ['packageship/pkgshipd', 'packageship/pkgship']),
         ('/lib/systemd/system/', ['packageship/pkgship.service']),
         (MAPPING_PATH, ['packageship/application/common/rsp/mapping.xml']),
-        (PACKAGE_PATH,['packageship/version.yaml'])
+        (PACKAGESHIP_PATH,['packageship/version.yaml'])
     ],
     zip_safe=False
 )
