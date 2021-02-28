@@ -38,7 +38,7 @@ class DbPriorityCommand(BaseCommand):
         super(DbPriorityCommand, self).__init__()
 
         self.parse = BaseCommand.subparsers.add_parser(
-            'dbs', help='Get all data tables in the current life cycle')
+            'dbs', help='Get all data bases')
         self.params = [
             ('-remote', 'str', 'The address of the remote service', False, 'store_true')
         ]
