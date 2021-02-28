@@ -30,7 +30,7 @@ class BaseParameterSchema(Schema):
     Basic parameter validator
     """
     level = fields.Integer(
-        required=False, validate=lambda x: x >= 0, missing=0)
+        required=False, validate=lambda x: x > 0, missing=0)
     packtype = fields.String(required=False, validate=validate.OneOf(
         ["source", "binary", ""]), missing="")
     self_build = fields.Boolean(required=False, missing=False)
