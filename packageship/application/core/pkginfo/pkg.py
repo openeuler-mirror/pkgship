@@ -235,7 +235,7 @@ class SinglePackage:
             required_by_bin = []
             for component_info in depend_info:
                 component_dict = {'component': component_info.get("component"),
-                                  'provided_by': [component_info.get("com_bin_name")]}
+                                  'provided_by': [component_info.get("com_bin_name", "")]}
                 if component_dict not in required_by_bin:
                     required_by_bin.append(component_dict)
             return required_by_bin
