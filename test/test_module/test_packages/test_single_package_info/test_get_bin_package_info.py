@@ -34,9 +34,9 @@ EMPTY_FILELIST_INFO = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE, 
 WRONG_TYPE_FILELIST_INFO = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE, "wrong_type_filelist_info.json"))
 ERROR_FILELIST_INFO = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE, "error_filelist_info.json"))
 
-class TestSrcPackageInfo(unittest.TestCase):
+class TestBinPackageInfo(unittest.TestCase):
     """
-    class for test src package detail info
+    class for test bin package detail info
     """
 
     def setUp(self) -> None:
@@ -81,9 +81,7 @@ class TestSrcPackageInfo(unittest.TestCase):
         mock3.return_value = EMPTY_FILELIST_INFO
         bin_pkg = BinaryPackage()
         output_res = bin_pkg.bin_package_info(["Judy"], ["openeuler"])
-        EXPECT_RES = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE,
-                                                                 "empty_filelist_for_res.json"))
-        self.assertEqual(output_res, EXPECT_RES, "Error in testing empty filelist info.")
+        self.assertEqual(output_res, {}, "Error in testing empty filelist info.")
 
 
     @patch.object(QueryPackage, "get_bin_info")
