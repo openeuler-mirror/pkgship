@@ -62,7 +62,6 @@ class BaseCommand():
                         "Accept-Language": "zh-CN,zh;q=0.9"}
 
         self.load_read_host()
-        self.load_write_host()
         self.request = RemoteService()
         self.bin_table = self.create_table(
             ['Binary name', 'Source name', 'Version', 'Database name'])
@@ -72,24 +71,6 @@ class BaseCommand():
             ['Database name', 'Binary Sum', 'Source Sum'])
         self.sum_table = self.create_table(
             ['Sum', 'Binary Sum', 'Source Sum'])
-
-    def load_write_host(self):
-        """
-        Description: Address to load write permission
-        Args:
-
-        Returns:
-        Raises:
-
-        """
-        write_port = configuration.WRITE_PORT
-
-        write_ip = configuration.WRITE_IP_ADDR
-        if not all([write_ip, write_port]):
-            raise Error(
-                "The system does not configure the relevant port and ip correctly")
-        _write_host = self.__http + write_ip + ":" + str(write_port)
-        setattr(self, 'write_host', _write_host)
 
     def load_read_host(self):
         """
@@ -271,11 +252,10 @@ class BaseCommand():
                                 src_data["database"]]
                 self.src_table.add_row(src_row_data)
             for statistic in package_all["statistics"]:
-                print(statistic)
                 if "sum" in statistic:
                     self.sum_table.add_row([statistic['sum'],
-                                                   statistic['binarys_sum'],
-                                                   statistic['sources_sum']])
+                                            statistic['binarys_sum'],
+                                            statistic['sources_sum']])
                 else:
                     self.statistics_table.add_row([statistic['database'],
                                                    statistic['binary_sum'],

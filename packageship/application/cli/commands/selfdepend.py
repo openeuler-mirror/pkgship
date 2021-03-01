@@ -48,18 +48,18 @@ class SelfDependCommand(BaseCommand):
             'selfdepend', help='query the self-compiled dependencies of the specified package')
         self.collection = True
         self.params = [
+            ('-s', 'str', 'Specify -s to find self-compiled dependencies',
+             False, 'store_true'),
             ('-b', 'str',
              'Specify -b to indicate that the queried package is binary, and the source package is queried by default',
-             'source', 'store'),
-            ('-w', 'str', 'Specify -w means you need to find the sub-package relationship', False, 'store'),
-            ('-s', 'str', 'Specify -s to find self-compiled dependencies', False, 'store'),
+             None, 'store_true'),
+            ('-w', 'str', 'Specify -w means you need to find the sub-package relationship',
+             False, 'store_true'),
             ('-remote', 'str', 'The address of the remote service', False, 'store_true')
         ]
-
         self.collection_params = [
-            ('pkgName', 'source package name'),
-            ('-dbs', 'Operational database collection')
-        ]
+            ('-dbs', 'Operational database collection'),
+            ('pkgName', 'source package name')]
 
     def register(self):
         """
@@ -90,6 +90,11 @@ class SelfDependCommand(BaseCommand):
             ConnectionError: self.request connection error
         """
         self._set_read_host(params.remote)
+        if params.b:
+            pack_type = 'binary'
+        else:
+            pack_type = 'source'
+
         _url = self.read_host + '/dependinfo/dependlist'
         try:
             self.request.request(_url,
@@ -99,7 +104,7 @@ class SelfDependCommand(BaseCommand):
                     "parameter": {
                         "db_priority": params.dbs if params.dbs else db_list,
                         "self_build": params.s,
-                        "packtype": params.b,
+                        "packtype": pack_type,
                         "with_subpack": params.w,
                     }}), headers=self.headers)
         except ConnErr as conn_error:
@@ -132,4 +137,5 @@ class SelfDependCommand(BaseCommand):
                         self.print_('Sum')
                         print(self.sum_table)
             else:
-                self.output_error_formatted(self.request.text, self.request.status_code)
+                self.output_error_formatted(
+                    self.request.text, self.request.status_code)

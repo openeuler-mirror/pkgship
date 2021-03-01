@@ -48,7 +48,7 @@ class InstallDepCommand(BaseCommand):
             'installdep', help='query the installation dependencies of the specified package')
         self.collection = True
         self.params = [
-            ('-level', 'str', 'Specify the dependency level that needs to be queried, by default to the last', 0,
+            ('-level', 'str', 'Specify the dependency level that needs to be queried, by default to the last', '',
              'store'),
             ('-remote', 'str', 'The address of the remote service', False, 'store_true')
         ]
@@ -87,16 +87,18 @@ class InstallDepCommand(BaseCommand):
         """
         self._set_read_host(params.remote)
         _url = self.read_host + '/dependinfo/dependlist'
+        body_dict = {
+            'packagename': params.binaryName,
+            'depend_type': 'installdep',
+            "parameter": {
+                "db_priority": params.dbs if params.dbs else db_list
+            }
+        }
+        if params.level:
+            body_dict["parameter"]["level"] = params.level
         try:
             self.request.request(_url, 'post', body=json.dumps(
-                {
-                    'packagename': params.binaryName,
-                    'depend_type': 'installdep',
-                    "parameter": {
-                        "db_priority": params.dbs if params.dbs else db_list,
-                        "level": params.level
-                    }
-                }), headers=self.headers)
+                body_dict), headers=self.headers)
         except ConnErr as conn_error:
             LOGGER.error(conn_error)
             self.output_error_formatted(str(conn_error), "CONN_ERROR")

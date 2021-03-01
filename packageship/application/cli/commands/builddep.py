@@ -83,17 +83,17 @@ class BuildDepCommand(BaseCommand):
         """
         self._set_read_host(params.remote)
         _url = self.read_host + '/dependinfo/dependlist'
+        body_dict = {
+            'packagename': params.sourceName,
+            'depend_type': 'builddep',
+            "parameter": {
+                "db_priority": params.dbs if params.dbs else db_list
+                }}
+        if params.level:
+            body_dict["parameter"]["level"] = params.level
         try:
-            self.request.request(
-                _url, 'post', body=json.dumps({
-                    'packagename': params.sourceName,
-                    'depend_type': 'builddep',
-                    "parameter": {
-                        "db_priority": params.dbs if params.dbs else db_list,
-                        "level": params.level
-                    }
-                }),
-                headers=self.headers)
+            self.request.request(_url, 'post', body=json.dumps(body_dict),
+                                 headers=self.headers)
         except ConnErr as conn_error:
             LOGGER.error(conn_error)
             self.output_error_formatted(str(conn_error), "CONN_ERROR")
