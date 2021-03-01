@@ -61,11 +61,20 @@ if __name__ == "__main__":
                        os.path.join(TEST_CASE_PATH, "test_module/test_build/"),
                     #    os.path.join(TEST_CASE_PATH, "test_module/test_bedepend/test_database_query/")
                        ]
+    errors = []
+    failures = []
     for file in test_case_files:
-        runner.run(specify_case(file))
+        runner_result = runner.run(specify_case(file))
+        errors.extend(runner_result.errors)
+        failures.extend(runner_result.failures)
+    
+    if any([errors, failures]):
+        sys.exit(1)
+    
     cov.stop()
     try:
         cov.report(show_missing=True)
-        cov.html_report()
+        # cov.html_report()
     except CoverageException:
         print("No data to report")
+        sys.exit(1)
