@@ -43,17 +43,19 @@ class BeDependCommand(BaseCommand):
             'bedepend', help='dependency query for the specified package')
         self.collection = True
         self.params = [
+            ('dbName', 'str', 'need to query the repositories of dependencies', '', 'store'),
             ('-w', 'str', 'Specifying -w means that you need to find sub-packages, not required by default', False,
              'store_true'),
             ('-b', 'str', 'the queried package is binary, and the source package is queried by default', False,
              'store_true'),
-            ('-install', 'str', 'Specify -install means that the query is dependent on the installation',
+            ('-install', 'str',
+             'Specify -install means that the query is dependent on the installation,-Install and -build cannot exist at the same time',
              False, 'store_true'),
-             ('-build', 'str', 'Specify -build means that the query is compiled to be dependent',
+            ('-build', 'str',
+             'Specify -build means that the query is compiled to be dependent,-Install and -build cannot exist at the same time',
              False, 'store_true'),
             ('-remote', 'str', 'The address of the remote service', False, 'store_true')]
-        self.collection_params = [('pkgName', 'source package name'),
-                                  ('-dbs', 'need to query the repositories of dependencies,must be assigned')]
+        self.collection_params = [('pkgName', 'source package name')]
 
     def register(self):
         """
@@ -99,8 +101,8 @@ class BeDependCommand(BaseCommand):
                     'packagename': params.pkgName,
                     'depend_type': 'bedep',
                     "parameter": {
-                        "db_priority": params.dbs,
-                        "packtype":pack_type,
+                        "db_priority": [params.dbName],
+                        "packtype": pack_type,
                         "with_subpack": params.w,
                         "search_type": install_or_build
                     }}), headers=self.headers)
@@ -134,4 +136,5 @@ class BeDependCommand(BaseCommand):
                         self.print_('Sum')
                         print(self.sum_table)
             else:
-                self.output_error_formatted(self.request.text, self.request.status_code)
+                self.output_error_formatted(
+                    self.request.text, self.request.status_code)

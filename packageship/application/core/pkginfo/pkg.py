@@ -235,7 +235,7 @@ class SinglePackage:
             required_by_bin = []
             for component_info in depend_info:
                 component_dict = {'component': component_info.get("component"),
-                                  'provided_by': [component_info.get("com_bin_name")]}
+                                  'provided_by': [component_info.get("com_bin_name", "")]}
                 if component_dict not in required_by_bin:
                     required_by_bin.append(component_dict)
             return required_by_bin
@@ -348,10 +348,9 @@ class SourcePackage(SinglePackage):
                         "license": pkg_info[pkgname].get("license"),
                         "version": pkg_info[pkgname].get("version"),
                         "url": pkg_info[pkgname].get("url"),
-                        "release": pkg_info[pkgname].get("release"),
                         "summary": pkg_info[pkgname].get("summary"),
                         "description": pkg_info[pkgname].get("description"),
-                        "buildrequired": build_package_info,
+                        "build_dep": build_package_info,
                         "subpacks": subpacks
                     })
                 src_package_info_res[database] = database_src_info_list
@@ -468,6 +467,8 @@ class BinaryPackage(SinglePackage):
                         "bin_name": pkgname,
                         "version": pkg_info[pkgname].get("version"),
                         "url": pkg_info[pkgname].get("url"),
+                        "license": pkg_info[pkgname].get("license"),
+                        "release": pkg_info[pkgname].get("release"),
                         "summary": pkg_info[pkgname].get("summary"),
                         "description": pkg_info[pkgname].get("description"),
                         "src_name": pkg_info[pkgname].get("src_name"),

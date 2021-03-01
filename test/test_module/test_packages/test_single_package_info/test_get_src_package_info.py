@@ -93,8 +93,8 @@ class TestSrcPackageInfo(unittest.TestCase):
         mock4.return_value = TRUE_SRC_INFO
         src_pkg = SourcePackage()
         res = src_pkg.src_package_info(["Judy"], ["openeuler"])
-        tmp = res["openeuler"][0]["buildrequired"]
-        self.assertEqual(tmp, [], "Error in testing empty build info.")
+        build_dep = res["openeuler"][0]["build_dep"]
+        self.assertEqual(build_dep, [], "Error in testing empty build info.")
 
 
     @patch.object(QueryPackage, "get_src_info")

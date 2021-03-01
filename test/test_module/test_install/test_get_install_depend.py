@@ -20,7 +20,7 @@ from unittest import mock
 from mock import patch
 from redis import Redis
 
-from packageship.application.core.depend import InstallDepend
+from packageship.application.core.depend.install_depend import InstallDepend
 from packageship.application.query.depend import InstallRequires
 from test.base_code.read_mock_data import MockData
 
@@ -64,7 +64,6 @@ class TestInstallDdepend(unittest.TestCase):
         binary, source = install.depend_dict
         self.assertEqual(binary, {}, "Error in testing package not exists.")
         self.assertEqual(source, {}, "Error in testing package not exists.")
-
 
     @patch.object(InstallRequires, "get_install_req")
     def test_empty_requires(self, mock1):
@@ -125,7 +124,6 @@ class TestInstallDdepend(unittest.TestCase):
         with self.assertRaises(AttributeError):
             install = InstallDepend(db_list=['openeuler'])
             install.install_depend(bin_name="Judy")
-
 
     @mock.patch.object(Redis, "exists")
     def test_call_func_with_true_param(self, mock1):

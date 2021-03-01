@@ -1,0 +1,18 @@
+[Unit]
+Description=uwsgid
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=forking
+ExecStartPre=/usr/bin/pkgshipd start
+ExecStart=/usr/bin/uwsgi --ini /home/pkgusers/uswgi/selfpkg.ini
+User=pkgshipuser
+Group=pkgshipuser
+Restart=always
+RestartSec=1
+PrivateTmp=true
+
+
+[Install]
+WantedBy=multi-user.target

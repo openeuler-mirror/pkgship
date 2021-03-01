@@ -15,23 +15,30 @@
 """
 import os
 from flask import Flask
+from flask_limiter import Limiter
+from flask_limiter.util import get_ipaddr
 from packageship.application.settings import Config
 from packageship.libs.log import Log
-from packageship.application import apps
 
 
-def init_app():
+LIMITER = Limiter(key_func=get_ipaddr)
+
+
+def init_app(permissions):
     """
         Project initialization function
     """
     app = Flask(__name__)
+
+    os.environ["PERMISSIONS"] = permissions
 
     # log configuration
     app.logger.addHandler(Log(__name__).file_handler)
 
     # Load configuration items
     app.config.from_object(Config())
-
+    LIMITER.app = app
+    from packageship.application import apps
     # Register Blueprint
     for blue, api in apps.blue_point:
         api.init_app(app)

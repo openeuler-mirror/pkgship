@@ -19,7 +19,7 @@ from unittest import mock
 from mock import patch
 from redis import Redis
 
-from packageship.application.core.depend import SelfDepend
+from packageship.application.core.depend.self_depend import SelfDepend
 from packageship.application.query.depend import InstallRequires, BuildRequires
 from packageship.application.query.pkg import QueryPackage
 from test.base_code.read_mock_data import MockData

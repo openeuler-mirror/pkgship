@@ -15,7 +15,6 @@ Description: Interception before request
 """
 import os
 from flask import request
-from packageship import application
 from .apps.package.url import urls as package_urls
 from .apps.dependinfo.url import urls as dependinfo_urls
 

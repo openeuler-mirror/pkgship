@@ -15,7 +15,6 @@ Description: Entry for project initialization and service startupc
 """
 import os
 try:
-    os.environ["PERMISSIONS"] = "query"
     from packageship.application import init_app
     if not os.path.exists(os.environ.get('SETTINGS_FILE_PATH')):
         raise RuntimeError(
@@ -23,7 +22,7 @@ try:
                 'SETTINGS_FILE_PATH'),
             'does not exist, software service cannot be started')
 
-    app = init_app()
+    app = init_app("query")
 except ImportError as error:
     raise RuntimeError(
         "The package management software service failed to start : %s" % error) from error

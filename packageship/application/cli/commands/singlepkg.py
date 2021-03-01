@@ -66,7 +66,8 @@ class SingleCommand(BaseCommand):
         super(SingleCommand, self).register()
         self.parse.set_defaults(func=self.do_command)
 
-    def __parse_package_detail(self, response_data):
+    # pylint: disable=too-many-branches
+    def __parse_package_detail(self, response_data, src_or_bin):
         """
         Description: Parse the detail data of the package
         Args:
@@ -76,13 +77,24 @@ class SingleCommand(BaseCommand):
         Raises:
 
         """
-        _show_field_name = {'src_name': "Source Name", 'version': "Version", 'release': "Release",
-                            'url': "Url", 'license': "License", 'summary': "Summary",
-                            'bin_name': "Binary Name", 'description': "Description", 'buildrequired': "Build Required"}
+        _src_show_field_name = {'src_name': "Source Name", 'version': "Version",
+                                'url': "Url", 'license': "License", 'summary': "Summary",
+                                'description': "Description", 'build_dep': "Build Depend", 'subpacks': "Subpacks"}
+        _bin_show_field_name = {'bin_name': "Binary Name", 'src_name': "Source Name", 'version': "Version",
+                                'url': "Url", 'license': "License", 'release': "Release", 'summary': "Summary",
+                                'description': "Description"}
+        if src_or_bin:
+            _show_field_name = _src_show_field_name
+        else:
+            _show_field_name = _bin_show_field_name
         _package_detail_info = response_data
         _line_content = []
+        subpacks = []
         if not _package_detail_info:
             return
+        for subpack_item in _package_detail_info.get('subpacks', []):
+            subpacks.append(subpack_item['bin_name'])
+        _package_detail_info['subpacks'] = subpacks
         for key, name_value in _show_field_name.items():
             value = _package_detail_info.get(key, "")
             if isinstance(value, list):
@@ -106,12 +118,18 @@ class SingleCommand(BaseCommand):
 
     def __parse_provides(self, provides):
         """
-            Data analysis of provides package
+        Description: Data analysis of provides package
+        Args:
+            provides: provides
+        Returns:
+
+        Raises:
+
         """
         if provides and isinstance(provides, list):
             for _provide in provides:
-                _provide_list = _provide['required_by_bin'] + \
-                                _provide['required_by_src']
+                _provide_list = _provide.get('required_by_bin', '') + \
+                                _provide.get('required_by_src', '')
                 _required_by = '\n'.join(
                     _provide_list) if _provide_list else ''
                 self.provides_table.add_row(
@@ -125,7 +143,12 @@ class SingleCommand(BaseCommand):
 
     def __parse_requires(self, requires):
         """
-            Data analysis of requires package
+        Description: Data analysis of requires package
+        Args:
+            requires: requires
+        Returns:
+
+        Raises:
         """
         if requires and isinstance(requires, list):
             for _require in requires:
@@ -142,7 +165,12 @@ class SingleCommand(BaseCommand):
 
     def __parse_subpack(self, subpacks):
         """
-            Data analysis of binary package
+        Description: Data analysis of binary package
+        Args:
+            subpacks: subpacks
+        Returns:
+
+        Raises:
         """
         for subpack_item in subpacks:
             print('-' * 50)
@@ -153,7 +181,12 @@ class SingleCommand(BaseCommand):
 
     def __parse_filelist(self, filelist):
         """
-            Data analysis of binary package
+        Description: Data analysis of file list
+        Args:
+            filelist: filelist
+        Returns:
+
+        Raises:
         """
         for key, value in filelist.items():
             _filelist = '\n'.join(value) if value else ''
@@ -166,7 +199,7 @@ class SingleCommand(BaseCommand):
             print('No related components')
         self.file_list_table.clear_rows()
 
-    def __parse_src_package(self, response_data, database):
+    def __parse_src_package(self, response_data, database, src_or_bin):
         """
         Description: Parse the corresponding data of the package
         Args:
@@ -177,15 +210,15 @@ class SingleCommand(BaseCommand):
 
         """
         parse_data = response_data['resp'].get(database)[ZERO]
-        self.__parse_package_detail(parse_data)
         try:
             _subpacks = parse_data['subpacks']
+            self.__parse_package_detail(parse_data, src_or_bin)
             self.__parse_subpack(_subpacks)
         except KeyError as key_error:
             LOGGER.error(key_error)
             print('No related components')
 
-    def __parse_bin_package(self, response_data, database):
+    def __parse_bin_package(self, response_data, database, src_or_bin):
         """
         Description: Parse the corresponding data of the package
         Args:
@@ -196,7 +229,7 @@ class SingleCommand(BaseCommand):
 
         """
         parse_data = response_data['resp'].get(database)[ZERO]
-        self.__parse_package_detail(parse_data)
+        self.__parse_package_detail(parse_data, src_or_bin)
         try:
             _provides = parse_data['provides']
             self.__parse_provides(_provides)
@@ -240,10 +273,10 @@ class SingleCommand(BaseCommand):
                     if response_data.get('code') == ResponseCode.SUCCESS:
                         if params.s:
                             self.__parse_src_package(
-                                response_data, params.database)
+                                response_data, params.database, params.s)
                         else:
                             self.__parse_bin_package(
-                                response_data, params.database)
+                                response_data, params.database, params.s)
                     else:
                         self.output_error_formatted(response_data.get('msg'),
                                                     response_data.get('code'))
