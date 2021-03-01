@@ -156,7 +156,7 @@ v1.x内数据兼容，v2.x与v1.x数据不可兼容
 |:--|:-------|:------|:----|
 | 1 | 获取默认的版本库排序 | 0.3k | |
 | 2 | 获取pkgship的 version 和 release 号 | 0.3k | |
-| 3 | 服务初始化，包含数据库导入conf.yaml中配置的远程repo源中的sqlite文件（不支持repo源中无sqlite文件的导入），pkgship配置文件读取解析的操作 | 1.5k | |
+| 3 | 服务初始化，包含数据库导入conf.yaml中配置的本地和远程repo源中的sqlite文件（不支持repo源中无sqlite文件的导入，不支持sqlite文件导入），pkgship配置文件读取解析的操作 | 1.5k | |
 | 4 | 获取所有rpm源码包的基本信息（源码包名称、源码包版本号、源码包所在的版本仓、源码包license和源码包的url地址） | 0.5k | |
 | 5 | 获取所有rpm二进制包的基本信息（二进制包名称、二进制包版本号、二进制包所在的版本仓、二进制包license、二进制包的url地址和二进制包的源码名） | 0.5k | |
 | 6 | 查询单个源码包详细信息（源码包名、 源码包版本号、license、url、summary、description、源码包的编译依赖包列表、源码包提供的二进制包、以及源码包提供的二进制包提供的组件名和依赖的组件名、以及提供的组件名[provides]被哪些二进制包安装依赖[install required by]和被哪些源码包编译依赖[build requied by]，依赖的组件名[requires]被哪些二进制包提供[privided by]） | 0.8k | |
@@ -175,7 +175,7 @@ v1.x内数据兼容，v2.x与v1.x数据不可兼容
 |    - |   - |    - |   - |  - |
 | 1 | /db_priority | GET | 获取默认的版本库排序 | 1 |
 | 2 | /version | GET | 获取pkgship的version号| 2 |
-| 3 | /init（删除） | POST | 服务初始化，包含数据库导入conf.yaml中配置的远程repo源中的sqlite文件（不支持repo源中无sqlite文件的导入），pkgship配置文件读取解析的操作| 3 |
+| 3 | /init（删除） | POST | 服务初始化，包含数据库导入conf.yaml中配置的本地和远程repo源中的sqlite文件（不支持repo源中无sqlite文件的导入，不支持sqlite文件导入），pkgship配置文件读取解析的操作| 3 |
 | 4 | /packages/src | GET |  获取所有rpm源码包的基本信息（源码包名称、源码包版本号、源码包所在的版本仓、源码包license和源码包的url地址） | 4 |
 | 5 | /packages/bin | GET |   获取所有rpm二进制包的基本信息（二进制包名称、二进制包版本号、二进制包所在的版本仓、二进制包license、二进制包的url地址和二进制包的源码名） | 5 |
 | 6 | /packages/src/$src_name | GET | 查询单个源码包详细信息（源码包名、 源码包版本号、license、url、summary、description、源码包的编译依赖包列表、源码包提供的二进制包、以及源码包提供的二进制包提供的组件名和依赖的组件名、以及提供的组件名[provides]被哪些二进制包安装依赖[install required by]和被哪些源码包编译依赖[build requied by]，依赖的组件名[requires]被哪些二进制包提供[privided by]） | 6 |
@@ -1088,11 +1088,6 @@ v1.x内数据兼容，v2.x与v1.x数据不可兼容
     src_db_file: https://repo.openeuler.org/openEuler-20.09/source
     bin_db_file: https://repo.openeuler.org/openEuler-20.09/everything/aarch64
     priority: 2
-  # sqlite初始化模式
-  - dbname: openEuler-20.03
-    src_db_file: /etc/pkgship/dbfiles/source_repodata.sqlite 
-    bin_db_file: /etc/pkgship/dbfiles/everything_aarch64.sqlite 
-    priority: 3
   ```
 
 ##### 3.7.2.2  单包查询
@@ -1284,9 +1279,14 @@ v1.x内数据兼容，v2.x与v1.x数据不可兼容
 
 ##### 3.7.2.9  服务启动和停止
 
+使用systemctl控制服务：
 启动pkgship服务：`systemctl start pkgship.service`
 查看pkgship状态：`systemctl status pkgship.service`
 停止pkgship服务：`systemctl stop pkgship.service`
+
+使用pkgshipd控制服务：
+启动pkgship服务：`pkgshipd start`
+停止pkgship服务：`pkgsdhipd stop`
 
 
 ### 3.8、 内部模块间接口清单
