@@ -1,6 +1,6 @@
 Name:           pkgship
 Version:        2.1.0
-Release:        2
+Release:        3
 Summary:        Pkgship implements rpm package dependence ,maintainer, patch query and so no.
 License:        Mulan 2.0
 URL:            https://gitee.com/openeuler/pkgship
@@ -14,6 +14,7 @@ BuildRequires: python3-prettytable python3-requests python3-retrying python3-cov
 BuildRequires: python3-marshmallow python3-uWSGI python3-gevent python3-Flask-Limiter 
 BuildRequires: python3-elasticsearch
 
+Requires: shadow
 Requires: python3-flask-restful python3-flask python3 python3-pyyaml python3-redis
 Requires: python3-prettytable python3-requests python3-retrying python3-coverage
 Requires: python3-marshmallow python3-uWSGI python3-gevent python3-Flask-Limiter 
@@ -106,7 +107,7 @@ create_dir_file /etc/logrotate.d/pkgship 644 f
 %attr(0640,pkgshipuser,pkgshipuser) /lib/systemd/system/pkgship.service
 
 %changelog
-* Fri Feb 27 2021 Yiru Wang  <wangyiru1@huawei.com>
+* Mon Mar 1 2021 Yiru Wang  <wangyiru1@huawei.com> - 2.1.0-3
 - change pkgship's files owner and permisson
 - change pkgship's database from sqlite to elasticsearch
 - modify pkgship's BuildRequires and Requires
