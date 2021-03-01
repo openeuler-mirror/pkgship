@@ -30,7 +30,7 @@ DATABASE_ENGINE_TYPE = 'elastic'
 DATABASE_HOST = '127.0.0.1'
 
 # Default port of database
-DATABASE_PORT = '9200'
+DATABASE_PORT = 9200
 
 # Ordinary user query port, only the right to query data, no permission to write data
 QUERY_PORT = 8090
