@@ -76,9 +76,8 @@ class DbPriorityCommand(BaseCommand):
                         self.print_('DB priority')
                         print(_response_content.get('resp', []))
                     else:
-                        self.output_error_formatted(_response_content.get('msg'),
+                        self.output_error_formatted(_response_content.get('message'),
                                                     _response_content.get('code'))
-                        print('Failed to get the DB priority')
                 except JSONDecodeError as json_error:
                     LOGGER.error(json_error)
                     self.output_error_formatted(response.text, "JSON_DECODE_ERROR")

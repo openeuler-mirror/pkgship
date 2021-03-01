@@ -81,9 +81,8 @@ class VersionCommand(BaseCommand):
                         print('Version:{}'.format(_response_content.get('version', [])))
                         print('Release:{}'.format(_response_content.get('release', [])))
                     else:
-                        self.output_error_formatted(_response_content.get('msg'),
+                        self.output_error_formatted(_response_content.get('message'),
                                                     _response_content.get('code'))
-                        print('Failed to get the version')
                 except JSONDecodeError as json_error:
                     LOGGER.error(json_error)
                     self.output_error_formatted(response.text, "JSON_DECODE_ERROR")

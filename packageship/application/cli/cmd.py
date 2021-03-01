@@ -14,6 +14,7 @@
 Description: Entry method for custom commands
 Class: PkgshipCommand
 """
+import os
 
 try:
     from packageship.application.common.exc import Error
@@ -92,6 +93,10 @@ class PkgshipCommand(BaseCommand):
         cls.register_command(DbPriorityCommand())
         cls.register_command(VersionCommand())
         try:
+            _ps = os.popen("ps -ef | grep ’pkgship‘ | grep -v grep | wc -l").read()
+            if int(_ps) == 0:
+                print("The current service is not started, please start the service first")
+                return
             args = cls.parser.parse_args()
             args.func(args)
         except Error:

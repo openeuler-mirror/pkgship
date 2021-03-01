@@ -61,10 +61,6 @@ class InitDatabaseCommand(BaseCommand):
         Raises:
 
         """
-        _ps = os.popen("ps -ef | grep pkgship | grep -v grep | wc -l").read()
-        if int(_ps) == 0:
-            print("The current service is not started, please start the service first")
-            return
         if os.getlogin() not in ["root", "pkgshipuser"]:
             print("The current user does not have initial execution permission")
             return

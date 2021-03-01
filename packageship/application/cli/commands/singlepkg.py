@@ -278,9 +278,8 @@ class SingleCommand(BaseCommand):
                             self.__parse_bin_package(
                                 response_data, params.database, params.s)
                     else:
-                        self.output_error_formatted(response_data.get('msg'),
+                        self.output_error_formatted(response_data.get('message'),
                                                     response_data.get('code'))
-                        print('Failed to get package')
                 except JSONDecodeError as json_error:
                     LOGGER.error(json_error)
                     self.output_error_formatted(
