@@ -72,7 +72,7 @@ class TestDispatch(unittest.TestCase):
             "binary_dict": '{"glibc":"glibc"}',
         }
 
-        mock_exists.retu_value = True
+        mock_exists.return_value = True
         insd = DispatchDepend.execute(**install_params)
         self.assertTrue(isinstance(insd, InstallDepend))
 
@@ -86,7 +86,7 @@ class TestDispatch(unittest.TestCase):
             "binary_dict": '{"glibc":"glibc"}',
         }
 
-        mock_exists.retu_value = True
+        mock_exists.return_value = True
 
         insd = DispatchDepend.execute(**build_params)
         self.assertTrue(isinstance(insd, BuildDepend))
@@ -101,7 +101,7 @@ class TestDispatch(unittest.TestCase):
             "binary_dict": '{"glibc":"glibc"}',
         }
 
-        mock_exists.retu_value = True
+        mock_exists.return_value = True
         insd = DispatchDepend.execute(**selfdep_params)
         self.assertTrue(isinstance(insd, SelfDepend))
 
@@ -115,7 +115,7 @@ class TestDispatch(unittest.TestCase):
             "binary_dict": '{"glibc":"glibc"}',
         }
 
-        mock_exists.retu_value = True
+        mock_exists.return_value = True
         insd = DispatchDepend.execute(**bedep_params)
         self.assertTrue(isinstance(insd, BeDepend))
 
