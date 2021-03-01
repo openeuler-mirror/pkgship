@@ -1,6 +1,6 @@
 Name:           pkgship
 Version:        2.1.0
-Release:        5
+Release:        3
 Summary:        Pkgship implements rpm package dependence ,maintainer, patch query and so no.
 License:        Mulan 2.0
 URL:            https://gitee.com/openeuler/pkgship
@@ -107,7 +107,7 @@ create_dir_file /etc/logrotate.d/pkgship 644 f
 %attr(0640,pkgshipuser,pkgshipuser) /lib/systemd/system/pkgship.service
 
 %changelog
-* Fri Feb 27 2021 Yiru Wang  <wangyiru1@huawei.com> - 2.1.0-5
+* Mon Mar 1 2021 Yiru Wang  <wangyiru1@huawei.com> - 2.1.0-3
 - change pkgship's files owner and permisson
 - change pkgship's database from sqlite to elasticsearch
 - modify pkgship's BuildRequires and Requires
