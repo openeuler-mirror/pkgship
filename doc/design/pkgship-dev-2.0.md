@@ -1288,6 +1288,80 @@ v1.x内数据兼容，v2.x与v1.x数据不可兼容
 启动pkgship服务：`pkgshipd start`
 停止pkgship服务：`pkgsdhipd stop`
 
+##### 3.7.2.10  配置文件选项
+
+```ini
+[SYSTEM]
+
+; Configuration file path for data initialization
+init_conf_path = /etc/pkgship/conf.yaml
+
+; Ordinary user query port, only the right to query data, no permission to write data
+
+query_port = 8090
+
+; IP address path with permission to query data
+
+query_ip_addr = 127.0.0.1
+
+; The address of the remote service, the command line can directly 
+; call the remote service to complete the data request
+remote_host = https://api.openeuler.org/pkgmanage
+
+; A temporary directory for files downloaded from the network that are cleaned periodically
+temporary_directory = /opt/pkgship_tmp
+
+[LOG]
+
+; Custom log storage path
+log_path = /var/log/pkgship/
+
+; Logging level
+; The log level option value can only be as follows
+; INFO DEBUG WARNING ERROR CRITICAL
+log_level = INFO
+
+; logging name
+log_name = log_info.log
+
+; log operation path record the http request
+log_operation_path = /var/log/pkgship-operation
+
+[UWSGI]
+; uwsgi log file path
+daemonize = /var/log/pkgship/uwsgi.log
+; The data size transferred from back to forth
+buffer-size = 65536
+; HTTP Connection time
+http-timeout = 600
+; Server response time
+harakiri = 600
+
+[REDIS]
+
+# The address of the Redis cache server can be either a published
+# domain or an IP address that can be accessed normally
+# The link address defaults to 127.0.0.1
+
+redis_host = 127.0.0.1
+
+# Redis cache server link port number, default is 6379
+redis_port = 6379
+
+# Maximum number of connections allowed by RedIS server at one time
+
+redis_max_connections = 10
+
+[DATABASE]
+# The database engines supported in the system is sqlite database by default
+database_engine_type = elastic
+
+# Default ip address of database
+database_host = 127.0.0.1
+
+# Default port of database
+database_port = 9200
+```
 
 ### 3.8、 内部模块间接口清单
 

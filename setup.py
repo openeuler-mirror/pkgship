@@ -21,8 +21,6 @@ from setuptools import setup, find_packages
 
 _CONFIG_PATH = "/etc/pkgship/"
 PACKAGE_PATH = get_python_lib()
-JSON_PATH = os.path.join(PACKAGE_PATH, "packageship",
-                         "application", "initialize")
 MAPPING_PATH = os.path.join(
     PACKAGE_PATH, "packageship", "application", "common", "rsp")
 PACKAGESHIP_PATH = os.path.join(PACKAGE_PATH, "packageship")
