@@ -123,7 +123,7 @@
                 "Judy"
             ],
             "database": "Mainline",
-            "direction": "both",
+            "direction": "bothward",
             "level": 2,
             "name": "A1",
             "requires": [
@@ -154,7 +154,7 @@
                 "B1"
             ],
             "database": "Mainline",
-            "direction": "both",
+            "direction": "bothward",
             "level": 3,
             "name": "Judy",
             "requires": [

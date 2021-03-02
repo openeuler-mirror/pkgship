@@ -1,10 +1,13 @@
 import unittest
+from unittest import mock
+from redis import Redis
 
 from packageship.application.core.depend import DispatchDepend
 from packageship.application.core.depend.install_depend import InstallDepend
 from packageship.application.core.depend.build_depend import BuildDepend
 from packageship.application.core.depend.self_depend import SelfDepend
 from packageship.application.core.depend.be_depend import BeDepend
+
 
 install_params = {
     "packagename": ["Judy"],
@@ -59,36 +62,69 @@ no_depend_type_params = {
 class TestDispatch(unittest.TestCase):
     """ Test DispatchDepend class
     """
-    def test_dispatch_install(self):
+    @mock.patch.object(Redis, "exists")
+    @mock.patch.object(Redis, "hgetall")
+    def test_dispatch_install(self, mock_hgetall, mock_exists):
         """test dispatch install depend
         """
+        mock_hgetall.return_value = {
+            "source_dict": '{"glibc":"glibc"}',
+            "binary_dict": '{"glibc":"glibc"}',
+        }
+
+        mock_exists.return_value = True
         insd = DispatchDepend.execute(**install_params)
         self.assertTrue(isinstance(insd, InstallDepend))
-    
-    def test_dispatch_build(self):
+
+    @mock.patch.object(Redis, "exists")
+    @mock.patch.object(Redis, "hgetall")
+    def test_dispatch_build(self, mock_hgetall, mock_exists):
         """test dispatch build depend
         """
+        mock_hgetall.return_value = {
+            "source_dict": '{"glibc":"glibc"}',
+            "binary_dict": '{"glibc":"glibc"}',
+        }
+
+        mock_exists.return_value = True
+
         insd = DispatchDepend.execute(**build_params)
         self.assertTrue(isinstance(insd, BuildDepend))
-    
-    def test_dispatch_selfdep(self):
+
+    @mock.patch.object(Redis, "exists")
+    @mock.patch.object(Redis, "hgetall")
+    def test_dispatch_selfdep(self, mock_hgetall, mock_exists):
         """test dispatch selfdep depend
         """
+        mock_hgetall.return_value = {
+            "source_dict": '{"glibc":"glibc"}',
+            "binary_dict": '{"glibc":"glibc"}',
+        }
+
+        mock_exists.return_value = True
         insd = DispatchDepend.execute(**selfdep_params)
         self.assertTrue(isinstance(insd, SelfDepend))
-    
-    def test_dispatch_bedep(self):
+
+    @mock.patch.object(Redis, "exists")
+    @mock.patch.object(Redis, "hgetall")
+    def test_dispatch_bedep(self, mock_hgetall, mock_exists):
         """test dispatch bedep depend
         """
+        mock_hgetall.return_value = {
+            "source_dict": '{"glibc":"glibc"}',
+            "binary_dict": '{"glibc":"glibc"}',
+        }
+
+        mock_exists.return_value = True
         insd = DispatchDepend.execute(**bedep_params)
         self.assertTrue(isinstance(insd, BeDepend))
-        
+
     def test_dispatch_error_depend_type(self):
         """test params error depend_type value
         """
         with self.assertRaises(AttributeError):
             DispatchDepend.execute(**error_depend_type_params)
-    
+
     def test_dispatch_no_depend_type(self):
         """test params no depend_type key
         """
