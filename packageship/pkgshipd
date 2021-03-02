@@ -243,35 +243,34 @@ function create_logrotate_file() {
 
   config_content=$(cat ${LOGROTATE_FILE})
   if [ -n "${config_content}" ]; then
-    read -p "[WARNING] the log dump configuration already exists, is it overwritten with the default configuration:(y/n)" log_operation
-    if [ "${log_operation}" = "y" ] || [ "${log_operation}" = "Y" ]; then
-      log_path=$(get_config "log_path")/log_info.log
-      operation_log_path=$(get_config "daemonize")
-      echo "${log_path}{
-              daily
-              missingok
-              rotate 30
-              dateext
-              size = 100k
-              missingok
-              create 644 root root
-              compress
-              copytruncate
-              notifempty
-      }" >${LOGROTATE_FILE}
-      echo "${operation_log_path}{
-              daily
-              missingok
-              rotate 30
-              dateext
-              size = 100k
-              missingok
-              create 644 root root
-              compress
-              copytruncate
-              notifempty
-      }" >>${LOGROTATE_FILE}
-    fi
+    echo "[WARNING] logrotate config file has existed,continue"
+  else
+    log_path=$(get_config "log_path")/log_info.log
+    operation_log_path=$(get_config "daemonize")
+    echo "${log_path}{
+            daily
+            missingok
+            rotate 30
+            dateext
+            size = 100k
+            missingok
+            create 644 root root
+            compress
+            copytruncate
+            notifempty
+    }" >${LOGROTATE_FILE}
+    echo "${operation_log_path}{
+            daily
+            missingok
+            rotate 30
+            dateext
+            size = 100k
+            missingok
+            create 644 root root
+            compress
+            copytruncate
+            notifempty
+    }" >>${LOGROTATE_FILE}
   fi
 
   echo "[INFO] create logrotate config file success"
@@ -390,13 +389,8 @@ function check_es_installed() {
   # check elasticsearch version
   es_version=$(echo "${visit_es_response}" | grep "number" | awk -F'"' '{print $4}')
   if [ "${es_version}" != "7.10.1" ]; then
-    echo "========================================================================="
-    echo "[WARNING] The Elasticsearch version you installed is not the recommended version 7.10.1,which may cause it to be unusable."
-    read -p "Do you want to continue (y/n):" version_operation
-    if [ "${version_operation}" = "n" ] || [ "${version_operation}" = "N" ]; then
-      echo "[ERROR] You have terminated the execution"
-      exit 1
-    fi
+    echo "[ERROR] The Elasticsearch version you installed is not the recommended version 7.10.1,which may cause it to be unusable."
+    exit 1
   fi
 
   echo "[INFO] Elasticsearch check ok"
