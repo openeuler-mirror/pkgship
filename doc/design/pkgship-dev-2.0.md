@@ -1288,7 +1288,7 @@ v1.x内数据兼容，v2.x与v1.x数据不可兼容
 启动pkgship服务：`pkgshipd start`
 停止pkgship服务：`pkgsdhipd stop`
 
-Attention: pkgship 每次启动和停止周期，仅支持使用其中其中方式。即，不可使用systemctl启动后使用pkgshipd停止服务，反之亦然。
+Attention: pkgship 每次启动和停止周期，仅支持使用其中一种方式。即，不可使用systemctl启动后使用pkgshipd停止服务，反之亦然。
 
 ##### 3.7.2.10  配置文件选项
 
@@ -1310,6 +1310,7 @@ query_ip_addr=127.0.0.1
 remote_host=https://api.openeuler.org/pkgmanage
 
 ; A temporary directory for files downloaded from the network that are cleaned periodically
+; The recommended free space in this dir is 1G
 temporary_directory=/opt/pkgship/tmp/
 
 [LOG]
