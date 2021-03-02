@@ -293,5 +293,13 @@ ERROR_CON = {
     # EMPTY_PARSED_DATA
     "70003": {
         "ERROR_CONTENT": "",
-        "HINT": "Make sure the yaml file is valid"}
+        "HINT": "Make sure the yaml file is valid"},
+    # DOWNLOAD_FAILED
+    "70004": {
+        "ERROR_CONTENT": "",
+        "HINT": "Make sure the file is valid"},
+    # PACKSHIP_VERSION_ERROR
+    "70005": {
+        "ERROR_CONTENT": "",
+        "HINT": "Make sure the file is valid"}
 }

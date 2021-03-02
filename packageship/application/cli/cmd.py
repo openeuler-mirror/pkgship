@@ -93,9 +93,9 @@ class PkgshipCommand(BaseCommand):
         cls.register_command(DbPriorityCommand())
         cls.register_command(VersionCommand())
         try:
-            _ps = os.popen("ps -ef | grep ’pkgship‘ | grep -v grep | wc -l").read()
-            if int(_ps) == 0:
-                print("The current service is not started, please start the service first")
+            ps_con = os.popen("ps -ef | grep -v grep | grep 'uwsgi'").readlines()
+            if len(ps_con) == 0:
+                print("The uwsgi service is not started, please start the service first")
                 return
             args = cls.parser.parse_args()
             args.func(args)
