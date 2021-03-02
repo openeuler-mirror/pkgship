@@ -1,9 +1,9 @@
 #!/bin/bash
 SYS_PATH=/etc/pkgship
-OUT_PATH=/home/pkgusers/uswgi
+OUT_PATH=/opt/pkgship/uwsgi
 LOGROTATE_FILE=/etc/logrotate.d/pkgship
 OPERATION=$1
-SERVICE_TYPE=$2
+PKGSHIP_CONSTANT="pkgship"
 MEM_THRESHOLD='700'
 MEM_FREE=$(free -m | grep "Mem" | awk '{print $7}')
 
@@ -21,13 +21,6 @@ function check_user() {
 function check_input() {
   if [ -z ${OPERATION} ] || [ ${OPERATION} != "start" -a ${OPERATION} != "stop" ]; then
     echo "[ERROR] input parameter error, usages: pkgshipd start|stop [selfpkg]"
-    exit 1
-  fi
-
-  if [ "X${SERVICE_TYPE}" = "X" ]; then
-    SERVICE_TYPE="selfpkg"
-  elif [ ${SERVICE_TYPE} != "selfpkg" ]; then
-    echo "[ERROR] Can not phase the input of ${SERVICE_TYPE}!!!"
     exit 1
   fi
 }
@@ -51,9 +44,10 @@ function check_config_file() {
     exit 1
   fi
 
-  # check and create uswgi out path
+  # check and create uwsgi out path
   if [ ! -d "$OUT_PATH" ]; then
     mkdir -p $OUT_PATH
+    chown pkgshipuser: -R $OUT_PATH
   fi
   echo "[INFO] check config file ok"
 }
@@ -75,7 +69,7 @@ function check_config_param() {
 
   echo "[INFO] Check validation of numbers."
   num_vars=(buffer-size http-timeout harakiri)
-  for var in ${num_vars[@]}; do
+  for var in "${num_vars[@]}"; do
     value=$(get_config $var)
     if [[ -z "$value" ]]; then
       echo "[ERROR] CAN NOT find config name $var in: $SYS_PATH/package.ini, Please check the file."
@@ -89,6 +83,10 @@ function check_config_param() {
   log_level=$(get_config "log_level")
   check_word "log_level" "INFO|DEBUG|WARNING|ERROR|CRITICAL" $log_level
   echo "[INFO] All words are valid."
+
+  check_config_path "temporary_directory" "d"
+  check_config_path "log_path" "d"
+  check_config_path "daemonize" "f"
 
   echo "[INFO] check config parameter ok."
 }
@@ -151,6 +149,48 @@ function check_word() {
   fi
 }
 
+function check_config_path() {
+  path_name=$1
+  path_value=$(get_config "${path_name}")
+  type=$2
+  # value is none
+  if [ -z "${path_value}" ]; then
+    echo "[ERROR] The parameter '${path_name}' does not exist or has no value in the configuration file '$SYS_PATH/package.ini'"
+    exit 1
+  fi
+  # file path is not exist,try create it
+  if [ ! -e "${path_value}" ]; then
+    if [ "${type}" = "d" ]; then
+      creat_result=$(mkdir "${path_value}" 2>&1)
+    fi
+    if [ "${type}" = "f" ]; then
+      creat_result=$(touch "${path_value}" 2>&1)
+    fi
+    if [[ "${creat_result}" =~ "Permission denied" ]]; then
+      echo "[ERROR] The file path corresponding to the parameter '${path_name}' does not exist and cannot create, please modify the configuration file '$SYS_PATH/package.ini'"
+      exit 1
+    fi
+    chown pkgshipuser: -R "${path_value}" >dev/null 2>&1
+  fi
+  # value is a path
+  if [ "${type}" = "d" ]; then
+    create_try_result=$(touch ${path_value}/pkgship_create_test 2>&1)
+    if [[ "${create_try_result}" =~ "Permission denied" ]]; then
+      echo "[ERROR] parameter '${path_name}' corresponding path authority is too high,please ensure that 'pkgshipuser' users can read and write"
+      exit 1
+    fi
+    rm -rf ${path_value}/pkgship_create_test
+  else
+    # value is a file
+    if [ ! -w "${path_value}" ]; then
+      echo "[ERROR] the file of the parameter '${path_name}' is not exist or permission is too high"
+      echo "[ERROR] please ensure that exists and 'pkgshipuser' users can read and write"
+      exit 1
+    fi
+  fi
+
+}
+
 function get_config() {
   cat $SYS_PATH/package.ini | grep -E ^$1 | sed 's/[[:space:]]//g' | awk 'BEGIN{FS="="}{print $2}'
 }
@@ -176,19 +216,20 @@ function create_config_file() {
     exit 1
   fi
 
-  echo "[INFO] selfpkg.ini is saved to: $OUT_PATH/selfpkg.ini"
+  echo "[INFO] ${PKGSHIP_CONSTANT}.ini is saved to: $OUT_PATH/${PKGSHIP_CONSTANT}.ini"
   echo "[uwsgi]
 http=$query_ip_addr:$query_port
 module=packageship.selfpkg
 uwsgi-file=$uwsgi_file_path/selfpkg.py
 callable=app
 buffer-size=$buffer_size
-pidfile=$OUT_PATH/selfpkg.pid
+pidfile=$OUT_PATH/${PKGSHIP_CONSTANT}.pid
 http-timeout=$http_timeout
 harakiri=$harakiri
 enable-threads=true
-daemonize=$daemonize" >$OUT_PATH/selfpkg.ini
-  chmod 750 $OUT_PATH/selfpkg.ini
+log-format = [remote url: %(uri)  %(method)]---{%(user_ip)} --->[%(user)]-->[%(addr)] -->[%(proto)] -->[%(host)] {%(vars) vars in %(pktsize) bytes} [%(ctime)]=> %(status)))
+daemonize=$daemonize" >$OUT_PATH/${PKGSHIP_CONSTANT}.ini
+  chmod 750 $OUT_PATH/${PKGSHIP_CONSTANT}.ini
   echo "[INFO] create uwsgi file ok"
 }
 
@@ -199,58 +240,80 @@ function create_logrotate_file() {
     echo "[ERROR] logrotate config file is not exist"
     exit 1
   fi
-  log_path=$(get_config "log_path")
-  echo "${log_path}/pkgship.log {
-        daily
-        missingok
-        rotate 30
-        dateext
-        size = 100k
-        missingok
-        create 644 root root
-        compress
-        copytruncate
-        notifempty
-}" >${LOGROTATE_FILE}
+
+  config_content=$(cat ${LOGROTATE_FILE})
+  if [ -n "${config_content}" ]; then
+    echo "[WARNING] logrotate config file has existed,continue"
+  else
+    log_path=$(get_config "log_path")/log_info.log
+    operation_log_path=$(get_config "daemonize")
+    echo "${log_path}{
+            daily
+            missingok
+            rotate 30
+            dateext
+            size = 100k
+            missingok
+            create 644 root root
+            compress
+            copytruncate
+            notifempty
+    }" >${LOGROTATE_FILE}
+    echo "${operation_log_path}{
+            daily
+            missingok
+            rotate 30
+            dateext
+            size = 100k
+            missingok
+            create 644 root root
+            compress
+            copytruncate
+            notifempty
+    }" >>${LOGROTATE_FILE}
+  fi
+
   echo "[INFO] create logrotate config file success"
 
 }
 
 function start_service() {
-  if [ "$(ps aux | grep "uwsgi" | grep "${SERVICE_TYPE}.ini")" != "" ]; then
-    echo "[WARNING] ${SERVICE_TYPE} service is running, please STOP it first."
+  uwsgi_pid=$(ps -ef | grep -v grep | grep "uwsgi" | grep "${PKGSHIP_CONSTANT}.ini" | awk '{print $2}')
+  if [ -n "${uwsgi_pid}" ]; then
+    echo "[ERROR] ${PKGSHIP_CONSTANT} service is running, please stop it first."
+    exit 1
   else
-    cd "$uwsgi_file_path"
-    uwsgi -d --ini $OUT_PATH/${SERVICE_TYPE}.ini
-    echo "[INFO] START uwsgi service: ${SERVICE_TYPE}.ini"
+    uwsgi -d --ini $OUT_PATH/${PKGSHIP_CONSTANT}.ini
+    echo "[INFO] START uwsgi service: ${PKGSHIP_CONSTANT}.ini"
+    echo "[INFO] The run log is saved into: $(get_config "daemonize")"
+    exit 0
   fi
 }
 
 function stop_service() {
-  if [ ! -f "$OUT_PATH/${SERVICE_TYPE}.pid" ]; then
-    echo "[ERROR] STOP service FAILED, $OUT_PATH/${SERVICE_TYPE}.pid dose not exist."
+  if [ ! -f "$OUT_PATH/${PKGSHIP_CONSTANT}.pid" ]; then
+    echo "[ERROR] STOP service FAILED, $OUT_PATH/${PKGSHIP_CONSTANT}.pid dose not exist."
     echo "[ERROR] Please stop it manually by using [ps -aux] and [uwsgi --stop #PID]"
     exit 1
   fi
 
-  pid=$(cat $OUT_PATH/${SERVICE_TYPE}.pid)
-  if [ "$(ps aux | awk 'BEGIN{FS=" "}{if ($2=='$pid') print $0}' | grep "${SERVICE_TYPE}.ini")" != "" ]; then
-    uwsgi --stop $OUT_PATH/${SERVICE_TYPE}.pid
-    echo "[INFO] STOP uwsgi service: ${SERVICE_TYPE}.ini"
+  uwsgi_pid=$(ps -ef | grep -v grep | grep "uwsgi" | grep "${PKGSHIP_CONSTANT}.ini" | awk '{print $2}')
+  if [ -n "${uwsgi_pid}" ]; then
+    uwsgi --stop $OUT_PATH/${PKGSHIP_CONSTANT}.pid
+    echo "[INFO] STOP uwsgi service: $OUT_PATH/${PKGSHIP_CONSTANT}.ini"
+    echo "[INFO] The run log is saved into: $(get_config "daemonize")"
+    exit 0
   else
-    echo "[WARNING] STOP service [FAILED], Please START the service first."
+    echo "[ERROR] STOP service failed, Please start the service first."
+    exit 1
   fi
 }
 
 function start_or_stop_service() {
   if [ "${OPERATION}" = "start" ]; then
     start_service
-    echo "===The run log is saved into: $(get_config "daemonize")==="
   elif [ "${OPERATION}" = "stop" ]; then
     stop_service
-    echo "===The run log is saved into: $(get_config "daemonize")==="
-  else
-    echo "Usages: sh pkgshipd.sh start|stop [manage|selfpkg]"
   fi
 }
 
@@ -261,8 +324,8 @@ function check_redis_installed() {
   redis_port=$(get_config "redis_port")
   if [ -z "${redis_ip}" ] || [ -z "${redis_port}" ]; then
     echo "[Warning] Can not find config name 'redis_host' or 'redis_port' in: $SYS_PATH/package.ini,Please check the file"
-    echo "If you have installed REDIS, Please set correct 'redis_hos' and 'redis_port' values and re-execute the startup script "
-    echo "If you have not installed REDIS, Please set 'redis_host: 127.0.0.1' and 'redis_port: 9200' and execute the automatic installation script '${SYS_PATH}/auto_install_es.sh' under the root user"
+    echo "If you have installed REDIS, Please set correct 'redis_host' and 'redis_port' values and re-execute the startup script "
+    echo "If you have not installed REDIS, Please set 'redis_host: 127.0.0.1' and 'redis_port: 9200' and execute the automatic installation script '${SYS_PATH}/auto_install_pkgship_requires.sh' under the root user"
   fi
   # check whether to install Redis
   host="127.0.0.1"
@@ -274,19 +337,26 @@ try:
     print(response.ping())
 except redis.ConnectionError:
     print(False)"
-  result=$(python -c "$python_command")
+  python3_version=$(python3 --version)
+  if [[ "${python3_version}" =~ "command not found" ]]; then
+    echo "[ERROR] python3 command is not available,please install python3"
+    exit 1
+  fi
 
+  result=$(python3 -c "$python_command")
   if [ "${result}" = "False" ]; then
     echo "========================================================================="
-    echo "[Warning] Redis connection FAILED."
-    echo "[Warning] The following reason may cause failed:"
-    echo "[Warning] 1. not installed Redis or the Redis configuration is incorrect."
-    echo "[Warning] 2. the Redis configuration is incorrect."
-    echo "If you need to install, please execute the automatic installation script '${SYS_PATH}/auto_install_es.sh' under the root user"
-    echo "[Warning] 3. The Redis you connected is set to access with a password and cannot be used."
-    echo "Please cancel the password or connect another Redis without a password"
+    echo "[WARNING] Redis connection FAILED,the following reason may cause failed:"
+    echo "[INFO] 1. not installed Redis,if you need to install, please execute the automatic installation script '${SYS_PATH}/auto_install_pkgship_requires.sh' under the root user"
+    echo "[INFO] 2. Redis service not started,please start redis service"
+    echo "[INFO] 3. the Redis configuration is incorrect,please update value of 'redis_host' and 'redis_port' in ${SYS_PATH}/package.ini"
+    echo "[INFO] 4. The Redis you connected is set to access with a password and cannot be used,please cancel the password or connect another Redis without a password"
+    echo "=========================================================================="
+    echo "[WARNING] redis is unavailable and the installation process continues, which may cause slow queries."
+  else
+    echo "[INFO] Redis check ok"
   fi
-  echo "[INFO] Redis check ok"
+
 }
 
 function check_es_installed() {
@@ -297,33 +367,30 @@ function check_es_installed() {
   if [ -z "${es_ip}" ] || [ -z "${es_port}" ]; then
     echo "[ERROR] Can not find config name 'database_host' or 'database_port' in: $SYS_PATH/package.ini,Please check the file"
     echo "If you have installed ES, Please set correct 'database_host' value and 'database_port' value and re-execute 'pkgshipd start' "
-    echo "If you have not installed ES, please execute the automatic installation script '${SYS_PATH}/auto_install_es.sh' under the root user "
+    echo "If you have not installed ES, please execute the automatic installation script '${SYS_PATH}/auto_install_pkgship_requires.sh' under the root user "
     exit 1
   fi
   # check whether to install Elasticsearch
   visit_es_response=$(curl -s -XGET http://"${es_ip}":"${es_port}")
   if [ -z "${visit_es_response}" ]; then
     echo "========================================================================="
-    echo "[ERROR] You have not installed Elasticsearch or the Elasticsearch configuration is incorrect."
-    echo "If you need to install, please execute the automatic installation script '${SYS_PATH}/auto_install_es.sh' under the root user"
+    echo "[ERROR] Elasticsearch connection FAILED,the following reason may cause failed:"
+    echo "[INFO] 1. You have not installed Elasticsearch,If you need to install, please execute the automatic installation script '${SYS_PATH}/auto_install_pkgship_requires.sh' under the root user"
+    echo "[INFO] 2. Elasticsearch configuration is incorrect,please update value of 'database_host' and 'database_port' in $SYS_PATH/package.ini"
+    echo "[INFO] 3. Elasticsearch service not started,please start elasticsearch service."
     exit 1
   fi
   # check whether a password is set
   if [[ $visit_es_response =~ "authentication" ]]; then
-    echo "The ES you installed is set to access with a password and cannot be used."
+    echo "[ERROR] The ES you installed is set to access with a password and cannot be used."
     echo "Please cancel the password or install another ES without a password"
     exit 1
   fi
   # check elasticsearch version
   es_version=$(echo "${visit_es_response}" | grep "number" | awk -F'"' '{print $4}')
   if [ "${es_version}" != "7.10.1" ]; then
-    echo "========================================================================="
-    echo "[WARNING] The Elasticsearch version you installed is not the recommended version 7.10.1,which may cause it to be unusable."
-    read -p "Do you want to continue (y/n):" version_operation
-    if [ "${version_operation}" = "n" ] || [ "${version_operation}" = "N" ]; then
-      echo "[ERROR] You have terminated the execution"
-      exit 1
-    fi
+    echo "[ERROR] The Elasticsearch version you installed is not the recommended version 7.10.1,which may cause it to be unusable."
+    exit 1
   fi
 
   echo "[INFO] Elasticsearch check ok"
