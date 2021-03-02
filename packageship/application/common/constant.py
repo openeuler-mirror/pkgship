@@ -63,6 +63,9 @@ LEVEL_RADIUS = 30
 # node size shown in the map
 NODE_SIZE = 25
 
+# uwsig path
+UWSIG_PATH = "/opt/pkgship/uwsgi/pkgship.ini"
+
 
 class ListNode():
     """
@@ -293,5 +296,13 @@ ERROR_CON = {
     # EMPTY_PARSED_DATA
     "70003": {
         "ERROR_CONTENT": "",
-        "HINT": "Make sure the yaml file is valid"}
+        "HINT": "Make sure the yaml file is valid"},
+    # DOWNLOAD_FAILED
+    "70004": {
+        "ERROR_CONTENT": "",
+        "HINT": "Make sure the file is valid"},
+    # PACKSHIP_VERSION_ERROR
+    "70005": {
+        "ERROR_CONTENT": "",
+        "HINT": "Make sure the file is valid"}
 }

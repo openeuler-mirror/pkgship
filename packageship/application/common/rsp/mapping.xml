@@ -192,8 +192,15 @@
 <code label="download_failed">
     <status_code>70004</status_code>
     <message_zh>下载失败</message_zh>
-    <message_en>"An error occurred and the download failed"</message_en>
-     <tip_zh>确保文件路径有效</tip_zh>
+    <message_en>An error occurred and the download failed</message_en>
+    <tip_zh>确保文件路径有效</tip_zh>
+    <tip_en>Make sure the file is valid</tip_en>
+    </code>
+<code label="get_pkgship_version_failed">
+    <status_code>70005</status_code>
+    <message_zh>获取版本信息失败</message_zh>
+    <message_en>get pkgship version failed</message_en>
+    <tip_zh>确保版本文件有效</tip_zh>
     <tip_en>Make sure the file is valid</tip_en>
 </code>
 </codewrap>

@@ -164,9 +164,8 @@ class AllPackageCommand(BaseCommand):
                     if response_data.get('code') == ResponseCode.SUCCESS:
                         self.__parse_package(response_data, params.database, params.s)
                     else:
-                        self.output_error_formatted(response_data.get('msg'),
+                        self.output_error_formatted(response_data.get('message'),
                                                     response_data.get('code'))
-                        print('Failed to get packages')
                 except JSONDecodeError as json_error:
                     LOGGER.error(json_error)
                     self.output_error_formatted(
