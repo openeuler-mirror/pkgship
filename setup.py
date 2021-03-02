@@ -21,9 +21,12 @@ from setuptools import setup, find_packages
 
 _CONFIG_PATH = "/etc/pkgship/"
 PACKAGE_PATH = get_python_lib()
-JSON_PATH = os.path.join(PACKAGE_PATH, "packageship", "application", "initialize")
-MAPPING_PATH = os.path.join(PACKAGE_PATH, "packageship", "application", "common", "rsp")
+MAPPING_PATH = os.path.join(
+    PACKAGE_PATH, "packageship", "application", "common", "rsp")
 PACKAGESHIP_PATH = os.path.join(PACKAGE_PATH, "packageship")
+
+INITIALIZE_PATH = os.path.join(
+    PACKAGE_PATH, "packageship", "application", "initialize")
 
 setup(
     name='packageship',
@@ -46,11 +49,15 @@ setup(
     long_description=open('README.md', encoding='utf-8').read(),
     author='wangyiru',
     data_files=[
-        (_CONFIG_PATH, ['packageship/package.ini', 'conf.yaml', 'packageship/auto_install_pkgship_requires.sh']),
+        (_CONFIG_PATH, ['packageship/package.ini', 'conf.yaml',
+                        'packageship/auto_install_pkgship_requires.sh']),
         ('/usr/bin', ['packageship/pkgshipd', 'packageship/pkgship']),
         ('/lib/systemd/system/', ['packageship/pkgship.service']),
         (MAPPING_PATH, ['packageship/application/common/rsp/mapping.xml']),
-        (PACKAGESHIP_PATH, ['packageship/version.yaml'])
+        (PACKAGESHIP_PATH, ['packageship/version.yaml']),
+        (INITIALIZE_PATH, ['packageship/application/initialize/bedepend.json',
+                           'packageship/application/initialize/binary.json',
+                           'packageship/application/initialize/source.json'])
     ],
     zip_safe=False
 )

@@ -1,6 +1,6 @@
 Name:           pkgship
 Version:        2.1.0
-Release:        3
+Release:        4
 Summary:        Pkgship implements rpm package dependence ,maintainer, patch query and so no.
 License:        Mulan 2.0
 URL:            https://gitee.com/openeuler/pkgship
@@ -52,14 +52,14 @@ echo "Release: $release_" >> $version_file
 user=pkgshipuser
 group=pkgshipuser
 
-#create group if not exists
+# create group if not exists
 egrep -w "^$group" /etc/group >& /dev/null
 if [ $? -ne 0 ]
 then
             groupadd $group
 fi
 
-#create user if not exists
+# create user if not exists
 egrep -w "^$user" /etc/passwd >& /dev/null
 if [ $? -ne 0 ]
 then
@@ -83,11 +83,9 @@ fi
 chown -R $user:$group $1
 }
 
-create_dir_file /opt/pkgship_tmp 750 d
+create_dir_file /opt/pkgship/ 750 d
 create_dir_file /var/log/pkgship 750 d
-create_dir_file /var/log/pkgship-operation 600 d
-create_dir_file /home/pkgusers/log 755 d
-create_dir_file /home/pkgusers/uswgi 755 d
+create_dir_file /var/log/pkgship-operation 700 d
 create_dir_file /etc/logrotate.d/pkgship 644 f
 
 %post
@@ -107,6 +105,10 @@ create_dir_file /etc/logrotate.d/pkgship 644 f
 %attr(0640,pkgshipuser,pkgshipuser) /lib/systemd/system/pkgship.service
 
 %changelog
+* Tue Mar 2 2021 Yiru Wang  <wangyiru1@huawei.com> - 2.1.0-4
+- change pkgship-operation permission to 700 for get excute permission while creating files
+- delete /home/pkgusers/log and /home/pkgusers/uswgi, which moved to /opt/pkgship/
+
 * Mon Mar 1 2021 Yiru Wang  <wangyiru1@huawei.com> - 2.1.0-3
 - change pkgship's files owner and permisson
 - change pkgship's database from sqlite to elasticsearch
