@@ -63,6 +63,9 @@ LEVEL_RADIUS = 30
 # node size shown in the map
 NODE_SIZE = 25
 
+# uwsig path
+UWSIG_PATH = "/opt/pkgship/uwsgi/pkgship.ini"
+
 
 class ListNode():
     """

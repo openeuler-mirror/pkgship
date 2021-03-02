@@ -28,6 +28,7 @@ except ImportError as import_error:
 else:
     from packageship.application.common.constant import ResponseCode
     from packageship.application.common.constant import ListNode
+    from packageship.application.common.constant import UWSIG_PATH
     from packageship.libs.terminal_table import TerminalTable
     from packageship.application.common.constant import ERROR_CON
     from packageship.application.cli.commands.allpkg import AllPackageCommand
@@ -93,7 +94,8 @@ class PkgshipCommand(BaseCommand):
         cls.register_command(DbPriorityCommand())
         cls.register_command(VersionCommand())
         try:
-            ps_con = os.popen("ps -ef | grep -v grep | grep 'pkgship+'").readlines()
+            uwsgi_process = "ps -ef | grep -v grep | grep %s" % UWSIG_PATH
+            ps_con = os.popen(uwsgi_process).readlines()
             if len(ps_con) == 0:
                 print("The uwsgi service is not started, please start the service first")
                 return
