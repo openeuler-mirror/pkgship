@@ -675,7 +675,7 @@ class RepoConfig:
         _priority = repo.get('priority')
         if not isinstance(_priority, int):
             raise TypeError(
-                "priority of database %s must be a number" % repo.get("name"))
+                "priority of database %s must be a integer number" % repo.get("dbname", ""))
         if _priority < 1 or _priority > 100:
             raise ValueError(
                 "priority range of the database can only be between 1 and 100")
@@ -714,6 +714,10 @@ class RepoConfig:
             raise ValueError(
                 "The initialized configuration file is incorrectly"
                 " formatted and lacks the necessary dbname field .") from error
+        if not databases:
+            raise ValueError(
+                "The name of the database was not specified during initialization .")
+
         if len(databases) != len(self._repo):
             raise ValueError(
                 "There is a duplicate initialization configuration database name .")
