@@ -5,8 +5,8 @@ StartLimitIntervalSec=0
 
 [Service]
 Type=forking
-ExecStartPre=/usr/bin/pkgshipd start
-ExecStart=/usr/bin/uwsgi --ini /home/pkgusers/uswgi/selfpkg.ini
+ExecStart=/usr/bin/pkgshipd start
+ExecStop=/usr/bin/pkgshipd stop
 User=pkgshipuser
 Group=pkgshipuser
 Restart=always
