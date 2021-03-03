@@ -15,6 +15,7 @@ Description: Entry method for custom commands
 Class: InitDatabaseCommand
 """
 import os
+import pwd
 from packageship.application.cli.base import BaseCommand
 from packageship.application.initialize.integration import InitializeService
 from packageship.application.common.exc import InitializeError, ResourceCompetitionError
@@ -61,7 +62,8 @@ class InitDatabaseCommand(BaseCommand):
         Raises:
 
         """
-        if os.getlogin() not in ["root", "pkgshipuser"]:
+        get_username = lambda:pwd.getpwuid(os.getuid())[0]
+        if get_username() not in ["root", "pkgshipuser"]:
             print("The current user does not have initial execution permission")
             return
         init = InitializeService()
