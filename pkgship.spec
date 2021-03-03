@@ -1,6 +1,6 @@
 Name:           pkgship
 Version:        2.1.0
-Release:        5
+Release:        4
 Summary:        Pkgship implements rpm package dependence ,maintainer, patch query and so no.
 License:        Mulan 2.0
 URL:            https://gitee.com/openeuler/pkgship
@@ -11,13 +11,13 @@ BuildArch:      noarch
 BuildRequires: shadow
 BuildRequires: python3-flask-restful python3-flask python3 python3-pyyaml python3-redis
 BuildRequires: python3-prettytable python3-requests python3-retrying python3-coverage
-BuildRequires: python3-marshmallow python3-uWSGI python3-gevent python3-Flask-Limiter 
+BuildRequires: python3-marshmallow python3-uWSGI python3-gevent python3-Flask-Limiter
 BuildRequires: python3-elasticsearch
 
 Requires: shadow
 Requires: python3-flask-restful python3-flask python3 python3-pyyaml python3-redis
 Requires: python3-prettytable python3-requests python3-retrying python3-coverage
-Requires: python3-marshmallow python3-uWSGI python3-gevent python3-Flask-Limiter 
+Requires: python3-marshmallow python3-uWSGI python3-gevent python3-Flask-Limiter
 Requires: python3-elasticsearch
 
 %description
@@ -87,9 +87,6 @@ create_dir_file /opt/pkgship/ 750 d
 create_dir_file /var/log/pkgship 750 d
 create_dir_file /var/log/pkgship-operation 700 d
 create_dir_file /etc/logrotate.d/pkgship 644 f
-create_dir_file /opt/pkgship/pkgshipcron 644 f
-echo "* */1 * * * /usr/sbin/logrotate -v /etc/logrotate.d/pkgship" >/opt/pkgship/pkgshipcron
-crontab /opt/pkgship/pkgshipcron
 
 %post
 
@@ -108,9 +105,6 @@ crontab /opt/pkgship/pkgshipcron
 %attr(0640,pkgshipuser,pkgshipuser) /lib/systemd/system/pkgship.service
 
 %changelog
-* Tue Mar 2 2021 Haiwei Li  <lihaiwei8@huawei.com> - 2.1.0-5
-- Add log dump crontab task
-
 * Tue Mar 2 2021 Yiru Wang  <wangyiru1@huawei.com> - 2.1.0-4
 - change pkgship-operation permission to 700 for get excute permission while creating files
 - delete /home/pkgusers/log and /home/pkgusers/uswgi, which moved to /opt/pkgship/
