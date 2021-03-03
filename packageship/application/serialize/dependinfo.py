@@ -29,7 +29,6 @@ def get_db():
         db_list: Gets the database information in the database
     """
     db_list = database.get_db_priority()
-    db_list = [db_name.lower() for db_name in db_list]
     return db_list
 
 
