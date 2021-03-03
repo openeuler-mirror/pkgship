@@ -55,7 +55,11 @@ class BufferCache:
         ret_dict= {}
 
         def spear_kwargs(old_dict):
+            """to spear kwargs
 
+            Args:
+                old_dict (dict): the input kwargs
+            """
             for k, v in old_dict.items():
                 if isinstance(v, dict):
                     v = spear_kwargs(v)
