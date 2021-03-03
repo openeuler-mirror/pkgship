@@ -11,13 +11,13 @@ BuildArch:      noarch
 BuildRequires: shadow
 BuildRequires: python3-flask-restful python3-flask python3 python3-pyyaml python3-redis
 BuildRequires: python3-prettytable python3-requests python3-retrying python3-coverage
-BuildRequires: python3-marshmallow python3-uWSGI python3-gevent python3-Flask-Limiter 
+BuildRequires: python3-marshmallow python3-uWSGI python3-gevent python3-Flask-Limiter
 BuildRequires: python3-elasticsearch
 
 Requires: shadow
 Requires: python3-flask-restful python3-flask python3 python3-pyyaml python3-redis
 Requires: python3-prettytable python3-requests python3-retrying python3-coverage
-Requires: python3-marshmallow python3-uWSGI python3-gevent python3-Flask-Limiter 
+Requires: python3-marshmallow python3-uWSGI python3-gevent python3-Flask-Limiter
 Requires: python3-elasticsearch
 
 %description
