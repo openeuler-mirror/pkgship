@@ -87,6 +87,9 @@ create_dir_file /opt/pkgship/ 750 d
 create_dir_file /var/log/pkgship 750 d
 create_dir_file /var/log/pkgship-operation 700 d
 create_dir_file /etc/logrotate.d/pkgship 644 f
+create_dir_file /opt/pkgship/pkgshipcron 644 f
+echo "* */1 * * * /usr/sbin/logrotate -v /etc/logrotate.d/pkgship" >/opt/pkgship/pkgshipcron
+crontab /opt/pkgship/pkgshipcron
 
 %post
 

@@ -170,7 +170,7 @@ function check_config_path() {
       echo "[ERROR] The file path corresponding to the parameter '${path_name}' does not exist and cannot create, please modify the configuration file '$SYS_PATH/package.ini'"
       exit 1
     fi
-    chown pkgshipuser: -R "${path_value}" >dev/null 2>&1
+    chown pkgshipuser: -R "${path_value}" >/dev/null 2>&1
   fi
   # value is a path
   if [ "${type}" = "d" ]; then
@@ -252,9 +252,10 @@ function create_logrotate_file() {
             missingok
             rotate 30
             dateext
-            size = 100k
+            dateformat .%s
+            size = 20M
             missingok
-            create 644 root root
+            create 644 pkgshipuser pkgshipuser
             compress
             copytruncate
             notifempty
@@ -262,11 +263,12 @@ function create_logrotate_file() {
     echo "${operation_log_path}{
             daily
             missingok
-            rotate 30
+            rotate 60
             dateext
-            size = 100k
+            dateformat .%s
+            size = 20M
             missingok
-            create 644 root root
+            create 644 pkgshipuser pkgshipuser
             compress
             copytruncate
             notifempty
