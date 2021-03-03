@@ -25,7 +25,7 @@ class BeDepend(BaseDepend):
         self.provide = BeDependRequires()
         self.query_pkg = QueryPackage()
 
-    def __get_subpacks(self, pkg_name_lst):
+    def __get_subpacks(self, pkg_name_lst, is_init=False):
         """get source packages's subpacks
 
         Args:
@@ -37,13 +37,18 @@ class BeDepend(BaseDepend):
         binary_pkgs = set()
         if not pkg_name_lst:
             return binary_pkgs
-        for pkg_dict in self.query_pkg.get_src_info(
-            pkg_name_lst, self.database, 1, len(pkg_name_lst)
-        )["data"]:
+        searched_pkg = set()
+        for pkg_dict in self.query_pkg.get_src_info(pkg_name_lst,
+                                                    self.database,
+                                                    1,
+                                                    len(pkg_name_lst))["data"]:
             for _, pkg_info in pkg_dict.items():
-
+                searched_pkg.add(pkg_info.get("src_name"))
                 binary_pkgs.update(set(pkg_info.get("subpacks", [])))
 
+        if is_init:
+            not_found_pkg = str(set(pkg_name_lst)-searched_pkg)
+            LOGGER.warning(f"source packages {not_found_pkg} not found in {self.database}")
         return binary_pkgs
 
     def __update_binary_dict(self, dep_info):
@@ -66,13 +71,12 @@ class BeDepend(BaseDepend):
                 "version": dep_info.get("bin_version"),
                 "source_name": dep_info.get("src_name"),
                 "database": self.database,
-                "install": [],
+                "install": []
             }
         for pro in dep_info.get("provides", []):
             for req_bin_info in pro.get("install_require", []):
                 next_search, next_src_names = self.__process_binary_data(
-                    bin_name, req_bin_info
-                )
+                    bin_name, req_bin_info)
                 next_search_binary.update(next_search)
                 to_search_subpacks.update(next_src_names)
         next_search_binary.update(self.__get_subpacks(to_search_subpacks))
@@ -98,14 +102,13 @@ class BeDepend(BaseDepend):
                 "name": src_name,
                 "version": dep_info["src_version"],
                 "database": self.database,
-                "build": [],
+                "build": []
             }
 
         for pro in dep_info.get("provides", []):
             for req_src_info in pro.get("build_require", []):
                 next_search_pkgs.update(
-                    self.__process_source_data(bin_name, req_src_info)
-                )
+                    self.__process_source_data(bin_name, req_src_info))
         return next_search_pkgs
 
     def __process_binary_data(self, dep_name, req_bin_info):
@@ -131,7 +134,7 @@ class BeDepend(BaseDepend):
                 "version": req_bin_info["req_bin_version"],
                 "source_name": src_name,
                 "database": self.database,
-                "install": [dep_name],
+                "install": [dep_name]
             }
             next_search_binary.add(bin_key)
             if self.parameter["with_subpack"] and src_name:
@@ -158,7 +161,7 @@ class BeDepend(BaseDepend):
                 "name": src_key,
                 "version": req_src_info["req_src_version"],
                 "database": self.database,
-                "build": [dep_name],
+                "build": [dep_name]
             }
             next_search_pkgs.update(self.__get_subpacks([src_key]))
         else:
@@ -200,38 +203,41 @@ class BeDepend(BaseDepend):
             set: first to search binary pkgs
         """
         if self.parameter.get("packtype") == "source":
-            return set(self.__get_subpacks(self.packagename))
+            return set(self.__get_subpacks(self.packagename, is_init=True))
 
         return set(self.packagename)
 
     def be_depend(self):
         """
-        get source(binary) rpm package(s) bedepend relation
+            get source(binary) rpm package(s) bedepend relation
         """
         searched_pkgs = set()
         update_meth = self.__get_update_data_method()
 
         to_search = self.__init_to_serach_pkgs()
-
+        is_init = True
         while to_search:
             resp = self.provide.get_be_req(to_search, self.database)
-            searched_pkgs.update(to_search)
-
             if not resp:
                 break
 
             next_search = set()
 
             for bedep_info in resp:
+                searched_pkgs.add(bedep_info.get("binary_name"))
                 next_pkgs = update_meth(bedep_info)
                 next_search.update(next_pkgs)
+
+            if is_init and self.parameter.get("packtype") == "binary":
+                not_found_pkg = str(to_search-searched_pkgs)
+                LOGGER.warning(f"binary packages {not_found_pkg} not found in {self.database}")
+                is_init=False
+
             to_search = next_search - searched_pkgs
 
     def __call__(self, **kwargs):
-        self.__dict__.update(packagename=kwargs["packagename"], dependency_type="bedep")
 
         @buffer_cache(depend=self)
         def _depends(**kwargs):
             self.be_depend()
-
         _depends(**kwargs)

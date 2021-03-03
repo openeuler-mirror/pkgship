@@ -15,6 +15,7 @@ import time
 import json
 import random
 import hashlib
+from copy import deepcopy
 import threading
 from redis.exceptions import RedisError
 from packageship.application.common import constant
@@ -48,14 +49,32 @@ class BufferCache:
         """
         if not self._args and not self._kwargs:
             return None
-
-        kwargs = {key: self._kwargs[key]
-                  for key in sorted(self._kwargs)}
+        kwargs = deepcopy(self._kwargs)
         kwargs["args"] = ",".join(self._args)
 
-        hash_str = "".join(sorted(str(kwargs))).encode('utf-8')
+        ret_dict= {}
 
-        return hashlib.sha256(hash_str).hexdigest()
+        def spear_kwargs(old_dict):
+
+            for k, v in old_dict.items():
+                if isinstance(v, dict):
+                    v = spear_kwargs(v)
+                else:
+                    if k == "db_priority" and isinstance(v, list):
+                        v = ",".join(v)
+                    elif isinstance(v, list):
+                        v = ",".join(sorted(v))
+                    else:
+                        v = str(v)
+                    ret_dict.update({k: v})
+
+        spear_kwargs(kwargs)
+        kw_str = "key"
+
+        for key, val in sorted(ret_dict.items(), key=lambda x: x[0]):
+            kw_str += "," + key + ":" + val
+
+        return hashlib.sha256(kw_str.encode("utf8")).hexdigest()
 
     def _set_cache(self, key):
         """
