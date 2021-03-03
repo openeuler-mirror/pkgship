@@ -1,6 +1,6 @@
 Name:           pkgship
 Version:        2.1.0
-Release:        4
+Release:        5
 Summary:        Pkgship implements rpm package dependence ,maintainer, patch query and so no.
 License:        Mulan 2.0
 URL:            https://gitee.com/openeuler/pkgship
@@ -108,6 +108,9 @@ crontab /opt/pkgship/pkgshipcron
 %attr(0640,pkgshipuser,pkgshipuser) /lib/systemd/system/pkgship.service
 
 %changelog
+* Tue Mar 2 2021 Haiwei Li  <lihaiwei8@huawei.com> - 2.1.0-5
+- Add log dump crontab task
+
 * Tue Mar 2 2021 Yiru Wang  <wangyiru1@huawei.com> - 2.1.0-4
 - change pkgship-operation permission to 700 for get excute permission while creating files
 - delete /home/pkgusers/log and /home/pkgusers/uswgi, which moved to /opt/pkgship/
