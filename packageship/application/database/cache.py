@@ -56,9 +56,31 @@ class BufferCache:
 
         def spear_kwargs(old_dict):
             """to spear kwargs
+            if key is 'db_priority' and the value is list,
+                do not sort list content,and merge to string
+                because need to keep the order of the database.
 
+            Other list cases need to be sorted first,then merge to string
+            
+            There is no strict order requirement for the remaining keys and values, 
+                and can be directly converted to strings.
+            
             Args:
                 old_dict (dict): the input kwargs
+               
+                e.g:
+                input kwargs:
+                {'depend_type': 'installdep',
+                'packagename': ['Judy','Judy1'],
+                'parameter': {'db_priority': ['fedora30', 'openeuler'], 'level': 0}}
+                    
+                To:
+                
+                {'depend_type': 'installdep',
+                'packagename': 'Judy,Judy1',  # be sorted first then merge to string
+                'db_priority':'fedora30,openeuler'  # do not sorted, can merge to string
+                'level':'0'
+                }
             """
             for k, v in old_dict.items():
                 if isinstance(v, dict):
