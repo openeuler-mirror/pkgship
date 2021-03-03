@@ -15,6 +15,7 @@ import time
 import json
 import random
 import hashlib
+from copy import deepcopy
 import threading
 from redis.exceptions import RedisError
 from packageship.application.common import constant
@@ -48,14 +49,58 @@ class BufferCache:
         """
         if not self._args and not self._kwargs:
             return None
-
-        kwargs = {key: self._kwargs[key]
-                  for key in sorted(self._kwargs)}
+        kwargs = deepcopy(self._kwargs)
         kwargs["args"] = ",".join(self._args)
 
-        hash_str = "".join(sorted(str(kwargs))).encode('utf-8')
+        ret_dict= {}
 
-        return hashlib.sha256(hash_str).hexdigest()
+        def spear_kwargs(old_dict):
+            """to spear kwargs
+            if key is 'db_priority' and the value is list,
+                do not sort list content,and merge to string
+                because need to keep the order of the database.
+
+            Other list cases need to be sorted first,then merge to string
+            
+            There is no strict order requirement for the remaining keys and values, 
+                and can be directly converted to strings.
+            
+            Args:
+                old_dict (dict): the input kwargs
+               
+                e.g:
+                input kwargs:
+                {'depend_type': 'installdep',
+                'packagename': ['Judy','Judy1'],
+                'parameter': {'db_priority': ['fedora30', 'openeuler'], 'level': 0}}
+                    
+                To:
+                
+                {'depend_type': 'installdep',
+                'packagename': 'Judy,Judy1',  # be sorted first then merge to string
+                'db_priority':'fedora30,openeuler'  # do not sorted, can merge to string
+                'level':'0'
+                }
+            """
+            for k, v in old_dict.items():
+                if isinstance(v, dict):
+                    spear_kwargs(v)
+                else:
+                    if k == "db_priority" and isinstance(v, list):
+                        v = ",".join(v)
+                    elif isinstance(v, list):
+                        v = ",".join(sorted(v))
+                    else:
+                        v = str(v)
+                    ret_dict.update({k: v})
+
+        spear_kwargs(kwargs)
+        kw_str = "key"
+
+        for key, val in sorted(ret_dict.items(), key=lambda x: x[0]):
+            kw_str += "," + key + ":" + val
+
+        return hashlib.sha256(kw_str.encode("utf8")).hexdigest()
 
     def _set_cache(self, key):
         """

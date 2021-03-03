@@ -25,7 +25,7 @@ class BeDepend(BaseDepend):
         self.provide = BeDependRequires()
         self.query_pkg = QueryPackage()
 
-    def __get_subpacks(self, pkg_name_lst):
+    def __get_subpacks(self, pkg_name_lst, is_init=False):
         """get source packages's subpacks
 
         Args:
@@ -37,13 +37,19 @@ class BeDepend(BaseDepend):
         binary_pkgs = set()
         if not pkg_name_lst:
             return binary_pkgs
+        searched_pkg = set()
         for pkg_dict in self.query_pkg.get_src_info(
             pkg_name_lst, self.database, 1, len(pkg_name_lst)
         )["data"]:
             for _, pkg_info in pkg_dict.items():
-
+                searched_pkg.add(pkg_info.get("src_name"))
                 binary_pkgs.update(set(pkg_info.get("subpacks", [])))
 
+        if is_init:
+            not_found_pkg = str(set(pkg_name_lst) - searched_pkg)
+            LOGGER.warning(
+                f"source packages {not_found_pkg} not found in {self.database}"
+            )
         return binary_pkgs
 
     def __update_binary_dict(self, dep_info):
@@ -200,7 +206,7 @@ class BeDepend(BaseDepend):
             set: first to search binary pkgs
         """
         if self.parameter.get("packtype") == "source":
-            return set(self.__get_subpacks(self.packagename))
+            return set(self.__get_subpacks(self.packagename, is_init=True))
 
         return set(self.packagename)
 
@@ -212,24 +218,29 @@ class BeDepend(BaseDepend):
         update_meth = self.__get_update_data_method()
 
         to_search = self.__init_to_serach_pkgs()
-
+        is_init = True
         while to_search:
             resp = self.provide.get_be_req(to_search, self.database)
-            searched_pkgs.update(to_search)
-
             if not resp:
                 break
 
             next_search = set()
 
             for bedep_info in resp:
+                searched_pkgs.add(bedep_info.get("binary_name"))
                 next_pkgs = update_meth(bedep_info)
                 next_search.update(next_pkgs)
+
+            if is_init and self.parameter.get("packtype") == "binary":
+                not_found_pkg = str(to_search - searched_pkgs)
+                LOGGER.warning(
+                    f"binary packages {not_found_pkg} not found in {self.database}"
+                )
+                is_init = False
+
             to_search = next_search - searched_pkgs
 
     def __call__(self, **kwargs):
-        self.__dict__.update(packagename=kwargs["packagename"], dependency_type="bedep")
-
         @buffer_cache(depend=self)
         def _depends(**kwargs):
             self.be_depend()
