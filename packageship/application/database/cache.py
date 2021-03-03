@@ -62,7 +62,7 @@ class BufferCache:
             """
             for k, v in old_dict.items():
                 if isinstance(v, dict):
-                    v = spear_kwargs(v)
+                    spear_kwargs(v)
                 else:
                     if k == "db_priority" and isinstance(v, list):
                         v = ",".join(v)
