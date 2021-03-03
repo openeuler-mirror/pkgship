@@ -21,8 +21,17 @@ from marshmallow import validates
 from marshmallow import ValidationError
 from packageship.application.query import database
 
-db_list = database.get_db_priority()
-db_list = [db_name.lower() for db_name in db_list]
+
+def get_db():
+    """
+    Gets the database information in the database,
+    An exception is already caught on the function side.
+    An empty list is returned when an exception occurs
+    Returns:
+        db_list: Gets the database information in the database
+    """
+    db_list = database.get_db_priority()
+    return db_list
 
 
 class BaseParameterSchema(Schema):
@@ -44,7 +53,7 @@ class OtherdependSchema(BaseParameterSchema):
     Install dependencies, build dependencies, and selfdepen validators
     """
     db_priority = fields.List(fields.String(),
-                              required=False, missing=db_list, default=db_list)
+                              required=False, missing=get_db(), default=get_db())
 
     @validates("db_priority")
     def validate_name(self, db_priority):
@@ -58,7 +67,7 @@ class OtherdependSchema(BaseParameterSchema):
         Raises:
             ValidationError: Validation fails
         """
-        res = any(filter(lambda db_name: db_name not in db_list, db_priority))
+        res = any(filter(lambda db_name: db_name not in get_db(), db_priority))
         if len(db_priority) < 1 or res:
             raise ValidationError(
                 "db_priority length less than one or Database priority error")
@@ -83,7 +92,7 @@ class BedependSchema(BaseParameterSchema):
         Raises:
             ValidationError: Validation fails
         """
-        res = any(filter(lambda db_name: db_name not in db_list, db_priority))
+        res = any(filter(lambda db_name: db_name not in get_db(), db_priority))
         if len(db_priority) != 1 or res:
             raise ValidationError(
                 "db_priority length less than one or Database priority error")
