@@ -24,7 +24,9 @@ from packageship.application.query import database
 
 def get_db():
     """
-    Gets the database information in the database
+    Gets the database information in the database,
+    An exception is already caught on the function side.
+    An empty list is returned when an exception occurs
     Returns:
         db_list: Gets the database information in the database
     """
