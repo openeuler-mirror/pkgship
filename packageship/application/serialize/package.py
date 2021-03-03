@@ -18,9 +18,9 @@ from marshmallow import validate
 from marshmallow import Schema
 from marshmallow import validates
 from marshmallow import ValidationError
-from packageship.application.query import database
+
 from packageship.application.common import constant
-db_list = database.get_db_priority()
+from packageship.application.serialize.dependinfo import get_db
 
 
 class PackageSchema(Schema):
@@ -45,7 +45,7 @@ class PackageSchema(Schema):
         Raises:
             ValidationError: The exception that failed to validate
         """
-        if database_name not in db_list:
+        if database_name not in get_db():
             raise ValidationError("The name is not passed in the database")
 
 
@@ -67,5 +67,5 @@ class SingleSchema(Schema):
         Raises:
             ValidationError: The exception that failed to validate
         """
-        if database_name not in db_list:
+        if database_name not in get_db():
             raise ValidationError("The name is not passed in the database")
