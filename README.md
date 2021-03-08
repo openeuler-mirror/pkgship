@@ -155,22 +155,22 @@ database_port=9200
 conf.yaml 文件默认存放在 /etc/pkgship/ 路径下，pkgship会通过该配置读取要建立的数据库名称以及需要导入的sqlite文件，也支持配置sqlite文件所在的repo地址。conf.yaml 示例如下所示。
 
 ```yaml
-dbname: openEuler-20.03
-src_db_file: /etc/pkgship/src.sqlite
-bin_db_file: /etc/pkgship/bin.sqlite
-lifecycle: enable
-priority: 1
+dbname: openEuler-20.03   #数据库名称
+src_db_file: /etc/pkgship/repo/openEuler-20.09/src  #源码包所在的本地路径
+bin_db_file: /etc/pkgship/repo/openEuler-20.09/bin  #二进制包所在的本地路径
+priority: 1 #数据库优先级
 
 dbname: openEuler-20.09
-src_db_file: https://repo.openeuler.org/openEuler-20.09/source
-bin_db_file: https://repo.openeuler.org/openEuler-20.09/everything/aarch64
-lifecycle: enable
+src_db_file: https://repo.openeuler.org/openEuler-20.09/source  #源码包所在的repo源
+bin_db_file: https://repo.openeuler.org/openEuler-20.09/everything/aarch64 #二进制包所在的repo源
 priority: 2
 ```
 
 
 
 > 如需更改存放路径，请更改package.ini下的 init_conf_path 选项。
+>
+> 不支持直接配置sqlite文件路径。
 
 ## 服务启动和停止
 pkgship启动和停止方式有两种，systemctl方式和pkgshipd方式，其中systemctl方式启动可以有异常停止自启动的机制。两种方式的执行命令为：
@@ -188,6 +188,8 @@ pkgshipd start 启动服务
 
 pkgshipd stop 停止服务
 ```
+
+> 每次起停周期内仅支持一种方式，不允许两种操作同时使用。
 
 ## 工具使用
 
