@@ -158,7 +158,7 @@ class InitializeService:
         try:
             self._config.load_config(path)
         except (ValueError, FileNotFoundError) as error:
-            raise InitializeError(error) from error
+            raise InitializeError(str(error)) from error
         if not self._config.validate:
             raise InitializeError(self._config.message)
 
@@ -180,6 +180,7 @@ class InitializeService:
                 if not all((self._repo["src_db_file"],
                             self._repo["bin_db_file"],
                             self._repo["file_list"])):
+                    self._fail.append(self._repo["dbname"])
                     continue
                 self._save()
             except (FileNotFoundError, ValueError, ElasticsearchException) as error:
@@ -622,7 +623,7 @@ class RepoConfig:
         try:
             self._validation_content()
         except ValueError as error:
-            self._message.append(error)
+            self._message.append(str(error))
 
         return False if self._message else True
 
@@ -660,9 +661,10 @@ class RepoConfig:
                 self._repo = yaml.load(
                     file_context.read(), Loader=yaml.FullLoader)
             except yaml.YAMLError as yaml_error:
+                LOGGER.error(yaml_error)
                 raise ValueError(
                     "The format of the yaml configuration"
-                    "file is wrong please check and try again:{0}".format(yaml_error))\
+                    "file is wrong please check and try again:{0}".format(yaml_error)) \
                     from yaml_error
 
     def _validate_priority(self, repo):
@@ -671,14 +673,21 @@ class RepoConfig:
 
         """
         if not isinstance(repo, dict):
-            raise TypeError("The configuration item is not properly formatted")
+            raise TypeError(
+                "The database %s configuration item is not formatted correctly ."
+                % repo.get("dbname", ""))
+
         _priority = repo.get('priority')
+        if not _priority:
+            raise TypeError(
+                "The database priority of %s does not exist ." % repo.get("dbname", ""))
+
         if not isinstance(_priority, int):
             raise TypeError(
-                "priority of database %s must be a integer number" % repo.get("dbname", ""))
+                "priority of database %s must be a integer number ." % repo.get("dbname", ""))
         if _priority < 1 or _priority > 100:
             raise ValueError(
-                "priority range of the database can only be between 1 and 100")
+                "priority range of the database can only be between 1 and 100 .")
 
     def _validate_filepath(self, repo):
         """
@@ -691,7 +700,9 @@ class RepoConfig:
         regex = r"^((ht|f)tp(s?)|file)\:\/\/(\/?)[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])"\
             r"*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%$#_]*)?"
         if not isinstance(repo, dict):
-            raise TypeError("The configuration item is not properly formatted")
+            raise TypeError(
+                "The database %s configuration item is not formatted correctly ."
+                % repo.get("dbname", ""))
 
         if not re.match(regex, repo.get("src_db_file", "")):
             raise ValueError(
@@ -708,16 +719,18 @@ class RepoConfig:
 
         """
         try:
-            databases = set([database['dbname']
-                             for database in self._repo if database['dbname']])
+            databases = [database['dbname'] for database in self._repo]
         except (KeyError, TypeError) as error:
             raise ValueError(
                 "The initialized configuration file is incorrectly"
                 " formatted and lacks the necessary dbname field .") from error
-        if not databases:
-            raise ValueError(
-                "The name of the database was not specified during initialization .")
 
+        if databases.count(None) != 0:
+            raise ValueError(
+                "The name of the database that the configuration item did "
+                "not specify in the initialized configuration file .")
+
+        databases = set([db for db in databases if db])
         if len(databases) != len(self._repo):
             raise ValueError(
                 "There is a duplicate initialization configuration database name .")
@@ -733,15 +746,15 @@ class RepoConfig:
         """
         if not self._repo:
             raise ValueError(
-                "content of the database initialization configuration file cannot be empty")
+                "content of the database initialization configuration file cannot be empty .")
         if not isinstance(self._repo, list):
             raise ValueError("""format of the initial database configuration file isincorrect.
                                 When multiple databases need to be initialized,
-                                it needs to be configured in the form of multiple""")
+                                it needs to be configured in the form of multiple .""")
         self._validate_database()
         for repo in self._repo:
             try:
                 self._validate_priority(repo)
                 self._validate_filepath(repo)
             except (ValueError, TypeError) as error:
-                self._message.append(error)
+                self._message.append(str(error))
