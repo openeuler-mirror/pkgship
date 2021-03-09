@@ -241,7 +241,7 @@ class InitializeService:
                     src_pack["pkgKey"])
 
             es_json["requires"] = es_json["requires"] + \
-                                  self._install_requires(bin_pack)
+                self._install_requires(bin_pack)
 
             binarys.append(self._es_json("-binary", es_json))
         helpers.bulk(self._session.client, binarys)
@@ -664,7 +664,8 @@ class RepoConfig:
                 LOGGER.error(yaml_error)
                 raise ValueError(
                     "The format of the yaml configuration"
-                    "file is wrong please check and try again:{0}".format(yaml_error)) from yaml_error
+                    "file is wrong please check and try again:{0}".format(yaml_error)) \
+                    from yaml_error
 
     def _validate_priority(self, repo):
         """
@@ -696,8 +697,8 @@ class RepoConfig:
             repo: content of the repo
         """
         # A url that matches whether the file is HTTPS or this file is a local file
-        regex = r"^((ht|f)tp(s?)|file)\:\/\/(\/?)[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])" \
-                r"*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%$#_]*)?"
+        regex = r"^((ht|f)tp(s?)|file)\:\/\/(\/?)[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])"\
+            r"*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%$#_]*)?"
         if not isinstance(repo, dict):
             raise TypeError(
                 "The database %s configuration item is not formatted correctly ."
