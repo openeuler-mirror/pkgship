@@ -36,7 +36,7 @@ class ElasticSearch(object):
         self._port = port
         try:
             self.client = Elasticsearch(
-                [{"host": self._host, "port": self._port}])
+                [{"host": self._host, "port": self._port}], timeout=60)
         except LocationValueError:
             LOGGER.error("The host of database in package.ini is empty")
             raise DatabaseConfigException()
