@@ -7,7 +7,8 @@ function create_es_repo() {
 
   if [ ! -f ${REPO_CONFIG_FILE} ]; then
     touch ${REPO_CONFIG_FILE}
-    echo "[pkgship_elasticsearch]
+  fi
+  echo "[pkgship_elasticsearch]
 name=Elasticsearch repository for 7.x packages
 baseurl=https://artifacts.elastic.co/packages/7.x/yum
 gpgcheck=1
@@ -15,14 +16,6 @@ gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
 enabled=1
 autorefresh=1
 type=rpm-md" >${REPO_CONFIG_FILE}
-  else
-    echo "[WARRING] /etc/yum.repos.d/pkgship_elasticsearch.repo already exists,please make sure it is correct"
-    read -p "Whether to continue (y/n):" operation
-    if [ "${operation}" != "y" ] && [ "${operation}" != "Y" ]; then
-      echo "You have terminated the operation"
-      exit 1
-    fi
-  fi
   # create repo file failed
   if [ ! -f ${REPO_CONFIG_FILE} ]; then
     echo "[ERROR] pkgship_elasticsearch.repo file creation failed!"
@@ -82,7 +75,7 @@ function start_elasticsearch_service() {
   echo "[INFO] start to start elasticsearch service"
   su - elasticsearch -c "/bin/bash /usr/share/elasticsearch/bin/elasticsearch &" >/dev/null 2>&1
 
-  for i in {1..5}; do
+  for i in {1..12}; do
     visit_es_response=$(curl -s -XGET http://127.0.0.1:9200)
     if [[ "${visit_es_response}" =~ "You Know, for Search" ]]; then
       echo "[INFO] elasticsearch start success"
