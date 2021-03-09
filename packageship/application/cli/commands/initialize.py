@@ -15,8 +15,11 @@ Description: Entry method for custom commands
 Class: InitDatabaseCommand
 """
 import os
+import time
 import pwd
+import threading
 from packageship.application.cli.base import BaseCommand
+from packageship.application.common.initialize_dynamic import print_init_info
 from packageship.application.initialize.integration import InitializeService
 from packageship.application.common.exc import InitializeError, ResourceCompetitionError
 
@@ -62,7 +65,7 @@ class InitDatabaseCommand(BaseCommand):
         Raises:
 
         """
-        get_username = lambda:pwd.getpwuid(os.getuid())[0]
+        get_username = lambda: pwd.getpwuid(os.getuid())[0]
         if get_username() not in ["root", "pkgshipuser"]:
             print("The current user does not have initial execution permission")
             return
@@ -71,11 +74,15 @@ class InitDatabaseCommand(BaseCommand):
         if file_path:
             file_path = os.path.abspath(file_path)
         try:
+            print_t = threading.Thread(target=print_init_info)
+            print_t.setDaemon(True)
+            print_t.start()
             init.import_depend(path=file_path)
+            time.sleep(0.5)
         except (InitializeError, ResourceCompetitionError) as error:
-            print(error)
+            print('\r', error)
         else:
             if init.success:
-                print('Database initialize success')
+                print('\r', 'Database initialize success')
             else:
-                print('%s initialize failed' % ','.join(init.fail))
+                print('\r', '%s initialize failed' % ','.join(init.fail))

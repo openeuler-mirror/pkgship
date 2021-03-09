@@ -97,9 +97,9 @@ class PkgshipCommand(BaseCommand):
             uwsgi_process = "ps -ef | grep -v grep | grep %s" % UWSIG_PATH
             ps_con = os.popen(uwsgi_process).readlines()
             if len(ps_con) == 0:
-                print("The uwsgi service is not started, please start the service first")
+                print("The pkgship service is not started, please start the service first")
                 return
             args = cls.parser.parse_args()
             args.func(args)
         except Error:
-            print('command error')
+            print('The command execution failed due to:{}'.format(Error))

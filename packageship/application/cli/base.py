@@ -260,3 +260,4 @@ class BaseCommand():
                     self.statistics_table.add_row([statistic['database'],
                                                    statistic['binary_sum'],
                                                    statistic['source_sum']])
+
