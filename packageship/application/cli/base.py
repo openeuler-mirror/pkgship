@@ -16,6 +16,8 @@ Class: BaseCommand
 """
 
 try:
+    import time
+    import random
     import argparse
     import prettytable
     from requests import HTTPError
@@ -260,3 +262,9 @@ class BaseCommand():
                     self.statistics_table.add_row([statistic['database'],
                                                    statistic['binary_sum'],
                                                    statistic['source_sum']])
+
+    @staticmethod
+    def print_init_info():
+        while True:
+            print("\r", "initializing{}".format("." * random.randint(1, 4)), end='', flush=True)
+            time.sleep(0.1)

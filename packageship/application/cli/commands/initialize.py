@@ -16,6 +16,7 @@ Class: InitDatabaseCommand
 """
 import os
 import pwd
+import threading
 from packageship.application.cli.base import BaseCommand
 from packageship.application.initialize.integration import InitializeService
 from packageship.application.common.exc import InitializeError, ResourceCompetitionError
@@ -62,7 +63,7 @@ class InitDatabaseCommand(BaseCommand):
         Raises:
 
         """
-        get_username = lambda:pwd.getpwuid(os.getuid())[0]
+        get_username = lambda: pwd.getpwuid(os.getuid())[0]
         if get_username() not in ["root", "pkgshipuser"]:
             print("The current user does not have initial execution permission")
             return
@@ -71,11 +72,15 @@ class InitDatabaseCommand(BaseCommand):
         if file_path:
             file_path = os.path.abspath(file_path)
         try:
-            init.import_depend(path=file_path)
+            init_t = threading.Thread(target=init.import_depend, kwargs={'path': file_path})
+            print_t = threading.Thread(target=self.print_init_info)
+            print_t.setDaemon(True)
+            init_t.start()
+            print_t.start()
         except (InitializeError, ResourceCompetitionError) as error:
             print(error)
         else:
             if init.success:
-                print('Database initialize success')
+                print('\r', 'Database initialize success')
             else:
-                print('%s initialize failed' % ','.join(init.fail))
+                print('\r', '%s initialize failed' % ','.join(init.fail))
