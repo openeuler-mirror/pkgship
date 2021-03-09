@@ -15,6 +15,7 @@ Description: Entry method for custom commands
 Class: InitDatabaseCommand
 """
 import os
+import time
 import pwd
 import threading
 from packageship.application.cli.base import BaseCommand
@@ -72,13 +73,13 @@ class InitDatabaseCommand(BaseCommand):
         if file_path:
             file_path = os.path.abspath(file_path)
         try:
-            init_t = threading.Thread(target=init.import_depend, kwargs={'path': file_path})
             print_t = threading.Thread(target=self.print_init_info)
             print_t.setDaemon(True)
-            init_t.start()
             print_t.start()
+            init.import_depend(path=file_path)
+            time.sleep(0.5)
         except (InitializeError, ResourceCompetitionError) as error:
-            print(error)
+            print('\r', error)
         else:
             if init.success:
                 print('\r', 'Database initialize success')
