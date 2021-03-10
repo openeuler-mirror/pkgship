@@ -47,9 +47,8 @@ class BeDepend(BaseDepend):
 
         if is_init:
             not_found_pkg = str(set(pkg_name_lst) - searched_pkg)
-            LOGGER.warning(
-                f"source packages {not_found_pkg} not found in {self.database}"
-            )
+            self.log_msg = f"source packages {not_found_pkg} not found in {self.database}"
+            LOGGER.warning(self.log_msg)
         return binary_pkgs
 
     def __update_binary_dict(self, dep_info):
@@ -233,9 +232,8 @@ class BeDepend(BaseDepend):
 
             if is_init and self.parameter.get("packtype") == "binary":
                 not_found_pkg = str(to_search - searched_pkgs)
-                LOGGER.warning(
-                    f"binary packages {not_found_pkg} not found in {self.database}"
-                )
+                self.log_msg = f"binary packages {not_found_pkg} not found in {self.database}"
+                LOGGER.warning(self.log_msg)
                 is_init = False
 
             to_search = next_search - searched_pkgs

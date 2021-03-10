@@ -124,7 +124,8 @@ class BufferCache:
 
         self._func(*self._args, **self._kwargs)
         constant.REDIS_CONN.hmset(key, dict(source_dict=json.dumps(self._depend.source_dict),
-                                            binary_dict=json.dumps(self._depend.binary_dict)))
+                                            binary_dict=json.dumps(self._depend.binary_dict),
+                                            log_msg=self._depend.log_msg))
 
     def _set_val(self, key):
         """
@@ -134,9 +135,17 @@ class BufferCache:
         Args:
             key: cached key
         """
-        dpenends = constant.REDIS_CONN.hgetall(key)
-        self._depend.source_dict = json.loads(dpenends["source_dict"])
-        self._depend.binary_dict = json.loads(dpenends["binary_dict"])
+        # dpenends = constant.REDIS_CONN.hgetall(key)
+        self._depend.source_dict = json.loads(constant.REDIS_CONN.hget(key,"source_dict"))
+        self._depend.binary_dict = json.loads(constant.REDIS_CONN.hget(key,"binary_dict"))
+        self._depend.log_msg = constant.REDIS_CONN.hget(key,"log_msg")
+        
+        if not self._depend.log_msg:
+            return 
+        
+        LOGGER.warning(self._depend.log_msg)
+        
+        
 
     def _cache(self):
         """

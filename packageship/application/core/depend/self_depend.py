@@ -20,7 +20,6 @@ from .basedepend import BaseDepend
 from .install_depend import InstallDepend
 from .build_depend import BuildDepend
 
-
 class SelfDepend(BaseDepend):
 
     """
@@ -56,6 +55,7 @@ class SelfDepend(BaseDepend):
 
         self.__query_pkg = QueryPackage(self.db_list)
         self.subpack = False
+        self.log_msg = ""
 
     def self_depend(self, pkg_name, pkgtype="binary", self_build=False, with_subpack=False):
         """
@@ -82,24 +82,34 @@ class SelfDepend(BaseDepend):
                 else:
                     self.search_install_dict.get("non_db").add(pkg)
         if pkgtype == "source":
-            self.__query_subpack()
+            self.__query_subpack(pkg_list=pkg_name,is_init=True)
         # end this loop while those three dictionry's value are None
+        is_init=True
         while self._check_search(self.search_install_dict) \
                 or self._check_search(self.search_build_dict) \
                 or self._check_search(self.search_subpack_dict):
+            
             while self._check_search(self.search_install_dict):
                 install.install_depend([])
+            
+                if is_init and pkgtype == "binary":
+                    fmt = str(set(pkg_name)-set(self.binary_dict.keys()))
+                    self.log_msg = f"binary name {fmt} not found in all database"
+                    LOGGER.warning(self.log_msg)
+                    is_init=False
+            
             while self._check_search(self.search_build_dict):
                 build.build_depend([], self_build=self_build)
             while with_subpack and self._check_search(self.search_subpack_dict):
                 self.__query_subpack()
 
-    def __query_subpack(self):
+    def __query_subpack(self,pkg_list=None,is_init=False):
         """
         Description: query the source package's subpack in database
         Returns:
             resp: the response for subpack info result
-       """
+        """
+        init_searched_name = set()
         resp = self._query_in_db(
             search_dict=self.search_subpack_dict,
             func=self.__query_pkg.get_bin_name)
@@ -114,6 +124,7 @@ class SelfDepend(BaseDepend):
                     "There is a None type in resp for ")
                 continue
             src_name = pkg_info.get("source_name")
+            init_searched_name.add(src_name)
             db_name = pkg_info.get("database")
             if not (db_name and src_name):
                 continue
@@ -121,6 +132,12 @@ class SelfDepend(BaseDepend):
                 bin_name = bin_info.get("bin_name")
                 if bin_name and bin_name not in self.binary_dict:
                     self.search_install_dict[db_name].add(bin_name)
+
+        if is_init and isinstance(pkg_list,list):
+            fmt = str(set(pkg_list)-init_searched_name)
+            self.log_msg = f"source name {fmt} not found in all database"
+            LOGGER.warning(self.log_msg)
+            
 
     def add_search_dict(self, add_type, com_db, com_bin_name=None, com_src_name=None):
         """

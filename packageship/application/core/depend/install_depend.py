@@ -18,7 +18,6 @@ from packageship.libs.log import LOGGER
 from packageship.application.query.depend import InstallRequires
 from packageship.application.database.cache import buffer_cache
 from .basedepend import BaseDepend
-
 class InstallDepend(BaseDepend):
 
     """
@@ -51,6 +50,8 @@ class InstallDepend(BaseDepend):
         self.__level = 0
         self.__query_installreq = InstallRequires(db_list)
 
+        self.log_msg = ''
+        
         # for build and self depend, get the previous result from the input cls
         if isinstance(depend, BaseDepend):
             self.depend_history = depend
@@ -155,9 +156,9 @@ class InstallDepend(BaseDepend):
 
         self._search_set.clear()
         if self.__level == 1 and searched_pkg:
-            LOGGER.warning("Can not find the packages:" +
-                            str(searched_pkg) + "in all databases")
-
+            self.log_msg = f"Can not find the packages:{str(searched_pkg)}in all databases"
+            LOGGER.warning(self.log_msg)
+            
     def __call__(self, **kwargs):
         self.__dict__.update(
             dict(packagename=kwargs["packagename"], dependency_type="installdep"))
