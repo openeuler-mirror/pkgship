@@ -1,6 +1,6 @@
 Name:           pkgship
 Version:        2.1.0
-Release:        4
+Release:        5
 Summary:        Pkgship implements rpm package dependence ,maintainer, patch query and so no.
 License:        Mulan 2.0
 URL:            https://gitee.com/openeuler/pkgship
@@ -12,13 +12,13 @@ BuildRequires: shadow
 BuildRequires: python3-flask-restful python3-flask python3 python3-pyyaml python3-redis
 BuildRequires: python3-prettytable python3-requests python3-retrying python3-coverage
 BuildRequires: python3-marshmallow python3-uWSGI python3-gevent python3-Flask-Limiter
-BuildRequires: python3-elasticsearch
+BuildRequires: python3-elasticsearch python3-concurrent-log-handler
 
 Requires: shadow
 Requires: python3-flask-restful python3-flask python3 python3-pyyaml python3-redis
 Requires: python3-prettytable python3-requests python3-retrying python3-coverage
 Requires: python3-marshmallow python3-uWSGI python3-gevent python3-Flask-Limiter
-Requires: python3-elasticsearch
+Requires: python3-elasticsearch python3-concurrent-log-handler
 
 %description
 Pkgship implements rpm package dependence ,maintainer, patch query and so no.
@@ -84,9 +84,8 @@ chown -R $user:$group $1
 }
 
 create_dir_file /opt/pkgship/ 750 d
-create_dir_file /var/log/pkgship 750 d
+create_dir_file /var/log/pkgship 755 d
 create_dir_file /var/log/pkgship-operation 700 d
-create_dir_file /etc/logrotate.d/pkgship 644 f
 
 %post
 
@@ -100,11 +99,15 @@ create_dir_file /etc/logrotate.d/pkgship 644 f
 %attr(0755,pkgshipuser,pkgshipuser) %{_bindir}/pkgshipd
 %attr(0755,pkgshipuser,pkgshipuser) %{_bindir}/pkgship
 %attr(0750,root,root) /etc/pkgship/auto_install_pkgship_requires.sh
+%attr(0750,pkgshipuser,pkgshipuser) /etc/pkgship/uwsgi_logrotate.sh
 %attr(0640,pkgshipuser,pkgshipuser) /etc/pkgship/package.ini
 %attr(0644,pkgshipuser,pkgshipuser) /etc/pkgship/conf.yaml
 %attr(0640,pkgshipuser,pkgshipuser) /lib/systemd/system/pkgship.service
 
 %changelog
+* Tue Mar 5 2021 Haiwei Li  <lihaiwei8@huawei.com> - 2.1.0-5
+- Modify the log logrotate scheme
+
 * Tue Mar 2 2021 Yiru Wang  <wangyiru1@huawei.com> - 2.1.0-4
 - change pkgship-operation permission to 700 for get excute permission while creating files
 - delete /home/pkgusers/log and /home/pkgusers/uswgi, which moved to /opt/pkgship/

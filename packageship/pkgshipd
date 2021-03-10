@@ -1,7 +1,6 @@
 #!/bin/bash
 SYS_PATH=/etc/pkgship
 OUT_PATH=/opt/pkgship/uwsgi
-LOGROTATE_FILE=/etc/logrotate.d/pkgship
 OPERATION=$1
 PKGSHIP_CONSTANT="pkgship"
 MEM_THRESHOLD='700'
@@ -227,56 +226,12 @@ pidfile=$OUT_PATH/${PKGSHIP_CONSTANT}.pid
 http-timeout=$http_timeout
 harakiri=$harakiri
 enable-threads=true
+touch-logreopen=/opt/pkgship/uwsgi/.touch_for_logrotate
 log-format = [remote url: %(uri)  %(method)]---{%(user_ip)} --->[%(user)]-->[%(addr)] -->[%(proto)] -->[%(host)] {%(vars) vars in %(pktsize) bytes} [%(ctime)]=> %(status)))
 daemonize=$daemonize" >$OUT_PATH/${PKGSHIP_CONSTANT}.ini
+  chown pkgshipuser: $OUT_PATH/${PKGSHIP_CONSTANT}.ini
   chmod 750 $OUT_PATH/${PKGSHIP_CONSTANT}.ini
   echo "[INFO] create uwsgi file ok"
-}
-
-function create_logrotate_file() {
-  echo "[INFO] start to create logrotate config file"
-
-  if [ ! -f ${LOGROTATE_FILE} ]; then
-    echo "[ERROR] logrotate config file is not exist"
-    exit 1
-  fi
-
-  config_content=$(cat ${LOGROTATE_FILE})
-  if [ -n "${config_content}" ]; then
-    echo "[WARNING] logrotate config file has existed,continue"
-  else
-    log_path=$(get_config "log_path")/log_info.log
-    operation_log_path=$(get_config "daemonize")
-    echo "${log_path}{
-            daily
-            missingok
-            rotate 30
-            dateext
-            dateformat .%s
-            size = 20M
-            missingok
-            create 644 pkgshipuser pkgshipuser
-            compress
-            copytruncate
-            notifempty
-    }" >${LOGROTATE_FILE}
-    echo "${operation_log_path}{
-            daily
-            missingok
-            rotate 60
-            dateext
-            dateformat .%s
-            size = 20M
-            missingok
-            create 644 pkgshipuser pkgshipuser
-            compress
-            copytruncate
-            notifempty
-    }" >>${LOGROTATE_FILE}
-  fi
-
-  echo "[INFO] create logrotate config file success"
-
 }
 
 function start_service() {
@@ -288,6 +243,8 @@ function start_service() {
     uwsgi -d --ini $OUT_PATH/${PKGSHIP_CONSTANT}.ini
     echo "[INFO] START uwsgi service: ${PKGSHIP_CONSTANT}.ini"
     echo "[INFO] The run log is saved into: $(get_config "daemonize")"
+    # uwsgi log file logrotate
+    /bin/bash /etc/pkgship/uwsgi_logrotate.sh &
     exit 0
   fi
 }
@@ -304,6 +261,8 @@ function stop_service() {
     uwsgi --stop $OUT_PATH/${PKGSHIP_CONSTANT}.pid
     echo "[INFO] STOP uwsgi service: $OUT_PATH/${PKGSHIP_CONSTANT}.ini"
     echo "[INFO] The run log is saved into: $(get_config "daemonize")"
+    # stop uwsgi log file logrotate
+    ps -ef | grep uwsgi_logrotate.sh | grep -v grep | awk '{print $2}' | xargs kill -9 >/dev/null 2>&1
     exit 0
   else
     echo "[ERROR] STOP service failed, Please start the service first."
@@ -330,12 +289,10 @@ function check_redis_installed() {
     echo "If you have not installed REDIS, Please set 'redis_host: 127.0.0.1' and 'redis_port: 9200' and execute the automatic installation script '${SYS_PATH}/auto_install_pkgship_requires.sh' under the root user"
   fi
   # check whether to install Redis
-  host="127.0.0.1"
-  port=6379
   python_command="import redis
 try:
-    response = redis.Redis(host='$host',
-                           port="$port")
+    response = redis.Redis(host='$redis_ip',
+                           port="$redis_port")
     print(response.ping())
 except redis.ConnectionError:
     print(False)"
@@ -416,8 +373,6 @@ function main() {
     check_redis_installed
     # check es installed
     check_es_installed
-    # create logrotate
-    create_logrotate_file
   fi
   #star or stop service
   start_or_stop_service
