@@ -164,7 +164,7 @@ class BuildDepend(BaseDepend):
                     build=build_list
                 )
         self._search_set.clear()
-        if self.__level == 1 and searched_pkg:
+        if self.__level == 1 and searched_pkg and not self.depend_history:
             self.log_msg = f"Can not find the packages: {str(searched_pkg)} in all databases"
             LOGGER.warning(self.log_msg)
 
