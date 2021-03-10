@@ -50,7 +50,6 @@ class InstallDepend(BaseDepend):
         self.__level = 0
         self.__query_installreq = InstallRequires(db_list)
 
-        self.log_msg = ''
         
         # for build and self depend, get the previous result from the input cls
         if isinstance(depend, BaseDepend):

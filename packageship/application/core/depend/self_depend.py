@@ -55,7 +55,6 @@ class SelfDepend(BaseDepend):
 
         self.__query_pkg = QueryPackage(self.db_list)
         self.subpack = False
-        self.log_msg = ""
 
     def self_depend(self, pkg_name, pkgtype="binary", self_build=False, with_subpack=False):
         """

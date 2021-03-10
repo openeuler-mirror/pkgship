@@ -53,7 +53,6 @@ class BuildDepend(BaseDepend):
         self._init_search_dict(self.search_build_dict, self.db_list)
         self.__level = 0
         self.__query_buildreq = BuildRequires(db_list)
-        self.log_msg = ''
         if isinstance(depend, BaseDepend):
             self.depend_history = depend
             self.binary_dict = depend.binary_dict
