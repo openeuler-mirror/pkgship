@@ -69,15 +69,19 @@ class RemoteService:
             url:Remote request address
             kwargs:parameters associated with the request
         """
+
         @retry(stop_max_attempt_number=self._retry, stop_max_delay=self._max_delay)
         def http(url):
             response = method(url, **kwargs)
-            if response.status_code != requests.codes["ok"]:
+            if response.status_code == requests.codes["too_many_requests"]:
+                return response
+            elif response.status_code != requests.codes["ok"]:
                 _msg = "There is an exception with the remote service [%s]，" \
-                    "Please try again later.The HTTP error code is：%s" % (url, str(
-                        response.status_code))
+                       "Please try again later.The HTTP error code is：%s" % (url,
+                                                                             str(response.status_code))
                 raise HTTPError(_msg)
-            return response
+            else:
+                return response
 
         method = getattr(self, method, None)
         if method is None:

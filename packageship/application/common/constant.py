@@ -186,6 +186,14 @@ ERROR_CON = {
         "ERROR_CONTENT": "",
         "HINT": "The content is not a legal json format,please check "
                 "the parameters is valid"},
+    # Too many request
+    429: {
+        "ERROR_CONTENT": "",
+        "HINT": "Too many requests in a short time, please request again later"
+    },
+    "Too_many_request": {
+        "ERROR_CONTENT": "",
+        "HINT": "Too many requests in a short time, please request again later"},
     # Server error
     500: {"ERROR_CONTENT": "Server error",
           "HINT": "Please check the service and try again"},

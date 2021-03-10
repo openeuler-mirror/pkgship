@@ -149,7 +149,10 @@ class BaseCommand():
             HTTPError: http request error
         """
         try:
-            print(response.raise_for_status())
+            if response.status_code == 429:
+                print("Too many requests in a short time, please request again later")
+            else:
+                print(response.raise_for_status())
         except HTTPError as http_error:
             LOGGER.error(http_error)
             print('Request failed')
@@ -260,4 +263,3 @@ class BaseCommand():
                     self.statistics_table.add_row([statistic['database'],
                                                    statistic['binary_sum'],
                                                    statistic['source_sum']])
-

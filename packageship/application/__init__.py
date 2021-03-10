@@ -14,12 +14,11 @@
    Initial operation and configuration of the flask project
 """
 import os
-from flask import Flask
+from flask import Flask, current_app
 from flask_limiter import Limiter
-from flask_limiter.util import get_ipaddr
+from flask_limiter.util import get_ipaddr, get_remote_address
 from packageship.application.settings import Config
 from packageship.libs.log import Log
-
 
 LIMITER = Limiter(key_func=get_ipaddr)
 
@@ -37,7 +36,11 @@ def init_app(permissions):
 
     # Load configuration items
     app.config.from_object(Config())
-    LIMITER.app = app
+    app.config.from_object(Config())
+    DEFAULT_LIMITS = ["500/day;20/minute"]
+    app.app_context().push()
+    limiter = Limiter(app, key_func=get_remote_address, default_limits=DEFAULT_LIMITS, )
+    current_app.my_limiter = limiter
     from packageship.application import apps
     # Register Blueprint
     for blue, api in apps.blue_point:
