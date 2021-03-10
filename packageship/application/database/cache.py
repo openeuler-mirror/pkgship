@@ -141,7 +141,7 @@ class BufferCache:
         Args:
             key: cached key
         """
-        # dpenends = constant.REDIS_CONN.hgetall(key)
+        
         self._depend.source_dict = json.loads(
             constant.REDIS_CONN.hget(key, "source_dict")
         )
