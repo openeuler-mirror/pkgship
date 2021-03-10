@@ -83,6 +83,10 @@ class BeDependCommand(BaseCommand):
         Raises:
             ConnectionError: self.request connection error
         """
+        if params.build and params.install:
+            print("error: argument -install not allowed with argument -build")
+            print(self.parse.parse_args(['-h']))
+            return
         self._set_read_host(params.remote)
         if params.b:
             pack_type = 'binary'
