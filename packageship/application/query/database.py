@@ -35,10 +35,10 @@ def get_db_priority():
         for _db in result["hits"]["hits"]:
             db_info = _db.get("_source")
             db_infos[db_info.get("database_name")] = db_info.get("priority")
-        db_order = sorted(db_infos.items(), key=lambda x: x[1])
+        db_order = sorted(db_infos.items(), key=lambda x: (x[1], x[0]))
         database_list = [key for key, value in db_order]
         return database_list
     except (NotFoundError, KeyError, ConnectionRefusedError,
             DatabaseConfigException, ElasticSearchQueryException):
-        LOGGER.error("Error in getting db priority info.")
+        LOGGER.warn("Error in getting db priority info.")
         return []
