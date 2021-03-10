@@ -53,7 +53,6 @@ class BuildDepend(BaseDepend):
         self._init_search_dict(self.search_build_dict, self.db_list)
         self.__level = 0
         self.__query_buildreq = BuildRequires(db_list)
-
         if isinstance(depend, BaseDepend):
             self.depend_history = depend
             self.binary_dict = depend.binary_dict
@@ -164,9 +163,9 @@ class BuildDepend(BaseDepend):
                     build=build_list
                 )
         self._search_set.clear()
-        if self.__level == 1 and searched_pkg:
-            LOGGER.warning("Can not find the packages:" +
-                            str(searched_pkg) + "in all databases")
+        if self.__level == 1 and searched_pkg and not self.depend_history:
+            self.log_msg = f"Can not find the packages: {str(searched_pkg)} in all databases"
+            LOGGER.warning(self.log_msg)
 
     def __call__(self, **kwargs):
         self.__dict__.update(
