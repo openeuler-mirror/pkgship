@@ -16,8 +16,6 @@ Class: BaseCommand
 """
 
 try:
-    import time
-    import random
     import argparse
     import prettytable
     from requests import HTTPError
@@ -263,13 +261,3 @@ class BaseCommand():
                                                    statistic['binary_sum'],
                                                    statistic['source_sum']])
 
-    @staticmethod
-    def print_init_info():
-        """
-        Description: Print init info
-        Returns:
-
-        """
-        while True:
-            print("\r", "initializing{}".format("." * random.randint(1, 4)), end='', flush=True)
-            time.sleep(0.1)

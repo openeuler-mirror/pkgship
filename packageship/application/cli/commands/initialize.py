@@ -19,6 +19,7 @@ import time
 import pwd
 import threading
 from packageship.application.cli.base import BaseCommand
+from packageship.application.common.initialize_dynamic import print_init_info
 from packageship.application.initialize.integration import InitializeService
 from packageship.application.common.exc import InitializeError, ResourceCompetitionError
 
@@ -73,7 +74,7 @@ class InitDatabaseCommand(BaseCommand):
         if file_path:
             file_path = os.path.abspath(file_path)
         try:
-            print_t = threading.Thread(target=self.print_init_info)
+            print_t = threading.Thread(target=print_init_info)
             print_t.setDaemon(True)
             print_t.start()
             init.import_depend(path=file_path)
