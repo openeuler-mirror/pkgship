@@ -112,6 +112,21 @@ function check_addr() {
   fi
 }
 
+function check_logrotate_config() {
+  max_size=$(get_config "max_bytes")
+  max_count=$(get_config "backup_count")
+  if [ -z "${max_size}" ] || [ -z "${max_count}" ]; then
+    echo "[ERROR] Configuration parameters 'max_bytes' or 'backup_count' do not exist. Please confirm that these two parameters exist in configuration file 'package.ini'."
+    exit 1
+  fi
+  check_num "${max_size}" "max_bytes"
+  check_num "${max_count}" "backup_count"
+  if [ ${max_size} -le 0 ] || [ ${max_count} -le 0 ]; then
+    echo "[ERROR] The values of configuration parameters 'max_bytes' or 'backup_count' are less than or equal to 0, please make sure they are greater than 0"
+    exit 1
+  fi
+}
+
 function check_null() {
   list=$(cat $SYS_PATH/package.ini | grep -E ^[a-z_-]+= | awk -F '=' '{if($2 == "")print $1}')
   num=0
@@ -373,9 +388,11 @@ function main() {
   check_memory
   # check uwsgi and package.ini
   check_config_file
-  # check config parameter
   if [ "${OPERATION}" = "start" ]; then
+    # check config parameter
     check_config_param
+    # check logrotate config
+    check_logrotate_config
     # create uwsgi files
     create_config_file
     # check redis installed
