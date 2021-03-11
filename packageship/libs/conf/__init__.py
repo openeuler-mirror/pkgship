@@ -106,7 +106,7 @@ class Configs():
                 setattr(self, config, getattr(global_config, config))
 
         # Load user's configuration
-        self._conf_parser = configparser.ConfigParser()
+        self._conf_parser = configparser.RawConfigParser()
         self._conf_parser.read(settings_file)
 
         for section in self._conf_parser.sections():

@@ -17,7 +17,7 @@ Class: BuildDepCommand
 import json
 from json.decoder import JSONDecodeError
 from requests.exceptions import ConnectionError as ConnErr
-
+from requests.exceptions import RequestException
 from packageship.application.cli.base import BaseCommand
 from packageship.application.common.constant import ResponseCode
 
@@ -92,7 +92,9 @@ class BuildDepCommand(BaseCommand):
             self.request.request(_url, 'post', body=json.dumps(body_dict),
                                  headers=self.headers)
         except ConnErr as conn_error:
-            self.output_error_formatted(str(conn_error), "CONN_ERROR")
+            self.output_error_formatted("", "CONN_ERROR")
+        except RequestException as request_exception:
+            self.output_error_formatted(request_exception, "REMOTE_ERROR")
         else:
             if self.request.status_code == 200:
                 try:

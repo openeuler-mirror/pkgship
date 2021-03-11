@@ -192,6 +192,10 @@ ERROR_CON = {
         "ERROR_CONTENT": "",
         "HINT": "The content is not a legal json format,please check "
                 "the parameters is valid"},
+    "REMOTE_ERROR": {
+        "ERROR_CONTENT": "",
+        "HINT": "The remote connection is abnormal, please check the ’remote_host‘ parameter value "
+                "to ensure the connectivity of the remote address"},
     # Too many request
     429: {
         "ERROR_CONTENT": "",
@@ -204,7 +208,7 @@ ERROR_CON = {
     500: {"ERROR_CONTENT": "Server error",
           "HINT": "Please check the service and try again"},
     "CONN_ERROR": {
-        "ERROR_CONTENT": "",
+        "ERROR_CONTENT": "There seems to be a problem with the service",
         "HINT": "Please check the connection and try again"},
     # PARAM_ERROR
     "4001": {

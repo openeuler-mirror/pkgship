@@ -153,8 +153,7 @@ class BaseCommand():
             else:
                 print(response.raise_for_status())
         except HTTPError as http_error:
-            print('Request failed')
-            print(http_error)
+            BaseCommand.output_error_formatted(http_error, 'REMOTE_ERROR')
 
     @staticmethod
     def show_separation(value, separation, separation_str=" "):

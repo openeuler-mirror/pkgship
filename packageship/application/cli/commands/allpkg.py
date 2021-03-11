@@ -17,6 +17,7 @@ Class: AllPackageCommand
 import json
 from json.decoder import JSONDecodeError
 from packageship.application.cli.base import BaseCommand
+from requests.exceptions import RequestException
 from requests.exceptions import ConnectionError as ConnErr
 from packageship.application.common.constant import ResponseCode
 
@@ -154,7 +155,9 @@ class AllPackageCommand(BaseCommand):
         try:
             response = self.request.get(_url)
         except ConnErr as conn_error:
-            self.output_error_formatted(str(conn_error), "CONN_ERROR")
+            self.output_error_formatted("", "CONN_ERROR")
+        except RequestException as request_exception:
+            self.output_error_formatted(request_exception, "REMOTE_ERROR")
         else:
             if response.status_code == 200:
                 try:
