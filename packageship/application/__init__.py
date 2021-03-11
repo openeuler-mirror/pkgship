@@ -14,7 +14,7 @@
    Initial operation and configuration of the flask project
 """
 import os
-from flask import Flask, current_app
+from flask import Flask
 from flask_limiter import Limiter
 from flask_limiter.util import get_ipaddr, get_remote_address
 from packageship.application.settings import Config
@@ -38,7 +38,6 @@ def init_app(permissions):
     app.config.from_object(Config())
 
     default_limits = ["500/day;20/minute"]
-    # app.app_context().push()
     Limiter(app, key_func=get_remote_address, default_limits=default_limits, )
     from packageship.application import apps
     # Register Blueprint
