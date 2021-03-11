@@ -1,11 +1,12 @@
 #!/bin/bash
 UWSGI_PATH=/opt/pkgship/uwsgi
-UWSGI_LOG_PATH=/var/log/pkgship-operation
+UWSGI_LOG_FILE=$1
+UWSGI_LOG_PATH=$(dirname "${UWSGI_LOG_FILE}")
 
 function reopen_log_file() {
-  old_log=${UWSGI_LOG_PATH}/uwsgi.log
-  date_suffix=$(date -d "yesterday" +"%Y%m%d")
-  new_log_zip=${UWSGI_LOG_PATH}/uwsgi-${date_suffix}.log.zip
+  old_log=${UWSGI_LOG_FILE}
+  date_suffix=$(date -d "yesterday" +"%Y%m%d%H")
+  new_log_zip="${UWSGI_LOG_FILE}-${date_suffix}.zip"
   zip -q "${new_log_zip}" "${old_log}"
 
   rm -rf ${old_log}

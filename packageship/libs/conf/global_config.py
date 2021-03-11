@@ -54,11 +54,10 @@ LOG_LEVEL = 'INFO'
 # logging name
 LOG_NAME = 'log_info.log'
 
-# The number of dynamically created logs
-# after the log file size reaches the upper limit. The default is 10 dynamically created logs
+# Maximum capacity of each file, the unit is byte, default is 30M
 BACKUP_COUNT = 30
 
-# The size of each log file, in bytes, the default size of a single log file is 300M
+# The size of each log file, in bytes, the default size of a single log file is 30M
 MAX_BYTES = 31457280
 
 # The address of the Redis cache server can be either a published
