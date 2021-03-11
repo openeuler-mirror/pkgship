@@ -16,12 +16,10 @@
 import os
 from flask import Flask
 from flask_limiter import Limiter
-from flask_limiter.util import get_ipaddr, get_remote_address
+from flask_limiter.util import get_remote_address
 
 from packageship.application.settings import Config
 from packageship.libs.log import Log
-
-LIMITER = Limiter(key_func=get_ipaddr)
 
 
 def init_app(permissions):
