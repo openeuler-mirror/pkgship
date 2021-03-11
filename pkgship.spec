@@ -1,6 +1,6 @@
 Name:           pkgship
 Version:        2.1.0
-Release:        4
+Release:        5
 Summary:        Pkgship implements rpm package dependence ,maintainer, patch query and so no.
 License:        Mulan 2.0
 URL:            https://gitee.com/openeuler/pkgship
@@ -8,13 +8,13 @@ Source0:        https://gitee.com/openeuler/pkgship-%{version}.tar.gz
 
 BuildArch:      noarch
 
-BuildRequires: shadow
+BuildRequires: shadow python3-mock
 BuildRequires: python3-flask-restful python3-flask python3 python3-pyyaml python3-redis
 BuildRequires: python3-prettytable python3-requests python3-retrying python3-coverage
 BuildRequires: python3-marshmallow python3-uWSGI python3-gevent python3-Flask-Limiter
 BuildRequires: python3-elasticsearch
 
-Requires: shadow
+Requires: shadow python3-mock
 Requires: python3-flask-restful python3-flask python3 python3-pyyaml python3-redis
 Requires: python3-prettytable python3-requests python3-retrying python3-coverage
 Requires: python3-marshmallow python3-uWSGI python3-gevent python3-Flask-Limiter
@@ -30,6 +30,9 @@ Pkgship implements rpm package dependence ,maintainer, patch query and so no.
 %py3_build
 current_path=`pwd`
 cd $current_path'/packageship'
+log_path=${current_path}/tmp/
+sed -i '/^LOG_PATH/d' ./libs/conf/global_config.py
+echo "LOG_PATH=r\"${log_path}\"" >> ./libs/conf/global_config.py
 version_=%{version}
 release_=%{release}
 version_file=version.yaml
@@ -46,7 +49,7 @@ echo "Release: $release_" >> $version_file
 
 
 %check
-%{__python3} -m unittest test/coverage_count.py
+%{__python3} test/coverage_count.py
 
 %pre
 user=pkgshipuser
@@ -105,6 +108,10 @@ create_dir_file /etc/logrotate.d/pkgship 644 f
 %attr(0640,pkgshipuser,pkgshipuser) /lib/systemd/system/pkgship.service
 
 %changelog
+* Thu Mar 11 2021 zhang tao  <zhangtao307@huawei.com> - 2.1.0-5
+- In the build phase, modify the path of the log file to solve the permission problem
+- add python3-mock to BuildRequires and Requires to solve check error
+
 * Tue Mar 2 2021 Yiru Wang  <wangyiru1@huawei.com> - 2.1.0-4
 - change pkgship-operation permission to 700 for get excute permission while creating files
 - delete /home/pkgusers/log and /home/pkgusers/uswgi, which moved to /opt/pkgship/
