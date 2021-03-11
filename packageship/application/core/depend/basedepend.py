@@ -47,7 +47,7 @@ class BaseDepend:
         self.search_build_dict = dict()
         self.search_subpack_dict = dict()
         self.depend_history = None
-
+        self.log_msg = ""
         # stored the comopent name which cannot find the provided pkg
         self.com_not_found_pro = set()
 

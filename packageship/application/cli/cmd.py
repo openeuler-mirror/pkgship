@@ -19,9 +19,7 @@ import os
 try:
     from packageship.application.common.exc import Error
     from requests.exceptions import ConnectionError as ConnErr
-    from packageship.libs.log import LOGGER
     from packageship.application.cli.base import BaseCommand
-    from packageship.application.initialize.integration import InitializeService
 except ImportError as import_error:
     print("Error importing related dependencies,"
           "please check if related dependencies are installed")
@@ -53,7 +51,6 @@ def main():
         packship_cmd = PkgshipCommand()
         packship_cmd.parser_args()
     except Error as error:
-        LOGGER.error(error)
         print('Command execution error please try again')
 
 
@@ -94,13 +91,13 @@ class PkgshipCommand(BaseCommand):
         cls.register_command(DbPriorityCommand())
         cls.register_command(VersionCommand())
         try:
+            uwsgi_process = "ps -ef | grep -v grep | grep %s" % UWSIG_PATH
+            ps_con = os.popen(uwsgi_process).readlines()
+            if len(ps_con) == 0:
+                print(
+                    "The pkgship service is not started, please start the service first")
+                return
             args = cls.parser.parse_args()
-            if not args.remote:
-                uwsgi_process = "ps -ef | grep -v grep | grep %s" % UWSIG_PATH
-                ps_con = os.popen(uwsgi_process).readlines()
-                if len(ps_con) == 0:
-                    print("The pkgship service is not started, please start the service first")
-                    return
             args.func(args)
-        except Error as error:
-            print('The command execution failed due to:{}'.format(error))
+        except Error:
+            print('The command execution failed due to:{}'.format(Error))

@@ -23,7 +23,6 @@ try:
     from packageship.libs.conf import configuration
     from packageship.application.common.exc import Error
     from requests.exceptions import ConnectionError as ConnErr
-    from packageship.libs.log import LOGGER
     from packageship.application.common.remote import RemoteService
 except ImportError as import_error:
     print("Error importing related dependencies,"
@@ -157,7 +156,6 @@ class BaseCommand():
         try:
             print(response.raise_for_status())
         except HTTPError as http_error:
-            LOGGER.error(http_error)
             print('Request failed')
             print(http_error)
 

@@ -84,7 +84,7 @@ chown -R $user:$group $1
 }
 
 create_dir_file /opt/pkgship/ 750 d
-create_dir_file /var/log/pkgship 750 d
+create_dir_file /var/log/pkgship 755 d
 create_dir_file /var/log/pkgship-operation 700 d
 create_dir_file /etc/logrotate.d/pkgship 644 f
 
@@ -95,7 +95,7 @@ create_dir_file /etc/logrotate.d/pkgship 644 f
 
 %files
 %doc README.md
-%attr(0750,pkgshipuser,pkgshipuser) %{python3_sitelib}/*
+%attr(0755,pkgshipuser,pkgshipuser) %{python3_sitelib}/*
 %attr(0755,pkgshipuser,pkgshipuser) %config %{_sysconfdir}/pkgship/*
 %attr(0755,pkgshipuser,pkgshipuser) %{_bindir}/pkgshipd
 %attr(0755,pkgshipuser,pkgshipuser) %{_bindir}/pkgship
