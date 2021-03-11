@@ -14,7 +14,6 @@
 Description: Entry method for custom commands
 Class: PkgshipCommand
 """
-import os
 
 try:
     from packageship.application.common.exc import Error

@@ -19,7 +19,7 @@ from json.decoder import JSONDecodeError
 from requests.exceptions import ConnectionError as ConnErr
 
 from packageship.application.cli.base import BaseCommand
-
+from requests.exceptions import RequestException
 from packageship.application.common.constant import ResponseCode
 
 DB_NAME = 0
@@ -111,6 +111,8 @@ class BeDependCommand(BaseCommand):
                     }}), headers=self.headers)
         except ConnErr as conn_error:
             self.output_error_formatted("", "CONN_ERROR")
+        except RequestException as request_exception:
+            self.output_error_formatted(request_exception, "REMOTE_ERROR")
         else:
             if self.request.status_code == 200:
                 try:
