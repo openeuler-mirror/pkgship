@@ -14,9 +14,9 @@
 Description: Entry method for custom commands
 Class: BaseCommand
 """
-import re
 
 try:
+    import re
     import argparse
     import prettytable
     from requests import HTTPError

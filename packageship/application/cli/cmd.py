@@ -91,13 +91,13 @@ class PkgshipCommand(BaseCommand):
         cls.register_command(DbPriorityCommand())
         cls.register_command(VersionCommand())
         try:
-            uwsgi_process = "ps -ef | grep -v grep | grep %s" % UWSIG_PATH
-            ps_con = os.popen(uwsgi_process).readlines()
-            if len(ps_con) == 0:
-                print(
-                    "The pkgship service is not started, please start the service first")
-                return
             args = cls.parser.parse_args()
+            if not args.remote:
+                uwsgi_process = "ps -ef | grep -v grep | grep %s" % UWSIG_PATH
+                ps_con = os.popen(uwsgi_process).readlines()
+                if len(ps_con) == 0:
+                    print("The pkgship service is not started, please start the service first")
+                    return
             args.func(args)
-        except Error:
-            print('The command execution failed due to:{}'.format(Error))
+        except Error as error:
+            print('The command execution failed due to:{}'.format(error))
