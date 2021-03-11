@@ -18,6 +18,7 @@ from flask import Flask
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
 
+from packageship.application.common.constant import MAX_DAY_NUMBER, MAX_MINUTES_NUMBER
 from packageship.application.settings import Config
 from packageship.libs.log import Log
 
@@ -36,7 +37,8 @@ def init_app(permissions):
     # Load configuration items
     app.config.from_object(Config())
 
-    default_limits = ["500/day;20/minute"]
+    default_limits = ["{day_nu}/day;{minute_nu}/minute".format(day_nu=MAX_DAY_NUMBER,
+                                                               minute_nu=MAX_MINUTES_NUMBER)]
     Limiter(app, key_func=get_remote_address, default_limits=default_limits, )
     from packageship.application import apps
     # Register Blueprint
