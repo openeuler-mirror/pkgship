@@ -32,6 +32,7 @@ class TestVersionInfo(unittest.TestCase):
         Returns:
 
         """
+        pkg_version.file_path = os.path.join(BASE_PATH,"tmp_version.yaml")
         output_version, output_release = pkg_version.get_pkgship_version()
         self.assertIsNone(output_version,
                          msg="Error in testing file not exists")

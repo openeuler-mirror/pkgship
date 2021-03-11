@@ -63,28 +63,29 @@ class TestDispatch(unittest.TestCase):
     """ Test DispatchDepend class
     """
     @mock.patch.object(Redis, "exists")
-    @mock.patch.object(Redis, "hgetall")
-    def test_dispatch_install(self, mock_hgetall, mock_exists):
+    @mock.patch.object(Redis, "hget")
+    def test_dispatch_install(self, mock_hget, mock_exists):
         """test dispatch install depend
         """
-        mock_hgetall.return_value = {
-            "source_dict": '{"glibc":"glibc"}',
-            "binary_dict": '{"glibc":"glibc"}',
-        }
-
+        mock_hget.side_effect = [
+            '{"glibc":"glibc"}',
+            '{"glibc":"glibc"}',
+            "log"
+        ]
         mock_exists.return_value = True
         insd = DispatchDepend.execute(**install_params)
         self.assertTrue(isinstance(insd, InstallDepend))
 
     @mock.patch.object(Redis, "exists")
-    @mock.patch.object(Redis, "hgetall")
-    def test_dispatch_build(self, mock_hgetall, mock_exists):
+    @mock.patch.object(Redis, "hget")
+    def test_dispatch_build(self, mock_hget, mock_exists):
         """test dispatch build depend
         """
-        mock_hgetall.return_value = {
-            "source_dict": '{"glibc":"glibc"}',
-            "binary_dict": '{"glibc":"glibc"}',
-        }
+        mock_hget.side_effect = [
+            '{"glibc":"glibc"}',
+            '{"glibc":"glibc"}',
+            "log"
+        ]
 
         mock_exists.return_value = True
 
@@ -92,28 +93,30 @@ class TestDispatch(unittest.TestCase):
         self.assertTrue(isinstance(insd, BuildDepend))
 
     @mock.patch.object(Redis, "exists")
-    @mock.patch.object(Redis, "hgetall")
-    def test_dispatch_selfdep(self, mock_hgetall, mock_exists):
+    @mock.patch.object(Redis, "hget")
+    def test_dispatch_selfdep(self, mock_hget, mock_exists):
         """test dispatch selfdep depend
         """
-        mock_hgetall.return_value = {
-            "source_dict": '{"glibc":"glibc"}',
-            "binary_dict": '{"glibc":"glibc"}',
-        }
+        mock_hget.side_effect = [
+            '{"glibc":"glibc"}',
+            '{"glibc":"glibc"}',
+            "log"
+        ]
 
         mock_exists.return_value = True
         insd = DispatchDepend.execute(**selfdep_params)
         self.assertTrue(isinstance(insd, SelfDepend))
 
     @mock.patch.object(Redis, "exists")
-    @mock.patch.object(Redis, "hgetall")
-    def test_dispatch_bedep(self, mock_hgetall, mock_exists):
+    @mock.patch.object(Redis, "hget")
+    def test_dispatch_bedep(self, mock_hget, mock_exists):
         """test dispatch bedep depend
         """
-        mock_hgetall.return_value = {
-            "source_dict": '{"glibc":"glibc"}',
-            "binary_dict": '{"glibc":"glibc"}',
-        }
+        mock_hget.side_effect = [
+            '{"glibc":"glibc"}',
+            '{"glibc":"glibc"}',
+            "log"
+        ]
 
         mock_exists.return_value = True
         insd = DispatchDepend.execute(**bedep_params)
