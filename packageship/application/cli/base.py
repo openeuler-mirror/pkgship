@@ -14,6 +14,7 @@
 Description: Entry method for custom commands
 Class: BaseCommand
 """
+import re
 
 try:
     import argparse
@@ -94,6 +95,11 @@ class BaseCommand():
             Set read domain name
         """
         if remote:
+            pattern = re.compile(
+                r"^(http(s?))\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)"
+                r"*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%$#_]*)?")
+            if not pattern.match(configuration.REMOTE_HOST):
+                raise Error("Illegal remote address")
             self.read_host = configuration.REMOTE_HOST
         if self.read_host is None:
             raise Error(
@@ -260,4 +266,3 @@ class BaseCommand():
                     self.statistics_table.add_row([statistic['database'],
                                                    statistic['binary_sum'],
                                                    statistic['source_sum']])
-

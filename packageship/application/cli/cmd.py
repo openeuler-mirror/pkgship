@@ -102,5 +102,5 @@ class PkgshipCommand(BaseCommand):
                     print("The pkgship service is not started, please start the service first")
                     return
             args.func(args)
-        except Error:
-            print('The command execution failed due to:{}'.format(Error))
+        except Error as error:
+            print('The command execution failed due to:{}'.format(error))
