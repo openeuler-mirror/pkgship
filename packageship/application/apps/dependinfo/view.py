@@ -18,19 +18,19 @@ from flask import send_file
 from flask import request
 from flask import jsonify
 from packageship.libs.log import LOGGER
-
+from flask_restful import Resource
 from packageship.application.common.rsp import RspMsg
 from packageship.application.common.export import CompressIo
 from packageship.application.core.depend.down_load import Download
 from packageship.application.serialize.validate import validate
 from packageship.application.serialize.dependinfo import DependSchema
 from packageship.application.serialize.dependinfo import DownSchema
-from packageship.application.common import FlaskRestful
+
 from packageship.application.core.depend import DispatchDepend
 from packageship.application.common.exc import ElasticSearchQueryException, DatabaseConfigException
 
 
-class DependList(FlaskRestful):
+class DependList(Resource):
     """
     Get a list of installation, compilation, self-dependence and dependent query results
     """
@@ -75,7 +75,7 @@ class DependList(FlaskRestful):
         return jsonify(res_dict)
 
 
-class DownloadFiles(FlaskRestful):
+class DownloadFiles(Resource):
     """
     Download file
     """
@@ -155,7 +155,7 @@ class DownloadFiles(FlaskRestful):
             return jsonify(rspmsg.body("download_failed"))
 
 
-class DependGraph(FlaskRestful):
+class DependGraph(Resource):
     """
     Specifies the binary package dependency graph fetch
     """
