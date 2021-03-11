@@ -39,7 +39,7 @@ class Log(object):
             try:
                 os.makedirs(os.path.split(self.__path)[0])
             except FileExistsError:
-                pathlib.Path(self.__path).touch()
+                pathlib.Path(self.__path).touch(mode=0o644)
         self.__max_bytes = configuration.MAX_BYTES
         self.__backup_count = configuration.BACKUP_COUNT
         self.__level = configuration.LOG_LEVEL

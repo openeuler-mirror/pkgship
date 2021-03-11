@@ -8,11 +8,11 @@ MEM_FREE=$(free -m | grep "Mem" | awk '{print $7}')
 
 function check_user() {
   echo "[INFO] start to check execution user"
-  user=$(id | awk '{print $2}' | cut -d = -f 2)
-  if [ "$user" == "0(root)" ] || [[ "$user" =~ "pkgshipuser" ]]; then
+  user=${USER}
+  if [ "$user" = "pkgshipuser" ]; then
     echo "[INFO] check execution user ok"
   else
-    echo "[ERROR] current user is not root or pkgshipuser,Please switch user."
+    echo "[ERROR] current user is not pkgshipuser,Please switch user to pkgshipuser."
     exit 1
   fi
 }
