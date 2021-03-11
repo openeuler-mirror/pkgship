@@ -64,7 +64,7 @@ class DbPriorityCommand(BaseCommand):
         try:
             response = self.request.get(_url, headers=self.headers)
         except ConnErr as conn_error:
-            self.output_error_formatted(str(conn_error), "CONN_ERROR")
+            self.output_error_formatted("", "CONN_ERROR")
         else:
             if response.status_code == 200:
                 try:

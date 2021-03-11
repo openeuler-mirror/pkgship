@@ -14,9 +14,9 @@
 Description: Entry method for custom commands
 Class: BaseCommand
 """
-import re
 
 try:
+    import re
     import argparse
     import prettytable
     from requests import HTTPError
@@ -94,6 +94,7 @@ class BaseCommand():
             Set read domain name
         """
         if remote:
+            # Check if the URL is legitimate. e.g:http://www.pkgship.com, http://177.128.133.8:8090
             pattern = re.compile(
                 r"^(http(s?))\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)"
                 r"*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%$#_]*)?")
@@ -156,6 +157,7 @@ class BaseCommand():
         try:
             print(response.raise_for_status())
         except HTTPError as http_error:
+            BaseCommand.output_error_formatted(http_error, 'REMOTE_ERROR')
             print('Request failed')
             print(http_error)
 
