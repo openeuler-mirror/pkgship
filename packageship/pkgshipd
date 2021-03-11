@@ -250,13 +250,16 @@ daemonize=$daemonize" >$OUT_PATH/${PKGSHIP_CONSTANT}.ini
 }
 
 function uwsgi_log_logrotate() {
+  echo "[INFO] Start the logrotate task"
   uwsgi_log_process=$(ps -ef | grep uwsgi_logrotate.sh | grep -v grep | awk '{print $2}')
   if [ -n "${uwsgi_log_process}" ]; then
+    echo "[WARNING] Task already exists, restart"
     ps -ef | grep uwsgi_logrotate.sh | grep -v grep | awk '{print $2}' | xargs kill -9 >/dev/null 2>&1
   fi
   # uwsgi log file logrotate
   uwsgi_log_file=$(get_config "daemonize")
   /bin/bash /etc/pkgship/uwsgi_logrotate.sh "${uwsgi_log_file}" &
+  echo "[INFO] Start the logrotate task success"
 }
 
 function start_service() {
@@ -267,8 +270,13 @@ function start_service() {
   else
     uwsgi -d --ini $OUT_PATH/${PKGSHIP_CONSTANT}.ini
     echo "[INFO] START uwsgi service: ${PKGSHIP_CONSTANT}.ini"
-    echo "[INFO] The run log is saved into: $(get_config "daemonize")"
+    uwsgi_pid=$(ps -ef | grep -v grep | grep "uwsgi" | grep "${PKGSHIP_CONSTANT}.ini" | awk '{print $2}')
+    if [ -z "${uwsgi_pid}" ]; then
+      echo "[ERROR] Service failed to start, please check log $(get_config "daemonize")"
+      exit 1
+    fi
     uwsgi_log_logrotate
+    echo "[INFO] Start pkgship service success!!!"
     exit 0
   fi
 }
