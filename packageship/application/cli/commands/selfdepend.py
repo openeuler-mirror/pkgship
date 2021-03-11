@@ -21,9 +21,7 @@ from requests.exceptions import ConnectionError as ConnErr
 from packageship.application.cli.base import BaseCommand
 
 from packageship.application.common.constant import ResponseCode
-from packageship.application.query import database
 
-db_list = database.get_db_priority()
 DB_NAME = 0
 
 
