@@ -1,4 +1,4 @@
-#!/usr/bin/python3  
+#!/usr/bin/python3
 # ******************************************************************************
 # Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
 # licensed under the Mulan PSL v2.
@@ -20,7 +20,6 @@ from requests.exceptions import ConnectionError as ConnErr
 
 from packageship.application.cli.base import BaseCommand
 
-from packageship.libs.log import LOGGER
 from packageship.application.common.constant import ResponseCode
 from packageship.application.query import database
 
@@ -97,18 +96,20 @@ class SelfDependCommand(BaseCommand):
 
         _url = self.read_host + '/dependinfo/dependlist'
         try:
+            _input_body = {
+                'packagename': params.pkgName,
+                'depend_type': 'selfdep',
+                "parameter": {
+                    "self_build": params.s,
+                    "packtype": pack_type,
+                    "with_subpack": params.w,
+                }}
+            if params.dbs:
+                _input_body["parameter"]["db_priority"] = params.dbs
             self.request.request(_url,
-                                 'post', body=json.dumps({
-                    'packagename': params.pkgName,
-                    'depend_type': 'selfdep',
-                    "parameter": {
-                        "db_priority": params.dbs if params.dbs else db_list,
-                        "self_build": params.s,
-                        "packtype": pack_type,
-                        "with_subpack": params.w,
-                    }}), headers=self.headers)
+                                 'post', body=json.dumps(_input_body), headers=self.headers)
+
         except ConnErr as conn_error:
-            LOGGER.error(conn_error)
             self.output_error_formatted(str(conn_error), "CONN_ERROR")
         else:
             if self.request.status_code == 200:
@@ -120,7 +121,6 @@ class SelfDependCommand(BaseCommand):
                         self.output_error_formatted(response_data.get('message'),
                                                     response_data.get('code'))
                 except JSONDecodeError as json_error:
-                    LOGGER.error(json_error)
                     self.output_error_formatted(
                         self.request.text, "JSON_DECODE_ERROR")
                 else:

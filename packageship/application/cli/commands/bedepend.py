@@ -20,7 +20,6 @@ from requests.exceptions import ConnectionError as ConnErr
 
 from packageship.application.cli.base import BaseCommand
 
-from packageship.libs.log import LOGGER
 from packageship.application.common.constant import ResponseCode
 
 DB_NAME = 0
@@ -107,7 +106,6 @@ class BeDependCommand(BaseCommand):
                         "search_type": install_or_build
                     }}), headers=self.headers)
         except ConnErr as conn_error:
-            LOGGER.error(conn_error)
             self.output_error_formatted(str(conn_error), "CONN_ERROR")
         else:
             if self.request.status_code == 200:
@@ -119,7 +117,6 @@ class BeDependCommand(BaseCommand):
                         self.output_error_formatted(response_data.get('message'),
                                                     response_data.get('code'))
                 except JSONDecodeError as json_error:
-                    LOGGER.error(json_error)
                     self.output_error_formatted(
                         self.request.text, "JSON_DECODE_ERROR")
                 else:

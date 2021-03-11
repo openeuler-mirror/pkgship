@@ -19,11 +19,8 @@ from json.decoder import JSONDecodeError
 from requests.exceptions import ConnectionError as ConnErr
 
 from packageship.application.cli.base import BaseCommand
-from packageship.libs.log import LOGGER
 from packageship.application.common.constant import ResponseCode
-from packageship.application.query import database
 
-db_list = database.get_db_priority()
 DB_NAME = 0
 
 
@@ -86,16 +83,15 @@ class BuildDepCommand(BaseCommand):
         body_dict = {
             'packagename': params.sourceName,
             'depend_type': 'builddep',
-            "parameter": {
-                "db_priority": params.dbs if params.dbs else db_list
-                }}
+            "parameter": {}}
+        if params.dbs:
+            body_dict["parameter"] = {"db_priority": params.dbs}
         if params.level:
             body_dict["parameter"]["level"] = params.level
         try:
             self.request.request(_url, 'post', body=json.dumps(body_dict),
                                  headers=self.headers)
         except ConnErr as conn_error:
-            LOGGER.error(conn_error)
             self.output_error_formatted(str(conn_error), "CONN_ERROR")
         else:
             if self.request.status_code == 200:
@@ -107,7 +103,6 @@ class BuildDepCommand(BaseCommand):
                         self.output_error_formatted(response_data.get('message'),
                                                     response_data.get('code'))
                 except JSONDecodeError as json_error:
-                    LOGGER.error(json_error)
                     self.output_error_formatted(
                         self.request.text, "JSON_DECODE_ERROR")
                 else:
@@ -124,4 +119,5 @@ class BuildDepCommand(BaseCommand):
                         self.print_('Sum')
                         print(self.sum_table)
             else:
-                self.output_error_formatted(self.request.text, self.request.status_code)
+                self.output_error_formatted(
+                    self.request.text, self.request.status_code)
