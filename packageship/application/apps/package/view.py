@@ -18,6 +18,8 @@ PkgshipVersion,TableColView
 import math
 from flask import request
 from flask import jsonify
+from flask_restful import Resource
+
 from packageship.application.query import database
 from packageship.application.core.baseinfo import pkg_version
 from packageship.application.serialize.package import PackageSchema
@@ -27,11 +29,10 @@ from packageship.application.core.pkginfo.pkg import SourcePackage
 from packageship.application.core.pkginfo.pkg import BinaryPackage
 from packageship.application.serialize.validate import validate
 from packageship.application.common.rsp import RspMsg
-from packageship.application.common import FlaskRestful
 from packageship.application.common.exc import ElasticSearchQueryException, DatabaseConfigException
 
 
-class ParsePackageMethod(FlaskRestful):
+class ParsePackageMethod(Resource):
     """
     Description: Common Method
     """
@@ -178,7 +179,7 @@ class BinaryPackages(ParsePackageMethod):
         return jsonify(self.rspmsg.body("table_name_not_exist"))
 
 
-class SourcePackageInfo(FlaskRestful):
+class SourcePackageInfo(Resource):
     """
     Description: single source package management
     Restful API: get
@@ -252,7 +253,7 @@ class SourcePackageInfo(FlaskRestful):
         return jsonify(rspmsg.body('pack_name_not_found'))
 
 
-class BinaryPackageInfo(FlaskRestful):
+class BinaryPackageInfo(Resource):
     """
     Description: single binary package management
     Restful API: get
@@ -306,7 +307,7 @@ class BinaryPackageInfo(FlaskRestful):
         return jsonify(rspmsg.body('pack_name_not_found'))
 
 
-class DatabasePriority(FlaskRestful):
+class DatabasePriority(Resource):
     """
     Description: Get the default repository sort
     Restful API: get
@@ -343,7 +344,7 @@ class DatabasePriority(FlaskRestful):
         return jsonify(res_dict)
 
 
-class PkgshipVersion(FlaskRestful):
+class PkgshipVersion(Resource):
     """
     Description: Get the version number of pkgship
     Restful API: get
@@ -374,7 +375,7 @@ class PkgshipVersion(FlaskRestful):
         return jsonify(res_dict)
 
 
-class TableColView(FlaskRestful):
+class TableColView(Resource):
     """
     The default column of the package shows the interface
     """
