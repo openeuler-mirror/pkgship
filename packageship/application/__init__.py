@@ -36,11 +36,10 @@ def init_app(permissions):
 
     # Load configuration items
     app.config.from_object(Config())
-    app.config.from_object(Config())
-    DEFAULT_LIMITS = ["500/day;20/minute"]
-    app.app_context().push()
-    limiter = Limiter(app, key_func=get_remote_address, default_limits=DEFAULT_LIMITS, )
-    current_app.my_limiter = limiter
+
+    default_limits = ["500/day;20/minute"]
+    # app.app_context().push()
+    Limiter(app, key_func=get_remote_address, default_limits=default_limits, )
     from packageship.application import apps
     # Register Blueprint
     for blue, api in apps.blue_point:
