@@ -15,7 +15,6 @@ Description: Entry method for custom commands
 Class: AllPackageCommand
 """
 import json
-from packageship.libs.log import LOGGER
 from json.decoder import JSONDecodeError
 from packageship.application.cli.base import BaseCommand
 from requests.exceptions import ConnectionError as ConnErr
@@ -145,29 +144,28 @@ class AllPackageCommand(BaseCommand):
             src_or_bin = 'bin'
 
         _url = self.read_host + \
-               '/packages/{src_or_bin}?database_name={database_name}&query_pkg_name={pkg_name}&page_num={page}' \
-               '&page_size={pagesize}&command_line=True'.format(
-                   src_or_bin=src_or_bin,
-                   database_name=params.database,
-                   pkg_name=params.packagename,
-                   page=1,
-                   pagesize=200).replace(' ', '')
+            '/packages/{src_or_bin}?database_name={database_name}&query_pkg_name={pkg_name}&page_num={page}' \
+            '&page_size={pagesize}&command_line=True'.format(
+                src_or_bin=src_or_bin,
+                database_name=params.database,
+                pkg_name=params.packagename,
+                page=1,
+                pagesize=200).replace(' ', '')
         try:
             response = self.request.get(_url)
         except ConnErr as conn_error:
-            LOGGER.error(conn_error)
             self.output_error_formatted(str(conn_error), "CONN_ERROR")
         else:
             if response.status_code == 200:
                 try:
                     response_data = json.loads(response.text)
                     if response_data.get('code') == ResponseCode.SUCCESS:
-                        self.__parse_package(response_data, params.database, params.s)
+                        self.__parse_package(
+                            response_data, params.database, params.s)
                     else:
                         self.output_error_formatted(response_data.get('message'),
                                                     response_data.get('code'))
                 except JSONDecodeError as json_error:
-                    LOGGER.error(json_error)
                     self.output_error_formatted(
                         response.text, "JSON_DECODE_ERROR")
             else:

@@ -1,4 +1,4 @@
-#!/usr/bin/python3  
+#!/usr/bin/python3
 # ******************************************************************************
 # Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
 # licensed under the Mulan PSL v2.
@@ -15,13 +15,23 @@ Description: Entry method for custom commands
 Class: InitDatabaseCommand
 """
 import os
+import random
 import time
 import pwd
 import threading
 from packageship.application.cli.base import BaseCommand
-from packageship.application.common.initialize_dynamic import print_init_info
-from packageship.application.initialize.integration import InitializeService
 from packageship.application.common.exc import InitializeError, ResourceCompetitionError
+
+
+def print_init_info():
+    """
+    Description: Print init info
+
+    """
+    while True:
+        print("\r", "initializing{}".format(
+            "." * random.randint(1, 4)), end='', flush=True)
+        time.sleep(0.5)
 
 
 class InitDatabaseCommand(BaseCommand):
@@ -65,10 +75,12 @@ class InitDatabaseCommand(BaseCommand):
         Raises:
 
         """
-        get_username = lambda: pwd.getpwuid(os.getuid())[0]
+        def get_username(): return pwd.getpwuid(os.getuid())[0]
         if get_username() not in ["root", "pkgshipuser"]:
             print("The current user does not have initial execution permission")
             return
+
+        from packageship.application.initialize.integration import InitializeService
         init = InitializeService()
         file_path = params.filepath
         if file_path:

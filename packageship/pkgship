@@ -20,13 +20,11 @@ try:
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGPIPE, SIG_DFL)
-except:
-    pass
-
-from packageship.application.cli.cmd import main
-
-
-if __name__ == '__main__':
+    from packageship.application.cli.cmd import main
+except PermissionError as error:
+    message = "Insufficient user permissions,{msg}".format(msg=str(error))
+    print(message)
+else:
     try:
         main()
     except Exception as error:

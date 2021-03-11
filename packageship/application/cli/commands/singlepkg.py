@@ -19,7 +19,6 @@ from json.decoder import JSONDecodeError
 from requests.exceptions import ConnectionError as ConnErr
 from packageship.application.cli.base import BaseCommand
 
-from packageship.libs.log import LOGGER
 from packageship.application.common.constant import ResponseCode
 
 DEPRECATION_LEN = 12
@@ -129,7 +128,7 @@ class SingleCommand(BaseCommand):
         if provides and isinstance(provides, list):
             for _provide in provides:
                 _provide_list = _provide.get('required_by_bin', '') + \
-                                _provide.get('required_by_src', '')
+                    _provide.get('required_by_src', '')
                 _required_by = '\n'.join(
                     _provide_list) if _provide_list else ''
                 self.provides_table.add_row(
@@ -215,7 +214,6 @@ class SingleCommand(BaseCommand):
             self.__parse_package_detail(parse_data, src_or_bin)
             self.__parse_subpack(_subpacks)
         except KeyError as key_error:
-            LOGGER.error(key_error)
             print('No related components')
 
     def __parse_bin_package(self, response_data, database, src_or_bin):
@@ -238,7 +236,6 @@ class SingleCommand(BaseCommand):
             _filelist = parse_data['filelist']
             self.__parse_filelist(_filelist)
         except KeyError as key_error:
-            LOGGER.error(key_error)
             print('No related components')
 
     def do_command(self, params):
@@ -258,13 +255,12 @@ class SingleCommand(BaseCommand):
         self._set_read_host(params.remote)
 
         _url = self.read_host + \
-               '/packages/{src_or_bin}/{packagename}?database_name={database}&pkg_name={pkg_name}' \
+            '/packages/{src_or_bin}/{packagename}?database_name={database}&pkg_name={pkg_name}' \
                    .format(src_or_bin=src_or_bin, packagename=params.packagename, database=params.database,
                            pkg_name=params.packagename)
         try:
             response = self.request.get(_url)
         except ConnErr as conn_error:
-            LOGGER.error(conn_error)
             self.output_error_formatted(str(conn_error), "CONN_ERROR")
         else:
             if response.status_code == 200:
@@ -281,7 +277,6 @@ class SingleCommand(BaseCommand):
                         self.output_error_formatted(response_data.get('message'),
                                                     response_data.get('code'))
                 except JSONDecodeError as json_error:
-                    LOGGER.error(json_error)
                     self.output_error_formatted(
                         response.text, "JSON_DECODE_ERROR")
             else:

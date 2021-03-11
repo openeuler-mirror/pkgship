@@ -1,4 +1,4 @@
-#!/usr/bin/python3  
+#!/usr/bin/python3
 # ******************************************************************************
 # Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
 # licensed under the Mulan PSL v2.
@@ -16,10 +16,9 @@ Class: VersionCommand
 """
 import json
 from json.decoder import JSONDecodeError
-from packageship.application.cli.base import BaseCommand
 from requests.exceptions import ConnectionError as ConnErr
-from packageship.libs.log import LOGGER
 from packageship.application.common.constant import ResponseCode
+from packageship.application.cli.base import BaseCommand
 
 
 class VersionCommand(BaseCommand):
@@ -71,20 +70,21 @@ class VersionCommand(BaseCommand):
         try:
             response = self.request.get(_url, headers=self.headers)
         except ConnErr as conn_error:
-            LOGGER.error(conn_error)
             self.output_error_formatted(str(conn_error), "CONN_ERROR")
         else:
             if response.status_code == 200:
                 try:
                     _response_content = json.loads(response.text)
                     if _response_content.get('code') == ResponseCode.SUCCESS:
-                        print('Version:{}'.format(_response_content.get('version', [])))
-                        print('Release:{}'.format(_response_content.get('release', [])))
+                        print('Version:{}'.format(
+                            _response_content.get('version', [])))
+                        print('Release:{}'.format(
+                            _response_content.get('release', [])))
                     else:
                         self.output_error_formatted(_response_content.get('message'),
                                                     _response_content.get('code'))
                 except JSONDecodeError as json_error:
-                    LOGGER.error(json_error)
-                    self.output_error_formatted(response.text, "JSON_DECODE_ERROR")
+                    self.output_error_formatted(
+                        response.text, "JSON_DECODE_ERROR")
             else:
                 self.http_error(response)
