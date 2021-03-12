@@ -100,10 +100,10 @@ function download_install_redis() {
   fi
 
   echo "[INFO]download and install Redis success"
-  echo "[INFO]Start the Redis service"
+  echo "[INFO]Start the redis service"
   redis-server --daemonize yes
   if [ $? -ne 0 ]; then
-    echo "[ERROR] Start the Redis service, Please start the service manually"
+    echo "[ERROR] Start the redis service failed, Please start the service manually"
     exit 1
   fi
   echo "[INFO]Start the Redis service success"

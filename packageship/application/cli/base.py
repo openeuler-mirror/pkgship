@@ -94,11 +94,6 @@ class BaseCommand():
             Set read domain name
         """
         if remote:
-            pattern = re.compile(
-                r"^(http(s?))\:\/\/[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*(:(0-9)*)"
-                r"*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%$#_]*)?")
-            if not pattern.match(configuration.REMOTE_HOST):
-                raise Error("Illegal remote address")
             self.read_host = configuration.REMOTE_HOST
         if self.read_host is None:
             raise Error(
@@ -154,10 +149,12 @@ class BaseCommand():
             HTTPError: http request error
         """
         try:
-            print(response.raise_for_status())
+            if response.status_code == 429:
+                print("Too many requests in a short time, please request again later")
+            else:
+                print(response.raise_for_status())
         except HTTPError as http_error:
-            print('Request failed')
-            print(http_error)
+            BaseCommand.output_error_formatted(http_error, 'REMOTE_ERROR')
 
     @staticmethod
     def show_separation(value, separation, separation_str=" "):

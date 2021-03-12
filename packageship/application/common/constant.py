@@ -63,6 +63,12 @@ LEVEL_RADIUS = 30
 # node size shown in the map
 NODE_SIZE = 25
 
+# Maximum number of requests per day
+MAX_DAY_NUMBER = 500
+
+# Maximum number of requests per minute
+MAX_MINUTES_NUMBER = 20
+
 # uwsig path
 UWSIG_PATH = "/opt/pkgship/uwsgi/pkgship.ini"
 
@@ -186,11 +192,23 @@ ERROR_CON = {
         "ERROR_CONTENT": "",
         "HINT": "The content is not a legal json format,please check "
                 "the parameters is valid"},
+    "REMOTE_ERROR": {
+        "ERROR_CONTENT": "",
+        "HINT": "The remote connection is abnormal, please check the ’remote_host‘ parameter value "
+                "to ensure the connectivity of the remote address"},
+    # Too many request
+    429: {
+        "ERROR_CONTENT": "",
+        "HINT": "Too many requests in a short time, please request again later"
+    },
+    "Too_many_request": {
+        "ERROR_CONTENT": "",
+        "HINT": "Too many requests in a short time, please request again later"},
     # Server error
     500: {"ERROR_CONTENT": "Server error",
           "HINT": "Please check the service and try again"},
     "CONN_ERROR": {
-        "ERROR_CONTENT": "",
+        "ERROR_CONTENT": "There seems to be a problem with the service",
         "HINT": "Please check the connection and try again"},
     # PARAM_ERROR
     "4001": {

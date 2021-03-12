@@ -17,6 +17,7 @@ Class: VersionCommand
 import json
 from json.decoder import JSONDecodeError
 from requests.exceptions import ConnectionError as ConnErr
+from requests.exceptions import RequestException
 from packageship.application.common.constant import ResponseCode
 from packageship.application.cli.base import BaseCommand
 
@@ -35,8 +36,6 @@ class VersionCommand(BaseCommand):
         """
         super(VersionCommand, self).__init__()
 
-        # self.parse = BaseCommand.subparsers.add_parser(
-        #     'v', help='Get version information')
         self.parse = BaseCommand.parser
         self.params = [
             ('-v', 'str', 'Get version information', None, 'store_true'),
@@ -70,7 +69,9 @@ class VersionCommand(BaseCommand):
         try:
             response = self.request.get(_url, headers=self.headers)
         except ConnErr as conn_error:
-            self.output_error_formatted(str(conn_error), "CONN_ERROR")
+            self.output_error_formatted("", "CONN_ERROR")
+        except RequestException as request_exception:
+            self.output_error_formatted(request_exception, "REMOTE_ERROR")
         else:
             if response.status_code == 200:
                 try:

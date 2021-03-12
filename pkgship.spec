@@ -1,6 +1,6 @@
 Name:           pkgship
 Version:        2.1.0
-Release:        4
+Release:        6
 Summary:        Pkgship implements rpm package dependence ,maintainer, patch query and so no.
 License:        Mulan 2.0
 URL:            https://gitee.com/openeuler/pkgship
@@ -8,17 +8,17 @@ Source0:        https://gitee.com/openeuler/pkgship-%{version}.tar.gz
 
 BuildArch:      noarch
 
-BuildRequires: shadow
+BuildRequires: shadow python3-mock
 BuildRequires: python3-flask-restful python3-flask python3 python3-pyyaml python3-redis
 BuildRequires: python3-prettytable python3-requests python3-retrying python3-coverage
 BuildRequires: python3-marshmallow python3-uWSGI python3-gevent python3-Flask-Limiter
-BuildRequires: python3-elasticsearch
+BuildRequires: python3-elasticsearch python3-concurrent-log-handler
 
-Requires: shadow
+Requires: shadow python3-mock
 Requires: python3-flask-restful python3-flask python3 python3-pyyaml python3-redis
 Requires: python3-prettytable python3-requests python3-retrying python3-coverage
 Requires: python3-marshmallow python3-uWSGI python3-gevent python3-Flask-Limiter
-Requires: python3-elasticsearch
+Requires: python3-elasticsearch python3-concurrent-log-handler
 
 %description
 Pkgship implements rpm package dependence ,maintainer, patch query and so no.
@@ -46,7 +46,11 @@ echo "Release: $release_" >> $version_file
 
 
 %check
-%{__python3} -m unittest test/coverage_count.py
+current_path=`pwd`
+log_path=${current_path}/packageship/tmp/
+sed -i '/^LOG_PATH/d' ./packageship/libs/conf/global_config.py
+echo "LOG_PATH=r\"${log_path}\"" >> ./packageship/libs/conf/global_config.py
+%{__python3} test/coverage_count.py
 
 %pre
 user=pkgshipuser
@@ -86,7 +90,6 @@ chown -R $user:$group $1
 create_dir_file /opt/pkgship/ 750 d
 create_dir_file /var/log/pkgship 755 d
 create_dir_file /var/log/pkgship-operation 700 d
-create_dir_file /etc/logrotate.d/pkgship 644 f
 
 %post
 
@@ -100,11 +103,19 @@ create_dir_file /etc/logrotate.d/pkgship 644 f
 %attr(0755,pkgshipuser,pkgshipuser) %{_bindir}/pkgshipd
 %attr(0755,pkgshipuser,pkgshipuser) %{_bindir}/pkgship
 %attr(0750,root,root) /etc/pkgship/auto_install_pkgship_requires.sh
+%attr(0750,pkgshipuser,pkgshipuser) /etc/pkgship/uwsgi_logrotate.sh
 %attr(0640,pkgshipuser,pkgshipuser) /etc/pkgship/package.ini
 %attr(0644,pkgshipuser,pkgshipuser) /etc/pkgship/conf.yaml
 %attr(0640,pkgshipuser,pkgshipuser) /lib/systemd/system/pkgship.service
 
 %changelog
+* Thu Mar 11 2021 zhang tao  <zhangtao307@huawei.com> - 2.1.0-6
+- In the build phase, modify the path of the log file to solve the permission problem
+- add python3-mock to BuildRequires and Requires to solve check error
+
+* Tue Mar 5 2021 Haiwei Li  <lihaiwei8@huawei.com> - 2.1.0-5
+- Modify the log logrotate scheme
+
 * Tue Mar 2 2021 Yiru Wang  <wangyiru1@huawei.com> - 2.1.0-4
 - change pkgship-operation permission to 700 for get excute permission while creating files
 - delete /home/pkgusers/log and /home/pkgusers/uswgi, which moved to /opt/pkgship/

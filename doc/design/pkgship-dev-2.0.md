@@ -159,23 +159,25 @@ Mulan V2
 
     采用权限最小化策略，主要文件权限如下：
 
-    | 路径                                     | 属主                    | 权限 | 描述                       | 权限说明                                                     |
-    | ---------------------------------------- | ----------------------- | ---- | -------------------------- | ------------------------------------------------------------ |
-    | /usr/bin/pkgship                         | root root               | 755  | 命令行执行                 | 使用场景为所有用户都可以使用命令行执行查询操作，所以设置权限为755。初始化操作通过代码中判断当前登录用户是否为root或者pkgshipuser进行权限控制。 |
-    | /opt/pkgship/tmp                         | pkgshipuser pkgshipuser | 750  | 初始化的临时数据存放文件夹 | pkgshipuser需要写入，按照华为目录权限要求设置。              |
-    | /etc/pkgship/package.ini                 | pkgshipuser pkgshipuser | 640  | pkgship配置文件            | pkgshipuser需要写入，其他用户无法读取。                      |
-    | /etc/pkgship/conf.yaml                   | pkgshipuser pkgshipuser | 644  | 初始化时数据来源配置文件   | pkgshipuser需要写入，其他用户可查看当前配置的数据源。        |
-    | /usr/lib/python3.8/site-packages/pkgship | pkgshipuser pkgshipuser | 750  | pkgship源码                | 按照华为程序主目录权限要求设置                               |
-    | /lib/systemd/system/pkgship.service      | pkgshipuser pkgshipuser | 640  | system系统文件             | 按照华为配置文件权限要求设置。                               |
-    | /var/log/pkgship                         | pkgshipuser pkgshipuser | 750  | 业务日志路径               | 按照华为日志目录权限要求设置。                               |
-    | /var/log/pkgship-operation               | pkgshipuser pkgshipuser | 700  | 操作日志路径               | 按照华为敏感文件权限要求设置。                               |
-    | /etc/logrotate.d/pkgship                 | pkgshipuser pkgshipuser | 644  | 日志转储配置文件           | 按照转储文件常规权限配置，pkgshipuser需要写入                |
+    | 路径                                          | 属主                    | 权限 | 描述                             | 权限说明                                                     |
+    | --------------------------------------------- | ----------------------- | ---- | -------------------------------- | ------------------------------------------------------------ |
+    | /usr/bin/pkgship                              | pkgshipuser pkgshipuser | 755  | 命令行执行                       | 使用场景为所有用户都可以使用命令行执行查询操作，所以设置权限为755。初始化操作通过代码中判断当前登录用户是否为root或者pkgshipuser进行权限控制。 |
+    | /usr/bin/pkgshipd                             | pkgshipuser pkgshipuser | 755  | 命令行执行                       | 启停服务脚本，脚本中限制只有pkgshipuser用户可以执行。        |
+    | /opt/pkgship/tmp                              | pkgshipuser pkgshipuser | 750  | 初始化的临时数据存放文件夹       | pkgshipuser需要写入。                                        |
+    | /etc/pkgship/package.ini                      | pkgshipuser pkgshipuser | 640  | pkgship配置文件                  | pkgshipuser需要写入，其他用户无法读取。                      |
+    | /etc/pkgship/conf.yaml                        | pkgshipuser pkgshipuser | 644  | 初始化时数据来源配置文件         | pkgshipuser需要写入，其他用户可查看当前配置的数据源。        |
+    | /usr/lib/python3.8/site-packages/pkgship      | pkgshipuser pkgshipuser | 755  | pkgship源码                      | 普通用户执行命令时需要读取。                                 |
+    | /lib/systemd/system/pkgship.service           | pkgshipuser pkgshipuser | 640  | system系统文件                   | systemctl启停时，pkgshipuser用户需要读取。                   |
+    | /var/log/pkgship                              | pkgshipuser pkgshipuser | 755  | 业务日志路径                     | 普通用户可以查看业务日志。                                   |
+    | /var/log/pkgship-operation                    | pkgshipuser pkgshipuser | 700  | 操作日志路径                     | 操作日志含有敏感信息，只有pkgshipuser用户可以查看。          |
+    | /etc/pkgship/auto_install_pkgship_requires.sh | root root               | 750  | elasticsearch和redis自动安装脚本 | 涉及rpm包安装，只有root用户可执行。                          |
+    | /etc/pkgship/uwsgi_logrotate.sh               | pkgshipuser pkgshipuser | 750  | 操作日志转储任务脚本             | pkgshipuser在启动时执行。                                    |
 
 5. **启动问题：**
 
     systemctl start pkgship.service只能由root用户启动
 
-    pkgshipd start 可以由pkgshipuser和root用户启动
+    pkgshipd start 可以只能由pkgshipuser用户启动
 
 6. 命令注入问题：
 

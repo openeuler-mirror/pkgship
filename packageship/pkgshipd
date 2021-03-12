@@ -1,7 +1,6 @@
 #!/bin/bash
 SYS_PATH=/etc/pkgship
 OUT_PATH=/opt/pkgship/uwsgi
-LOGROTATE_FILE=/etc/logrotate.d/pkgship
 OPERATION=$1
 PKGSHIP_CONSTANT="pkgship"
 MEM_THRESHOLD='700'
@@ -9,11 +8,11 @@ MEM_FREE=$(free -m | grep "Mem" | awk '{print $7}')
 
 function check_user() {
   echo "[INFO] start to check execution user"
-  user=$(id | awk '{print $2}' | cut -d = -f 2)
-  if [ "$user" == "0(root)" ] || [[ "$user" =~ "pkgshipuser" ]]; then
+  user=${USER}
+  if [ "$user" = "pkgshipuser" ]; then
     echo "[INFO] check execution user ok"
   else
-    echo "[ERROR] current user is not root or pkgshipuser,Please switch user."
+    echo "[ERROR] current user is not pkgshipuser,Please switch user to pkgshipuser."
     exit 1
   fi
 }
@@ -109,6 +108,21 @@ function check_addr() {
   check_num ${port-"port"} "port"
   if [[ $port -gt 65534 || $port -lt 1025 ]]; then
     echo "[ERROR] Invalid port of $port"
+    exit 1
+  fi
+}
+
+function check_logrotate_config() {
+  max_size=$(get_config "max_bytes")
+  max_count=$(get_config "backup_count")
+  if [ -z "${max_size}" ] || [ -z "${max_count}" ]; then
+    echo "[ERROR] Configuration parameters 'max_bytes' or 'backup_count' do not exist. Please confirm that these two parameters exist in configuration file 'package.ini'."
+    exit 1
+  fi
+  check_num "${max_size}" "max_bytes"
+  check_num "${max_count}" "backup_count"
+  if [ ${max_size} -le 0 ] || [ ${max_count} -le 0 ]; then
+    echo "[ERROR] The values of configuration parameters 'max_bytes' or 'backup_count' are less than or equal to 0, please make sure they are greater than 0"
     exit 1
   fi
 }
@@ -227,56 +241,25 @@ pidfile=$OUT_PATH/${PKGSHIP_CONSTANT}.pid
 http-timeout=$http_timeout
 harakiri=$harakiri
 enable-threads=true
+touch-logreopen=/opt/pkgship/uwsgi/.touch_for_logrotate
 log-format = [remote url: %(uri)  %(method)]---{%(user_ip)} --->[%(user)]-->[%(addr)] -->[%(proto)] -->[%(host)] {%(vars) vars in %(pktsize) bytes} [%(ctime)]=> %(status)))
 daemonize=$daemonize" >$OUT_PATH/${PKGSHIP_CONSTANT}.ini
+  chown pkgshipuser: $OUT_PATH/${PKGSHIP_CONSTANT}.ini
   chmod 750 $OUT_PATH/${PKGSHIP_CONSTANT}.ini
   echo "[INFO] create uwsgi file ok"
 }
 
-function create_logrotate_file() {
-  echo "[INFO] start to create logrotate config file"
-
-  if [ ! -f ${LOGROTATE_FILE} ]; then
-    echo "[ERROR] logrotate config file is not exist"
-    exit 1
+function uwsgi_log_logrotate() {
+  echo "[INFO] Start the logrotate task"
+  uwsgi_log_process=$(ps -ef | grep uwsgi_logrotate.sh | grep -v grep | awk '{print $2}')
+  if [ -n "${uwsgi_log_process}" ]; then
+    echo "[WARNING] Task already exists, restart"
+    ps -ef | grep uwsgi_logrotate.sh | grep -v grep | awk '{print $2}' | xargs kill -9 >/dev/null 2>&1
   fi
-
-  config_content=$(cat ${LOGROTATE_FILE})
-  if [ -n "${config_content}" ]; then
-    echo "[WARNING] logrotate config file has existed,continue"
-  else
-    log_path=$(get_config "log_path")/log_info.log
-    operation_log_path=$(get_config "daemonize")
-    echo "${log_path}{
-            daily
-            missingok
-            rotate 30
-            dateext
-            dateformat .%s
-            size = 20M
-            missingok
-            create 644 pkgshipuser pkgshipuser
-            compress
-            copytruncate
-            notifempty
-    }" >${LOGROTATE_FILE}
-    echo "${operation_log_path}{
-            daily
-            missingok
-            rotate 60
-            dateext
-            dateformat .%s
-            size = 20M
-            missingok
-            create 644 pkgshipuser pkgshipuser
-            compress
-            copytruncate
-            notifempty
-    }" >>${LOGROTATE_FILE}
-  fi
-
-  echo "[INFO] create logrotate config file success"
-
+  # uwsgi log file logrotate
+  uwsgi_log_file=$(get_config "daemonize")
+  /bin/bash /etc/pkgship/uwsgi_logrotate.sh "${uwsgi_log_file}" &
+  echo "[INFO] Start the logrotate task success"
 }
 
 function start_service() {
@@ -287,7 +270,13 @@ function start_service() {
   else
     uwsgi -d --ini $OUT_PATH/${PKGSHIP_CONSTANT}.ini
     echo "[INFO] START uwsgi service: ${PKGSHIP_CONSTANT}.ini"
-    echo "[INFO] The run log is saved into: $(get_config "daemonize")"
+    uwsgi_pid=$(ps -ef | grep -v grep | grep "uwsgi" | grep "${PKGSHIP_CONSTANT}.ini" | awk '{print $2}')
+    if [ -z "${uwsgi_pid}" ]; then
+      echo "[ERROR] Service failed to start, please check log $(get_config "daemonize")"
+      exit 1
+    fi
+    uwsgi_log_logrotate
+    echo "[INFO] Start pkgship service success!!!"
     exit 0
   fi
 }
@@ -304,6 +293,8 @@ function stop_service() {
     uwsgi --stop $OUT_PATH/${PKGSHIP_CONSTANT}.pid
     echo "[INFO] STOP uwsgi service: $OUT_PATH/${PKGSHIP_CONSTANT}.ini"
     echo "[INFO] The run log is saved into: $(get_config "daemonize")"
+    # stop uwsgi log file logrotate
+    ps -ef | grep uwsgi_logrotate.sh | grep -v grep | awk '{print $2}' | xargs kill -9 >/dev/null 2>&1
     exit 0
   else
     echo "[ERROR] STOP service failed, Please start the service first."
@@ -330,12 +321,10 @@ function check_redis_installed() {
     echo "If you have not installed REDIS, Please set 'redis_host: 127.0.0.1' and 'redis_port: 9200' and execute the automatic installation script '${SYS_PATH}/auto_install_pkgship_requires.sh' under the root user"
   fi
   # check whether to install Redis
-  host="127.0.0.1"
-  port=6379
   python_command="import redis
 try:
-    response = redis.Redis(host='$host',
-                           port="$port")
+    response = redis.Redis(host='$redis_ip',
+                           port="$redis_port")
     print(response.ping())
 except redis.ConnectionError:
     print(False)"
@@ -407,17 +396,17 @@ function main() {
   check_memory
   # check uwsgi and package.ini
   check_config_file
-  # check config parameter
   if [ "${OPERATION}" = "start" ]; then
+    # check config parameter
     check_config_param
+    # check logrotate config
+    check_logrotate_config
     # create uwsgi files
     create_config_file
     # check redis installed
     check_redis_installed
     # check es installed
     check_es_installed
-    # create logrotate
-    create_logrotate_file
   fi
   #star or stop service
   start_or_stop_service

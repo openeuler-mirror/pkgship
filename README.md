@@ -118,6 +118,12 @@ log_path=/var/log/pkgship/
 ; INFO DEBUG WARNING ERROR CRITICAL
 log_level=INFO
 
+; 单个业务日志文件最大容量，超过该值会自动压缩转储，默认为30M
+max_bytes=31457280
+
+; 备份日志保留的最大数量，默认为30
+backup_count=30
+
 [UWSGI-Web服务器配置]
 ; 操作日志路径。
 daemonize=/var/log/pkgship-operation/uwsgi.log
@@ -190,6 +196,8 @@ pkgshipd stop 停止服务
 ```
 
 > 每次起停周期内仅支持一种方式，不允许两种操作同时使用。
+>
+> pkgshipd启动方式只允许在pkgshipduser用户下操作。
 
 ## 工具使用
 
