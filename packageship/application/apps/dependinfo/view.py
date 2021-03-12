@@ -55,8 +55,6 @@ class DependList(Resource):
         rspmsg = RspMsg()
         result, error = validate(
             DependSchema, request.get_json(), load=True, partial=("node_name", "node_type"))
-        print(result)
-        print(error)
         if error:
             response = rspmsg.body('param_error')
             return jsonify(response)
