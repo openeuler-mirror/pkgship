@@ -146,9 +146,6 @@ redis_port=6379
 redis_max_connections=10
 
 [DATABASE-数据库]
-;数据库类型，默认为elastic，目前只支持elasticsearch
-database_engine_type=elastic
-
 ;数据库访问地址，默认为本机地址
 database_host=127.0.0.1
 

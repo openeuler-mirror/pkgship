@@ -23,9 +23,6 @@ INIT_CONF_PATH = os.path.join('/', 'etc', 'pkgship', 'conf.yaml')
 # configuration in the system is used by default
 DATABASE_FOLDER_PATH = os.path.join('/', 'var', 'run', 'pkgship_dbs')
 
-# The database engines supported in the system is sqlite database by default
-DATABASE_ENGINE_TYPE = 'elastic'
-
 # Default ip address of database
 DATABASE_HOST = '127.0.0.1'
 
@@ -51,9 +48,6 @@ LOG_PATH = os.path.join('/', 'var', 'log', 'pkgship')
 # INFO DEBUG WARNING ERROR CRITICAL
 LOG_LEVEL = 'INFO'
 
-# logging name
-LOG_NAME = 'log_info.log'
-
 # Maximum capacity of each file, the unit is byte, default is 30M
 BACKUP_COUNT = 30
 
@@ -78,4 +72,4 @@ REDIS_MAX_CONNECTIONS = 10
 QUEUE_MAXSIZE = 1000
 
 # A temporary directory for files downloaded from the network that are cleaned periodically
-TEMPORARY_DIRECTORY = '/var/run/pkgship'
+TEMPORARY_DIRECTORY = '/opt/pkgship/tmp/'
