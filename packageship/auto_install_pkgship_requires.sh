@@ -2,6 +2,14 @@
 REPO_CONFIG_FILE="/etc/yum.repos.d/pkgship_elasticsearch.repo"
 INSTALL_SOFTWARE=$1
 
+function check_es_status() {
+  visit_es_response=$(curl -s -XGET http://127.0.0.1:9200)
+  if [[ "${visit_es_response}" =~ "You Know, for Search" ]]; then
+    echo "[ERROR] The service is running, please close it manually and try again."
+    exit 1
+  fi
+}
+
 function create_es_repo() {
   echo "[INFO] Start to create ES official installation repo"
 
@@ -111,6 +119,7 @@ function download_install_redis() {
 
 function main() {
   if [ "${INSTALL_SOFTWARE}" = "elasticsearch" ]; then
+    check_es_status
     create_es_repo
     download_install_es
     change_elasticsearch_login_type

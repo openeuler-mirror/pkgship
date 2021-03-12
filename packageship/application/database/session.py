@@ -24,10 +24,10 @@ class DatabaseSession(object):
     Dynamic initialization of the database instance
     Raises: DatabaseConfigException, database is not support
     """
-    __DATABASE_ENGINE_TYPE = ['elastic', 'mysql']
+    __DATABASE_ENGINE_TYPE = ['elastic']
 
     def __init__(self, db_engine=None, host=None, port=None):
-        self.db_engine = db_engine or configuration.DATABASE_ENGINE_TYPE
+        self.db_engine = db_engine or "elastic"
         if self.db_engine not in self.__DATABASE_ENGINE_TYPE:
             LOGGER.error("DataBase %s is not support" % self.db_engine)
             raise DatabaseConfigException()

@@ -46,9 +46,8 @@ class TestConnect(TestCase):
         Returns:
 
         """
-        db = DatabaseSession(db_engine='mysql')
         with self.assertRaises(DatabaseConfigException):
-            db.connection()
+            DatabaseSession(db_engine='mysql')
 
     @mock.patch.object(DatabaseSession, "connection")
     def test_get_client(self, mock_connection):
