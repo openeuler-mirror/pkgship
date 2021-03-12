@@ -23,15 +23,27 @@ from packageship.application.cli.base import BaseCommand
 from packageship.application.common.exc import InitializeError, ResourceCompetitionError
 
 
-def print_init_info():
+class PrintThread(threading.Thread):
     """
-    Description: Print init info
+    Description: Print Thread
+    Attributes:
 
     """
-    while True:
-        print("\r", "initializing{}".format(
-            "." * random.randint(1, 4)), end='', flush=True)
-        time.sleep(0.5)
+
+    def __init__(self, *args, **kwargs):
+        super(PrintThread, self).__init__(*args, **kwargs)
+        self.__clear = False
+
+    def run(self):
+        while True:
+            print("\r", "initializing{}".format(
+                "." * random.randint(1, 4)), end='', flush=True)
+            time.sleep(0.5)
+            if self.__clear:
+                break
+
+    def stop(self):
+        self.__clear = True
 
 
 class InitDatabaseCommand(BaseCommand):
@@ -75,7 +87,10 @@ class InitDatabaseCommand(BaseCommand):
         Raises:
 
         """
-        def get_username(): return pwd.getpwuid(os.getuid())[0]
+
+        def get_username():
+            return pwd.getpwuid(os.getuid())[0]
+
         if get_username() not in ["root", "pkgshipuser"]:
             print("The current user does not have initial execution permission")
             return
@@ -86,11 +101,10 @@ class InitDatabaseCommand(BaseCommand):
         if file_path:
             file_path = os.path.abspath(file_path)
         try:
-            print_t = threading.Thread(target=print_init_info)
-            print_t.setDaemon(True)
+            print_t = PrintThread()
             print_t.start()
             init.import_depend(path=file_path)
-            time.sleep(0.5)
+            print_t.stop()
         except (InitializeError, ResourceCompetitionError) as error:
             print('\r', error)
         else:
