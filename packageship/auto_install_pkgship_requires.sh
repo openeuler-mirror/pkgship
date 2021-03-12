@@ -3,8 +3,8 @@ REPO_CONFIG_FILE="/etc/yum.repos.d/pkgship_elasticsearch.repo"
 INSTALL_SOFTWARE=$1
 
 function check_es_status() {
-  es_process=$(ps -ef | grep "/usr/share/elasticsearch" | grep -v grep | awk '{print $2}')
-  if [ -n "${es_process}" ]; then
+  visit_es_response=$(curl -s -XGET http://127.0.0.1:9200)
+  if [[ "${visit_es_response}" =~ "You Know, for Search" ]]; then
     echo "[ERROR] The service is running, please close it manually and try again."
     exit 1
   fi
