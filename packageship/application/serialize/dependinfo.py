@@ -53,7 +53,7 @@ class OtherdependSchema(BaseParameterSchema):
     Install dependencies, build dependencies, and selfdepen validators
     """
     db_priority = fields.List(fields.String(),
-                              required=False, missing=get_db(), default=get_db())
+                              required=False, missing=get_db, default=get_db)
 
     @validates("db_priority")
     def validate_name(self, db_priority):
