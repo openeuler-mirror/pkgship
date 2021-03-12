@@ -145,7 +145,7 @@ function check_null() {
 function check_num() {
   result=$(echo $1 | grep '^[[:digit:]]*$')
   if [ -z "${result}" ]; then
-    echo "[ERROR] $2 should be a number."
+    echo "[ERROR] $2 should be a number,please check this parameter "
     exit 1
   fi
 }
@@ -320,6 +320,10 @@ function check_redis_installed() {
     echo "If you have installed REDIS, Please set correct 'redis_host' and 'redis_port' values and re-execute the startup script "
     echo "If you have not installed REDIS, Please set 'redis_host: 127.0.0.1' and 'redis_port: 9200' and execute the automatic installation script '${SYS_PATH}/auto_install_pkgship_requires.sh' under the root user"
   fi
+
+  check_num "${redis_port}" "redis_port"
+  redis_max_connections=$(get_config "redis_max_connections")
+  check_num "${redis_max_connections}" "redis_max_connections"
   # check whether to install Redis
   python_command="import redis
 try:
@@ -361,6 +365,7 @@ function check_es_installed() {
     echo "If you have not installed ES, please execute the automatic installation script '${SYS_PATH}/auto_install_pkgship_requires.sh' under the root user "
     exit 1
   fi
+  check_num "${es_port}" "database_port"
   # check whether to install Elasticsearch
   visit_es_response=$(curl -s -XGET http://"${es_ip}":"${es_port}")
   if [ -z "${visit_es_response}" ]; then
