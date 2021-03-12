@@ -16,7 +16,6 @@ Class: BaseCommand
 """
 
 try:
-    import re
     import argparse
     import prettytable
     from requests import HTTPError
