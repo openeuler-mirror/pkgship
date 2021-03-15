@@ -10,12 +10,18 @@
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
+import os
 from unittest import TestCase, mock
+from unittest.mock import MagicMock
 
 from elasticsearch import Elasticsearch, helpers
+from elasticsearch.client.indices import IndicesClient
+from elasticsearch.exceptions import ElasticsearchException, TransportError
 
 from packageship.application.common.exc import ElasticSearchQueryException, DatabaseConfigException
 from packageship.application.database.engines.elastic import ElasticSearch
+
+MOCK_DATA_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data/mapping.json")
 
 
 class TestEsQuery(TestCase):
@@ -111,6 +117,85 @@ class TestEsQuery(TestCase):
         es1 = ElasticSearch(host="127.0.0.1", port=None)
         es2 = ElasticSearch(host="127.0.0.1")
         self.assertIs(es1, es2)
+
+    def test_create_index_success(self):
+        """
+        Test create indices success
+        Returns:
+        """
+        IndicesClient.exists = MagicMock(side_effect=[False, False])
+        IndicesClient.create = MagicMock(side_effect=[True, True])
+
+        es_instance = self._es_init()
+        indices = [dict(file=MOCK_DATA_FILE, name="test1"), dict(file=MOCK_DATA_FILE, name="test2")]
+        result = es_instance.create_index(indices)
+        self.assertEqual(result, [])
+
+    def test_create_index_fail(self):
+        """
+        Test create indices failed
+        Returns:
+        """
+        IndicesClient.exists = MagicMock(side_effect=[False])
+        IndicesClient.create = MagicMock(side_effect=[ElasticsearchException])
+
+        es_instance = self._es_init()
+        indices = [dict(file=MOCK_DATA_FILE, name="test1")]
+        result = es_instance.create_index(indices)
+        self.assertEqual(result, ["test1"])
+
+    def test_delete_index_fail(self):
+        """
+        Test delete indices success
+        Returns:
+        """
+        IndicesClient.exists = MagicMock(side_effect=[True])
+        IndicesClient.delete = MagicMock(side_effect=[TransportError])
+
+        es_instance = self._es_init()
+        indices = [dict(file=MOCK_DATA_FILE, name="test1")]
+        result = es_instance.create_index(indices)
+        self.assertEqual(result, ["test1"])
+
+    def test_load_mapping_fail(self):
+        """
+        Test load mapping success
+        Returns:
+        """
+        es_instance = self._es_init()
+        indices = dict(file=MOCK_DATA_FILE + "1", name="test1")
+        result = es_instance.create_index(indices)
+        self.assertEqual(result, ["test1"])
+
+    def test_insert_fail(self):
+        """
+        Test insert indices success
+        Returns:
+        """
+        es_instance = self._es_init()
+        with self.assertRaises(ElasticSearchQueryException):
+            es_instance.insert(index="test", body={})
+
+    def test_delete_index_none(self):
+        """
+        Test delete indices is none
+        Returns:
+        """
+        es_instance = self._es_init()
+        result = es_instance.delete_index(index="")
+        self.assertIsNone(result)
+
+    def test_delete_many_indices_fail(self):
+        """
+        Test delete indices failed
+        Returns:
+        """
+        IndicesClient.delete = MagicMock(side_effect=[TransportError])
+
+        es_instance = self._es_init()
+        indices = ['test1', 'test2']
+        result = es_instance.delete_index(indices)
+        self.assertEqual(result, "test1,test2")
 
     @staticmethod
     def _es_init():
