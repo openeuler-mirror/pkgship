@@ -16,7 +16,7 @@ test get self_build depend info
 import unittest
 import os
 from unittest import mock
-from mock import patch
+from unittest.mock import patch
 from redis import Redis
 
 from packageship.application.core.depend.self_depend import SelfDepend

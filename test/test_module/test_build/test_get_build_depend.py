@@ -16,7 +16,7 @@ test get binary package info
 import unittest
 import os
 from unittest import mock
-from mock import patch
+from unittest.mock import patch
 from redis import Redis
 
 from packageship.application.core.depend.build_depend import BuildDepend
