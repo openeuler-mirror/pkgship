@@ -16,7 +16,7 @@ test get binary package info
 import unittest
 import os
 from unittest import mock
-from mock import patch
+from unittest.mock import patch
 
 from packageship.application.common.exc import DatabaseConfigException, ElasticSearchQueryException
 from packageship.application.core.pkginfo.pkg import BinaryPackage

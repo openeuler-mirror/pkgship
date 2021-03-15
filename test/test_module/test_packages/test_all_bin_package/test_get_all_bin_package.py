@@ -16,7 +16,7 @@ test get all bin package
 import os
 import unittest
 from unittest import mock
-from mock import patch
+from unittest.mock import patch
 
 from packageship.application.common.exc import PackageInfoGettingError, DatabaseConfigException, \
     ElasticSearchQueryException
