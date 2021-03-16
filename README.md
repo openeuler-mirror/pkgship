@@ -34,10 +34,22 @@ pkgship是一款管理OS软件包依赖关系，提供依赖和被依赖关系�
 
 ## 运行环境
 
-* 可用内存700M以上
-* python版本 3.8及以上
-* Elasticsearch 版本7.10.1
-* Redis
+- 硬件配置：
+
+| 配置项   | 推荐规格  |
+| -------- | --------- |
+| CPU      | 8核       |
+| 内存     | 32G       |
+| 网络带宽 | 300M      |
+| I/O      | 375MB/sec |
+
+- 软件配置：
+
+| 软件名        | 版本和规格                                 |
+| ------------- | ------------------------------------------ |
+| Elasticsearch | 版本7.10.1；单机部署可用；有能力可部署集群 |
+| Redis         | 建议5.0.4及以上；建议大小配置为内存的3/4   |
+| Python        | 版本 3.8及以上                             |
 
 ## 安装工具
 **1、pkgship工具安装**
@@ -84,6 +96,10 @@ pkgship是一款管理OS软件包依赖关系，提供依赖和被依赖关系�
 ```
  /bin/bash auto_install_pkgship_requires.sh redis
 ```
+
+**3、安装后添加用户**
+
+在安装pkgship软件后，会自动创建名为pkgshipuser的用户和名为pkgshipuser的用户组，无需手动创建，后续服务启动和运行时，都会以该用户角色操作。
 
 ## 配置参数
 
@@ -158,12 +174,12 @@ database_port=9200
 conf.yaml 文件默认存放在 /etc/pkgship/ 路径下，pkgship会通过该配置读取要建立的数据库名称以及需要导入的sqlite文件，也支持配置sqlite文件所在的repo地址。conf.yaml 示例如下所示。
 
 ```yaml
-dbname: openEuler-20.03   #数据库名称
+dbname: openeuler20-03   #数据库名称
 src_db_file: /etc/pkgship/repo/openEuler-20.09/src  #源码包所在的本地路径
 bin_db_file: /etc/pkgship/repo/openEuler-20.09/bin  #二进制包所在的本地路径
 priority: 1 #数据库优先级
 
-dbname: openEuler-20.09
+dbname: openeuler20-09
 src_db_file: https://repo.openeuler.org/openEuler-20.09/source  #源码包所在的repo源
 bin_db_file: https://repo.openeuler.org/openEuler-20.09/everything/aarch64 #二进制包所在的repo源
 priority: 2
@@ -174,6 +190,8 @@ priority: 2
 > 如需更改存放路径，请更改package.ini下的 init_conf_path 选项。
 >
 > 不支持直接配置sqlite文件路径。
+>
+> dbname请使用小写字母或者数字，不支持大写字母。
 
 ## 服务启动和停止
 pkgship启动和停止方式有两种，systemctl方式和pkgshipd方式，其中systemctl方式启动可以有异常停止自启动的机制。两种方式的执行命令为：
@@ -200,44 +218,44 @@ pkgshipd stop 停止服务
 
 1. 数据库初始化。  
 
-   > 使用场景：服务启动后，为了能查询对应的数据库（比如openEuler-20.09， openEuler-21.03）中的包信息及包依赖关系，需要将这些数据库通过createrepo生成的sqlite（分为源码库和二进制库）导入进服务内，生成对应的包信息json体然后插入Elasticsearch对应的数据库中。数据库名为根据config.yaml中配置的dbname生成的dbname-source/binary，[-filepath]为可选参数。
+   > 使用场景：服务启动后，为了能查询对应的数据库（比如openEuler-20.09， openEuler-21.03）中的包信息及包依赖关系，需要将这些数据库通过createrepo生成的sqlite（分为源码库和二进制库）导入进服务内，生成对应的包信息json体然后插入Elasticsearch对应的数据库中。数据库名为根据config.yaml中配置的dbname生成的dbname-source/binary。
 
     ```bash
     pkgship init [-filepath path]
     ```
 
     > 参数说明：  
-    > -filepath：指定初始化配置文件config.yaml的路径，可以使用相对路径和绝对路径，不带参数则使用默认配置初始化。
+    > -filepath：指定初始化配置文件config.yaml的路径，可以使用相对路径和绝对路径，不带参数则使用默认配置初始化，可选参数。
 
 2. 单包查询。
 
    用户可查询源码包或者二进制包(packagename)在指定数据库表（database）中的具体信息。
 
-   > 使用场景：用户可查询源码包或者二进制包在指定数据库中的具体信息，packagename,database为必选参数,-s为可选参数。  
+   > 使用场景：用户可查询源码包或者二进制包在指定数据库中的具体信息。  
 
    ```bash
    pkgship pkginfo $packageName $database [-s]
    ```
 
    > 参数说明：  
-   > packagename：指定要查询的软件包名。   
-   > database：指定具体的数据库名称。
+   > packagename：指定要查询的软件包名，必传参数。   
+   > database：指定具体的数据库名称，必传参数。
    >
-   > -s: 指定`-s`将查询的是`src`源码包信息;若未指定 默认查询`bin`二进制包信息
+   > -s: 指定`-s`将查询的是`src`源码包信息;若未指定 默认查询`bin`二进制包信息，可选参数。
 
 3. 所有包查询。
 
    查询数据库下包含的所有包的信息。
 
-   > 使用场景：用户可查询指定数据库下包含的所有软件包信息。其中tablename为必选参数，-s为可选参数。
+   > 使用场景：用户可查询指定数据库下包含的所有软件包信息。
 
    ```bash
    pkgship list $database [-s]
    ```
 
    > 参数说明：  
-   > database：指定具体的数据库名称。  
-   > -s: 指定`-s`将查询的是`src`源码包信息;若未指定 默认查询`bin`二进制包信息
+   > database：指定具体的数据库名称，必传参数。  
+   > -s: 指定`-s`将查询的是`src`源码包信息;若未指定 默认查询`bin`二进制包信息，可选参数。
 
 4. 安装依赖查询。
 
@@ -285,7 +303,7 @@ pkgshipd stop 停止服务
 
    > 参数说明：  
    >
-   > pkgName：需要查询安装的依赖的二进制包名字,支持传多个；必传参数。
+   > pkgName：需要查询安装的依赖的软件包名字,支持传多个；必传参数。
    >
    > -dbs： 指定需要查询的database优先级,不传按照系统默认优先级搜索；可选参数。
    >
@@ -296,9 +314,9 @@ pkgshipd stop 停止服务
    > -w：指定-s表示引入某个二进制包的时候，查询结果会显示出该二进制包对应的源码包以及该源码包生成的所有二进制包；如果不指定-w参数表示引入某个二进制包的时候，查询结果只显示对应的源码包；可选参数。
 
 7. 被依赖查询。  
-   查询源码包(sourceName)在某数据库(dbName)中被哪些包所依赖。
+   查询软件包(pkgName)在某数据库(dbName)中被哪些包所依赖。
 
-   > 使用场景：针对软件源码包A，在升级或删除的情况下会影响哪些软件包，可通过该命令查询。该命令会显示源码包A生成的所有二进制包被哪些源码包（比如B）编译依赖，被哪些二进制包（比如C1）安装依赖；以及B生成的二进制包及C1被哪些源码包（比如D）编译依赖，被哪些二进制包（比如E1）安装依赖，以此类推，遍历这些二进制包的被依赖。
+   > 使用场景：针对软件包A，在升级或删除的情况下会影响哪些软件包，可通过该命令查询。该命令会显示源码包A(若为源码包)生成的所有二进制包（若输入为二进制包，那此处即为输入的二进制包）被哪些源码包（比如B）编译依赖，被哪些二进制包（比如C1）安装依赖；以及B生成的二进制包及C1被哪些源码包（比如D）编译依赖，被哪些二进制包（比如E1）安装依赖，以此类推，遍历这些二进制包的被依赖。
 
    ```bash
     pkgship bedepend dbName [$pkgName1 $pkgName2 $pkgName3] [-w] [-b] [-install/build]
@@ -306,9 +324,11 @@ pkgshipd stop 停止服务
 
    > 参数说明: 
    >
-   >  dbName：需要查询依赖关系的仓库，不支持多个；必选参数。
+   > dbName：需要查询依赖关系的仓库，不支持多个；必选参数。
    >
-   > -w ：当不指定-w 时，查询结果默认不包含对应二进制包的子包；当命令后指定配置参数[-w] 时，不仅会查询二进制包C1的被依赖关系，还会进一步去查询C1对应的源码包C生成的其他二进制包（比如：C2,C3）的被依赖关系；可选参数。
+   > pkgName：待查询的软件包名称，支持多个；必选参数。
+   >
+   > -w ：当不指定-w 时，查询结果默认不包含对应源码包的子包；当命令后指定配置参数[-w] 时，不仅会查询二进制包C1的被依赖关系，还会进一步去查询C1对应的源码包C生成的其他二进制包（比如：C2,C3）的被依赖关系；可选参数。
    >
    > -b：指定`-b`表示查询的包是二进制,默认查询源码包；可选参数。
    >
@@ -318,7 +338,7 @@ pkgshipd stop 停止服务
 
    > 使用场景，查看Elasticsearch中初始化了哪些数据库，该功能会按照优先级顺序返回已经初始化的数据库列表。
 
-   `pkgship db`
+   `pkgship dbs`
 
 9. 获取版本号。
 
@@ -326,3 +346,64 @@ pkgshipd stop 停止服务
 
    `pkgship -v`
 
+## 日志查看和转储
+
+ **日志查看**
+
+ pkgship服务在运行时会产生两种日志，业务日志和操作日志。
+
+ 1、业务日志: 
+
+  路径：/var/log/pkgship/log_info.log（支持在conf.yaml中配置）。
+
+  功能：主要记录代码内部运行的日志，方便问题定位。
+
+  权限：路径权限755，日志文件权限644，普通用户可以查看。
+
+2、操作日志：
+
+路径：/var/log/pkgship-operation/uwsgi.log （支持在conf.yaml中配置）。
+
+功能：记录使用者操作信息，包括ip，访问时间，访问url，访问结果等，方便后续查阅以及记录攻击者信息。
+
+权限：路径权限700，日志文件权限644，只有root和pkgshipuser可以查看。
+
+**日志转储**
+
+1、业务日志转储：
+
+- 转储机制
+
+  使用python自带的logging内置函数的转储机制，按照日志大小来备份。
+
+> 配置项，package.ini中配置每个日志的容量和备份数量
+>
+> ```ini
+> ; Maximum capacity of each file, the unit is byte, default is 30M
+> max_bytes=31457280
+> 
+> ; Number of old logs to keep;default is 30
+> backup_count=30
+> ```
+
+- 转储过程
+
+  当某次日志写入后，日志文件大小超过配置的日志容量时，会自动压缩转储，压缩后文件名为log_info.log.x.gz， x是数字，数字越小为越新的备份。
+
+  当备份日志数量到达配置的备份数量之后，最早的备份日志会被删除掉，然后备份一个最新的压缩日志文件。
+
+
+
+2、操作日志转储：
+
+- 转储机制
+
+  使用脚本进行转储，按照时间转储，每日转储一次，共保留30天，不支持自定义配置。
+
+  > 脚本位置：/etc/pkgship/uwsgi_logrotate.sh
+
+- 转储过程
+
+  pkgship启动时转储脚本后台运行，从启动时，每隔1天进行转储压缩，共保留30份压缩文件，压缩文件名称为uwsgi.log-20201010x.zip， x为压缩时的小时数。
+
+  pkgship停止后转储脚本停止，不再进行转储，再次启动时，转储脚本重新执行。

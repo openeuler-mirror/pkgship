@@ -1364,7 +1364,7 @@ query_ip_addr=127.0.0.1
 
 ; The address of the remote service, the command line can directly 
 ; call the remote service to complete the data request
-remote_host=https://api.openeuler.org/pkgmanage
+remote_host=https://pkgmanage.openeuler.org
 
 ; A temporary directory for files downloaded from the network that are cleaned periodically
 ; The recommended free space in this dir is 1G
@@ -1378,6 +1378,12 @@ log_path=/var/log/pkgship/
 ; The log level option value can only be as follows
 ; INFO DEBUG WARNING ERROR CRITICAL
 log_level=INFO
+
+; Maximum capacity of each file, the unit is byte, default is 30M
+max_bytes=31457280
+
+; Number of old logs to keep;default is 30
+backup_count=30
 
 [UWSGI]
 ; Operation log storage path
@@ -1402,9 +1408,6 @@ redis_port=6379
 redis_max_connections=10
 
 [DATABASE]
-;The database engines supported in the system is sqlite database by default
-database_engine_type=elastic
-
 ;Default ip address of database
 database_host=127.0.0.1
 
@@ -3527,6 +3530,68 @@ binary_data = {
     | --------------------------- | ------ | ----------------------------------------------------------- |
     | DatabaseConfigException     | 自定义 | 数据库配置异常，例如数据库地址为空，数据库类型不支持        |
     | ElasticSearchQueryException | 自定义 | ES数据库查询异常，例如数据库连接失败，连接超时，index不存在 |
+
+### 3.9、日志查看和转储
+
+####  3.9.1、日志查看
+
+ pkgship服务在运行时会产生两种日志，业务日志和操作日志。
+
+ 1、业务日志: 
+
+  路径：/var/log/pkgship/log_info.log（支持在conf.yaml中配置）。
+
+  功能：主要记录代码内部运行的日志，方便问题定位。
+
+  权限：路径权限755，日志文件权限644，普通用户可以查看。
+
+2、操作日志：
+
+路径：/var/log/pkgship-operation/uwsgi.log （支持在conf.yaml中配置）。
+
+功能：记录使用者操作信息，包括ip，访问时间，访问url，访问结果等，方便后续查阅以及记录攻击者信息。
+
+权限：路径权限700，日志文件权限644，只有root和pkgshipuser可以查看。
+
+#### 3.9.2、日志转储
+
+1、业务日志转储：
+
+- 转储机制
+
+  使用python自带的logging内置函数的转储机制，按照日志大小来备份。
+
+> 配置项，package.ini中配置每个日志的容量和备份数量
+>
+> ```ini
+> ; Maximum capacity of each file, the unit is byte, default is 30M
+> max_bytes=31457280
+> 
+> ; Number of old logs to keep;default is 30
+> backup_count=30
+> ```
+
+- 转储过程
+
+  当某次日志写入后，日志文件大小超过配置的日志容量时，会自动压缩转储，压缩后文件名为log_info.log.x.gz， x是数字，数字越小为越新的备份。
+
+  当备份日志数量到达配置的备份数量之后，最早的备份日志会被删除掉，然后备份一个最新的压缩日志文件。
+
+
+
+2、操作日志转储：
+
+- 转储机制
+
+  使用脚本进行转储，按照时间转储，每日转储一次，共保留30天，不支持自定义配置。
+
+  > 脚本位置：/etc/pkgship/uwsgi_logrotate.sh
+
+- 转储过程
+
+  pkgship启动时转储脚本后台运行，从启动时，每隔1天进行转储压缩，共保留30份压缩文件，压缩文件名称为uwsgi.log-20201010x.zip， x为压缩时的小时数。
+
+  pkgship停止后转储脚本停止，不再进行转储，再次启动时，转储脚本重新执行。
 
 ## 4、修改日志
 
