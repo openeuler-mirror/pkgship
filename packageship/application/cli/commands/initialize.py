@@ -22,6 +22,8 @@ import threading
 from packageship.application.cli.base import BaseCommand
 from packageship.application.common.exc import InitializeError, ResourceCompetitionError
 
+PID_FILE_PATH = "/opt/pkgship/uwsgi/pkgship.pid"
+
 
 class InitServiceThread(threading.Thread):
     """
@@ -101,12 +103,12 @@ class InitDatabaseCommand(BaseCommand):
             stdout=subprocess.PIPE, shell=True)
         process = response.stdout.read()
         try:
-            with open('/opt/pkgship/uwsgi/pkgship.pid', 'r') as file:
+            with open(PID_FILE_PATH, 'r') as file:
                 master_process = file.readline().strip('\n')
         except FileNotFoundError:
             master_process = None
         if not master_process or (str(master_process) not in str(process)):
-            print("The uwsgi service is not started,please start the service first")
+            print("The pkgship service is not started,please start the service first")
             return
 
         from packageship.application.initialize.integration import InitializeService
