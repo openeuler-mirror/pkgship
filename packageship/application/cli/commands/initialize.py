@@ -15,7 +15,6 @@ Description: Entry method for custom commands
 Class: InitDatabaseCommand
 """
 import os
-import random
 import time
 import pwd
 import threading
@@ -23,27 +22,23 @@ from packageship.application.cli.base import BaseCommand
 from packageship.application.common.exc import InitializeError, ResourceCompetitionError
 
 
-class PrintThread(threading.Thread):
+class InitServiceThread(threading.Thread):
     """
-    Description: Print Thread
-    Attributes:
-
+    Description: Execute the initialization thread
     """
 
-    def __init__(self, *args, **kwargs):
-        super(PrintThread, self).__init__(*args, **kwargs)
-        self.__clear = False
+    def __init__(self, func, param, *args, **kwargs):
+        super(InitServiceThread, self).__init__(*args, **kwargs)
+        self._func = func
+        self._args = param
+        self.error = False
 
     def run(self):
-        while True:
-            print("\r", "initializing{}".format(
-                "." * random.randint(1, 4)), end='', flush=True)
-            time.sleep(0.5)
-            if self.__clear:
-                break
-
-    def stop(self):
-        self.__clear = True
+        try:
+            self._func(*self._args)
+        except (InitializeError, ResourceCompetitionError) as error:
+            self.error = True
+            print('\r', error)
 
 
 class InitDatabaseCommand(BaseCommand):
@@ -63,6 +58,7 @@ class InitDatabaseCommand(BaseCommand):
             'init', help='initialization of the database')
         self.params = [
             ('-filepath', 'str', 'specify the path of conf.yaml', '', 'store')]
+        self._char = ["/", "-", "\\"]
 
     def register(self):
         """
@@ -77,6 +73,13 @@ class InitDatabaseCommand(BaseCommand):
         super(InitDatabaseCommand, self).register()
         self.parse.set_defaults(func=self.do_command)
 
+    @property
+    def login_user(self):
+        """
+        Description: The user logged in to the system
+        """
+        return pwd.getpwuid(os.getuid())[0]
+
     def do_command(self, params):
         """
         Description: Action to execute command
@@ -88,10 +91,7 @@ class InitDatabaseCommand(BaseCommand):
 
         """
 
-        def get_username():
-            return pwd.getpwuid(os.getuid())[0]
-
-        if get_username() not in ["root", "pkgshipuser"]:
+        if self.login_user not in ["root", "pkgshipuser"]:
             print("The current user does not have initial execution permission")
             return
 
@@ -100,14 +100,19 @@ class InitDatabaseCommand(BaseCommand):
         file_path = params.filepath
         if file_path:
             file_path = os.path.abspath(file_path)
-        try:
-            print_t = PrintThread()
-            print_t.start()
-            init.import_depend(path=file_path)
-            print_t.stop()
-        except (InitializeError, ResourceCompetitionError) as error:
-            print('\r', error)
-        else:
+
+        _init_service_thread = InitServiceThread(
+            func=init.import_depend, param=(file_path,))
+        _init_service_thread.setDaemon(True)
+        _init_service_thread.start()
+
+        while _init_service_thread.isAlive():
+            for number in range(3):
+                print("\r", "initializing{}".format("." * 10),
+                      self._char[number], end='', flush=True)
+                time.sleep(0.5)
+        print("\n")
+        if not _init_service_thread.error:
             if init.success:
                 print('\r', 'Database initialize success')
             else:
