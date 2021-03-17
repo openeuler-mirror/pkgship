@@ -653,7 +653,7 @@ class RepoConfig:
 
         if not os.path.exists(path):
             raise FileNotFoundError(
-                "system initialization configuration file"
+                "system initialization configuration file "
                 "does not exist: %s" % path)
         # load yaml configuration file
         with open(path, 'r', encoding='utf-8') as file_context:
@@ -663,7 +663,7 @@ class RepoConfig:
             except yaml.YAMLError as yaml_error:
                 LOGGER.error(yaml_error)
                 raise ValueError(
-                    "The format of the yaml configuration"
+                    "The format of the yaml configuration "
                     "file is wrong please check and try again:{0}".format(yaml_error)) \
                     from yaml_error
 
@@ -748,9 +748,9 @@ class RepoConfig:
             raise ValueError(
                 "content of the database initialization configuration file cannot be empty .")
         if not isinstance(self._repo, list):
-            raise ValueError("""format of the initial database configuration file isincorrect.
-                                When multiple databases need to be initialized,
-                                it needs to be configured in the form of multiple .""")
+            raise ValueError("format of the initial database configuration file is incorrect."
+                             " When multiple databases need to be initialized,"
+                             " it needs to be configured in the form of multiple .")
         self._validate_database()
         for repo in self._repo:
             try:
