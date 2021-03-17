@@ -174,12 +174,12 @@ database_port=9200
 conf.yaml 文件默认存放在 /etc/pkgship/ 路径下，pkgship会通过该配置读取要建立的数据库名称以及需要导入的sqlite文件，也支持配置sqlite文件所在的repo地址。conf.yaml 示例如下所示。
 
 ```yaml
-dbname: openeuler20-03   #数据库名称
+dbname: openeuler20.03   #数据库名称
 src_db_file: /etc/pkgship/repo/openEuler-20.09/src  #源码包所在的本地路径
 bin_db_file: /etc/pkgship/repo/openEuler-20.09/bin  #二进制包所在的本地路径
 priority: 1 #数据库优先级
 
-dbname: openeuler20-09
+dbname: openeuler20.09
 src_db_file: https://repo.openeuler.org/openEuler-20.09/source  #源码包所在的repo源
 bin_db_file: https://repo.openeuler.org/openEuler-20.09/everything/aarch64 #二进制包所在的repo源
 priority: 2
@@ -212,13 +212,13 @@ pkgshipd stop 停止服务
 
 > 每次起停周期内仅支持一种方式，不允许两种操作同时使用。
 >
-> pkgshipd启动方式只允许在pkgshipduser用户下操作。
+> pkgshipd启动方式只允许在pkgshipuser用户下操作。
 
 ## 工具使用
 
 1. 数据库初始化。  
 
-   > 使用场景：服务启动后，为了能查询对应的数据库（比如openEuler-20.09， openEuler-21.03）中的包信息及包依赖关系，需要将这些数据库通过createrepo生成的sqlite（分为源码库和二进制库）导入进服务内，生成对应的包信息json体然后插入Elasticsearch对应的数据库中。数据库名为根据config.yaml中配置的dbname生成的dbname-source/binary。
+   > 使用场景：服务启动后，为了能查询对应的数据库（比如openeuler20.03， openeuler20.09）中的包信息及包依赖关系，需要将这些数据库通过createrepo生成的sqlite（分为源码库和二进制库）导入进服务内，生成对应的包信息json体然后插入Elasticsearch对应的数据库中。数据库名为根据config.yaml中配置的dbname生成的dbname-source/binary。
 
     ```bash
     pkgship init [-filepath path]
@@ -354,7 +354,7 @@ pkgshipd stop 停止服务
 
  1、业务日志: 
 
-  路径：/var/log/pkgship/log_info.log（支持在conf.yaml中配置）。
+  路径：/var/log/pkgship/log_info.log（支持在conf.yaml中通过log_path字段自定义路径）。
 
   功能：主要记录代码内部运行的日志，方便问题定位。
 
@@ -362,7 +362,7 @@ pkgshipd stop 停止服务
 
 2、操作日志：
 
-路径：/var/log/pkgship-operation/uwsgi.log （支持在conf.yaml中配置）。
+路径：/var/log/pkgship-operation/uwsgi.log （支持在conf.yaml中通过daemonize字段自定义路径）。
 
 功能：记录使用者操作信息，包括ip，访问时间，访问url，访问结果等，方便后续查阅以及记录攻击者信息。
 
