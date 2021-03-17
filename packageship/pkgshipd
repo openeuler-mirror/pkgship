@@ -38,8 +38,6 @@ function check_memory() {
 function check_config_file() {
   echo "[INFO] start to check config file"
   # validate package.ini is exist
-  package_ini=$(find /home/jenkins -name "package.ini")
-  echo "[INFO] *********************${package_ini}"
   if [ ! -f "$SYS_PATH/package.ini" ]; then
     echo "[ERROR] $SYS_PATH/package.ini dose not exist!!!"
     exit 1
