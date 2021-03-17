@@ -3,7 +3,7 @@ SYS_PATH=/etc/pkgship
 OUT_PATH=/opt/pkgship/uwsgi
 OPERATION=$1
 PKGSHIP_CONSTANT="pkgship"
-MEM_THRESHOLD='700'
+MEM_THRESHOLD='2048'
 MEM_FREE=$(free -m | grep "Mem" | awk '{print $7}')
 
 function check_user() {
@@ -38,6 +38,8 @@ function check_memory() {
 function check_config_file() {
   echo "[INFO] start to check config file"
   # validate package.ini is exist
+  package_ini=$(find /home/jenkins -name "package.ini")
+  echo "[INFO] *********************${package_ini}"
   if [ ! -f "$SYS_PATH/package.ini" ]; then
     echo "[ERROR] $SYS_PATH/package.ini dose not exist!!!"
     exit 1
@@ -270,14 +272,20 @@ function start_service() {
   else
     uwsgi -d --ini $OUT_PATH/${PKGSHIP_CONSTANT}.ini
     echo "[INFO] START uwsgi service: ${PKGSHIP_CONSTANT}.ini"
-    uwsgi_pid=$(ps -ef | grep -v grep | grep "uwsgi" | grep "${PKGSHIP_CONSTANT}.ini" | awk '{print $2}')
-    if [ -z "${uwsgi_pid}" ]; then
-      echo "[ERROR] Service failed to start, please check log $(get_config "daemonize")"
-      exit 1
-    fi
-    uwsgi_log_logrotate
-    echo "[INFO] Start pkgship service success!!!"
-    exit 0
+
+    for i in {1..5}; do
+      sleep 2s
+      uwsgi_pid=$(ps -ef | grep -v grep | grep "uwsgi" | grep "${PKGSHIP_CONSTANT}.ini" | awk '{print $2}')
+      master_uwsgi_pid=$(cat $OUT_PATH/${PKGSHIP_CONSTANT}.pid)
+      if [[ -n ${master_uwsgi_pid} ]] && [[ ${uwsgi_pid} =~ ${master_uwsgi_pid} ]]; then
+        uwsgi_log_logrotate
+        echo "[INFO] Start pkgship service success!!!"
+        exit 0
+      fi
+    done
+
+    echo "[ERROR] Service failed to start, please check log $(get_config "daemonize")"
+    exit 1
   fi
 }
 
