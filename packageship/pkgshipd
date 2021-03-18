@@ -3,7 +3,7 @@ SYS_PATH=/etc/pkgship
 OUT_PATH=/opt/pkgship/uwsgi
 OPERATION=$1
 PKGSHIP_CONSTANT="pkgship"
-MEM_THRESHOLD='700'
+MEM_THRESHOLD='2048'
 MEM_FREE=$(free -m | grep "Mem" | awk '{print $7}')
 
 function check_user() {
@@ -262,22 +262,34 @@ function uwsgi_log_logrotate() {
   echo "[INFO] Start the logrotate task success"
 }
 
+function is_started() {
+  pkgship_version=$(pkgship -v)
+  if [[ -n ${pkgship_version} ]] && [[ ${pkgship_version} =~ "Version" ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
 function start_service() {
-  uwsgi_pid=$(ps -ef | grep -v grep | grep "uwsgi" | grep "${PKGSHIP_CONSTANT}.ini" | awk '{print $2}')
-  if [ -n "${uwsgi_pid}" ]; then
+  if is_started; then
     echo "[ERROR] ${PKGSHIP_CONSTANT} service is running, please stop it first."
     exit 1
   else
     uwsgi -d --ini $OUT_PATH/${PKGSHIP_CONSTANT}.ini
     echo "[INFO] START uwsgi service: ${PKGSHIP_CONSTANT}.ini"
-    uwsgi_pid=$(ps -ef | grep -v grep | grep "uwsgi" | grep "${PKGSHIP_CONSTANT}.ini" | awk '{print $2}')
-    if [ -z "${uwsgi_pid}" ]; then
-      echo "[ERROR] Service failed to start, please check log $(get_config "daemonize")"
-      exit 1
-    fi
-    uwsgi_log_logrotate
-    echo "[INFO] Start pkgship service success!!!"
-    exit 0
+
+    for i in {1..5}; do
+      if is_started; then
+        uwsgi_log_logrotate
+        echo "[INFO] Start pkgship service success!!!"
+        exit 0
+      fi
+      sleep 2s
+    done
+
+    echo "[ERROR] Service failed to start, please check log $(get_config "daemonize")"
+    exit 1
   fi
 }
 
@@ -288,8 +300,7 @@ function stop_service() {
     exit 1
   fi
 
-  uwsgi_pid=$(ps -ef | grep -v grep | grep "uwsgi" | grep "${PKGSHIP_CONSTANT}.ini" | awk '{print $2}')
-  if [ -n "${uwsgi_pid}" ]; then
+  if is_started; then
     uwsgi --stop $OUT_PATH/${PKGSHIP_CONSTANT}.pid
     echo "[INFO] STOP uwsgi service: $OUT_PATH/${PKGSHIP_CONSTANT}.ini"
     echo "[INFO] The run log is saved into: $(get_config "daemonize")"
