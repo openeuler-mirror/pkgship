@@ -15,14 +15,11 @@ Description: Entry method for custom commands
 Class: InitDatabaseCommand
 """
 import os
-import subprocess
 import time
 import pwd
 import threading
 from packageship.application.cli.base import BaseCommand
 from packageship.application.common.exc import InitializeError, ResourceCompetitionError
-
-PID_FILE_PATH = "/opt/pkgship/uwsgi/pkgship.pid"
 
 
 class InitServiceThread(threading.Thread):
@@ -96,19 +93,6 @@ class InitDatabaseCommand(BaseCommand):
 
         if self.login_user not in ["root", "pkgshipuser"]:
             print("The current user does not have initial execution permission")
-            return
-
-        response = subprocess.Popen(
-            args="ps -ef | grep -v grep | grep 'uwsgi' | grep 'pkgship.ini' | awk '{print $2}'",
-            stdout=subprocess.PIPE, shell=True)
-        process = response.stdout.read()
-        try:
-            with open(PID_FILE_PATH, 'r') as file:
-                master_process = file.readline().strip('\n')
-        except FileNotFoundError:
-            master_process = None
-        if not master_process or (str(master_process) not in str(process)):
-            print("The pkgship service is not started,please start the service first")
             return
 
         from packageship.application.initialize.integration import InitializeService
