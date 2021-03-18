@@ -31,13 +31,13 @@ class TestBeDependQuery(TestCase):
     def test_normal_query(self):
         self.query_instance.session.query = MagicMock(return_value=self.JUDY_BE_DEPEND_INFO)
 
-        result = self.be_depend_instance.get_be_req(binary_list=['Judy'], database='openeuler')
+        result = self.be_depend_instance.get_be_req(binary_list=['Judy'], database='os_version_1')
         expect_value = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE, 'returnJudyResult.json'))
 
         self.assertEqual(result, expect_value)
 
     def test_not_exist(self):
         self.query_instance.session.query = MagicMock(return_value={})
-        result = self.be_depend_instance.get_be_req(binary_list=['Test'], database='openeuler')
+        result = self.be_depend_instance.get_be_req(binary_list=['Test'], database='os_version_1')
 
         self.assertEqual(result, [])

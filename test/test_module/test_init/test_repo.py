@@ -84,7 +84,7 @@ class TestRepoFile(unittest.TestCase):
             mock_status_code.return_value = 200
             with mock.patch("packageship.application.common.remote.RemoteService.content",
                             new_callable=mock.PropertyMock) as mock_content:
-                mock_content.return_value = "openeuler".encode("utf-8")
+                mock_content.return_value = "os_version_1".encode("utf-8")
                 with self.assertRaises(FileNotFoundError):
                     self.repo_file.remote_file(path="http://127.0.0.1")
             with self.assertRaises(FileNotFoundError):
@@ -97,7 +97,7 @@ class TestRepoFile(unittest.TestCase):
 
     def test_location_file_not_regex(self):
         """Incorrect local file path match"""
-        self.assertEqual(None, self.repo_file.location_file(path="openeuler"))
+        self.assertEqual(None, self.repo_file.location_file(path="os_version_1"))
 
     @mock.patch.object(Unpack, "dispatch")
     @mock.patch.object(shutil, "copyfile")
@@ -122,13 +122,13 @@ class TestRepoFile(unittest.TestCase):
     @mock.patch.object(RepoFile, "_location")
     def test_location_file(self, mock__location):
         """local file"""
-        mock__location.return_value = "/openeuler/repo"
+        mock__location.return_value = "/os_version_1/repo"
         with self.assertRaises(FileNotFoundError):
-            self.repo_file.location_file(path="openeuler")
+            self.repo_file.location_file(path="os_version_1")
         with mock.patch.object(RepoFile, "_unzip_file") as mock__unzip_file:
-            mock__unzip_file.return_value = "/openeuler/repo"
-            self.assertEqual("/openeuler/repo",
-                             self.repo_file.location_file(path="openeuler"))
+            mock__unzip_file.return_value = "/os_version_1/repo"
+            self.assertEqual("/os_version_1/repo",
+                             self.repo_file.location_file(path="os_version_1"))
 
     def test_extract_file_path(self):
         """Remote file matching"""
@@ -137,15 +137,15 @@ class TestRepoFile(unittest.TestCase):
             mock_status_code.return_value = 200
             with mock.patch("packageship.application.common.remote.RemoteService.text",
                             new_callable=mock.PropertyMock) as mock_text:
-                mock_text.return_value = "openeuler"
+                mock_text.return_value = "os_version_1"
                 with self.assertRaises(FileNotFoundError):
                     self.repo_file.remote_file(
-                        path="openeuler", file_type="primary")
+                        path="os_version_1", file_type="primary")
                 mock_text.return_value = 'href="https://openeuler/src.primary.sqlite.bz2"'
                 mock_status_code.side_effect = [200, 200, 404]
                 with self.assertRaises(FileNotFoundError):
                     self.repo_file.remote_file(
-                        path="openeuler", file_type="primary")
+                        path="os_version_1", file_type="primary")
 
     @mock.patch.object(shutil, "copyfile")
     @mock.patch("re.match", new_callable=mock.PropertyMock)

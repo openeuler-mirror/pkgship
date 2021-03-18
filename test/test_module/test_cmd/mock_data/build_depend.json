@@ -5,63 +5,63 @@
         "binary_list": [
             {
                 "binary_name": "gcc",
-                "database": "openeuler",
+                "database": "os_version_1",
                 "source_name": "gcc",
                 "version": "9.3.1"
             },
             {
                 "binary_name": "make",
-                "database": "openeuler",
+                "database": "os_version_1",
                 "source_name": "make",
                 "version": "4.3"
             },
             {
                 "binary_name": "coreutils",
-                "database": "openeuler",
+                "database": "os_version_1",
                 "source_name": "coreutils",
                 "version": "8.32"
             },
             {
                 "binary_name": "gawk",
-                "database": "openeuler",
+                "database": "os_version_1",
                 "source_name": "gawk",
                 "version": "5.1.0"
             },
             {
                 "binary_name": "sed",
-                "database": "openeuler",
+                "database": "os_version_1",
                 "source_name": "sed",
                 "version": "4.8"
             }
         ],
         "source_list": [
             {
-                "database": "openeuler",
+                "database": "os_version_1",
                 "source_name": "Judy",
                 "version": "1.0.5"
             },
             {
-                "database": "openeuler",
+                "database": "os_version_1",
                 "source_name": "gcc",
                 "version": "9.3.1"
             },
             {
-                "database": "openeuler",
+                "database": "os_version_1",
                 "source_name": "make",
                 "version": "4.3"
             },
             {
-                "database": "openeuler",
+                "database": "os_version_1",
                 "source_name": "coreutils",
                 "version": "8.32"
             },
             {
-                "database": "openeuler",
+                "database": "os_version_1",
                 "source_name": "gawk",
                 "version": "5.1.0"
             },
             {
-                "database": "openeuler",
+                "database": "os_version_1",
                 "source_name": "sed",
                 "version": "4.8"
             }
@@ -69,7 +69,7 @@
         "statistics": [
             {
                 "binary_sum": 5,
-                "database": "openeuler",
+                "database": "os_version_1",
                 "source_sum": 6
             }
         ]

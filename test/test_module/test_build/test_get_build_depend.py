@@ -37,7 +37,7 @@ param = {
     "packagename": ["Judy"],
     "depend_type": "builddep",
     "parameter": {
-      "db_priority": ["openeuler"],
+      "db_priority": ["os_version_1"],
       "level": 2,
       "self_build": True
     }
@@ -55,7 +55,7 @@ class TestBuildDdepend(unittest.TestCase):
 
         """
         mock1.return_value = []
-        build = BuildDepend(db_list=['openeuler'])
+        build = BuildDepend(db_list=['os_version_1'])
         build.build_depend(src_name=["Judy111"])
         binary, source = build.depend_dict
         self.assertEqual(binary, {}, "Error in testing package not exists.")
@@ -70,10 +70,10 @@ class TestBuildDdepend(unittest.TestCase):
         """
         mock1.return_value = TRUE_INSTALL_INFO
         mock2.return_value = TRUE_BUILD_INFO
-        build = BuildDepend(db_list=['openeuler'])
+        build = BuildDepend(db_list=['os_version_1'])
         build.build_depend(src_name=["Judy"], level=1)
         binary, source = build.depend_dict
-        EXCEPT_BIN_INFO = {'sed': {'name': 'sed', 'version': '4.8', 'source_name': 'sed', 'database': 'openeuler'}}
+        EXCEPT_BIN_INFO = {'sed': {'name': 'sed', 'version': '4.8', 'source_name': 'sed', 'database': 'os_version_1'}}
         self.assertDictEqual(binary, EXCEPT_BIN_INFO, "Error in testing build level 1.")
         self.assertDictEqual(source, LEVEL_1_EXCEPT_SRC, "Error in testing build level 1.")
 
@@ -88,7 +88,7 @@ class TestBuildDdepend(unittest.TestCase):
         """
         mock1.return_value = TRUE_INSTALL_INFO
         mock2.return_value = TRUE_BUILD_INFO
-        build = BuildDepend(db_list=['openeuler'])
+        build = BuildDepend(db_list=['os_version_1'])
         build.build_depend(src_name=["Judy"], level=2, self_build=True)
         binary, source = build.depend_dict
         self.assertDictEqual(binary, {}, "Error in testing true result.")
@@ -111,7 +111,7 @@ class TestBuildDdepend(unittest.TestCase):
 
         """
         with self.assertRaises(AttributeError):
-            build_depend = BuildDepend(db_list=['openeuler'])
+            build_depend = BuildDepend(db_list=['os_version_1'])
             build_depend.build_depend(src_name="Judy")
 
 
@@ -124,7 +124,7 @@ class TestBuildDdepend(unittest.TestCase):
         """
         mock1.return_value = TRUE_INSTALL_INFO
         mock2.return_value = [{}]
-        build = BuildDepend(db_list=['openeuler'])
+        build = BuildDepend(db_list=['os_version_1'])
         build.build_depend(src_name=["Judy"], self_build=True)
         binary, source = build.depend_dict
         self.assertDictEqual(binary, {}, "Error in testing empty build requires.")
@@ -140,10 +140,10 @@ class TestBuildDdepend(unittest.TestCase):
         """
         mock1.return_value = TRUE_INSTALL_INFO
         mock2.return_value = NOT_FOUND_COMP
-        build = BuildDepend(db_list=['openeuler'])
+        build = BuildDepend(db_list=['os_version_1'])
         build.build_depend(src_name=["Judy"], level=2, self_build=True)
         binary, source = build.depend_dict
-        EXCEPT_SRC_INFO = {'Judy': {'name': 'Judy', 'version': '1.0.5', 'database': 'openeuler', 'build': []}}
+        EXCEPT_SRC_INFO = {'Judy': {'name': 'Judy', 'version': '1.0.5', 'database': 'os_version_1', 'build': []}}
         self.assertDictEqual(binary, {}, "Error in testing not found component.")
         self.assertDictEqual(source, EXCEPT_SRC_INFO, "Error in testing not found component.")
 
@@ -156,10 +156,10 @@ class TestBuildDdepend(unittest.TestCase):
         """
         mock1.return_value = TRUE_INSTALL_INFO
         mock2.return_value = NOT_SEARCHED_BUILD
-        build = BuildDepend(db_list=['openeuler'])
+        build = BuildDepend(db_list=['os_version_1'])
         build.build_depend(src_name=["Judy"], level=2, self_build=True)
         binary, source = build.depend_dict
-        EXCEPT_SRC_INFO = {'Judy11': {'name': 'Judy11', 'version': '1.0.5', 'database': 'openeuler', 'build': ['sed']}}
+        EXCEPT_SRC_INFO = {'Judy11': {'name': 'Judy11', 'version': '1.0.5', 'database': 'os_version_1', 'build': ['sed']}}
         self.assertDictEqual(binary, {}, "Error in testing srcname not in searched packages.")
         self.assertDictEqual(source, EXCEPT_SRC_INFO, "Error in testing srcname not in searched packages.")
 
@@ -179,7 +179,7 @@ class TestBuildDdepend(unittest.TestCase):
         ]
         InstallRequires.get_install_req = mock.Mock(return_value=TRUE_INSTALL_INFO)
         BuildRequires.get_build_req = mock.Mock(return_value=TRUE_BUILD_INFO)
-        build = BuildDepend(db_list=['openeuler'])
+        build = BuildDepend(db_list=['os_version_1'])
         build(**param)
         binary, source = build.depend_dict
         self.assertDictEqual(binary, {}, "Error in testing call func with true param.")

@@ -34,7 +34,7 @@ class TestRemoteService(unittest.TestCase):
 
     def test_request_method_error(self):
         """Request mode error"""
-        self.remote.request(url="openeuler", method="delete", max_retry=None)
+        self.remote.request(url="os_version_1", method="delete", max_retry=None)
         self.assertNotEqual(None, getattr(
             self.remote, "_request_error"))
 
@@ -42,7 +42,7 @@ class TestRemoteService(unittest.TestCase):
     def test_request_get(self, mock_get):
         """get request"""
         mock_get.return_value = requests.Response()
-        self.remote.request(url="openeuler", method="get", max_retry=None)
+        self.remote.request(url="os_version_1", method="get", max_retry=None)
         self.assertNotEqual(None, getattr(
             self.remote, "_request_error"))
 
@@ -50,7 +50,7 @@ class TestRemoteService(unittest.TestCase):
     def test_request_post(self, mock_post):
         """get request"""
         mock_post.return_value = requests.Response()
-        self.remote.request(url="openeuler", method="post", max_retry=None)
+        self.remote.request(url="os_version_1", method="post", max_retry=None)
         self.assertNotEqual(None, getattr(
             self.remote, "_request_error"))
 
@@ -60,7 +60,7 @@ class TestRemoteService(unittest.TestCase):
         response = requests.Response()
         response.status_code = 200
         mock_post.return_value = response
-        self.remote.request(url="openeuler", method="post", max_retry=None)
+        self.remote.request(url="os_version_1", method="post", max_retry=None)
         self.assertEqual(None, getattr(
             self.remote, "_request_error"))
 
@@ -70,10 +70,10 @@ class TestRemoteService(unittest.TestCase):
         response = requests.Response()
         response.status_code = 200
         mock_post.return_value = response
-        self.remote.request(url="openeuler", method="post", max_retry=None)
+        self.remote.request(url="os_version_1", method="post", max_retry=None)
         self.assertEqual(200, self.remote.status_code)
 
     def test_response_content(self):
         """Content of response"""
-        self.remote.request(method="post", url="openeuler")
+        self.remote.request(method="post", url="os_version_1")
         self.assertEqual(None, self.remote.text)

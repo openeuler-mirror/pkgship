@@ -65,7 +65,7 @@ class TestBuildDepend(unittest.TestCase):
                 parser.add_argument('-dbs')
                 parser.add_argument('-level')
                 parser.add_argument('-remote')
-                args = parser.parse_args(['Judy', '-dbs=openeuler'])
+                args = parser.parse_args(['Judy', '-dbs=os_version_1'])
                 build_depend.do_command(args)
                 c = self.r.getvalue().strip()
                 s = """
@@ -74,28 +74,28 @@ Binary
 ====================================================================================================
   Binary name               Source name               Version          Database name                
 ====================================================================================================
-  gcc                       gcc                       9.3.1            openeuler                    
-  make                      make                      4.3              openeuler                    
-  coreutils                 coreutils                 8.32             openeuler                    
-  gawk                      gawk                      5.1.0            openeuler                    
-  sed                       sed                       4.8              openeuler                    
+  gcc                       gcc                       9.3.1            os_version_1                    
+  make                      make                      4.3              os_version_1                    
+  coreutils                 coreutils                 8.32             os_version_1                    
+  gawk                      gawk                      5.1.0            os_version_1                    
+  sed                       sed                       4.8              os_version_1                    
 ====================================================================================================
 Source
 ====================================================================================================
   Source name                        Version                Database name                           
 ====================================================================================================
-  Judy                               1.0.5                  openeuler                               
-  gcc                                9.3.1                  openeuler                               
-  make                               4.3                    openeuler                               
-  coreutils                          8.32                   openeuler                               
-  gawk                               5.1.0                  openeuler                               
-  sed                                4.8                    openeuler                               
+  Judy                               1.0.5                  os_version_1                               
+  gcc                                9.3.1                  os_version_1                               
+  make                               4.3                    os_version_1                               
+  coreutils                          8.32                   os_version_1                               
+  gawk                               5.1.0                  os_version_1                               
+  sed                                4.8                    os_version_1                               
 ====================================================================================================
 Statistics
 ====================================================================================================
   Database name                          Binary Sum                    Source Sum                   
 ====================================================================================================
-  openeuler                              5                             6                            
+  os_version_1                              5                             6                            
 ====================================================================================================
                                             """.strip()
                 self.assertEqual(c, s)
@@ -113,7 +113,7 @@ Statistics
             parser.add_argument('-dbs')
             parser.add_argument('-level')
             parser.add_argument('-remote')
-            args = parser.parse_args(['Judy', '-dbs=openeuler'])
+            args = parser.parse_args(['Judy', '-dbs=os_version_1'])
             build_depend.do_command(args)
             c = self.r.getvalue().strip()
             s = """
@@ -139,7 +139,7 @@ HINT           :Please check the service and try again
                 parser.add_argument('-dbs')
                 parser.add_argument('-level')
                 parser.add_argument('-remote')
-                args = parser.parse_args(['Judy', '-dbs=openeuler'])
+                args = parser.parse_args(['Judy', '-dbs=os_version_1'])
                 build_depend.do_command(args)
                 c = self.r.getvalue().strip()
                 s = """
@@ -164,7 +164,7 @@ HINT           :Please check the parameter is valid and query again
                 parser.add_argument('-dbs')
                 parser.add_argument('-level')
                 parser.add_argument('-remote')
-                args = parser.parse_args(['Judy', '-dbs=openeuler'])
+                args = parser.parse_args(['Judy', '-dbs=os_version_1'])
                 build_depend.do_command(args)
                 c = self.r.getvalue().strip()
                 s = """
@@ -185,7 +185,7 @@ HINT           :The content is not a legal json format,please check the paramete
         parser.add_argument('-dbs')
         parser.add_argument('-level')
         parser.add_argument('-remote')
-        args = parser.parse_args(['Judy', '-dbs=openeuler'])
+        args = parser.parse_args(['Judy', '-dbs=os_version_1'])
         build_depend.do_command(args)
         c = self.r.getvalue().strip()
         s = """

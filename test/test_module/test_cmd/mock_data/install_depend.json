@@ -5,36 +5,36 @@
         "binary_list": [
             {
                 "binary_name": "Judy",
-                "database": "openeuler",
+                "database": "os_version_1",
                 "source_name": "Judy",
                 "version": "1.0.5"
             },
             {
                 "binary_name": "bash",
-                "database": "openeuler",
+                "database": "os_version_1",
                 "source_name": "bash",
                 "version": "5.0"
             },
             {
                 "binary_name": "glibc",
-                "database": "openeuler",
+                "database": "os_version_1",
                 "source_name": "glibc",
                 "version": "2.31"
             }
         ],
         "source_list": [
             {
-                "database": "openeuler",
+                "database": "os_version_1",
                 "source_name": "Judy",
                 "version": "1.0.5"
             },
             {
-                "database": "openeuler",
+                "database": "os_version_1",
                 "source_name": "bash",
                 "version": "5.0"
             },
             {
-                "database": "openeuler",
+                "database": "os_version_1",
                 "source_name": "glibc",
                 "version": "2.31"
             }
@@ -42,7 +42,7 @@
         "statistics": [
             {
                 "binary_sum": 3,
-                "database": "openeuler",
+                "database": "os_version_1",
                 "source_sum": 3
             }
         ]

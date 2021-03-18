@@ -2,7 +2,7 @@
   "code": "200",
   "message": "Successful Operation",
   "resp": {
-    "openeuler": [
+    "os_version_1": [
       {
         "bin_name": "Judy",
         "description": "The package provides the most advanced core technology, the main\nadvantages are scalability, high performance and memory efficiency.",

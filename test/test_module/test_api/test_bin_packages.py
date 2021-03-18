@@ -77,7 +77,7 @@ class TestBinPackages(ReadTestBase):
     @mock.patch.object(Package, "all_bin_packages")
     def test_empty_resp(self, mock_all_bin_packages):
         """The table name is not in the database"""
-        self.REQUESTS_KWARGS["url"] = self.BASE_URL.format("openeuler", "1", "10")
+        self.REQUESTS_KWARGS["url"] = self.BASE_URL.format("os_version_1", "1", "10")
         mock_all_bin_packages.return_value = []
         resp_dict = self.client_request(**self.REQUESTS_KWARGS)
         self.assertEqual(resp_dict['code'], ResponseCode.TABLE_NAME_NOT_EXIST)
@@ -87,7 +87,7 @@ class TestBinPackages(ReadTestBase):
         """The test table name is in the database"""
         mock_data = get_correct_json_by_filename("bin_packages")
         self.REQUESTS_KWARGS["url"] = self.BASE_URL.format(
-            "openeuler", "1", "1")
+            "os_version_1", "1", "1")
         mock_all_bin_packages.return_value = mock_data
         resp_dict = self.client_request(**self.REQUESTS_KWARGS)
         self.response_json_format(resp_dict)
@@ -100,7 +100,7 @@ class TestBinPackages(ReadTestBase):
         Returns:
         """
         self.REQUESTS_KWARGS["url"] = self.BASE_URL.format(
-            "openeuler", "1", "1")
+            "os_version_1", "1", "1")
         mock_es_error.return_value = None
         resp_dict = self.client_request(**self.REQUESTS_KWARGS)
         self.response_json_format(resp_dict)

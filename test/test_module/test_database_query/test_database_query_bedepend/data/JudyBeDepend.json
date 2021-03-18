@@ -15,7 +15,7 @@
     "max_score": 0.0,
     "hits": [
       {
-        "_index": "openeuler-bedepend",
+        "_index": "os_version_1-bedepend",
         "_type": "_doc",
         "_id": "gX9Z-XYBamC2Cm-g0lHS",
         "_score": 0.0,

@@ -2,7 +2,7 @@
   {
     "binary_name": "Judy",
     "bin_version": "1.0.5",
-    "database": "openeuler",
+    "database": "os_version_1",
     "src_name": "Judy",
     "src_version": "1.0.5",
     "requires": [
@@ -12,7 +12,7 @@
         "com_bin_version": "5.0",
         "com_src_name": "bash",
         "com_src_version": "5.0",
-        "com_database": "openeuler"
+        "com_database": "os_version_1"
       },
       {
         "component": "ld-linux-aarch64.so.1()(64bit)",
@@ -20,7 +20,7 @@
         "com_bin_version": "2.31",
         "com_src_name": "glibc",
         "com_src_version": "2.31",
-        "com_database": "openeuler"
+        "com_database": "os_version_1"
       }
     ]
   }

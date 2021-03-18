@@ -4,7 +4,7 @@ lifecycle: enable
   priority: 1
   src_db_file:
 - bin_db_file:
-  dbname: fedora30
+  dbname: os_version_2
   lifecycle: enable
   priority: 2
   src_db_file:

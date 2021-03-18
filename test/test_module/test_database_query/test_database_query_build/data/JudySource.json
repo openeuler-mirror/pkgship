@@ -15,7 +15,7 @@
     "max_score": 0.0,
     "hits": [
       {
-        "_index": "openeuler-source",
+        "_index": "os_version_1-source",
         "_type": "_doc",
         "_id": "0n9Y-XYBamC2Cm-gXQvP",
         "_score": 0.0,

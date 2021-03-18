@@ -8,7 +8,7 @@
     "node_type": "source",
     "parameter": {
       "db_priority": [
-        "openeuler"
+        "os_version_1"
       ],
       "level": 2,
       "self_build": false

@@ -60,7 +60,7 @@ class TestGraphInfo(unittest.TestCase):
                 "version": "v1.20.0.1",
                 "source_name": "Judy",
                 "level": 2,
-                "database": "openeuler-20.03",
+                "database": "os_version_1",
                 "install": [
                     "attr",
                     "Judy"
@@ -69,7 +69,7 @@ class TestGraphInfo(unittest.TestCase):
         }, {"Judy": {
             "name": "Judy",
             "version": "v1.20.0.1",
-            "database": "openeuler-20.03",
+            "database": "os_version_1",
             "build": [
                 "gcc",
                 "make"
@@ -77,7 +77,7 @@ class TestGraphInfo(unittest.TestCase):
         }, "CUnit": {
             "name": "CUnit",
             "version": "v1.20.0.1",
-            "database": "openeuler-20.03"
+            "database": "os_version_1"
         }})
         graph = GraphInfo(depend=BaseDepend())
 

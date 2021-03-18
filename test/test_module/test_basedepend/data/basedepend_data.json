@@ -51,7 +51,7 @@
                 "build": [
                     "Judy"
                 ],
-                "database": "fedora",
+                "database": "os_version_2",
                 "name": "A",
                 "version": "2.0"
             },
@@ -94,7 +94,7 @@
         ],
         "source_list": [
             {
-                "database": "fedora",
+                "database": "os_version_2",
                 "source_name": "A",
                 "version": "2.0"
             },
@@ -112,7 +112,7 @@
             },
             {
                 "binary_sum": 0,
-                "database": "fedora",
+                "database": "os_version_2",
                 "source_sum": 1
             }
         ]

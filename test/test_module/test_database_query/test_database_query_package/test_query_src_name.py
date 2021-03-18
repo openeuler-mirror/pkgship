@@ -28,7 +28,7 @@ class TestQuerySrcName(TestCase):
         Returns:
 
         """
-        self.query_package = QueryPackage(database_list=['openeuler', 'fedora'])
+        self.query_package = QueryPackage(database_list=['os_version_1', 'os_version_2'])
         self.session = self.query_package._db_session
 
     def test_query_specify_rpm(self):
@@ -41,7 +41,7 @@ class TestQuerySrcName(TestCase):
         result = self.query_package.get_src_name(binary_list=binary_list)
         expect_value = {'binary_name': 'Judy',
                         'bin_version': '1.0.5',
-                        'database': 'openeuler',
+                        'database': 'os_version_1',
                         'src_name': 'Judy',
                         'src_version': '1.0.5'}
 
@@ -78,6 +78,6 @@ class TestQuerySrcName(TestCase):
         """
         self.session.query = MagicMock(return_value={})
         binary_list = ["Test123"]
-        result = self.query_package.get_src_name(binary_list=binary_list, specify_db='openeuler')
+        result = self.query_package.get_src_name(binary_list=binary_list, specify_db='os_version_1')
 
         self.assertListEqual(result, [])

@@ -15,7 +15,7 @@
     "max_score": 1.0,
     "hits": [
       {
-        "_index": "openeuler-binary",
+        "_index": "os_version_1-binary",
         "_type": "_doc",
         "_id": "1n9Y-XYBamC2Cm-g8xgg",
         "_score": 1.0,
@@ -424,7 +424,7 @@
         }
       },
       {
-        "_index": "openeuler-binary",
+        "_index": "os_version_1-binary",
         "_type": "_doc",
         "_id": "139Y-XYBamC2Cm-g8xgg",
         "_score": 1.0,
@@ -528,7 +528,7 @@
         }
       },
       {
-        "_index": "openeuler-binary",
+        "_index": "os_version_1-binary",
         "_type": "_doc",
         "_id": "2H9Y-XYBamC2Cm-g8xgg",
         "_score": 1.0,
@@ -603,7 +603,7 @@
         }
       },
       {
-        "_index": "openeuler-binary",
+        "_index": "os_version_1-binary",
         "_type": "_doc",
         "_id": "2X9Y-XYBamC2Cm-g8xgg",
         "_score": 1.0,
@@ -911,7 +911,7 @@
         }
       },
       {
-        "_index": "openeuler-binary",
+        "_index": "os_version_1-binary",
         "_type": "_doc",
         "_id": "2n9Y-XYBamC2Cm-g8xgg",
         "_score": 1.0,

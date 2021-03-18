@@ -22,7 +22,7 @@ MOCK_DATA_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data"
 
 
 class TestInstallRequireDbQuery(TestCase):
-    DATABASE_LIST = ['openeuler', 'fedora']
+    DATABASE_LIST = ['os_version_1', 'os_version_2']
     JUDY_BINARY_INFO = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE, "JudyBinary.json"))
     PROVIDES_COMPONENTS_INFO = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE, "providesComponentsInfo.json"))
     FILES_COMPONENTS_INFO = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE, "filesComponentsInfo.json"))
@@ -72,7 +72,7 @@ class TestInstallRequireDbQuery(TestCase):
                          self.PROVIDES_COMPONENTS_INFO,
                          self.FILES_COMPONENTS_INFO])
 
-        result = self.install_instance.get_install_req(binary_list=['Judy'], specify_db='openeuler')
+        result = self.install_instance.get_install_req(binary_list=['Judy'], specify_db='os_version_1')
         result_require = self._format_return(result)
         expect_require = self._format_return(self.EXPECT_VALUE)
 
@@ -84,7 +84,7 @@ class TestInstallRequireDbQuery(TestCase):
         Returns:
         """
         self.query_instance.session.query = MagicMock(return_value={})
-        result = self.install_instance.get_install_req(binary_list=['Judy'], specify_db='openeuler')
+        result = self.install_instance.get_install_req(binary_list=['Judy'], specify_db='os_version_1')
 
         self.assertEqual(result, [])
 

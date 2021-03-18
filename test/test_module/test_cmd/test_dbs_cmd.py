@@ -52,7 +52,7 @@ class TestDB(unittest.TestCase):
         """
         parser = argparse.ArgumentParser()
         db_priority = DbPriorityCommand()
-        data = {'code': '200', 'message': 'Successful Operation', 'resp': ['openeuler', 'fedora30']}
+        data = {'code': '200', 'message': 'Successful Operation', 'resp': ['os_version_1', 'os_version_2']}
 
         mock_get.return_value = mock_get_response(200, json.dumps(data))
         parser.add_argument('-remote')
@@ -61,7 +61,7 @@ class TestDB(unittest.TestCase):
         c = self.r.getvalue().strip()
         s = """
 DB priority
-[\'openeuler\', \'fedora30\']
+[\'os_version_1\', \'os_version_2\']
             """.strip()
         self.assertEqual(c, s)
 

@@ -12,14 +12,14 @@ from packageship.application.core.depend.be_depend import BeDepend
 install_params = {
     "packagename": ["Judy"],
     "depend_type": "installdep",
-    "parameter": {"db_priority": ["Mainline", "fedora"], "level": 2},
+    "parameter": {"db_priority": ["Mainline", "os_version_2"], "level": 2},
 }
 
 build_params = {
     "packagename": ["Judy"],
     "depend_type": "builddep",
     "parameter": {
-        "db_priority": ["Mainline", "fedora"],
+        "db_priority": ["Mainline", "os_version_2"],
         "level": 2,
         "self_build": True,
     },
@@ -29,7 +29,7 @@ selfdep_params = {
     "packagename": ["Judy"],
     "depend_type": "selfdep",
     "parameter": {
-        "db_priority": ["Mainline", "fedora"],
+        "db_priority": ["Mainline", "os_version_2"],
         "self_build": False,
         "packtype": "source",
         "with_subpack": False,
@@ -50,12 +50,12 @@ bedep_params = {
 error_depend_type_params = {
     "packagename": ["Judy"],
     "depend_type": "errordepend",
-    "parameter": {"db_priority": ["Mainline", "fedora"], "level": 2},
+    "parameter": {"db_priority": ["Mainline", "os_version_2"], "level": 2},
 }
 
 no_depend_type_params = {
     "packagename": ["Judy"],
-    "parameter": {"db_priority": ["Mainline", "fedora"], "level": 2},
+    "parameter": {"db_priority": ["Mainline", "os_version_2"], "level": 2},
 }
 
 

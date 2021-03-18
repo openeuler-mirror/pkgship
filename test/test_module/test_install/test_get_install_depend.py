@@ -40,7 +40,7 @@ param = {
     "packagename": ["Judy"],
     "depend_type": "installdep",
     "parameter": {
-        "db_priority": ["openeuler"],
+        "db_priority": ["os_version_1"],
         "level": 2
     }
 }
@@ -58,7 +58,7 @@ class TestInstallDdepend(unittest.TestCase):
 
         """
         mock1.return_value = []
-        install = InstallDepend(db_list=['openeuler'])
+        install = InstallDepend(db_list=['os_version_1'])
         install.install_depend(bin_name=["Judy111"])
         binary, source = install.depend_dict
         self.assertEqual(binary, {}, "Error in testing package not exists.")
@@ -71,7 +71,7 @@ class TestInstallDdepend(unittest.TestCase):
 
         """
         mock1.return_value = EMPTY_REQUIRES
-        install = InstallDepend(db_list=['openeuler'])
+        install = InstallDepend(db_list=['os_version_1'])
         install.install_depend(bin_name=["Judy"])
         binary, source = install.depend_dict
         self.assertDictEqual(binary, REQUIRE_EXPECT_BIN, "Error in testing empty requires.")
@@ -84,7 +84,7 @@ class TestInstallDdepend(unittest.TestCase):
 
         """
         mock1.return_value = WRONG_INSTALL_INFO
-        install = InstallDepend(db_list=['openeuler'])
+        install = InstallDepend(db_list=['os_version_1'])
         install.install_depend(bin_name=["Judy", "Judy1111"])
         binary, source = install.depend_dict
         binary["Judy"]["install"] = sorted(binary["Judy"]["install"])
@@ -98,7 +98,7 @@ class TestInstallDdepend(unittest.TestCase):
 
         """
         mock1.return_value = TRUE_INSTALL_INFO
-        install = InstallDepend(db_list=['openeuler'])
+        install = InstallDepend(db_list=['os_version_1'])
         install.install_depend(bin_name=["Judy"], level=1)
         binary, source = install.depend_dict
         binary["Judy"]["install"] = sorted(binary["Judy"]["install"])
@@ -121,7 +121,7 @@ class TestInstallDdepend(unittest.TestCase):
 
         """
         with self.assertRaises(AttributeError):
-            install = InstallDepend(db_list=['openeuler'])
+            install = InstallDepend(db_list=['os_version_1'])
             install.install_depend(bin_name="Judy")
 
     @mock.patch.object(Redis, "exists")
@@ -137,7 +137,7 @@ class TestInstallDdepend(unittest.TestCase):
             False
         ]
         InstallRequires.get_install_req = mock.Mock(return_value=TRUE_INSTALL_INFO)
-        install = InstallDepend(db_list=['openeuler'])
+        install = InstallDepend(db_list=['os_version_1'])
         install(**param)
         binary, source = install.depend_dict
         binary["Judy"]["install"] = sorted(binary["Judy"]["install"])
@@ -151,7 +151,7 @@ class TestInstallDdepend(unittest.TestCase):
 
         """
         mock1.return_value = TRUE_INSTALL_INFO
-        install = InstallDepend(db_list=['openeuler'])
+        install = InstallDepend(db_list=['os_version_1'])
         install.install_depend(bin_name=["Judy"])
         binary, source = install.depend_dict
         binary["Judy"]["install"] = sorted(binary["Judy"]["install"])
