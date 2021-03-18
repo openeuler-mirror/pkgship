@@ -235,7 +235,8 @@ class SourcePackageInfo(Resource):
         """
         # Get verification parameters
         rspmsg = RspMsg()
-        data = dict(request.args)
+        data = dict()
+        data["database_name"] = request.args.get("database_name")
         data["pkg_name"] = pkg_name
         result, error = validate(SingleSchema, data, load=True)
         if error:
@@ -290,7 +291,8 @@ class BinaryPackageInfo(Resource):
         """
         # Get verification parameters
         rspmsg = RspMsg()
-        data = dict(request.args)
+        data = dict()
+        data["database_name"] = request.args.get("database_name")
         data["pkg_name"] = pkg_name
         result, error = validate(SingleSchema, data, load=True)
         if error:
