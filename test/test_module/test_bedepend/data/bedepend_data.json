@@ -183,7 +183,7 @@
         },
         "B1": {
             "build": [],
-            "database": "fedora",
+            "database": "os_version_2",
             "install": [
                 "Judy"
             ],
@@ -217,7 +217,7 @@
                 "version": "1.1"
             },
             "B1": {
-                "database": "fedora",
+                "database": "os_version_2",
                 "install": [
                     "Judy"
                 ],

@@ -67,7 +67,7 @@ class TestBeDepend(unittest.TestCase):
                 parser.add_argument('-w')
                 parser.add_argument('-installorbuild')
                 parser.add_argument('-remote')
-                args = parser.parse_args(['Judy', '-dbs=openeuler'])
+                args = parser.parse_args(['Judy', '-dbs=os_version_1'])
                 be_depend.do_command(args)
             c = self.r.getvalue().strip()
             s = """
@@ -76,10 +76,10 @@ Binary
 ====================================================================================================
   Binary name                             Source name          Version       Database name          
 ====================================================================================================
-  Judy-devel                              Judy                 1.0.5         openeuler              
-  Judy-help                               Judy                 1.0.5         openeuler              
-  Judy                                    Judy                 1.0.5         openeuler              
-  mariadb-oqgraph-engine                  mariadb              10.3.9        openeuler              
+  Judy-devel                              Judy                 1.0.5         os_version_1              
+  Judy-help                               Judy                 1.0.5         os_version_1              
+  Judy                                    Judy                 1.0.5         os_version_1              
+  mariadb-oqgraph-engine                  mariadb              10.3.9        os_version_1              
 ====================================================================================================
 Source
 ====================================================================================================
@@ -90,7 +90,7 @@ Statistics
 ====================================================================================================
   Database name                          Binary Sum                    Source Sum                   
 ====================================================================================================
-  openeuler                              4                             0                            
+  os_version_1                              4                             0                            
 ====================================================================================================
                             """.strip()
             self.assertEqual(c, s)
@@ -110,7 +110,7 @@ Statistics
             parser.add_argument('-w')
             parser.add_argument('-installorbuild')
             parser.add_argument('-remote')
-            args = parser.parse_args(['Judy', '-dbs=openeuler'])
+            args = parser.parse_args(['Judy', '-dbs=os_version_1'])
             be_depend.do_command(args)
             c = self.r.getvalue().strip()
             s = """
@@ -138,7 +138,7 @@ HINT           :Please check the service and try again
                 parser.add_argument('-w')
                 parser.add_argument('-installorbuild')
                 parser.add_argument('-remote')
-                args = parser.parse_args(['Judy', '-dbs=openeuler'])
+                args = parser.parse_args(['Judy', '-dbs=os_version_1'])
                 be_depend.do_command(args)
                 c = self.r.getvalue().strip()
                 s = """
@@ -165,7 +165,7 @@ HINT           :Please check the parameter is valid and query again
                 parser.add_argument('-w')
                 parser.add_argument('-installorbuild')
                 parser.add_argument('-remote')
-                args = parser.parse_args(['Judy', '-dbs=openeuler'])
+                args = parser.parse_args(['Judy', '-dbs=os_version_1'])
                 be_depend.do_command(args)
                 c = self.r.getvalue().strip()
                 s = """
@@ -188,7 +188,7 @@ HINT           :The content is not a legal json format,please check the paramete
         parser.add_argument('-w')
         parser.add_argument('-installorbuild')
         parser.add_argument('-remote')
-        args = parser.parse_args(['Judy', '-dbs=openeuler'])
+        args = parser.parse_args(['Judy', '-dbs=os_version_1'])
         be_depend.do_command(args)
         c = self.r.getvalue().strip()
         s = """

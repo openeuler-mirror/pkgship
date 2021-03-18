@@ -42,7 +42,7 @@ class TestSrcPackageInfo(unittest.TestCase):
 
     def setUp(self) -> None:
         database.get_db_priority = mock.Mock(
-            return_value=["openeuler", "fedora"])
+            return_value=["os_version_1", "os_version_2"])
 
 
     @patch.object(QueryPackage, "get_src_info")
@@ -53,7 +53,7 @@ class TestSrcPackageInfo(unittest.TestCase):
         """
         src_pkg = SourcePackage()
         mock1.return_value = {}
-        res = src_pkg.src_package_info(["Judy"], ["openeuler"])
+        res = src_pkg.src_package_info(["Judy"], ["os_version_1"])
         self.assertEqual(res, {}, "Error in testing get empty src info.")
 
     @patch.object(QueryPackage, "get_src_info")
@@ -64,7 +64,7 @@ class TestSrcPackageInfo(unittest.TestCase):
         """
         src_pkg = SourcePackage()
         mock1.return_value = {}
-        res = src_pkg.src_package_info(["Judy1"], ["openeuler"])
+        res = src_pkg.src_package_info(["Judy1"], ["os_version_1"])
         self.assertEqual(res, {}, "Error in testing package not exists.")
 
     @patch.object(QueryPackage, "get_src_info")
@@ -75,7 +75,7 @@ class TestSrcPackageInfo(unittest.TestCase):
         """
         src_pkg = SourcePackage()
         mock1.return_value = {None}
-        res = src_pkg.src_package_info(["Judy"], ["openeuler"])
+        res = src_pkg.src_package_info(["Judy"], ["os_version_1"])
         self.assertEqual(res, {}, "Error in testing wrong src info.")
 
     @patch.object(QueryPackage, "get_src_info")
@@ -92,8 +92,8 @@ class TestSrcPackageInfo(unittest.TestCase):
         mock3.return_value = []
         mock4.return_value = TRUE_SRC_INFO
         src_pkg = SourcePackage()
-        res = src_pkg.src_package_info(["Judy"], ["openeuler"])
-        build_dep = res["openeuler"][0]["build_dep"]
+        res = src_pkg.src_package_info(["Judy"], ["os_version_1"])
+        build_dep = res["os_version_1"][0]["build_dep"]
         self.assertEqual(build_dep, [], "Error in testing empty build info.")
 
 
@@ -111,7 +111,7 @@ class TestSrcPackageInfo(unittest.TestCase):
         mock3.return_value = WRONG_BUILD
         mock4.return_value = TRUE_SRC_INFO
         src_pkg = SourcePackage()
-        output_res = src_pkg.src_package_info(["Judy"], ["openeuler"])
+        output_res = src_pkg.src_package_info(["Judy"], ["os_version_1"])
         EXPECT_RES = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE,
                                                                  "wrong_build_for_res.json"))
         self.assertEqual(output_res, EXPECT_RES, "Error in testing wrong build info.")
@@ -126,8 +126,8 @@ class TestSrcPackageInfo(unittest.TestCase):
         mock1.return_value = [None]
         mock2.return_value = EMPTY_SUBPACK_INFO
         src_pkg = SourcePackage()
-        res = src_pkg.src_package_info(["Judy"], ["openeuler"])
-        self.assertEqual(res["openeuler"][0]["subpacks"], [], "Error in testing empty subpack info.")
+        res = src_pkg.src_package_info(["Judy"], ["os_version_1"])
+        self.assertEqual(res["os_version_1"][0]["subpacks"], [], "Error in testing empty subpack info.")
 
     @patch.object(QueryPackage, "get_src_info")
     @patch.object(BuildRequires, "get_build_req")
@@ -143,8 +143,8 @@ class TestSrcPackageInfo(unittest.TestCase):
         mock3.return_value = BUILD_REQUIRES_INFO
         mock4.return_value = TRUE_SRC_INFO
         src_pkg = SourcePackage()
-        res = src_pkg.src_package_info(["Judy"], ["openeuler"])
-        output_provides = res["openeuler"][0]["subpacks"][0]["provides"]
+        res = src_pkg.src_package_info(["Judy"], ["os_version_1"])
+        output_provides = res["os_version_1"][0]["subpacks"][0]["provides"]
         self.assertEqual(output_provides, [], "Error in testing empty provides info.")
 
     @patch.object(QueryPackage, "get_src_info")
@@ -180,7 +180,7 @@ class TestSrcPackageInfo(unittest.TestCase):
         mock3.return_value = BUILD_REQUIRES_INFO
         mock4.return_value = TRUE_SRC_INFO
         src_pkg = SourcePackage()
-        output_res = src_pkg.src_package_info(["Judy"], ["openeuler"])
+        output_res = src_pkg.src_package_info(["Judy"], ["os_version_1"])
         EMPTY_INSTALL_RES = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE,
                                                                  "empty_install_for_res.json"))
         self.assertEqual(output_res, EMPTY_INSTALL_RES, "Error in testing empty install info.")
@@ -199,7 +199,7 @@ class TestSrcPackageInfo(unittest.TestCase):
         mock3.return_value = BUILD_REQUIRES_INFO
         mock4.return_value = TRUE_SRC_INFO
         src_pkg = SourcePackage()
-        output_res = src_pkg.src_package_info(["Judy"], ["openeuler"])
+        output_res = src_pkg.src_package_info(["Judy"], ["os_version_1"])
         EMPTY_INSTALL_RES = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE,
                                                                  "wrong_install_for_res.json"))
         self.assertEqual(output_res, EMPTY_INSTALL_RES, "Error in testing wrong install info.")
@@ -220,7 +220,7 @@ class TestSrcPackageInfo(unittest.TestCase):
         mock3.return_value = BUILD_REQUIRES_INFO
         mock4.return_value = TRUE_SRC_INFO
         src_pkg = SourcePackage()
-        output_res = src_pkg.src_package_info(["Judy"], ["openeuler"])
+        output_res = src_pkg.src_package_info(["Judy"], ["os_version_1"])
         TRUE_INSTALL_RES = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE,
                                                                  "true_install_for_res.json"))
         self.assertDictEqual(output_res, TRUE_INSTALL_RES, "Error in testing true install info.")
@@ -239,7 +239,7 @@ class TestSrcPackageInfo(unittest.TestCase):
         mock3.return_value = BUILD_REQUIRES_INFO
         mock4.return_value = TRUE_SRC_INFO
         src_pkg = SourcePackage()
-        output_res = src_pkg.src_package_info(["Judy"], ["openeuler"])
+        output_res = src_pkg.src_package_info(["Judy"], ["os_version_1"])
         EXPECT_RES = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE,
                                                                  "true_result_with_input_database.json"))
         self.assertEqual(output_res, EXPECT_RES, "Error in testing true result with input database.")
@@ -253,7 +253,7 @@ class TestSrcPackageInfo(unittest.TestCase):
         with self.assertRaises(DatabaseConfigException):
             mock1.side_effect = DatabaseConfigException()
             src_pkg = SourcePackage()
-            res = src_pkg.src_package_info(["Judy"], ["openeuler"])
+            res = src_pkg.src_package_info(["Judy"], ["os_version_1"])
             self.assertEqual(res, {}, "Error in testing config exception.")
 
     @mock.patch.object(QueryPackage, "get_src_info")
@@ -266,6 +266,6 @@ class TestSrcPackageInfo(unittest.TestCase):
         with self.assertRaises(ElasticSearchQueryException):
             mock1.side_effect = ElasticSearchQueryException()
             src_pkg = SourcePackage()
-            res = src_pkg.src_package_info(["Judy"], ["openeuler"])
+            res = src_pkg.src_package_info(["Judy"], ["os_version_1"])
             self.assertEqual(res, {}, "Error in testing es query exception.")
 

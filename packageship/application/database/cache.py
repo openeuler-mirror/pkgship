@@ -73,13 +73,13 @@ class BufferCache:
                 input kwargs:
                 {'depend_type': 'installdep',
                 'packagename': ['Judy','Judy1'],
-                'parameter': {'db_priority': ['fedora30', 'openeuler'], 'level': 0}}
+                'parameter': {'db_priority': ['os_version_2', 'os_version_1'], 'level': 0}}
                     
                 To:
                 
                 {'depend_type': 'installdep',
                 'packagename': 'Judy,Judy1',  # be sorted first then merge to string
-                'db_priority':'fedora30,openeuler'  # do not sorted, can merge to string
+                'db_priority':'os_version_2,os_version_1'  # do not sorted, can merge to string
                 'level':'0'
                 }
             """

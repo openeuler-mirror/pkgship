@@ -65,7 +65,7 @@ class TestSinglePackage(unittest.TestCase):
         parser.add_argument('packagename')
         parser.add_argument('-s')
         parser.add_argument('-remote')
-        args = parser.parse_args(['openeuler', 'packagename=Judy'])
+        args = parser.parse_args(['os_version_1', 'packagename=Judy'])
         single.do_command(args)
         c = self.r.getvalue().strip()
         s = """
@@ -125,7 +125,7 @@ File List
         parser.add_argument('packagename')
         parser.add_argument('-s')
         parser.add_argument('-remote')
-        args = parser.parse_args(['openeuler', 'packagename=Judy', '-ss'])
+        args = parser.parse_args(['os_version_1', 'packagename=Judy', '-ss'])
         single.do_command(args)
         c = self.r.getvalue().strip()
         s = """
@@ -201,7 +201,7 @@ No related components
         parser.add_argument('packagename')
         parser.add_argument('-s')
         parser.add_argument('-remote')
-        args = parser.parse_args(['openeuler', 'packagename=Judy'])
+        args = parser.parse_args(['os_version_1', 'packagename=Judy'])
         single.do_command(args)
         c = self.r.getvalue().strip()
         s = """
@@ -223,7 +223,7 @@ Request failed
         parser.add_argument('packagename')
         parser.add_argument('-s')
         parser.add_argument('-remote')
-        args = parser.parse_args(['openeuler', 'packagename=Judy'])
+        args = parser.parse_args(['os_version_1', 'packagename=Judy'])
         single.do_command(args)
         c = self.r.getvalue().strip()
         s = """
@@ -246,7 +246,7 @@ Failed to get package
         parser.add_argument('packagename')
         parser.add_argument('-s')
         parser.add_argument('-remote')
-        args = parser.parse_args(['openeuler', 'packagename=Judy'])
+        args = parser.parse_args(['os_version_1', 'packagename=Judy'])
         single.do_command(args)
         c = self.r.getvalue().strip()
         s = """
@@ -267,7 +267,7 @@ HINT           :The content is not a legal json format,please check the paramete
         parser.add_argument('packagename')
         parser.add_argument('-s')
         parser.add_argument('-remote')
-        args = parser.parse_args(['openeuler', 'packagename=Judy'])
+        args = parser.parse_args(['os_version_1', 'packagename=Judy'])
         single.do_command(args)
         c = self.r.getvalue().strip()
         s = """
@@ -289,7 +289,7 @@ HINT           :Please check the connection and try again
         parser.add_argument('packagename')
         parser.add_argument('-s')
         parser.add_argument('-remote')
-        args = parser.parse_args(['openeuler', 'packagename=Judy'])
+        args = parser.parse_args(['os_version_1', 'packagename=Judy'])
         single.do_command(args)
         c = self.r.getvalue().strip()
         s = """
@@ -320,7 +320,7 @@ No related components
         parser.add_argument('packagename')
         parser.add_argument('-s')
         parser.add_argument('-remote')
-        args = parser.parse_args(['openeuler', 'packagename=Judy', '-ss'])
+        args = parser.parse_args(['os_version_1', 'packagename=Judy', '-ss'])
         single.do_command(args)
         c = self.r.getvalue().strip()
         s = """
@@ -351,7 +351,7 @@ No related components
         parser.add_argument('packagename')
         parser.add_argument('-s')
         parser.add_argument('-remote')
-        args = parser.parse_args(['openeuler', 'packagename=Judy'])
+        args = parser.parse_args(['os_version_1', 'packagename=Judy'])
         single.do_command(args)
         c = self.r.getvalue().strip()
         s = """

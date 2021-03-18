@@ -66,33 +66,33 @@ class TestAllPackages(unittest.TestCase):
         parser.add_argument('-packagename')
         parser.add_argument('-s')
         parser.add_argument('-remote')
-        args = parser.parse_args(['openeuler', '-packagename=Judy'])
+        args = parser.parse_args(['os_version_1', '-packagename=Judy'])
         all_package.do_command(args)
         c = self.r.getvalue().strip()
         s = """
 ===================================================================================================
   Package Name       Database    Version    License            URL                    Source Name  
 ===================================================================================================
-  389-ds-base        openeuler   1.4.0.31   GPLv3+             https://www.port389.                
+  389-ds-base        os_version_1   1.4.0.31   GPLv3+             https://www.port389.                
                                                                org                                 
-  BareBonesBrowser   openeuler   3.1        Public Domain      http://www.centerkey                
+  BareBonesBrowser   os_version_1   3.1        Public Domain      http://www.centerkey                
   Launch                                                       .com/java/browser/                  
-  CUnit              openeuler   2.1.3      LGPLv2+            http://cunit.sourcef                
+  CUnit              os_version_1   2.1.3      LGPLv2+            http://cunit.sourcef                
                                                                orge.net/                           
-  ComputeLibrary     openeuler   20.02.1    MIT                https://developer.ar                
+  ComputeLibrary     os_version_1   20.02.1    MIT                https://developer.ar                
                                                                m.com/technologies/c                
                                                                ompute-library                      
-  CreateImage        openeuler   0.0.5      Huawei Software                                        
+  CreateImage        os_version_1   0.0.5      Huawei Software                                        
                                             License                                                
-  Cython             openeuler   0.29.14    Apache 2.0         https://cython.org/                 
-  GConf2             openeuler   3.2.6      LGPLv2+ and        http://projects.gnom                
+  Cython             os_version_1   0.29.14    Apache 2.0         https://cython.org/                 
+  GConf2             os_version_1   3.2.6      LGPLv2+ and        http://projects.gnom                
                                             GPLv2+             e.org/gconf/                        
-  GeoIP              openeuler   1.6.12     LGPLv2+            http://www.maxmind.c                
+  GeoIP              os_version_1   1.6.12     LGPLv2+            http://www.maxmind.c                
                                                                om/app/c                            
-  GeoIP-GeoLite-     openeuler   2018.06    CC-BY-SA           http://dev.maxmind.c                
+  GeoIP-GeoLite-     os_version_1   2018.06    CC-BY-SA           http://dev.maxmind.c                
   data                                                         om/geoip/legacy/geol                
                                                                ite/                                
-  GraphicsMagick     openeuler   1.3.30     MIT                http://www.graphicsm                
+  GraphicsMagick     os_version_1   1.3.30     MIT                http://www.graphicsm                
                                                                agick.org/                          
 ===================================================================================================
         """.strip()
@@ -111,23 +111,23 @@ class TestAllPackages(unittest.TestCase):
         parser.add_argument('-packagename')
         parser.add_argument('-s')
         parser.add_argument('-remote')
-        args = parser.parse_args(['openeuler', '-packagename=Judy', '-ss'])
+        args = parser.parse_args(['os_version_1', '-packagename=Judy', '-ss'])
         all_package.do_command(args)
         c = self.r.getvalue().strip()
         s = """
 ====================================================================================================
   Package Name                Database    Version    License         URL                            
 ====================================================================================================
-  389-ds-base                 openeuler   1.4.0.31   GPLv3+          https://www.port389.org        
-  389-ds-base-devel           openeuler   1.4.0.31   GPLv3+          https://www.port389.org        
-  389-ds-base-help            openeuler   1.4.0.31   GPLv3+          https://www.port389.org        
-  389-ds-base-legacy-tools    openeuler   1.4.0.31   GPLv3+          https://www.port389.org        
-  389-ds-base-snmp            openeuler   1.4.0.31   GPLv3+          https://www.port389.org        
-  BareBonesBrowserLaunch      openeuler   3.1        Public Domain   http://www.centerkey.com/java  
+  389-ds-base                 os_version_1   1.4.0.31   GPLv3+          https://www.port389.org        
+  389-ds-base-devel           os_version_1   1.4.0.31   GPLv3+          https://www.port389.org        
+  389-ds-base-help            os_version_1   1.4.0.31   GPLv3+          https://www.port389.org        
+  389-ds-base-legacy-tools    os_version_1   1.4.0.31   GPLv3+          https://www.port389.org        
+  389-ds-base-snmp            os_version_1   1.4.0.31   GPLv3+          https://www.port389.org        
+  BareBonesBrowserLaunch      os_version_1   3.1        Public Domain   http://www.centerkey.com/java  
                                                                      /browser/                      
-  BareBonesBrowserLaunch-     openeuler   3.1        Public Domain   http://www.centerkey.com/java  
+  BareBonesBrowserLaunch-     os_version_1   3.1        Public Domain   http://www.centerkey.com/java  
   javadoc                                                            /browser/                      
-  CUnit                       openeuler   2.1.3      LGPLv2+         http://cunit.sourceforge.net/  
+  CUnit                       os_version_1   2.1.3      LGPLv2+         http://cunit.sourceforge.net/  
 ====================================================================================================
                 """.strip()
         self.assertEqual(c, s)
@@ -145,7 +145,7 @@ class TestAllPackages(unittest.TestCase):
         parser.add_argument('-packagename')
         parser.add_argument('-s')
         parser.add_argument('-remote')
-        args = parser.parse_args(['openeuler', '-packagename=Judy'])
+        args = parser.parse_args(['os_version_1', '-packagename=Judy'])
         all_package.do_command(args)
         c = self.r.getvalue().strip()
         s = """
@@ -167,7 +167,7 @@ Request failed
         parser.add_argument('-packagename')
         parser.add_argument('-s')
         parser.add_argument('-remote')
-        args = parser.parse_args(['openeuler', '-packagename=Judy'])
+        args = parser.parse_args(['os_version_1', '-packagename=Judy'])
         all_package.do_command(args)
         c = self.r.getvalue().strip()
         s = """
@@ -190,7 +190,7 @@ Failed to get packages
         parser.add_argument('-packagename')
         parser.add_argument('-s')
         parser.add_argument('-remote')
-        args = parser.parse_args(['openeuler', '-packagename=Judy'])
+        args = parser.parse_args(['os_version_1', '-packagename=Judy'])
         all_package.do_command(args)
         c = self.r.getvalue().strip()
         s = """
@@ -211,7 +211,7 @@ HINT           :The content is not a legal json format,please check the paramete
         parser.add_argument('-packagename')
         parser.add_argument('-s')
         parser.add_argument('-remote')
-        args = parser.parse_args(['openeuler', '-packagename=Judy'])
+        args = parser.parse_args(['os_version_1', '-packagename=Judy'])
         all_package.do_command(args)
         c = self.r.getvalue().strip()
         s = """
@@ -233,7 +233,7 @@ HINT           :Please check the connection and try again
         parser.add_argument('-packagename')
         parser.add_argument('-s')
         parser.add_argument('-remote')
-        args = parser.parse_args(['openeuler', '-packagename=Judy'])
+        args = parser.parse_args(['os_version_1', '-packagename=Judy'])
         all_package.do_command(args)
         c = self.r.getvalue().strip()
         self.assertEqual(c, "Sorry, no relevant information has been found yet\n".strip())
@@ -251,7 +251,7 @@ HINT           :Please check the connection and try again
         parser.add_argument('-packagename')
         parser.add_argument('-s')
         parser.add_argument('-remote')
-        args = parser.parse_args(['openeuler', '-packagename=Judy', '-ss'])
+        args = parser.parse_args(['os_version_1', '-packagename=Judy', '-ss'])
         all_package.do_command(args)
         c = self.r.getvalue().strip()
         self.assertEqual(c, "Sorry, no relevant information has been found yet\n".strip())

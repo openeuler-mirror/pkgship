@@ -38,7 +38,7 @@ class TestQuerySourcePkgInfo(TestCase):
 
         """
         self.session.query = MagicMock(return_value=ObtainMockData.get_data("JudySource.json"))
-        result = self.query_package.get_src_info(src_list=['Judy'], database='openeuler', page_num=1, page_size=20,
+        result = self.query_package.get_src_info(src_list=['Judy'], database='os_version_1', page_num=1, page_size=20,
                                                  command_line=False)
 
         self.assertIsNotNone(result['data'][0]['Judy'])

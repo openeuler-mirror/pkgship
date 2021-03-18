@@ -41,7 +41,7 @@ class TestBinPackageInfo(unittest.TestCase):
 
     def setUp(self) -> None:
         database.get_db_priority = mock.Mock(
-            return_value=["openeuler", "fedora"])
+            return_value=["os_version_1", "os_version_2"])
 
 
     @patch.object(QueryPackage, "get_bin_info")
@@ -52,7 +52,7 @@ class TestBinPackageInfo(unittest.TestCase):
         """
         mock1.return_value = {}
         bin_pkg = BinaryPackage()
-        res = bin_pkg.bin_package_info(["Judy"], ["openeuler"])
+        res = bin_pkg.bin_package_info(["Judy"], ["os_version_1"])
         self.assertEqual(res, {}, "Error in testing get empty bin info.")
 
     @patch.object(QueryPackage, "get_bin_info")
@@ -63,7 +63,7 @@ class TestBinPackageInfo(unittest.TestCase):
         """
         mock1.return_value = {None}
         bin_pkg = BinaryPackage()
-        res = bin_pkg.bin_package_info(["Judy"], ["openeuler"])
+        res = bin_pkg.bin_package_info(["Judy"], ["os_version_1"])
         self.assertEqual(res, {}, "Error in testing wrong bin info.")
 
     @patch.object(QueryPackage, "get_bin_info")
@@ -80,7 +80,7 @@ class TestBinPackageInfo(unittest.TestCase):
         mock2.return_value = BE_DEPEND_INFO
         mock3.return_value = EMPTY_FILELIST_INFO
         bin_pkg = BinaryPackage()
-        output_res = bin_pkg.bin_package_info(["Judy"], ["openeuler"])
+        output_res = bin_pkg.bin_package_info(["Judy"], ["os_version_1"])
         self.assertEqual(output_res, {}, "Error in testing empty filelist info.")
 
 
@@ -98,7 +98,7 @@ class TestBinPackageInfo(unittest.TestCase):
         mock2.return_value = BE_DEPEND_INFO
         mock3.return_value = ERROR_FILELIST_INFO
         bin_pkg = BinaryPackage()
-        output_res = bin_pkg.bin_package_info(["Judy"], ["openeuler"])
+        output_res = bin_pkg.bin_package_info(["Judy"], ["os_version_1"])
         EXPECT_RES = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE,
                                                                  "empty_filelist_for_res.json"))
         self.assertEqual(output_res, EXPECT_RES, "Error in testing error filelist info.")
@@ -117,7 +117,7 @@ class TestBinPackageInfo(unittest.TestCase):
         mock2.return_value = BE_DEPEND_INFO
         mock3.return_value = WRONG_TYPE_FILELIST_INFO
         bin_pkg = BinaryPackage()
-        output_res = bin_pkg.bin_package_info(["Judy"], ["openeuler"])
+        output_res = bin_pkg.bin_package_info(["Judy"], ["os_version_1"])
         EXPECT_RES = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE,
                                                                  "empty_filelist_for_res.json"))
         self.assertEqual(output_res, EXPECT_RES, "Error in testing wrong type filelist info.")
@@ -150,7 +150,7 @@ class TestBinPackageInfo(unittest.TestCase):
         with self.assertRaises(DatabaseConfigException):
             mock1.side_effect = DatabaseConfigException()
             src_pkg = BinaryPackage()
-            res = src_pkg.bin_package_info(["Judy"], ["openeuler"])
+            res = src_pkg.bin_package_info(["Judy"], ["os_version_1"])
             self.assertEqual(res, {}, "Error in testing config exception.")
 
     @mock.patch.object(QueryPackage, "get_bin_info")
@@ -163,6 +163,6 @@ class TestBinPackageInfo(unittest.TestCase):
         with self.assertRaises(ElasticSearchQueryException):
             mock1.side_effect = ElasticSearchQueryException()
             src_pkg = BinaryPackage()
-            res = src_pkg.bin_package_info(["Judy"], ["openeuler"])
+            res = src_pkg.bin_package_info(["Judy"], ["os_version_1"])
             self.assertEqual(res, {}, "Error in testing es query exception.")
 

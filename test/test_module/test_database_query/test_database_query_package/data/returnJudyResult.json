@@ -1,7 +1,7 @@
 {
   "source_name": "Judy",
   "src_version": "1.0.5",
-  "database": "openeuler",
+  "database": "os_version_1",
   "binary_infos": [
     {
       "bin_name": "Judy",

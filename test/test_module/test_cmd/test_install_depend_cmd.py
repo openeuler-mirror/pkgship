@@ -65,7 +65,7 @@ class TestInstallDepend(unittest.TestCase):
                 parser.add_argument('-dbs')
                 parser.add_argument('-level')
                 parser.add_argument('-remote')
-                args = parser.parse_args(['Judy', '-dbs=openeuler'])
+                args = parser.parse_args(['Judy', '-dbs=os_version_1'])
                 install_depend.do_command(args)
                 c = self.r.getvalue().strip()
                 s = """
@@ -74,23 +74,23 @@ Binary
 ====================================================================================================
   Binary name               Source name               Version          Database name                
 ====================================================================================================
-  Judy                      Judy                      1.0.5            openeuler                    
-  bash                      bash                      5.0              openeuler                    
-  glibc                     glibc                     2.31             openeuler                    
+  Judy                      Judy                      1.0.5            os_version_1                    
+  bash                      bash                      5.0              os_version_1                    
+  glibc                     glibc                     2.31             os_version_1                    
 ====================================================================================================
 Source
 ====================================================================================================
   Source name                        Version                Database name                           
 ====================================================================================================
-  Judy                               1.0.5                  openeuler                               
-  bash                               5.0                    openeuler                               
-  glibc                              2.31                   openeuler                               
+  Judy                               1.0.5                  os_version_1                               
+  bash                               5.0                    os_version_1                               
+  glibc                              2.31                   os_version_1                               
 ====================================================================================================
 Statistics
 ====================================================================================================
   Database name                          Binary Sum                    Source Sum                   
 ====================================================================================================
-  openeuler                              3                             3                            
+  os_version_1                              3                             3                            
 ====================================================================================================
                        """.strip()
                 self.assertEqual(c, s)
@@ -108,7 +108,7 @@ Statistics
             parser.add_argument('-dbs')
             parser.add_argument('-level')
             parser.add_argument('-remote')
-            args = parser.parse_args(['Judy', '-dbs=openeuler'])
+            args = parser.parse_args(['Judy', '-dbs=os_version_1'])
             install_depend.do_command(args)
             c = self.r.getvalue().strip()
             s = """
@@ -134,7 +134,7 @@ HINT           :Please check the service and try again
                 parser.add_argument('-dbs')
                 parser.add_argument('-level')
                 parser.add_argument('-remote')
-                args = parser.parse_args(['Judy', '-dbs=openeuler'])
+                args = parser.parse_args(['Judy', '-dbs=os_version_1'])
                 install_depend.do_command(args)
                 c = self.r.getvalue().strip()
                 s = """
@@ -159,7 +159,7 @@ HINT           :Please check the parameter is valid and query again
                 parser.add_argument('-dbs')
                 parser.add_argument('-level')
                 parser.add_argument('-remote')
-                args = parser.parse_args(['Judy', '-dbs=openeuler'])
+                args = parser.parse_args(['Judy', '-dbs=os_version_1'])
                 install_depend.do_command(args)
                 c = self.r.getvalue().strip()
                 s = """
@@ -180,7 +180,7 @@ HINT           :The content is not a legal json format,please check the paramete
         parser.add_argument('-dbs')
         parser.add_argument('-level')
         parser.add_argument('-remote')
-        args = parser.parse_args(['Judy', '-dbs=openeuler'])
+        args = parser.parse_args(['Judy', '-dbs=os_version_1'])
         install_depend.do_command(args)
         c = self.r.getvalue().strip()
         s = """

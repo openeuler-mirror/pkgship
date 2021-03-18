@@ -5,25 +5,25 @@
     "binary_list": [
       {
         "binary_name": "Judy-devel",
-        "database": "openeuler",
+        "database": "os_version_1",
         "source_name": "Judy",
         "version": "1.0.5"
       },
       {
         "binary_name": "Judy-help",
-        "database": "openeuler",
+        "database": "os_version_1",
         "source_name": "Judy",
         "version": "1.0.5"
       },
       {
         "binary_name": "Judy",
-        "database": "openeuler",
+        "database": "os_version_1",
         "source_name": "Judy",
         "version": "1.0.5"
       },
       {
         "binary_name": "mariadb-oqgraph-engine",
-        "database": "openeuler",
+        "database": "os_version_1",
         "source_name": "mariadb",
         "version": "10.3.9"
       }
@@ -32,7 +32,7 @@
     "statistics": [
       {
         "binary_sum": 4,
-        "database": "openeuler",
+        "database": "os_version_1",
         "source_sum": 0
       }
     ]

@@ -7,7 +7,7 @@
       "depend_type": "installdep",
       "parameter": {
         "db_priority": [
-          "openeuler"
+          "os_version_1"
         ],
         "level": 2
       }
@@ -16,71 +16,71 @@
       "binary_list": [
         {
           "binary_name": "A1",
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "A",
           "version": "0.0.23b"
         },
         {
           "binary_name": "A2",
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "A",
           "version": "0.0.23b"
         },
         {
           "binary_name": "B1",
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "B",
           "version": "0.0.2"
         },
         {
           "binary_name": "B2",
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "B",
           "version": "0.0.2"
         },
         {
           "binary_name": "C1",
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "C",
           "version": "0.1"
         },
         {
           "binary_name": "C2",
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "C",
           "version": "0.1"
         },
         {
           "binary_name": "D1",
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "D",
           "version": "0.11"
         },
         {
           "binary_name": "D2",
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "D",
           "version": "0.11"
         }
       ],
       "source_list": [
         {
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "A",
           "version": "0.0.23b"
         },
         {
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "C",
           "version": "0.1"
         },
         {
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "B",
           "version": "0.0.2"
         },
         {
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "D",
           "version": "0.11"
         }
@@ -88,7 +88,7 @@
       "statistics": [
         {
           "binary_sum": 8,
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_sum": 4
         }
       ]
@@ -102,7 +102,7 @@
       "depend_type": "builddep",
       "parameter": {
         "db_priority": [
-          "openeuler"
+          "os_version_1"
         ],
         "level": 2,
         "self_build": false
@@ -112,53 +112,53 @@
       "binary_list": [
         {
           "binary_name": "B1",
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "B",
           "version": "0.0.2"
         },
         {
           "binary_name": "C1",
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "C",
           "version": "0.1"
         },
         {
           "binary_name": "A1",
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "A",
           "version": "0.0.23b"
         },
         {
           "binary_name": "A2",
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "A",
           "version": "0.0.23b"
         },
         {
           "binary_name": "D1",
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "D",
           "version": "0.11"
         }
       ],
       "source_list": [
         {
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "C",
           "version": "0.1"
         },
         {
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "D",
           "version": "0.11"
         },
         {
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "B",
           "version": "0.0.2"
         },
         {
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "A",
           "version": "0.0.23b"
         }
@@ -166,12 +166,12 @@
       "statistics": [
         {
           "binary_sum": 5,
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_sum": 4
         },
         {
           "binary_sum": 0,
-          "database": "fedora30",
+          "database": "os_version_2",
           "source_sum": 0
         },
         {
@@ -190,7 +190,7 @@
       "depend_type": "selfdep",
       "parameter": {
         "db_priority": [
-          "openeuler"
+          "os_version_1"
         ],
         "self_build": false,
         "packtype": "source",
@@ -201,42 +201,42 @@
       "binary_list": [
         {
           "binary_name": "A1",
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "A",
           "version": "0.0.23b"
         },
         {
           "binary_name": "A2",
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "A",
           "version": "0.0.23b"
         },
         {
           "binary_name": "C1",
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "C",
           "version": "0.1"
         },
         {
           "binary_name": "D1",
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "D",
           "version": "0.11"
         }
       ],
       "source_list": [
         {
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "D",
           "version": "0.11"
         },
         {
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "A",
           "version": "0.0.23b"
         },
         {
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "C",
           "version": "0.1"
         }
@@ -244,12 +244,12 @@
       "statistics": [
         {
           "binary_sum": 4,
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_sum": 3
         },
         {
           "binary_sum": 0,
-          "database": "fedora30",
+          "database": "os_version_2",
           "source_sum": 0
         },
         {
@@ -268,7 +268,7 @@
       "depend_type": "bedep",
       "parameter": {
         "db_priority": [
-          "openeuler"
+          "os_version_1"
         ],
         "packtype": "source",
         "with_subpack": false,
@@ -279,65 +279,65 @@
       "binary_list": [
         {
           "binary_name": "C1",
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "C",
           "version": "0.1"
         },
         {
           "binary_name": "C2",
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "C",
           "version": "0.1"
         },
         {
           "binary_name": "A2",
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "A",
           "version": "0.0.23b"
         },
         {
           "binary_name": "D1",
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "D",
           "version": "0.11"
         },
         {
           "binary_name": "A1",
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "A",
           "version": "0.0.23b"
         },
         {
           "binary_name": "B1",
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "B",
           "version": "0.0.2"
         },
         {
           "binary_name": "B2",
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "B",
           "version": "0.0.2"
         }
       ],
       "source_list": [
         {
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "C",
           "version": "0.1"
         },
         {
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "A",
           "version": "0.0.23b"
         },
         {
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "D",
           "version": "0.11"
         },
         {
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_name": "B",
           "version": "0.0.2"
         }
@@ -345,12 +345,12 @@
       "statistics": [
         {
           "binary_sum": 7,
-          "database": "openeuler",
+          "database": "os_version_1",
           "source_sum": 4
         },
         {
           "binary_sum": 0,
-          "database": "fedora30",
+          "database": "os_version_2",
           "source_sum": 0
         },
         {

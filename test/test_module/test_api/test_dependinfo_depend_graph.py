@@ -55,8 +55,8 @@ class TestDependInfoDependGraph(ReadTestBase):
                 "node_type": "binary",
                 "parameter": {
                     "db_priority": [
-                        "openeuler",
-                        "fedora30"
+                        "os_version_1",
+                        "os_version_2"
                     ],
                     "level": 2,
                     "self_build": True
@@ -69,8 +69,8 @@ class TestDependInfoDependGraph(ReadTestBase):
                 "node_type": "binary",
                 "parameter": {
                     "db_priority": [
-                        "openeuler",
-                        "fedora30"
+                        "os_version_1",
+                        "os_version_2"
                     ],
                     "level": 2,
                     "self_build": True
@@ -83,8 +83,8 @@ class TestDependInfoDependGraph(ReadTestBase):
                 "node_type": "",
                 "parameter": {
                     "db_priority": [
-                        "openeuler",
-                        "fedora30"
+                        "os_version_1",
+                        "os_version_2"
                     ],
                     "level": 2,
                     "self_build": True
@@ -97,8 +97,8 @@ class TestDependInfoDependGraph(ReadTestBase):
                 "node_type": "xxx",
                 "parameter": {
                     "db_priority": [
-                        "openeuler",
-                        "fedora30"
+                        "os_version_1",
+                        "os_version_2"
                     ],
                     "level": 2,
                     "self_build": True

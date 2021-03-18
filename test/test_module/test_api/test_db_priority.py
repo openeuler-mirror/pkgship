@@ -45,7 +45,7 @@ class TestGetDBPriority(ReadTestBase):
         self.assertEqual(ResponseCode.SUCCESS,
                          resp_dict.get("code"),
                          msg="Error in status code return")
-        self.assertEqual(["openeuler", "fedora30"], resp_dict.get(
+        self.assertEqual(["os_version_1", "os_version_2"], resp_dict.get(
             'resp'), msg="The data content is incorrect")
 
     def test_true_result(self):
@@ -59,7 +59,7 @@ class TestGetDBPriority(ReadTestBase):
             response = db_priority.get()
             output_data = response.json
             self.assertEqual(
-                {'code': '200', 'message': 'Successful Operation', 'resp': ["openeuler", "fedora30"]},
+                {'code': '200', 'message': 'Successful Operation', 'resp': ["os_version_1", "os_version_2"]},
                 output_data)
 
     def test_wrong_result(self):

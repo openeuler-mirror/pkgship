@@ -15,7 +15,7 @@
     "max_score" : 0.0,
     "hits" : [
       {
-        "_index" : "openeuler-binary",
+        "_index" : "os_version_1-binary",
         "_type" : "_doc",
         "_id" : "9JvNx3cBamC2Cm-g6gEb",
         "_score" : 0.0,
@@ -373,7 +373,7 @@
         }
       },
       {
-        "_index" : "openeuler-binary",
+        "_index" : "os_version_1-binary",
         "_type" : "_doc",
         "_id" : "d5vNx3cBamC2Cm-g8gQh",
         "_score" : 0.0,

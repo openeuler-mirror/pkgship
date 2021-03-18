@@ -36,12 +36,12 @@ class TestImport(unittest.TestCase):
         self._init_service = InitializeService()
         self._path = os.path.dirname(__file__)
         self.src_dbfile = os.path.join(
-            self._path, "data", "openeuler-right-source.sqlite")
+            self._path, "data", "os_version_1-right-source.sqlite")
         self.bin_dbfile = os.path.join(
-            self._path, "data", "openeuler-right-binary.sqlite")
+            self._path, "data", "os_version_1-right-binary.sqlite")
         self.filelist_dbfile = os.path.join(
-            self._path, "data", "openeuler-right-filelist.sqlite")
-        self._repo = dict(dbname="openeuler", src_db_file=self.src_dbfile,
+            self._path, "data", "os_version_1-right-filelist.sqlite")
+        self._repo = dict(dbname="os_version_1", src_db_file=self.src_dbfile,
                           bin_db_file=self.bin_dbfile, file_list=self.filelist_dbfile, priority=1)
 
     def test_delete_file(self):
@@ -137,9 +137,9 @@ class TestImport(unittest.TestCase):
             mock__clear_all_index.return_value = None
             mock___iter__.return_value = iter([self._repo])
             mock__sqlite_file.return_value = None
-            mock__create_index.return_value = ["openeuler"]
+            mock__create_index.return_value = ["os_version_1"]
             init_service = InitializeService()
-            setattr(init_service, "_repo", dict(dbname="openeuler"))
+            setattr(init_service, "_repo", dict(dbname="os_version_1"))
             self.assertEqual(None, init_service.import_depend(path=""))
 
     @mock.patch.object(Elasticsearch, "__init__")
@@ -206,7 +206,7 @@ class TestImport(unittest.TestCase):
         with mock.patch("packageship.application.initialize.integration.RepoConfig.validate",
                         new_callable=mock.PropertyMock) as mock_validate:
             mock_validate.return_value = True
-            mock_get_db_priority.return_value = ["openeuler"]
+            mock_get_db_priority.return_value = ["os_version_1"]
             mock___init__.return_value = None
             elastic = ElasticSearch()
             elastic.delete_index = lambda x: None
@@ -236,14 +236,14 @@ class TestImport(unittest.TestCase):
 
             mock___init__.return_value = None
             elastic = ElasticSearch()
-            elastic.create_index = lambda x: ["openeuler"]
+            elastic.create_index = lambda x: ["os_version_1"]
             elastic.delete_index = lambda x: None
             mock_connection.return_value = elastic
             init_service = InitializeService()
             setattr(init_service, "_repo", self._repo)
             init_service.import_depend(path="")
             self.assertEqual(
-                ["openeuler"], getattr(init_service, "_fail"))
+                ["os_version_1"], getattr(init_service, "_fail"))
 
     @mock.patch.object(Elasticsearch, "__init__")
     @mock.patch.object(DatabaseSession, "connection")
@@ -269,12 +269,12 @@ class TestImport(unittest.TestCase):
             mock__source_depend.side_effect = TypeError()
             mock__create_index.return_value = []
             elastic = ElasticSearch()
-            elastic.delete_index = lambda x: ["openeuler"]
+            elastic.delete_index = lambda x: ["os_version_1"]
             mock_connection.return_value = elastic
             init_service = InitializeService()
             setattr(init_service, "_repo", self._repo)
             init_service.import_depend(path="")
-            self.assertEqual(["openeuler"], getattr(init_service, "_fail"))
+            self.assertEqual(["os_version_1"], getattr(init_service, "_fail"))
 
     def test_query_sqlite(self):
         """query sqlite database"""
@@ -288,7 +288,7 @@ class TestImport(unittest.TestCase):
     def test_esjson_set_item(self):
         """json set data"""
         es_json = ESJson()
-        es_json.database = "openeuler"
+        es_json.database = "os_version_1"
 
     def test_load_config_exception(self):
         """Error loading configuration file"""
@@ -358,4 +358,4 @@ class TestImport(unittest.TestCase):
             init_service = InitializeService()
             setattr(init_service, "_repo", self._repo)
             init_service.import_depend(path="")
-            self.assertEqual(["openeuler"], getattr(init_service, "_fail"))
+            self.assertEqual(["os_version_1"], getattr(init_service, "_fail"))

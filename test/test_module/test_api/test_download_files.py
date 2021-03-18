@@ -45,26 +45,26 @@ class TestDownloadFile(ReadTestBase):
             json.dumps({"packagename": [],
                         "depend_type": "installdep",
                         "parameter": {
-                            "db_priority": ["openeuler"],
+                            "db_priority": ["os_version_1"],
                             "level": 2}}),
             json.dumps({"packagename": [],
                         "depend_type": "bedep",
                         "parameter": {
-                            "db_priority": ["openeuler"],
+                            "db_priority": ["os_version_1"],
                             "packtype": "source",
                             "with_subpack": True,
                             "search_type": "install"}}),
             json.dumps({"packagename": [],
                         "depend_type": "selfdep",
                         "parameter": {
-                            "db_priority": ["openeuler"],
+                            "db_priority": ["os_version_1"],
                             "self_build": False,
                             "packtype": "source",
                             "with_subpack": False}}),
             json.dumps({"packagename": [],
                         "depend_type": "builddep",
                         "parameter": {
-                            "db_priority": ["openeuler"],
+                            "db_priority": ["os_version_1"],
                             "level": 2,
                             "self_build": False}}),
             json.dumps({"packagename": ["Judy"],
@@ -77,7 +77,7 @@ class TestDownloadFile(ReadTestBase):
             json.dumps({"packagename": [],
                         "depend_type": "installdep",
                         "parameter": {
-                            "db_priority": ["openeuler"],
+                            "db_priority": ["os_version_1"],
                             "level": 0}}),
             json.dumps({"packagename": ["Judy"],
                         "depend_type": "bedep",
@@ -89,7 +89,7 @@ class TestDownloadFile(ReadTestBase):
             json.dumps({"packagename": [],
                         "depend_type": "selfdep",
                         "parameter": {
-                            "db_priority": ["openeuler"],
+                            "db_priority": ["os_version_1"],
                             "self_build": False,
                             "packtype": "xxx",
                             "with_subpack": False}}),
@@ -109,7 +109,7 @@ class TestDownloadFile(ReadTestBase):
             "packagename": ["Judy"],
             "depend_type": "builddep",
             "parameter": {
-                "db_priority": ["openeuler"],
+                "db_priority": ["os_version_1"],
                 "self_build": False,
                 "packtype": "source",
                 "level": 1,
@@ -125,7 +125,7 @@ class TestDownloadFile(ReadTestBase):
             "packagename": ["Judy"],
             "depend_type": "selfdep",
             "parameter": {
-                "db_priority": ["openeuler"],
+                "db_priority": ["os_version_1"],
                 "self_build": False,
                 "packtype": "source",
                 "with_subpack": False}}), content_type="application/json")
@@ -140,7 +140,7 @@ class TestDownloadFile(ReadTestBase):
             "packagename": ["Judy"],
             "depend_type": "installdep",
             "parameter": {
-                "db_priority": ["openeuler"],
+                "db_priority": ["os_version_1"],
                 "level": 2}}), content_type="application/json")
         self.assertIsNotNone(resp_dict)
 
@@ -153,7 +153,7 @@ class TestDownloadFile(ReadTestBase):
             "packagename": ["Judy"],
             "depend_type": "bedep",
             "parameter": {
-                "db_priority": ["openeuler"],
+                "db_priority": ["os_version_1"],
                 "packtype": "source",
                 "with_subpack": False,
                 "search_type": "install"}}), content_type="application/json")
@@ -168,7 +168,7 @@ class TestDownloadFile(ReadTestBase):
             "packagename": ["Judy"],
             "depend_type": "src",
             "parameter": {
-                "db_priority": ["openeuler"],
+                "db_priority": ["os_version_1"],
                 "packtype": "source",
                 "with_subpack": False,
                 "search_type": "install"}}), content_type="application/json")
@@ -185,7 +185,7 @@ class TestDownloadFile(ReadTestBase):
             "packagename": ["Judy"],
             "depend_type": "bedep",
             "parameter": {
-                "db_priority": ["openeuler"],
+                "db_priority": ["os_version_1"],
                 "packtype": "source",
                 "with_subpack": False,
                 "search_type": "install"}}), content_type="application/json")
@@ -202,7 +202,7 @@ class TestDownloadFile(ReadTestBase):
             "packagename": ["Judy"],
             "depend_type": "bedep",
             "parameter": {
-                "db_priority": ["openeuler"],
+                "db_priority": ["os_version_1"],
                 "packtype": "source",
                 "with_subpack": False,
                 "search_type": "install"}}), content_type="application/json")
@@ -220,7 +220,7 @@ class TestDownloadFile(ReadTestBase):
             "packagename": ["Judy"],
             "depend_type": "selfdep",
             "parameter": {
-                "db_priority": ["openeuler"],
+                "db_priority": ["os_version_1"],
                 "self_build": False,
                 "packtype": "source",
                 "with_subpack": False}}), content_type="application/json")

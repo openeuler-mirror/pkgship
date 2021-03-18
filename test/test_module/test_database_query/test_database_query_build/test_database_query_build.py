@@ -34,7 +34,7 @@ MOCK_DATA_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data"
 
 
 class TestBuildRequireDbQuery(TestCase):
-    DATABASE_LIST = ['openeuler', 'fedora']
+    DATABASE_LIST = ['os_version_1', 'os_version_2']
     JUDY_SOURCE_INFO = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE, "JudySource.json"))
     COMPONENTS_INFO = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE, "components_info,json"))
     EXCEPT_RETURN_VALUE = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE, "returnJudyResult.json"))
@@ -67,7 +67,7 @@ class TestBuildRequireDbQuery(TestCase):
             self.COMPONENTS_INFO
         ])
 
-        result = self.build_instance.get_build_req(source_list=['Judy'], specify_db='openeuler')
+        result = self.build_instance.get_build_req(source_list=['Judy'], specify_db='os_version_1')
 
         self.assertEqual(result, self.EXCEPT_RETURN_VALUE)
 
@@ -91,6 +91,6 @@ class TestBuildRequireDbQuery(TestCase):
         Returns:
         """
         self.query_instance.session.query = MagicMock(return_value={})
-        result = self.build_instance.get_build_req(source_list=['Judy'], specify_db='openeuler')
+        result = self.build_instance.get_build_req(source_list=['Judy'], specify_db='os_version_1')
 
         self.assertEqual(result, [])

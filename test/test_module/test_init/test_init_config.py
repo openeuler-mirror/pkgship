@@ -51,22 +51,22 @@ class TestLoadConfig(unittest.TestCase):
 
     def test_repo_database_error(self):
         """Database error in repo source"""
-        setattr(self.repo_config, "_repo", ["openeuler"])
+        setattr(self.repo_config, "_repo", ["os_version_1"])
         self.assertEqual(False, self.repo_config.validate)
 
         setattr(self.repo_config, "_repo", [dict(database="test-database")])
         self.assertEqual(False, self.repo_config.validate)
 
         setattr(self.repo_config, "_repo", [
-            dict(dbname="openeuler"), dict(dbname="openeuler")])
+            dict(dbname="os_version_1"), dict(dbname="os_version_1")])
         self.assertEqual(False, self.repo_config.validate)
 
         setattr(self.repo_config, "_repo", [
-            dict(dbname="openeuler"), dict(dbname="")])
+            dict(dbname="os_version_1"), dict(dbname="")])
         self.assertEqual(False, self.repo_config.validate)
 
         setattr(self.repo_config, "_repo", [
-            dict(dbname="openeuler"), dict(dbname="openEuler20.09")])
+            dict(dbname="os_version_1"), dict(dbname="openEuler20.09")])
         self.assertEqual(False, self.repo_config.validate)
 
     @mock.patch.object(RepoConfig, "_validate_priority")
@@ -81,7 +81,7 @@ class TestLoadConfig(unittest.TestCase):
         setattr(self.repo_config, "_repo", [dict()])
         self.assertEqual(False, self.repo_config.validate)
 
-        setattr(self.repo_config, "_repo", [dict(src_db_file="openeuler-src")])
+        setattr(self.repo_config, "_repo", [dict(src_db_file="os_version_1-src")])
         self.assertEqual(False, self.repo_config.validate)
 
         setattr(self.repo_config, "_repo", [dict(src_db_file="http://127.0.0.1:5000/repo",
@@ -95,10 +95,10 @@ class TestLoadConfig(unittest.TestCase):
         setattr(self.repo_config, "_repo", [""])
         self.assertEqual(False, self.repo_config.validate)
 
-        setattr(self.repo_config, "_repo", [dict(dbname="openeuler")])
+        setattr(self.repo_config, "_repo", [dict(dbname="os_version_1")])
         self.assertEqual(False, self.repo_config.validate)
 
-        setattr(self.repo_config, "_repo", [dict(priority="openeuler")])
+        setattr(self.repo_config, "_repo", [dict(priority="os_version_1")])
         self.assertEqual(False, self.repo_config.validate)
 
         setattr(self.repo_config, "_repo", [dict(priority=-1)])
@@ -110,11 +110,11 @@ class TestLoadConfig(unittest.TestCase):
     def test_validate_failed(self):
         """validate failed"""
         setattr(self.repo_config, "_repo", [
-                dict(dbname="openeuler", priority=1)])
+                dict(dbname="os_version_1", priority=1)])
         self.assertEqual(False, self.repo_config.validate)
         self.assertIsNotNone(self.repo_config.message)
         for repo in self.repo_config:
             self.assertIsNotNone(repo)
         setattr(self.repo_config, "_repo", [
-                dict(database="openeuler", priority=1)])
+                dict(database="os_version_1", priority=1)])
         self.assertEqual(False, self.repo_config.validate)

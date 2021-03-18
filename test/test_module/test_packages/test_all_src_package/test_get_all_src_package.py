@@ -36,7 +36,7 @@ class TestAllSrcPackage(unittest.TestCase):
 
     def setUp(self) -> None:
         database.get_db_priority = mock.Mock(
-            return_value=["openeuler", "fedora"])
+            return_value=["os_version_1", "os_version_2"])
 
     @patch.object(QueryPackage, "get_src_info")
     def test_get_empty_src_info(self, mock1):
@@ -78,7 +78,7 @@ class TestAllSrcPackage(unittest.TestCase):
 
         """
         mock1.return_value = {"total": 2}
-        res = pkg.all_src_packages("openeuler", page_num=1, page_size=20)
+        res = pkg.all_src_packages("os_version_1", page_num=1, page_size=20)
         self.assertEqual(res, {}, "Error in testing wrong src info.")
 
     @patch.object(QueryPackage, "get_src_info")
@@ -90,5 +90,5 @@ class TestAllSrcPackage(unittest.TestCase):
         """
         ALL_SRC_INFO = MockData.read_mock_json_data(os.path.join(MOCK_DATA_FILE, "all_src_package_info.json"))
         mock1.return_value = ALL_SRC_INFO
-        res = pkg.all_src_packages("openeuler", page_num=1, page_size=20)
+        res = pkg.all_src_packages("os_version_1", page_num=1, page_size=20)
         self.assertNotEqual(res, {}, "Error in testing true result.")

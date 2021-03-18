@@ -43,7 +43,7 @@ class TestBufferCache(unittest.TestCase):
         mock_hgetall.return_value = dict(
             source_dict=str(dict()), binary_dict=str(dict()))
         mock_delete.return_value = None
-        self.assertEqual(None, self.cache(pkgname="openeuler"))
+        self.assertEqual(None, self.cache(pkgname="os_version_1"))
 
     @mock.patch.object(Redis, "delete")
     @mock.patch.object(Redis, "hmset")
@@ -62,7 +62,7 @@ class TestBufferCache(unittest.TestCase):
         mock_expire.return_value = None
         mock_hmset.return_value = None
         mock_delete.return_value = None
-        self.assertEqual(None, self.cache(pkgname="openeuler"))
+        self.assertEqual(None, self.cache(pkgname="os_version_1"))
 
     @mock.patch.object(Redis, "hgetall")
     @mock.patch.object(Redis, "exists")
@@ -80,9 +80,9 @@ class TestBufferCache(unittest.TestCase):
             ]
             mock_hgetall.return_value = dict(
                 source_dict=str(dict()), binary_dict=str(dict()))
-            self.assertEqual(None, self.cache(pkgname="openeuler"))
+            self.assertEqual(None, self.cache(pkgname="os_version_1"))
 
     @mock.patch.object(Redis, "exists")
     def test_redis_exception(self, mock_exists):
         mock_exists.side_effect = RedisError()
-        self.assertEqual(None, self.cache(pkgname="openeuler"))
+        self.assertEqual(None, self.cache(pkgname="os_version_1"))

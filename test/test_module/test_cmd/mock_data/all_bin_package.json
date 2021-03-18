@@ -3,7 +3,7 @@
   "message": "Successful Operation",
   "resp": [
     {
-      "database": "openeuler",
+      "database": "os_version_1",
       "license": "GPLv3+",
       "pkg_name": "389-ds-base",
       "source_name": "389-ds-base",
@@ -11,7 +11,7 @@
       "version": "1.4.0.31"
     },
     {
-      "database": "openeuler",
+      "database": "os_version_1",
       "license": "GPLv3+",
       "pkg_name": "389-ds-base-devel",
       "source_name": "389-ds-base",
@@ -19,7 +19,7 @@
       "version": "1.4.0.31"
     },
     {
-      "database": "openeuler",
+      "database": "os_version_1",
       "license": "GPLv3+",
       "pkg_name": "389-ds-base-help",
       "source_name": "389-ds-base",
@@ -27,7 +27,7 @@
       "version": "1.4.0.31"
     },
     {
-      "database": "openeuler",
+      "database": "os_version_1",
       "license": "GPLv3+",
       "pkg_name": "389-ds-base-legacy-tools",
       "source_name": "389-ds-base",
@@ -35,7 +35,7 @@
       "version": "1.4.0.31"
     },
     {
-      "database": "openeuler",
+      "database": "os_version_1",
       "license": "GPLv3+",
       "pkg_name": "389-ds-base-snmp",
       "source_name": "389-ds-base",
@@ -43,7 +43,7 @@
       "version": "1.4.0.31"
     },
     {
-      "database": "openeuler",
+      "database": "os_version_1",
       "license": "Public Domain",
       "pkg_name": "BareBonesBrowserLaunch",
       "source_name": "BareBonesBrowserLaunch",
@@ -51,7 +51,7 @@
       "version": "3.1"
     },
     {
-      "database": "openeuler",
+      "database": "os_version_1",
       "license": "Public Domain",
       "pkg_name": "BareBonesBrowserLaunch-javadoc",
       "source_name": "BareBonesBrowserLaunch",
@@ -59,7 +59,7 @@
       "version": "3.1"
     },
     {
-      "database": "openeuler",
+      "database": "os_version_1",
       "license": "LGPLv2+",
       "pkg_name": "CUnit",
       "source_name": "CUnit",

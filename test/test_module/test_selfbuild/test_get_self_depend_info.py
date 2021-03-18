@@ -39,7 +39,7 @@ param = {
     "packagename": ["Judy"],
     "depend_type": "selfdep",
     "parameter": {
-      "db_priority": ["openeuler"],
+      "db_priority": ["os_version_1"],
       "self_build": True,
       "packtype": "source",
       "with_subpack": True
@@ -63,7 +63,7 @@ class TestSelfBuildDdepend(unittest.TestCase):
         mock1.return_value = TRUE_INSTALL_INFO
         mock2.return_value = TRUE_BUILD_INFO
         mock3.return_value = [None]
-        self_depend = SelfDepend(db_list=['openeuler'])
+        self_depend = SelfDepend(db_list=['os_version_1'])
         self_depend.self_depend(pkg_name=["Judy"], pkgtype="source")
         binary, source = self_depend.depend_dict
         self.assertDictEqual(binary, {}, "Error in testing wrong subpack.")
@@ -82,7 +82,7 @@ class TestSelfBuildDdepend(unittest.TestCase):
         mock1.return_value = TRUE_INSTALL_INFO
         mock2.return_value = TRUE_BUILD_INFO
         mock3.return_value = []
-        self_depend = SelfDepend(db_list=['openeuler'])
+        self_depend = SelfDepend(db_list=['os_version_1'])
         self_depend.self_depend(pkg_name=["Judy"], pkgtype="source")
         binary, source = self_depend.depend_dict
         self.assertEqual(binary, {}, "Error in testing empty subpack.")
@@ -101,7 +101,7 @@ class TestSelfBuildDdepend(unittest.TestCase):
         mock1.return_value = TRUE_INSTALL_INFO
         mock2.return_value = TRUE_BUILD_INFO
         mock3.return_value = BIN_NAME_INFO
-        self_depend = SelfDepend(db_list=['openeuler'])
+        self_depend = SelfDepend(db_list=['os_version_1'])
         self_depend.self_depend(pkg_name=["Judy"], pkgtype="source", with_subpack=True)
         binary, source = self_depend.depend_dict
         binary["Judy"]["install"] = sorted(binary["Judy"]["install"])
@@ -120,7 +120,7 @@ class TestSelfBuildDdepend(unittest.TestCase):
         mock1.return_value = TRUE_INSTALL_INFO
         mock2.return_value = TRUE_BUILD_INFO
         mock3.return_value = WRONG_BIN_NAME_INFO
-        self_depend = SelfDepend(db_list=['openeuler'])
+        self_depend = SelfDepend(db_list=['os_version_1'])
         self_depend.self_depend(pkg_name=["Judy"], pkgtype="source", with_subpack=True)
         binary, source = self_depend.depend_dict
         self.assertDictEqual(binary, {}, "Error in empty db src name.")
@@ -136,11 +136,11 @@ class TestSelfBuildDdepend(unittest.TestCase):
         """
         mock1.return_value = WRONG_UPDATE_DB
         mock2.return_value = TRUE_BUILD_INFO
-        self_depend = SelfDepend(db_list=['openeuler', 'fedora30'])
+        self_depend = SelfDepend(db_list=['os_version_1', 'os_version_2'])
         self_depend.self_depend(pkg_name=["Judy"])
         binary, source = self_depend.depend_dict
         binary["Judy"]["install"] = sorted(binary["Judy"]["install"])
-        EXPECT_SRC = {'Judy': {'name': 'Judy', 'version': '1.0.5', 'database': 'openeuler1'}}
+        EXPECT_SRC = {'Judy': {'name': 'Judy', 'version': '1.0.5', 'database': 'os_version_11'}}
         self.assertDictEqual(binary, WRONG_UPDATE_DB_EXCEPT_BIN, "Error in testing wrong update db.")
         self.assertDictEqual(source, EXPECT_SRC, "Error in testing wrong update db.")
 
@@ -154,7 +154,7 @@ class TestSelfBuildDdepend(unittest.TestCase):
         """
         mock1.return_value = TRUE_INSTALL_INFO
         mock2.return_value = TRUE_BUILD_INFO
-        self_depend = SelfDepend(db_list=['openeuler', 'fedora30'])
+        self_depend = SelfDepend(db_list=['os_version_1', 'os_version_2'])
         self_depend.self_depend(pkg_name=["Judy"])
         binary, source = self_depend.depend_dict
         binary["Judy"]["install"] = sorted(binary["Judy"]["install"])
@@ -167,7 +167,7 @@ class TestSelfBuildDdepend(unittest.TestCase):
 
         """
         with self.assertRaises(AttributeError):
-            self_depend = SelfDepend(db_list=['openeuler'])
+            self_depend = SelfDepend(db_list=['os_version_1'])
             self_depend.self_depend(pkg_name="Judy")
 
 
@@ -196,7 +196,7 @@ class TestSelfBuildDdepend(unittest.TestCase):
         InstallRequires.get_install_req = mock.Mock(return_value=TRUE_INSTALL_INFO)
         BuildRequires.get_build_req = mock.Mock(return_value=TRUE_BUILD_INFO)
         QueryPackage.get_bin_name = mock.Mock(return_value=BIN_NAME_INFO)
-        self_depend = SelfDepend(db_list=['openeuler'])
+        self_depend = SelfDepend(db_list=['os_version_1'])
         self_depend(**param)
         binary, source = self_depend.depend_dict
         binary["Judy"]["install"] = sorted(binary["Judy"]["install"])

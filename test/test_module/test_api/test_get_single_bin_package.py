@@ -51,7 +51,7 @@ class TestGetSinglePack(ReadTestBase):
 
     def test_wrong_pkg_name(self):
         """test wrong package name"""
-        self.REQUESTS_KWARGS["url"] = self.BASE_URL.format("openeuler", "test")
+        self.REQUESTS_KWARGS["url"] = self.BASE_URL.format("os_version_1", "test")
         resp_dict = self.client_request(**self.REQUESTS_KWARGS)
         self.response_json_error_judge(
             resp_dict,
@@ -61,7 +61,7 @@ class TestGetSinglePack(ReadTestBase):
     @mock.patch.object(BinaryPackage, "bin_package_info")
     def test_empty_resp(self, mock_bin_package_info):
         """test wrong resp"""
-        self.REQUESTS_KWARGS["url"] = self.BASE_URL.format("openeuler", "Judy")
+        self.REQUESTS_KWARGS["url"] = self.BASE_URL.format("os_version_1", "Judy")
         mock_bin_package_info.return_value = []
         resp_dict = self.client_request(**self.REQUESTS_KWARGS)
         self.assertEqual(resp_dict['code'], ResponseCode.PACK_NAME_NOT_FOUND)
@@ -72,7 +72,7 @@ class TestGetSinglePack(ReadTestBase):
         test true parameters
         """
         mock_data = get_correct_json_by_filename("get_single_bin_package")
-        self.REQUESTS_KWARGS["url"] = self.BASE_URL.format("openeuler", "Judy")
+        self.REQUESTS_KWARGS["url"] = self.BASE_URL.format("os_version_1", "Judy")
         mock_bin_package_info.return_value = mock_data
         resp_dict = self.client_request(**self.REQUESTS_KWARGS)
         self.response_json_format(resp_dict)
@@ -85,7 +85,7 @@ class TestGetSinglePack(ReadTestBase):
         Returns:
         """
         self.REQUESTS_KWARGS["url"] = self.BASE_URL.format(
-            "openeuler", "1", "1")
+            "os_version_1", "1", "1")
         mock_es_error.return_value = None
         resp_dict = self.client_request(**self.REQUESTS_KWARGS)
         self.response_json_format(resp_dict)

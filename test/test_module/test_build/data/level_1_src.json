@@ -1,1 +1,1 @@
-{"sed": {"name": "sed", "version": "4.8", "database": "openeuler"}, "Judy": {"name": "Judy", "version": "1.0.5", "database": "openeuler", "build": ["sed"]}}
+{"sed": {"name": "sed", "version": "4.8", "database": "os_version_1"}, "Judy": {"name": "Judy", "version": "1.0.5", "database": "os_version_1", "build": ["sed"]}}

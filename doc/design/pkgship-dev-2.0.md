@@ -104,7 +104,7 @@ Mulan V2
 |规格名称|规格指标|
 |:--|:-------|
 |内存占用| 初始化阶段，五万包占用内存1600M，平均每个包占用32k；运行阶段：小于等于700M。 |
-|启动时间| 初始化两个数据库（openEuler-20.09和fedora30，15万个包左右），启动时间为：7min。 |
+|启动时间| 初始化两个数据库（openEuler-20.09和os_version_2，15万个包左右），启动时间为：7min。 |
 |响应时间| 3个数据库，90%的查询在5s内给出结果。 |
 |文件规格| 初始化和下载功能需要创建临时文件，两个数据库不超过1G，用完即删。 |
 |日志规格| 每日日志压缩转储，保留一个月日志，大小视业务操作频率而定。 |
@@ -583,7 +583,7 @@ Mulan V2
             "...": "..."
           }
       ],
-      "fedora30": [
+      "os_version_2": [
         {
           "pkg_name": "Judy",
           "...":"..."
@@ -734,7 +734,7 @@ Mulan V2
           "...": "..."
         }
       ],
-      "fedora":[
+      "os_version_2":[
         {
           "...":"..."
         },
@@ -786,7 +786,7 @@ Mulan V2
       "packagename": "Judy",
       "depend_type": "installdep",
       "parameter": {
-        "db_priority": ["Mainline","fedora"],
+        "db_priority": ["Mainline","os_version_2"],
         "level": 2
       }
   }
@@ -797,7 +797,7 @@ Mulan V2
       "packagename": "Judy",
       "depend_type": "builddep",
       "parameter": {
-        "db_priority": ["Mainline","fedora"],
+        "db_priority": ["Mainline","os_version_2"],
         "level": 2,
         "self_build": true
       }
@@ -809,7 +809,7 @@ Mulan V2
       "packagename": "Judy",
       "depend_type": "selfdep",
       "parameter": {
-        "db_priority": ["Mainline","fedora"],
+        "db_priority": ["Mainline","os_version_2"],
         "self_build": true,
         "packtype": "source",
         "with_subpack": true
@@ -921,7 +921,7 @@ Mulan V2
             "source_num": 37
           },
           {
-              "database": "fedora",
+              "database": "os_version_2",
               "binary_num": 33,
               "source_num": 20
           },
@@ -969,7 +969,7 @@ Mulan V2
       "depend_type": "builddep",
       "node_name": "glibc",
       "parameter": {
-        "db_priority": ["Mainline","fedora"],
+        "db_priority": ["Mainline","os_version_2"],
         "level": 2,
         "self_build": true
       }
@@ -1009,7 +1009,7 @@ Mulan V2
       "node_name": "glibc",
       "node_type": "binary",
       "parameter": {
-        "db_priority": ["Mainline","fedora"],
+        "db_priority": ["Mainline","os_version_2"],
         "level": 2,
         "self_build": true
       }
@@ -1136,9 +1136,9 @@ Mulan V2
 
   ```yaml
   # repo源初始化模式 —— 本地repo源
-  - dbname: fedora
-    src_db_file: file:///root/public/initdb/fedora/src
-    bin_db_file: file:///root/public/initdb/fedora/bin
+  - dbname: os_version_2
+    src_db_file: file:///root/public/initdb/os_version_2/src
+    bin_db_file: file:///root/public/initdb/os_version_2/bin
     priority: 1
   # repo源初始化模式 ——远端repo源
   - dbname: openEuler-20.09-OS
@@ -1660,7 +1660,7 @@ resp = {"total":2300,
 
 ```python
 # 获取指定database中的Judy信息
-src_package_info(["Judy"],database=['openEuler-20.09','fedora30'])
+src_package_info(["Judy"],database=['openEuler-20.09','os_version_2'])
 # 获取所有database下的Judy信息
 src_package_info(["Judy","glibc"])
 ```
@@ -1767,7 +1767,7 @@ dict:source_dict = {
         "...": "..."
       }
   ],
-  "fedora30": [
+  "os_version_2": [
     {
       "src_name": "Judy",
       "...":"..."
@@ -1809,7 +1809,7 @@ dict:source_dict = {
 
 ```python
 # 获取指定database中的Judy信息
-bin_package_info(["Judy-devel"],database=['openEuler-20.09','fedora30'])
+bin_package_info(["Judy-devel"],database=['openEuler-20.09','os_version_2'])
 # 获取所有database下的Judy信息
 bin_package_info(["Judy-devel","glibc"])
 ```
@@ -1916,7 +1916,7 @@ binary_dict = {
       "...": "..."
     }
   ],
-  "fedora":[
+  "os_version_2":[
     {
       "...":"..."
     },
@@ -2001,9 +2001,9 @@ db_priority = ["openEuler:Mainline","openEuler:20.09",..]
 
   ```yaml
   # repo源初始化模式 —— 本地repo源
-  - dbname: fedora
-    src_db_file: file:///root/public/initdb/fedora/src
-    bin_db_file: file:///root/public/initdb/fedora/bin
+  - dbname: os_version_2
+    src_db_file: file:///root/public/initdb/os_version_2/src
+    bin_db_file: file:///root/public/initdb/os_version_2/bin
     priority: 1
   # repo源初始化模式 ——远端repo源
   - dbname: openEuler-20.09-OS
@@ -2054,14 +2054,14 @@ db_priority = ["openEuler:Mainline","openEuler:20.09",..]
 # 按照指定优先级搜索，搜索两层依赖关系
 install_depend(
     ["Judy","CUnit"],
-    db_priority=["openEuler:Mainline","fedora"],
+    db_priority=["openEuler:Mainline","os_version_2"],
     level = 2
 )
 
 # 不指定level 表示安装依赖会搜索到全部的依赖
 install_depend(
     ["Judy","CUnit"],
-    db_priority=["openEuler:Mainline","fedora"]
+    db_priority=["openEuler:Mainline","os_version_2"]
 )
 ```
 - 预期返回参数
@@ -2100,7 +2100,7 @@ install_depend(
 # 按照指定优先级搜索，搜索两层依赖关系
 build_depend(
     ["Judy","CUnit"],
-    db_priority=["openEuler:Mainline","fedora"],
+    db_priority=["openEuler:Mainline","os_version_2"],
     level = 2,
     self_build = True
 )
@@ -2108,7 +2108,7 @@ build_depend(
 # 不指定level 表示安装依赖会搜索到全部的依赖, 不指定self_build 表示不查询自编译依赖
 build_depend(
     ["glibc"],
-    db_priority=["openEuler:Mainline","fedora"]
+    db_priority=["openEuler:Mainline","os_version_2"]
 )
 ```
 
@@ -2330,7 +2330,7 @@ build_depend(
 depend_list(
   ["Judy","CUnit"],
   depend_type="install",
-  db_priority=["Mainline","fedora"],
+  db_priority=["Mainline","os_version_2"],
   level = 3
 )
 
@@ -2338,14 +2338,14 @@ depend_list(
 depend_list(
   ["Judy","CUnit"],
   depend_type="install",
-  db_priority=["Mainline","fedora"]
+  db_priority=["Mainline","os_version_2"]
 )
 
 # 编译依赖，不查询自编译依赖不需要指定self_build 指定level查询到第三层就结束
 depend_list(
   ["Judy","CUnit"],
   depend_type="build",
-  db_priority=["Mainline","fedora"],
+  db_priority=["Mainline","os_version_2"],
   level=3
 )
 
@@ -2353,7 +2353,7 @@ depend_list(
 depend_list(
   ["Judy","CUnit"],
   depend_type="build",
-  db_priority=["Mainline","fedora"],
+  db_priority=["Mainline","os_version_2"],
   self_build=True
 )
 
@@ -2361,7 +2361,7 @@ depend_list(
 depend_list(
   ["Judy","CUnit"],
   depend_type="self",
-  db_priority=["Mainline","fedora"],
+  db_priority=["Mainline","os_version_2"],
   packtype='source',
   self_build=True
 )
@@ -2369,7 +2369,7 @@ depend_list(
 depend_list(
   ["Judy","CUnit"],
   depend_type="self",
-  db_priority=["Mainline","fedora"],
+  db_priority=["Mainline","os_version_2"],
   packtype='binary',
   self_build=True,
   with_subpack=True
@@ -2458,7 +2458,7 @@ binary_data = {
         "version":"v1.20.0.1",
         "source_name" : "Judy",
         "level": 1,
-        "database":"openeuler-20.03",
+        "database":"os_version_1",
         "install" :[
             "Judy-devel"，
             "attr",
@@ -2477,7 +2477,7 @@ binary_data = {
         "version":"v1.20.0.1",
         "source_name" : "Judy",
         "level": 2,
-        "database":"openeuler-20.03",
+        "database":"os_version_1",
         "install" :[
             "attr",
             "Judy"
@@ -2488,7 +2488,7 @@ binary_data = {
         "version":"v1.20.0.1",
         "source_name" : "attr",
         "level": 2,
-        "database":"openeuler-20.03",
+        "database":"os_version_1",
         "install" :[
             "openssl-libs"
         ]
@@ -2500,7 +2500,7 @@ source_data = {
     "Judy": {
         "name": "Judy",
         "version": "v1.20.0.1",
-        "database": "openeuler-20.03",
+        "database": "os_version_1",
         "build": [
             "gcc",
             "make"
@@ -2509,7 +2509,7 @@ source_data = {
     "attr": {
         "name": "attr",
         "version": "v1.20.0.1",
-        "database": "openeuler-20.03"
+        "database": "os_version_1"
     }
 }
 ```
@@ -2572,7 +2572,7 @@ binary_data = {
         "name": "Judy",
         "version":"v1.20.0.1",
         "source_name" : "Judy",
-        "database":"openeuler-20.03",
+        "database":"os_version_1",
         "install" :[
             "libselinux",
             "ncurses",
@@ -2587,7 +2587,7 @@ binary_data = {
         "name": "Judy-devel",
         "version":"v1.20.0.1",
         "source_name" : "Judy",
-        "database":"openeuler-20.03",
+        "database":"os_version_1",
         "install" :[
             "attr",
             "Judy"
@@ -2602,7 +2602,7 @@ binary_data = {
         "name": "attr",
         "version":"v1.20.0.1",
         "source_name" : "attr",
-        "database":"openeuler-20.03",
+        "database":"os_version_1",
         "install" :[
             "openssl-libs"
         ]
@@ -2614,12 +2614,12 @@ source_data = {
     "Judy": {
         "name": "Judy",
         "version": "v1.20.0.1",
-        "database": "openeuler-20.03"
+        "database": "os_version_1"
     },
     "attr": {
         "name": "attr",
         "version": "v1.20.0.1",
-        "database": "openeuler-20.03"
+        "database": "os_version_1"
     }
 
 }
@@ -2672,7 +2672,7 @@ binary_data = {
         "name": "Judy",
         "version":"v1.20.0.1",
         "source_name" : "Judy",
-        "database":"openeuler-20.03",
+        "database":"os_version_1",
         "level": 1,
         "direction": "root",
         "requires" :[
@@ -2688,7 +2688,7 @@ binary_data = {
         "name": "attr",
         "version":"v1.20.0.1",
         "source_name" : "attr",
-        "database":"openeuler-20.03",
+        "database":"os_version_1",
         "level": 2,
         "direction": "downward",
         "requires":[
@@ -2700,7 +2700,7 @@ binary_data = {
         "name": "glibc",
         "version":"v1.20.0.1",
         "source_name" : "glibc",
-        "database":"openeuler-20.03",
+        "database":"os_version_1",
         "level": 2,
         "direction": "downward",
         "requires":[
@@ -2712,7 +2712,7 @@ binary_data = {
         "name": "gmp",
         "version":"v1.20.0.1",
         "source_name" : "gmp",
-        "database":"openeuler-20.03",
+        "database":"os_version_1",
         "level": 2,
         "direction": "upward",
         "be_requires":[
@@ -2724,7 +2724,7 @@ binary_data = {
         "name": "openssl-libs",
         "version":"v1.20.0.1",
         "source_name" : "openssl",
-        "database":"openeuler-20.03",
+        "database":"os_version_1",
         "level": 2,
         "direction": "upward",
         "be_requires":[
@@ -2835,7 +2835,7 @@ binary_data = {
   
 ```python
   get_install_req(["Judy","CUnit"]) 隐式参数 self.database_list
-  get_install_req(["Judy","CUnit"], "openeuler-20.09") 隐式参数 self.database_list
+  get_install_req(["Judy","CUnit"], "os_version_1") 隐式参数 self.database_list
 ```
 
 - 预期返回参数：
@@ -2867,7 +2867,7 @@ binary_data = {
     {
       "binary_name": "Judy",
       "bin_version": "1.1.1",
-      "database": "openeuler-20.09",
+      "database": "os_version_1",
       "src_name": "Judy",
       "src_version": "1.1.1",
       "requires":[
@@ -2877,7 +2877,7 @@ binary_data = {
           "com_bin_version": "1.1.1",
           "com_src_name": "lib",
           "com_src_version": "1.1.1",
-          "com_database": "openeuler-20.09"
+          "com_database": "os_version_1"
         },
         {
           "component": "lib4.so",  
@@ -2885,7 +2885,7 @@ binary_data = {
           "com_bin_version": "1.1.1",
           "com_src_name": "lib",
           "com_src_version": "1.1.1",
-          "com_database": "openeuler-20.09"
+          "com_database": "os_version_1"
         },
         {
           "component": "lib2.so",  
@@ -2894,7 +2894,7 @@ binary_data = {
           "com_src_name": "lib",
           "com_src_version": "1.1.1",
           "com_src_version": "1.1.1",
-          "com_database": "fedora31"
+          "com_database": "os_version_2"
         }
         {
           "component": "lib3.so"
@@ -2904,7 +2904,7 @@ binary_data = {
     {
       "binary_name": "CUit",
       "bin_version": "1.1.1",
-      "database": "openeuler-20.09",
+      "database": "os_version_1",
       "src_name": "CUit",
       "src_version": "1.1.1",
       "requires":[
@@ -2914,7 +2914,7 @@ binary_data = {
           "com_bin_version": "1.1.1",
           "com_src_name": "Judy",
           "com_src_version": "1.1.1",
-          "com_database": "openeuler-20.09"
+          "com_database": "os_version_1"
         },
         {
           "component": "lib4.so",  
@@ -2922,7 +2922,7 @@ binary_data = {
           "com_bin_version": "1.1.1",
           "com_src_name": "Judy",
           "com_src_version": "1.1.1",
-          "com_database": "fedora31"
+          "com_database": "os_version_2"
         }
       ]
     }
@@ -2959,7 +2959,7 @@ binary_data = {
   
 ```python
   get_build_req(["Judy","CUnit"]) 隐式参数 self.database_list
-  get_build_req(["Judy","CUnit"], "openeuler-20.09") 隐式参数 self.database_list
+  get_build_req(["Judy","CUnit"], "os_version_1") 隐式参数 self.database_list
 ```
 
 - 预期返回参数：(可和上面 get_install_req 使用同一个结构)
@@ -2989,7 +2989,7 @@ binary_data = {
     {
       "source_name": "Judy",
       "src_version": "1.1.1",
-      "database": "openeuler-20.09",
+      "database": "os_version_1",
       "requires":[
         {
           "component": "lib",  
@@ -2997,7 +2997,7 @@ binary_data = {
           "com_bin_version": "1.1.1",
           "com_src_name": "make",
           "com_src_version": "1.1.1",
-          "com_database": "openeuler-20.09"
+          "com_database": "os_version_1"
         },
         {
           "component": "lib2",  
@@ -3006,14 +3006,14 @@ binary_data = {
           "com_src_name": "make",
           "version": "1.1.1",
           "com_src_version": "1.1.1",
-          "com_database": "fedora31"
+          "com_database": "os_version_2"
         }
       ]
     },
     {
       "source_name": "CUit",
       "src_version": "1.1.1",
-      "database": "openeuler-20.09",
+      "database": "os_version_1",
       "requires":[
         {
           "component": "lib",  
@@ -3021,7 +3021,7 @@ binary_data = {
           "com_bin_version": "1.1.1",
           "com_src_name": "Judy",
           "com_src_version": "1.1.1",
-          "com_database": "openeuler-20.09"
+          "com_database": "os_version_1"
         },
         {
           "component": "lib2",  
@@ -3029,7 +3029,7 @@ binary_data = {
           "com_bin_version": "1.1.1",
           "com_src_name": "Judy",
           "com_src_version": "1.1.1",
-          "com_database": "fedora31"
+          "com_database": "os_version_2"
         }
         ]
     }
@@ -3062,7 +3062,7 @@ binary_data = {
 - 请求示例：
   
 ```python
-  get_be_req(["Judy","CUnit"],"openeuler-20.09") 
+  get_be_req(["Judy","CUnit"],"os_version_1") 
 ```
 
 - 预期返回参数：
@@ -3210,7 +3210,7 @@ binary_data = {
 - 调用实例：
   
 ```python
-  get_src_name(["Judy","CUnit"], specify_db = "openeuler") 隐式参数 self.database_list
+  get_src_name(["Judy","CUnit"], specify_db = "os_version_1") 隐式参数 self.database_list
 ```
 
 - 预期返回参数 （如果和安装、编译依赖的信息有重复，可以考虑移除该方法）
@@ -3229,14 +3229,14 @@ binary_data = {
     {
       "binary_name": "Judy",
       "bin_version": "1.1.1",
-      "database": "openeuler-20.09",
+      "database": "os_version_1",
       "src_name": "Judy",
       "src_version": "1.1.1",
     },
     {
       "binary_name": "CUit",
       "bin_version": "1.1.1",
-      "database": "openeuler-20.09",
+      "database": "os_version_1",
       "src_name": "CUit",
       "src_version": "1.1.1",
     }
@@ -3271,7 +3271,7 @@ binary_data = {
 - 请求示例：
   
 ```python
-  get_bin_name(["Judy","CUnit"], specify_db = "openeuler") 隐式参数 self.database_list
+  get_bin_name(["Judy","CUnit"], specify_db = "os_version_1") 隐式参数 self.database_list
 ```
 
 - 预期返回参数：
@@ -3297,7 +3297,7 @@ binary_data = {
     {
       "source_name": "Judy",
       "src_version": "1.1.1",
-      "database": "openeuler-20.09",
+      "database": "os_version_1",
       "binary_infos":[
         {
           "bin_name": "Judy",
@@ -3312,7 +3312,7 @@ binary_data = {
     {
       "source_name": "CUit",
       "src_version": "1.1.1",
-      "database": "openeuler-20.09",
+      "database": "os_version_1",
       "binary_infos":[
         {
           "bin_name": "CUit",
@@ -3357,7 +3357,7 @@ binary_data = {
 - 请求示例：
 
     ```json
-    get_src_info(src_list=["Judy","CUnit"],database="openeuler-20.09",page_num=1,page_size=20,command_line=False)
+    get_src_info(src_list=["Judy","CUnit"],database="os_version_1",page_num=1,page_size=20,command_line=False)
     ```
 
 - 预期返回参数
@@ -3455,7 +3455,7 @@ binary_data = {
 - 请求示例：
   
 ```python
-  get_bin_info(bin_list=["Judy","CUnit"],database="openeuler-20.09",page_num=1,page_size=20,command_line=False)
+  get_bin_info(bin_list=["Judy","CUnit"],database="os_version_1",page_num=1,page_size=20,command_line=False)
 ```
 
 - 预期返回参数

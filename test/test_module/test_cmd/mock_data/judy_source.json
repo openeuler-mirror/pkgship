@@ -2,7 +2,7 @@
   "code": "200",
   "message": "Successful Operation",
   "resp": {
-    "openeuler": [
+    "os_version_1": [
       {
         "buildrequired": [
           "coreutils",

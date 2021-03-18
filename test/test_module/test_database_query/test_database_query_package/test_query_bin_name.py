@@ -28,7 +28,7 @@ class TestQueryBinName(TestCase):
         Returns:
 
         """
-        self.query_package = QueryPackage(database_list=['openeuler', 'fedora'])
+        self.query_package = QueryPackage(database_list=['os_version_1', 'os_version_2'])
         self.session = self.query_package._db_session
 
     def test_query_specify_rpm(self):

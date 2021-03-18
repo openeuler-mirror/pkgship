@@ -51,26 +51,26 @@ class TestDependInfoDependList(ReadTestBase):
             json.dumps({"packagename": [],
                         "depend_type": "installdep",
                         "parameter": {
-                            "db_priority": ["openeuler"],
+                            "db_priority": ["os_version_1"],
                             "level": 2}}),
             json.dumps({"packagename": [],
                         "depend_type": "bedep",
                         "parameter": {
-                            "db_priority": ["openeuler"],
+                            "db_priority": ["os_version_1"],
                             "packtype": "source",
                             "with_subpack": True,
                             "search_type": "install"}}),
             json.dumps({"packagename": [],
                         "depend_type": "selfdep",
                         "parameter": {
-                            "db_priority": ["openeuler"],
+                            "db_priority": ["os_version_1"],
                             "self_build": False,
                             "packtype": "source",
                             "with_subpack": False}}),
             json.dumps({"packagename": [],
                         "depend_type": "builddep",
                         "parameter": {
-                            "db_priority": ["openeuler"],
+                            "db_priority": ["os_version_1"],
                             "level": 2,
                             "self_build": False}}),
             json.dumps({"packagename": ["Judy"],
@@ -90,7 +90,7 @@ class TestDependInfoDependList(ReadTestBase):
             json.dumps({"packagename": [],
                         "depend_type": "selfdep",
                         "parameter": {
-                            "db_priority": ["openeuler"],
+                            "db_priority": ["os_version_1"],
                             "self_build": False,
                             "packtype": "xxx",
                             "with_subpack": False}}),
@@ -152,7 +152,7 @@ class TestDependInfoDependList(ReadTestBase):
             "depend_type": "installdep",
             "parameter": {
                 "db_priority": [
-                    "openeuler"
+                    "os_version_1"
                 ],
                 "level": 2
             }

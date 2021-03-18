@@ -41,7 +41,7 @@ class TestQueryBinaryPkgInfo(TestCase):
         """
         self.session.scan = MagicMock(return_value=self.ALL_BINARY_RPM_INFO)
         self.session.count = MagicMock(return_value={"count": 5})
-        query_result = self.query_package.get_bin_info(binary_list=[], database='openeuler', page_num=1, page_size=20,
+        query_result = self.query_package.get_bin_info(binary_list=[], database='os_version_1', page_num=1, page_size=20,
                                                        command_line=True)
         self.assertIsNotNone(query_result['data'])
 
@@ -52,7 +52,7 @@ class TestQueryBinaryPkgInfo(TestCase):
         """
         self.session.query = MagicMock(return_value=self.ALL_BINARY_INFO_PAGING)
         self.session.count = MagicMock(return_value={"count": 5})
-        query_result = self.query_package.get_bin_info(binary_list=[], database='openeuler', page_num=1, page_size=5,
+        query_result = self.query_package.get_bin_info(binary_list=[], database='os_version_1', page_num=1, page_size=5,
                                                        command_line=False)
         self.assertEqual(len(query_result['data']), 5)
 
@@ -62,7 +62,7 @@ class TestQueryBinaryPkgInfo(TestCase):
         Returns:
         """
         self.session.query = MagicMock(return_value=self.JUDY_BINARY_INFO)
-        query_result = self.query_package.get_bin_info(binary_list=['Judy'], database='openeuler', page_num=1,
+        query_result = self.query_package.get_bin_info(binary_list=['Judy'], database='os_version_1', page_num=1,
                                                        page_size=5, command_line=False)
         self.assertIsNotNone(query_result['data'][0]['Judy'])
 
@@ -72,7 +72,7 @@ class TestQueryBinaryPkgInfo(TestCase):
         Returns:
         """
         self.session.query = MagicMock(return_value=self.JUDY_BINARY_INFO)
-        query_result = self.query_package.get_bin_info(binary_list=['Judy'], database='openeuler', page_num=1,
+        query_result = self.query_package.get_bin_info(binary_list=['Judy'], database='os_version_1', page_num=1,
                                                        page_size=5, command_line=True)
         self.assertIsNotNone(query_result['data'][0]['Judy'])
 
@@ -82,6 +82,6 @@ class TestQueryBinaryPkgInfo(TestCase):
         Returns:
         """
         self.session.query = MagicMock(return_value=dict(hits={}))
-        query_result = self.query_package.get_bin_info(binary_list=['Judy'], database='openeuler', page_num=1,
+        query_result = self.query_package.get_bin_info(binary_list=['Judy'], database='os_version_1', page_num=1,
                                                        page_size=5, command_line=False)
         self.assertListEqual(query_result['data'], [])

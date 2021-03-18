@@ -6,7 +6,7 @@
     "depend_type": "installdep",
     "parameter": {
       "db_priority": [
-        "openeuler"
+        "os_version_1"
       ],
       "level": 2
     }
