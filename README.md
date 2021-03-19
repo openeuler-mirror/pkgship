@@ -11,6 +11,7 @@
     - [配置参数](#配置参数)
     - [服务启动和停止](#服务启动和停止)
     - [工具使用](#工具使用)
+    - [日志查看和转储](#日志查看和转储)
 
 <!-- /TOC -->
 
@@ -91,7 +92,9 @@ pkgship是一款管理OS软件包依赖关系，提供依赖和被依赖关系�
 /bin/bash auto_install_pkgship_requires.sh elasticsearch
 ```
 
- 或者
+>  目前由于rpm包方式安装Elasticsearch默认为无密码模式，且pkgship需使用无密码设置的Elasticsearch，所以建议Elasticsearch和pkgship安装在同一服务器，以通过网络隔离提高安全性。后续将支持Elasticsearch设置用户名密码。 
+
+或者
 
 ```
  /bin/bash auto_install_pkgship_requires.sh redis
@@ -114,10 +117,12 @@ vim /etc/pkgship/package.ini
 ; 初始化数据库时导入的yaml文件存放位置，该yaml中记录导入的sqlite文件位置。
 init_conf_path=/etc/pkgship/conf.yaml
 
-; 数据库端口。
+; 若部署为客户端-服务端方式，服务端需保证query_ip_addr为本机ip或者0.0.0.0，
+; 并且客户端可通过query_ip_addr加query_port访问服务端，或者通过设置映射的remote_host访问服务端。
+; 服务查询端口。
 query_port=8090
 
-; 数据库ip地址。
+; 服务查询ip。
 query_ip_addr=127.0.0.1
 
 ; 远程服务的地址，命令行可以直接调用远程服务来完成数据请求。
@@ -162,7 +167,7 @@ redis_port=6379
 redis_max_connections=10
 
 [DATABASE-数据库]
-;数据库访问地址，默认为本机地址
+;数据库访问地址，建议设置为本机地址
 database_host=127.0.0.1
 
 ;数据库访问端口，默认为9200
