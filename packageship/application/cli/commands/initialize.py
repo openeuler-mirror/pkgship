@@ -15,9 +15,12 @@ Description: Entry method for custom commands
 Class: InitDatabaseCommand
 """
 import os
-import time
-import pwd
 import threading
+import time
+
+import pwd
+from requests import RequestException
+
 from packageship.application.cli.base import BaseCommand
 from packageship.application.common.exc import InitializeError, ResourceCompetitionError
 
@@ -59,6 +62,7 @@ class InitDatabaseCommand(BaseCommand):
         self.params = [
             ('-filepath', 'str', 'specify the path of conf.yaml', '', 'store')]
         self._char = ["/", "-", "\\"]
+        self._success_code = 200
 
     def register(self):
         """
@@ -93,6 +97,13 @@ class InitDatabaseCommand(BaseCommand):
 
         if self.login_user not in ["root", "pkgshipuser"]:
             print("The current user does not have initial execution permission")
+            return
+        try:
+            _query_version_response = self.request.get("{}/version".format(self.read_host))
+        except RequestException:
+            _query_version_response = None
+        if not _query_version_response or _query_version_response.status_code != self._success_code:
+            print("The pkgship service is not started,please start the service first")
             return
 
         from packageship.application.initialize.integration import InitializeService
