@@ -15,20 +15,18 @@ import signal
 from signal import SIG_DFL
 try:
     def sig_handler(signum, frame):
-        print('Exit command mode')
+        print("\n", 'Exit command mode')
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGPIPE, SIG_DFL)
-except:
-    pass
-
-from packageship.pkgship import main
-
-
-if __name__ == '__main__':
+    from packageship.application.cli.cmd import main
+except PermissionError as error:
+    message = "Insufficient user permissions,{msg}".format(msg=str(error))
+    print(message)
+else:
     try:
         main()
     except Exception as error:
         print('Command execution error please try again ')
-        print(error.message)
+        print(error)

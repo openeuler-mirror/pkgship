@@ -12,55 +12,59 @@
 # ******************************************************************************/
 """
 description: Interface processing
-class: BeDepend, BuildDepend, InitSystem, InstallDepend, Packages,
-Repodatas, SelfDepend, SinglePack
+class: SourcePackages, BinaryPackages, SourcePackageInfo,BinaryPackageInfo,DatabasePriority
+PkgshipVersion,TableColView
 """
+import math
 from flask import request
 from flask import jsonify
-from flask import current_app
 from flask_restful import Resource
-from sqlalchemy.exc import DisconnectionError
-from sqlalchemy.exc import SQLAlchemyError
 
-from packageship.application.initsystem.data_import import InitDataBase
-from .function.searchdb import db_priority, SearchDB, process_not_found_packages
-from packageship.libs.dbutils import DBHelper
-from packageship.libs.exception import Error
-from packageship.libs.exception import ContentNoneException
-from packageship.libs.exception import DataMergeException
-from packageship.libs.exception import ConfigurationException
-from packageship.libs.log import Log
-from packageship.libs.conf import configuration
-from packageship.libs.constants import ResponseCode
-from .function.packages import get_all_package_info
-from .function.packages import sing_pack
-from .serialize import AllPackagesSchema
-from .serialize import SinglepackSchema
-
-from .serialize import DeletedbSchema
-from .serialize import InitSystemSchema
-from .serialize import BeDependSchema
-from .function.be_depend import BeDepend as be_depend
-from .function.install_depend import InstallDepend as installdepend
-from .function.build_depend import BuildDepend as builddepend
-from .function.self_depend import SelfDepend as self_depend
-from .serialize import InstallDependSchema
-from .serialize import BuildDependSchema
-from .serialize import SelfDependSchema
-from .serialize import have_err_db_name
-from ...models.package import DatabaseInfo
-
-LOGGER = Log(__name__)
+from packageship.application.query import database
+from packageship.application.core.baseinfo import pkg_version
+from packageship.application.serialize.package import PackageSchema
+from packageship.application.serialize.package import SingleSchema
+from packageship.application.core.pkginfo.pkg import Package
+from packageship.application.core.pkginfo.pkg import SourcePackage
+from packageship.application.core.pkginfo.pkg import BinaryPackage
+from packageship.application.serialize.validate import validate
+from packageship.application.common.rsp import RspMsg
+from packageship.application.common.exc import ElasticSearchQueryException, DatabaseConfigException
 
 
-# pylint: disable = no-self-use
-
-
-class Packages(Resource):
+class ParsePackageMethod(Resource):
     """
-    Description: interface for package info management
+    Description: Common Method
+    """
+
+    def __init__(self):
+        self.rspmsg = RspMsg()
+
+    def parse_package(self, package_all, pagesize):
+        """
+        Description: Parsing package data with dependencies
+        Args:
+            package_all: http request response content
+            pagesize: Quantity displayed on one page
+        Returns:
+            Summarized data table
+        Raises:
+        """
+        total_count = package_all["total"]
+        total_page = math.ceil(total_count / int(pagesize))
+        packageinfo_list = package_all["data"]
+        package_info_set = packageinfo_list
+        response = self.rspmsg.body('success', resp=package_info_set)
+        response["total_count"] = total_count
+        response["total_page"] = total_page
+        return response
+
+
+class SourcePackages(ParsePackageMethod):
+    """
+    Description: interface for source package info management
     Restful API: get
-    changeLog:
+    ChangeLog:
     """
 
     def get(self):
@@ -68,61 +72,197 @@ class Packages(Resource):
         Get all package info from a database
 
         Args:
-            dbName: Data path name, not required parameter
+            database_name: Data base name
+            page_num:
+            page_size:
+            query_pkg_name:
         Returns:
-            for
-            example::
+            for example::
                {
                    "code": "",
-                    "data": [{
-                        "dbname": "",
-                        "license": "",
-                        "maintainlevel":,
-                        "maintaniner": ,
-                        "rpm_packager": "",
-                        "sourceName": "",
-                        "sourceURL": "",
-                        "version": ""
-                        }],
-                "msg": ""
+                    "total_count": xx,
+                      "total_page": xx,
+                      "resp": [
+                        {
+                          "pkg_name": "Judy",
+                          "license": "Apache 2.0",
+                          "version": "2.0.0",
+                          "url":"http://www.xxx.com",
+                          "database": "Mainline"
+                        },
+                        ...
+                    "msg": ""
                 }
         Raises:
-            DisconnectionError: Unable to connect to database exception
-            AttributeError: Object does not have this property
-            Error: Abnormal error
         """
-        # Get verification parameters
-        schema = AllPackagesSchema()
         data = request.args
-        if schema.validate(data):
-            response = ResponseCode.response_json(ResponseCode.PARAM_ERROR)
+        result, error = validate(PackageSchema, data, load=True)
+
+        if error:
+            response = self.rspmsg.body('param_error')
             response['total_count'] = None
             response['total_page'] = None
             return jsonify(response)
-        table_name = data.get("table_name")
-        page_num = data.get("page_num")
-        page_size = data.get("page_size")
-        src_name = data.get("query_pkg_name", None)
-        maintainner = data.get("maintainner", None)
-        maintainlevel = data.get("maintainlevel", None)
-        result = get_all_package_info(
-            table_name,
-            page_num,
-            page_size,
-            src_name,
-            maintainner,
-            maintainlevel)
-        return jsonify(result)
+
+        page_num = result.get("page_num")
+        page_size = result.get("page_size")
+        query_pkg_name = [result.get("query_pkg_name")] if result.get(
+            "query_pkg_name") else []
+        find_package = Package()
+        try:
+            result_all = find_package.all_src_packages(
+                result.get("database_name"), page_num=page_num, page_size=page_size, package_list=query_pkg_name,
+                command_line=result.get("command_line"))
+        except (ElasticSearchQueryException, DatabaseConfigException) as e:
+            return jsonify(self.rspmsg.body('connect_db_error'))
+        if result_all:
+            return jsonify(self.parse_package(result_all, page_size))
+        return jsonify(self.rspmsg.body("table_name_not_exist"))
 
 
-class SinglePack(Resource):
+class BinaryPackages(ParsePackageMethod):
     """
-    description: single package management
+    Description: interface for binary package info management
     Restful API: get
     ChangeLog:
     """
 
     def get(self):
+        """
+        Get all package info from a database
+
+        Args:
+            database_name: Data base name
+            page_num:
+            page_size:
+            query_pkg_name:
+        Returns:
+            for example::
+               {
+                   "code": "",
+                    "total_count": xx,
+                      "total_page": xx,
+                      "resp": [
+                        {
+                          "pkg_name": "Judy",
+                          "license": "Apache 2.0",
+                          "version": "2.0.0",
+                          "url":"http://www.xxx.com",
+                          "source_name": "Judy",
+                          "database": "Mainline"
+                        },
+                        ...
+                        "msg": ""
+                }
+        Raises:
+        """
+        data = request.args
+        result, error = validate(PackageSchema, data, load=True)
+        if error:
+            response = self.rspmsg.body('param_error')
+            response['total_count'] = None
+            response['total_page'] = None
+            return jsonify(response)
+        page_num = result.get("page_num")
+        page_size = result.get("page_size")
+        query_pkg_name = [result.get("query_pkg_name")] if result.get(
+            "query_pkg_name") else []
+        find_package = Package()
+        try:
+            result_all = find_package.all_bin_packages(
+                result.get("database_name"), page_num=page_num, page_size=page_size, package_list=query_pkg_name,
+                command_line=result.get("command_line"))
+        except (ElasticSearchQueryException, DatabaseConfigException) as e:
+            return jsonify(self.rspmsg.body('connect_db_error'))
+        if result_all:
+            return jsonify(self.parse_package(result_all, page_size))
+        return jsonify(self.rspmsg.body("table_name_not_exist"))
+
+
+class SourcePackageInfo(Resource):
+    """
+    Description: single source package management
+    Restful API: get
+    ChangeLog:
+    """
+
+    def get(self, pkg_name):
+        """
+        Searching a package info
+
+        Args:
+            database_name: Database name
+            pkg_name: Source code package name
+        Returns:
+            for examples::
+                {
+                  "code":200,
+                  "msg":"",
+                  "resp": {
+                    "openEuler:20.09":[
+                        {
+                          "pkg_name": "Judy",
+                          "license": "Apache 2.0",
+                          "version": "2.0",
+                          "release":"oe.13",
+                          "url": "http://www.xxx.com",
+                          "summary":"xxxxxxxxxxxxxxxxx",
+                          "description":"xxxxxxxxxx",
+                          "buildrequired": ["build_rpm1","build_rpm2"],
+                          "subpack":[
+                            {
+                              "bin_name":"Judy",
+                              "provides": [
+                                {
+                                  "component":"Judy_com1",
+                                  "required_by_bin":["CUnit-devel","tomcat"],
+                                  "required_by_src":["CUnit","gcc"]
+                                }
+                              ],
+                              "requires":[
+                                {
+                                  "component":"Judy_req1",
+                                  "provided_by":["glibc"]
+                                }]}]},
+                        {
+                          "pkg_name": "glibc",
+                          "...": "..."
+                        }
+                    ]
+                  }
+                }
+        Raises:
+        """
+        # Get verification parameters
+        rspmsg = RspMsg()
+        data = dict()
+        data["database_name"] = request.args.get("database_name")
+        data["pkg_name"] = pkg_name
+        result, error = validate(SingleSchema, data, load=True)
+        if error:
+            response = rspmsg.body('param_error')
+            return jsonify(response)
+        pkg_name = [result.get("pkg_name")]
+        database_name = [result.get("database_name")]
+        find_source_package = SourcePackage()
+        try:
+            pkg_result = find_source_package.src_package_info(
+                pkg_name, database_name)
+        except (ElasticSearchQueryException, DatabaseConfigException) as e:
+            return jsonify(rspmsg.body('connect_db_error'))
+        if pkg_result:
+            return jsonify(rspmsg.body('success', resp=pkg_result))
+        return jsonify(rspmsg.body('pack_name_not_found'))
+
+
+class BinaryPackageInfo(Resource):
+    """
+    Description: single binary package management
+    Restful API: get
+    ChangeLog:
+    """
+
+    def get(self, pkg_name):
         """
         Searching a package info
 
@@ -134,15 +274,11 @@ class SinglePack(Resource):
             examples::
                 {
                 "code": "",
-                "data": [{
+                "resp": [{
                 "buildDep": [],
                 "dbname": "",
                 "license": "",
-                "maintainlevel": "",
-                "maintaniner": "",
-                "rpm_packager": "",
                 "sourceName": "",
-                "sourceURL": "",
                 "subpack": { },
                 "version": ""}],
                 "msg": ""
@@ -154,578 +290,132 @@ class SinglePack(Resource):
             Error: Abnormal error
         """
         # Get verification parameters
-        schema = SinglepackSchema()
-        data = request.args
-        if schema.validate(data):
-            return jsonify(
-                ResponseCode.response_json(ResponseCode.PARAM_ERROR)
-            )
-        srcname = data.get("pkg_name")
-        tablename = data.get("table_name")
-        result = sing_pack(srcname, tablename)
-        return jsonify(result)
+        rspmsg = RspMsg()
+        data = dict()
+        data["database_name"] = request.args.get("database_name")
+        data["pkg_name"] = pkg_name
+        result, error = validate(SingleSchema, data, load=True)
+        if error:
+            response = rspmsg.body('param_error')
+            return jsonify(response)
+        pkg_name = [result.get("pkg_name")]
+        database_name = [result.get("database_name")]
+        find_binary_package = BinaryPackage()
+        try:
+            pkg_result = find_binary_package.bin_package_info(
+                pkg_name, database_name)
+        except (ElasticSearchQueryException, DatabaseConfigException) as e:
+            return jsonify(rspmsg.body('connect_db_error'))
+        if pkg_result:
+            return jsonify(rspmsg.body('success', resp=pkg_result))
+        return jsonify(rspmsg.body('pack_name_not_found'))
 
 
-class InstallDepend(Resource):
+class DatabasePriority(Resource):
     """
-    Description: install depend of binary package
-    Restful API: post
-    changeLog:
-    """
-
-    def post(self):
-        """
-        Query a package's install depend(support
-        querying in one or more databases)
-
-        Args:
-            binaryName
-            dbPreority: the array for database preority
-            level: the layer of install depend
-        Returns:
-            resultDict{
-                binary_name: //binary package name
-                [
-                    src, //the source package name for
-                            that binary packge
-                    dbname,
-                    version,
-                    [
-                        parent_node, //the binary package name which is
-                                       the install depend for binaryName
-                        type //install  install or build, which
-                                depend on the function
-                    ]
-                ],
-                "not_found_components": //list of not found components,
-                "not_found_packages": //list of not found packages
-            }
-        Raises:
-        """
-        schema = InstallDependSchema()
-
-        data = request.get_json()
-        validate_err = schema.validate(data)
-        if validate_err:
-            return jsonify(
-                ResponseCode.response_json(ResponseCode.PARAM_ERROR)
-            )
-        pkg_name_list = data.get("binaryName")
-
-        # When user does not input level, the default value of level is -1,
-        # then query all install depend
-        level = int(data.get("level", -1))
-
-        db_pri = db_priority()
-        if not db_pri:
-            return jsonify(
-                ResponseCode.response_json(
-                    ResponseCode.NOT_FOUND_DATABASE_INFO
-                )
-            )
-
-        db_list = data.get("db_list") if data.get("db_list") \
-            else db_pri
-
-
-        if have_err_db_name(db_list, db_pri):
-            return jsonify(
-                ResponseCode.response_json(ResponseCode.DB_NAME_ERROR)
-            )
-
-        response_code, install_dict, not_found_components = \
-            installdepend(db_list).query_install_depend(pkg_name_list, level=level)
-
-        not_found_packagename_list = []
-        for pkg_name in pkg_name_list:
-            if pkg_name not in install_dict.keys():
-                not_found_packagename_list.append(pkg_name)
-            elif install_dict.get(pkg_name)[2] == 'NOT FOUND':
-                not_found_packagename_list.append(pkg_name)
-                del install_dict[pkg_name]
-
-        if not install_dict:
-            return jsonify(
-                        ResponseCode.response_json(ResponseCode.PACK_NAME_NOT_FOUND)
-                    )
-
-        return jsonify(
-            ResponseCode.response_json(ResponseCode.SUCCESS, data={
-                "install_dict": install_dict,
-                'not_found_components': list(not_found_components),
-                "not_found_packages": not_found_packagename_list
-            })
-        )
-
-
-class BuildDepend(Resource):
-    """
-    Description: build depend of binary package
-    Restful API: post
-    changeLog:
-    """
-
-    def post(self):
-        """
-        Query a package's build depend and
-        build depend package's install depend
-        (support querying in one or more databases)
-
-        Args:
-            sourceName :name of the source package
-            dbPreority：the array for database preority
-        Returns:
-            for
-            example::
-                {
-                  "code": "",
-                  "data": "",
-                  "msg": ""
-                }
-        Raises:
-        """
-        schema = BuildDependSchema()
-
-        data = request.get_json()
-        if schema.validate(data):
-            return jsonify(
-                ResponseCode.response_json(ResponseCode.PARAM_ERROR)
-            )
-        pkg_name = data.get("sourceName")
-
-        # When user does not input level, the default value of level is -1,
-        # then query all install depend
-        level = int(data.get("level", -1))
-
-        db_pri = db_priority()
-
-        if not db_pri:
-            return jsonify(
-                ResponseCode.response_json(
-                    ResponseCode.NOT_FOUND_DATABASE_INFO
-                )
-            )
-
-        db_list = data.get("db_list") if data.get("db_list") \
-            else db_pri
-
-        if have_err_db_name(db_list, db_pri):
-            return jsonify(
-                ResponseCode.response_json(ResponseCode.DB_NAME_ERROR)
-            )
-
-        build_ins = builddepend(pkg_name, db_list, level)
-
-        res_code, res_dict, _, not_found_com = build_ins.build_depend_main()
-
-        not_found_packages = []
-        if res_dict:
-            res_code = ResponseCode.SUCCESS
-            for p_name in pkg_name:
-                p_name_src = p_name + "_src"
-                if p_name_src in res_dict and res_dict[p_name_src][2] == "NOT_FOUND":
-                    del res_dict[p_name_src]
-                    not_found_packages.append(p_name)
-        else:
-            return jsonify(
-                ResponseCode.response_json(
-                    res_code
-                )
-            )
-
-        return jsonify(
-            ResponseCode.response_json(
-                res_code,
-                data={
-                    'build_dict': res_dict,
-                    'not_found_components': list(not_found_com),
-                    'not_found_packages': not_found_packages
-                }
-            )
-        )
-
-
-class SelfDepend(Resource):
-    """
-    Description: querying install and build depend for a package
-                 and others which has the same src name
-    Restful API: post
-    changeLog:
-    """
-
-    def post(self):
-        """
-        Query a package's all dependencies including install and build depend
-        (support quering a binary or source package in one or more databases)
-
-        Args:
-            packageName:package name
-            packageType: source/binary
-            selfBuild :0/1
-            withSubpack: 0/1
-            dbPreority：the array for database preority
-        Returns:
-            for
-            example::
-                {
-                  "code": "",
-                  "data": "",
-                  "msg": ""
-                }
-        """
-        schema = SelfDependSchema()
-
-        data = request.get_json()
-        validate_err = schema.validate(data)
-
-        if validate_err:
-            return jsonify(
-                ResponseCode.response_json(ResponseCode.PARAM_ERROR)
-            )
-
-        pkg_name_list  = data.get("packagename")
-        db_pri = db_priority()
-
-        if not db_pri:
-            return jsonify(
-                ResponseCode.response_json(
-                    ResponseCode.NOT_FOUND_DATABASE_INFO
-                )
-            )
-        db_list = data.get("db_list") if data.get("db_list") \
-            else db_pri
-
-        self_build = data.get("selfbuild", 0)
-        with_sub_pack = data.get("withsubpack", 0)
-        pack_type = data.get("packtype", "binary")
-
-        if have_err_db_name(db_list, db_pri):
-            return jsonify(
-                ResponseCode.response_json(ResponseCode.DB_NAME_ERROR)
-            )
-        response_code, binary_dicts, source_dicts, not_fd_components = \
-            self_depend(db_list).query_depend(pkg_name_list, int(self_build),
-                                              int(with_sub_pack), pack_type)
-
-        not_found_packages_list = []
-        for pkg_name in pkg_name_list:
-            process_not_found_packages(binary_dicts, pkg_name, not_found_packages_list, 2)
-            process_not_found_packages(source_dicts, pkg_name, not_found_packages_list, 0)
-
-        if not all([binary_dicts, source_dicts]):
-            return jsonify(
-                ResponseCode.response_json(ResponseCode.PACK_NAME_NOT_FOUND)
-            )
-
-        return jsonify(
-            ResponseCode.response_json(ResponseCode.SUCCESS, data={
-                "binary_dicts": binary_dicts,
-                "source_dicts": source_dicts,
-                "not_found_components": list(not_fd_components),
-                "not_found_packages": not_found_packages_list
-            })
-        )
-
-
-class BeDepend(Resource):
-    """
-    Description: querying be installed and built depend for a package
-                 and others which has the same src name
-    Restful API: post
-    changeLog:
-    """
-
-    def post(self):
-        """
-        Query a package's all dependencies including
-        be installed and built depend
-
-        Args:
-            packageName:package name
-            withSubpack: 0/1
-            dbname:database name
-        Returns:
-            for
-            example::
-                resultList[
-                    restult[
-                        binaryName:
-                        srcName:
-                        dbName:
-                        type: beinstall or bebuild, which depend on the function
-                        childNode: the binary package name which is the be built/installed
-                                   depend for binaryName
-                    ]
-                ]
-        """
-        schema = BeDependSchema()
-        data = request.get_json()
-        validate_err = schema.validate(data)
-
-        if validate_err:
-            return jsonify(
-                ResponseCode.response_json(ResponseCode.PARAM_ERROR)
-            )
-
-        package_name = data.get("packagename")
-        with_sub_pack = data.get("withsubpack")
-        db_name = data.get("dbname")
-
-        # When user does not input level, the default value of level is -1,
-        # then query all install depend
-        level = int(data.get("level", -1))
-
-        db_pri = db_priority()
-
-        if not db_pri:
-            return jsonify(
-                ResponseCode.response_json(
-                    ResponseCode.NOT_FOUND_DATABASE_INFO
-                )
-            )
-
-        if db_name not in db_pri:
-            return jsonify(
-                ResponseCode.response_json(ResponseCode.DB_NAME_ERROR)
-            )
-
-        bedepnd_ins = be_depend(package_name, db_name, with_sub_pack, level)
-
-        res_dict = bedepnd_ins.main()
-
-        if not res_dict:
-            return jsonify(
-                ResponseCode.response_json(ResponseCode.PACK_NAME_NOT_FOUND)
-            )
-
-        not_found_packages = []
-        for p_name in package_name:
-            p_name_src = p_name + "_src"
-            if p_name_src not in res_dict:
-                not_found_packages.append(p_name)
-
-        return_dict = {"be_dict": res_dict, "not_found_packages": not_found_packages}
-        return jsonify(
-            ResponseCode.response_json(ResponseCode.SUCCESS, data=return_dict)
-        )
-
-
-class Repodatas(Resource):
-    """
-    description: Get database information and delete database
-    Restful API: get, delete
-    ChangeLog:
+    Description: Get the default repository sort
+    Restful API: get
+    ChangeLog
     """
 
     def get(self):
         """
-        get all database
+        Get the default repository priority order
 
+        Args:
         Returns:
             for
-            example::
+            examples::
                 {
-                  "code": "",
-                  "data": [
-                        {
-                            "database_name": "",
-                            "priority": "",
-                            "status": ""
-                        }
-                    ],
-                    "msg": ""
+                "code": "200",
+                "resp":["database2", "database3", "database4"],
+                "msg": ""
                 }
         Raises:
-            FileNotFoundError: File not found exception
-            TypeError: Exception of wrong type
-            Error: abnormal Error
-        """
-        try:
-            with DBHelper(db_name='lifecycle') as data_name:
-                name_list = data_name.session.query(
-                    DatabaseInfo.name, DatabaseInfo.priority).order_by(DatabaseInfo.priority).all()
-                data_list = [dict(zip(ven.keys(), ven)) for ven in name_list]
-                return jsonify(
-                    ResponseCode.response_json(
-                        ResponseCode.SUCCESS,
-                        data=data_list))
-        except (SQLAlchemyError, Error) as data_info_error:
-            current_app.logger.error(data_info_error)
-            return jsonify(
-                ResponseCode.response_json(
-                    ResponseCode.NOT_FOUND_DATABASE_INFO)
-            )
-
-    def delete(self):
-        """
-        get all database
-
-        Returns:
-            for
-            example::
-                {
-                  "code": "",
-                  "data": "",
-                  "msg": ""
-                }
-        Raises:
-            FileNotFoundError: File not found exception,
-            TypeError: Exception of wrong type
+            DisconnectionError: Unable to connect to database exception
+            AttributeError: Object does not have this property
+            TypeError: Exception of type
             Error: Abnormal error
         """
-        schema = DeletedbSchema()
-        data = request.args
-        if schema.validate(data):
-            return jsonify(
-                ResponseCode.response_json(ResponseCode.PARAM_ERROR)
-            )
-        db_name = data.get("dbName")
-        db_list = db_priority()
-        if not db_list:
-            return jsonify(
-                ResponseCode.response_json(ResponseCode.FILE_NOT_FOUND)
-            )
-        if db_name not in db_priority():
-            return jsonify(
-                ResponseCode.response_json(ResponseCode.DB_NAME_ERROR)
-            )
+        rspmsg = RspMsg()
         try:
-            drop_db = InitDataBase()
-            del_result = drop_db.delete_db(db_name)
-            if not del_result:
-                return jsonify(
-                    ResponseCode.response_json(ResponseCode.DELETE_DB_ERROR))
-            return jsonify(
-                ResponseCode.response_json(ResponseCode.SUCCESS)
-            )
-        except (SQLAlchemyError, TypeError, Error) as error:
-            current_app.logger.error(error)
-            return jsonify(
-                ResponseCode.response_json(ResponseCode.DELETE_DB_ERROR)
-            )
+            name_list = database.get_db_priority()
+        except (ElasticSearchQueryException, DatabaseConfigException) as e:
+            return jsonify(rspmsg.body('connect_db_error'))
+        if not name_list:
+            return jsonify(rspmsg.body('not_found_database_info'))
+        res_dict = rspmsg.body('success', resp=name_list)
+        return jsonify(res_dict)
 
 
-class InitSystem(Resource):
+class PkgshipVersion(Resource):
     """
-    description: Initialize database
-    Restful API: post
+    Description: Get the version number of pkgship
+    Restful API: get
     ChangeLog:
-    """
-
-    def post(self):
-        """
-        InitSystem
-
-        Returns:
-            for
-            example::
-                {
-                  "code": "",
-                  "data": "",
-                  "msg": ""
-                }
-        Raises:
-            ContentNoneException: Unable to connect to the exception of the database
-            DisconnectionError：Exception connecting to database
-            TypeError：Exception of wrong type
-            DataMergeException：Exception of merging data
-            FileNotFoundError：File not found exception
-            Error: abnormal Error
-        """
-        schema = InitSystemSchema()
-
-        data = request.get_json()
-        validate_err = schema.validate(data)
-        if validate_err:
-            return jsonify(
-                ResponseCode.response_json(
-                    ResponseCode.PARAM_ERROR))
-        configfile = data.get("configfile", None)
-        try:
-            abnormal = None
-            if not configfile:
-                InitDataBase(
-                    config_file_path=configuration.INIT_CONF_PATH).init_data()
-            else:
-                InitDataBase(config_file_path=configfile).init_data()
-        except ContentNoneException as content_none_error:
-            LOGGER.logger.error(content_none_error)
-            abnormal = ResponseCode.CONFIGFILE_PATH_EMPTY
-        except DisconnectionError as dis_connection_error:
-            LOGGER.logger.error(dis_connection_error)
-            abnormal = ResponseCode.DIS_CONNECTION_DB
-        except TypeError as type_error:
-            LOGGER.logger.error(type_error)
-            abnormal = ResponseCode.TYPE_ERROR
-        except ConfigurationException as error:
-            LOGGER.logger.error(error)
-            abnormal = error
-            return jsonify(ResponseCode.response_json('5000', msg=abnormal.message))
-        except DataMergeException as data_merge_error:
-            LOGGER.logger.error(data_merge_error)
-            abnormal = ResponseCode.DATA_MERGE_ERROR
-        except FileNotFoundError as file_not_found_error:
-            LOGGER.logger.error(file_not_found_error)
-            abnormal = ResponseCode.FILE_NOT_FIND_ERROR
-        except (Error, SQLAlchemyError) as error:
-            LOGGER.logger.error(error)
-            abnormal = ResponseCode.FAILED_CREATE_DATABASE_TABLE
-        if abnormal is not None:
-            return jsonify(ResponseCode.response_json(abnormal))
-        db_list = db_priority()
-        if not db_list:
-            return jsonify(
-                ResponseCode.response_json(
-                    ResponseCode.FAILED_CREATE_DATABASE_TABLE))
-        return jsonify(ResponseCode.response_json(ResponseCode.SUCCESS))
-
-
-class GetFilelistInfo(Resource):
-    """
-       Get filelist info include dir, file, ghost
     """
 
     def get(self):
         """
-        Get filelist info
+        Get the version number of pkgship
 
+        Args:
         Returns:
-            for example:
-            "Judy": {
-                   "dir": [''],
-                   "file": [''],
-                   "ghost": ['']
-                   }
+            for
+            examples::
+                {
+                "code": "200",
+                "version":"1.0",
+                "release":"13",
+                "msg": ""
+                }
         Raises:
         """
-        data = request.args
+        rspmsg = RspMsg()
+        version, release = pkg_version.get_pkgship_version()
+        if not all([version, release]):
+            return jsonify(rspmsg.body('not_found_database_info'))
+        res_dict = rspmsg.body('success', version=version, release=release)
+        return jsonify(res_dict)
 
-        _db_name = data.get("db_name")
-        pkg_names = data.get("pkg_name")
 
-        if not all([_db_name, pkg_names]):
-            return jsonify(
-                ResponseCode.response_json(ResponseCode.PARAM_ERROR)
-            )
+class TableColView(Resource):
+    """
+    The default column of the package shows the interface
+    """
 
-        db_names = db_priority()
+    def __columns_names(self):
+        """
+        Mapping of column name and title
+        """
+        columns = [
+            ('name', 'Name', True),
+            ('version', 'Version', True),
+            ('release', 'Release', True),
+            ('url', 'Url', True),
+            ('rpm_license', 'License', False)
+        ]
+        return columns
 
-        if not db_names:
-            return jsonify(
-                ResponseCode.response_json(ResponseCode.NOT_FOUND_DATABASE_INFO)
-            )
+    def __columns_mapping(self):
+        """
+        Columns mapping
+        """
+        columns = list()
+        for column in self.__columns_names():
+            columns.append({
+                'column_name': column[0],
+                'label': column[1],
+                'default_selected': column[2]
+            })
+        return columns
 
-        search_db = SearchDB(db_names)
+    def get(self):
+        """
+        Get the default display column of the package
 
-        if _db_name not in db_names:
-            return jsonify(
-                ResponseCode.response_json(ResponseCode.DB_NAME_ERROR)
-            )
-
-        pkg_name_lst = pkg_names.strip().split("$")
-
-        resp_code, result = search_db.get_filelist_info(_db_name, pkg_name_lst)
-
-        return jsonify(
-            ResponseCode.response_json(resp_code, data=result if result else None)
-        )
+        """
+        table_mapping_columns = self.__columns_mapping()
+        rspmsg = RspMsg()
+        res_dict = rspmsg.body('success', resp=table_mapping_columns)
+        return jsonify(res_dict)

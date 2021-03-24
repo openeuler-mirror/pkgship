@@ -15,8 +15,6 @@ System configuration file and default configuration file integration
 """
 import os
 import configparser
-
-from packageship.libs.exception import Error
 from . import global_config
 
 
@@ -38,7 +36,7 @@ class PreloadingSettings():
         """
         settings_file = os.environ.get(USER_SETTINGS_FILE_PATH)
         if not settings_file:
-            raise Error(
+            raise RuntimeError(
                 "The system does not specify the user configuration"
                 "that needs to be loaded:" % USER_SETTINGS_FILE_PATH)
 
@@ -108,7 +106,7 @@ class Configs():
                 setattr(self, config, getattr(global_config, config))
 
         # Load user's configuration
-        self._conf_parser = configparser.ConfigParser()
+        self._conf_parser = configparser.RawConfigParser()
         self._conf_parser.read(settings_file)
 
         for section in self._conf_parser.sections():

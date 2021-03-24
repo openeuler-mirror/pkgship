@@ -14,19 +14,7 @@
 from . import view
 
 urls = [
-    # get SelfDepend
-    (view.SelfDependInfo, '/dependInfo/selfDepend', {'query': ('POST')}),
-    # get BeDepend
-    (view.BeDependInfo, '/dependInfo/beDepend', {'query': ('POST')}),
-    # get all database name
-    (view.DataBaseInfo, '/dependInfo/databases', {'query': ('GET')}),
-
-    # Download install or build or self or bedepend excel
-    (view.Downloadzip, '/dependInfo/download/<file_type>', {'query': ('POST')}),
-    # get InstallDepend
-    (view.InstallDependInfo, '/dependInfo/installDepend', {'query': ('POST')}),
-    # get BuildDepend
-    (view.BuildDependInfo, '/dependInfo/buildDepend', {'query': ('POST')}),
-    # get SingleGraph
-    (view.SingleGraph, '/dependInfo/result/singleGraph', {'query': ('POST')}),
+    (view.DependList, '/dependinfo/dependlist', {'query': ('POST')}),
+    (view.DownloadFiles, '/dependinfo/downloadfiles', {'query': ('POST')}),
+    (view.DependGraph, '/dependinfo/dependgraph', {'query': ('POST')}),
 ]
