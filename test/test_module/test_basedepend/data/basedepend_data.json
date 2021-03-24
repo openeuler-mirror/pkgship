@@ -1,0 +1,248 @@
+{
+    "excepted_both_data": [
+        {
+            "A1": {
+                "database": "Mainline",
+                "install": [
+                    "B1",
+                    "X1"
+                ],
+                "level": 1,
+                "name": "A1",
+                "source_name": "A",
+                "version": "1.1"
+            },
+            "B1": {
+                "database": "Mainline",
+                "install": [
+                    "Judy",
+                    "X1",
+                    "Y1"
+                ],
+                "level": 1,
+                "name": "B1",
+                "source_name": "B",
+                "version": "1.1"
+            },
+            "Judy": {
+                "database": "Mainline",
+                "install": [
+                    "A1",
+                    "glibc"
+                ],
+                "level": 1,
+                "name": "Judy",
+                "source_name": "Judy",
+                "version": "1.2"
+            },
+            "X1": {
+                "database": "Mainline",
+                "install": [
+                    "glibc"
+                ],
+                "level": 1,
+                "name": "X1",
+                "source_name": "X",
+                "version": "1.2"
+            }
+        },
+        {
+            "A": {
+                "build": [
+                    "Judy"
+                ],
+                "database": "os_version_2",
+                "name": "A",
+                "version": "2.0"
+            },
+            "Judy": {
+                "build": [
+                    "B"
+                ],
+                "database": "Mainline",
+                "name": "Judy",
+                "version": "1.0"
+            }
+        }
+    ],
+    "expected_depend_info": {
+        "binary_list": [
+            {
+                "binary_name": "A1",
+                "database": "Mainline",
+                "source_name": "A",
+                "version": "1.1"
+            },
+            {
+                "binary_name": "B1",
+                "database": "Mainline",
+                "source_name": "B",
+                "version": "1.1"
+            },
+            {
+                "binary_name": "Judy",
+                "database": "Mainline",
+                "source_name": "Judy",
+                "version": "1.2"
+            },
+            {
+                "binary_name": "X1",
+                "database": "Mainline",
+                "source_name": "X",
+                "version": "1.2"
+            }
+        ],
+        "source_list": [
+            {
+                "database": "os_version_2",
+                "source_name": "A",
+                "version": "2.0"
+            },
+            {
+                "database": "Mainline",
+                "source_name": "Judy",
+                "version": "1.0"
+            }
+        ],
+        "statistics": [
+            {
+                "binary_sum": 4,
+                "database": "Mainline",
+                "source_sum": 1
+            },
+            {
+                "binary_sum": 0,
+                "database": "os_version_2",
+                "source_sum": 1
+            }
+        ]
+    },
+    "excepted_bothward_B1_level3": {
+        "A1": {
+            "be_requires": [
+                "Judy"
+            ],
+            "database": "Mainline",
+            "direction": "bothward",
+            "level": 2,
+            "name": "A1",
+            "requires": [
+                "B1",
+                "X1"
+            ],
+            "source_name": "A",
+            "version": "1.1"
+        },
+        "B1": {
+            "be_requires": [
+                "A1"
+            ],
+            "database": "Mainline",
+            "direction": "root",
+            "level": 1,
+            "name": "B1",
+            "requires": [
+                "Judy",
+                "X1",
+                "Y1"
+            ],
+            "source_name": "B",
+            "version": "1.1"
+        },
+        "Judy": {
+            "be_requires": [
+                "B1"
+            ],
+            "database": "Mainline",
+            "direction": "bothward",
+            "level": 3,
+            "name": "Judy",
+            "requires": [
+                "A1",
+                "glibc"
+            ],
+            "source_name": "Judy",
+            "version": "1.2"
+        },
+        "X1": {
+            "database": "Mainline",
+            "direction": "downward",
+            "level": 2,
+            "name": "X1",
+            "requires": [
+                "glibc"
+            ],
+            "source_name": "X",
+            "version": "1.2"
+        }
+    },
+    "excepted_upward_A1_level2": {
+        "A1": {
+            "be_requires": [
+                "Judy"
+            ],
+            "database": "Mainline",
+            "direction": "root",
+            "level": 1,
+            "name": "A1",
+            "requires": [
+                "B1",
+                "X1"
+            ],
+            "source_name": "A",
+            "version": "1.1"
+        },
+        "Judy": {
+            "be_requires": [
+                "B1"
+            ],
+            "database": "Mainline",
+            "direction": "upward",
+            "level": 2,
+            "name": "Judy",
+            "source_name": "Judy",
+            "version": "1.2"
+        }
+    },
+    "excepted_downward_B1_level2": {
+        "B1": {
+            "be_requires": [
+                "A1"
+            ],
+            "database": "Mainline",
+            "direction": "root",
+            "level": 1,
+            "name": "B1",
+            "requires": [
+                "Judy",
+                "X1",
+                "Y1"
+            ],
+            "source_name": "B",
+            "version": "1.1"
+        },
+        "Judy": {
+            "database": "Mainline",
+            "direction": "downward",
+            "level": 2,
+            "name": "Judy",
+            "requires": [
+                "A1",
+                "glibc"
+            ],
+            "source_name": "Judy",
+            "version": "1.2"
+        },
+        "X1": {
+            "database": "Mainline",
+            "direction": "downward",
+            "level": 2,
+            "name": "X1",
+            "requires": [
+                "glibc"
+            ],
+            "source_name": "X",
+            "version": "1.2"
+        }
+    }
+}

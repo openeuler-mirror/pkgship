@@ -1,0 +1,27 @@
+{
+    "data": [
+        {
+            "zziplib-help": {
+                "bin_name": "zziplib-help",
+                "description": "This package includes help documentation and manuals related to zziplib.",
+                "file_list": [
+                    {
+                        "dirname": "/usr/share/man/man3",
+                        "filenames": "zzip_disk_buffer.3.gz/zzip_disk_close.3.gz/zzip_disk_entry_fopen.3.gz/zzip_disk_entry_strdup_comment.3.gz/zzip_disk_entry_strdup_name.3.gz/zzip_disk_entry_to_data.3.gz/zzip_disk_entry_to_file_header.3.gz/zzip_disk_fclose.3.gz/zzip_disk_feof.3.gz/zzip_disk_findfile.3.gz/zzip_disk_findfirst.3.gz/zzip_disk_findmatch.3.gz/zzip_disk_findnext.3.gz/zzip_disk_fopen.3.gz/zzip_disk_fread.3.gz/zzip_disk_init.3.gz/zzip_disk_mmap.3.gz/zzip_disk_munmap.3.gz/zzip_disk_new.3.gz/zzip_disk_open.3.gz/zzip_entry_data_offset.3.gz/zzip_entry_fclose.3.gz/zzip_entry_feof.3.gz/zzip_entry_ffile.3.gz/zzip_entry_findfile.3.gz/zzip_entry_findfirst.3.gz/zzip_entry_findmatch.3.gz/zzip_entry_findnext.3.gz/zzip_entry_fopen.3.gz/zzip_entry_fread.3.gz/zzip_entry_fread_file_header.3.gz/zzip_entry_free.3.gz/zzip_entry_strdup_name.3.gz",
+                        "filetypes": "fffffffffffffffffffffffffffffffff"
+                    }
+                ],
+                "href": "Packages/zziplib-help-0.13.69-5.oe1.noarch.rpm",
+                "license": "LGPLv2+ or MPLv1.1",
+                "release": "5.oe1",
+                "sourcerpm": "zziplib-0.13.69-5.oe1.src.rpm",
+                "src_name": "zziplib",
+                "summary": "Help documentation for the zziplib library",
+                "url": "http://zziplib.sourceforge.net",
+                "vendor": "http://openeuler.org",
+                "version": "0.13.69"
+            }
+        }
+    ],
+    "total": 2
+}

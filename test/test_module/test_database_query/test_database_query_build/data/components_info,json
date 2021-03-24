@@ -1,0 +1,431 @@
+{
+  "took" : 2,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 1,
+    "successful" : 1,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : {
+      "value" : 2,
+      "relation" : "eq"
+    },
+    "max_score" : 0.0,
+    "hits" : [
+      {
+        "_index" : "os_version_1-binary",
+        "_type" : "_doc",
+        "_id" : "9JvNx3cBamC2Cm-g6gEb",
+        "_score" : 0.0,
+        "_source" : {
+          "src_version" : "8.32",
+          "provides" : [
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/basename",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/cat",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/chgrp",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/chmod",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/chown",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/cp",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/cut",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/date",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/dd",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/df",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/echo",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/env",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/false",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/ln",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/ls",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/mkdir",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/mknod",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/mktemp",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/mv",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/nice",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/pwd",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/readlink",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/rm",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/rmdir",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/sh",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/sleep",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/sort",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/stty",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/sync",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/touch",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/true",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/uname",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "bundled(gnulib)",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : "1.oe1",
+              "name" : "coreutils",
+              "flags" : "EQ",
+              "epoch" : "0",
+              "version" : "8.32"
+            },
+            {
+              "pkgKey" : 882,
+              "release" : "1.oe1",
+              "name" : "coreutils(aarch-64)",
+              "flags" : "EQ",
+              "epoch" : "0",
+              "version" : "8.32"
+            },
+            {
+              "pkgKey" : 882,
+              "release" : "1.oe1",
+              "name" : "coreutils-common",
+              "flags" : "EQ",
+              "epoch" : "0",
+              "version" : "8.32"
+            },
+            {
+              "pkgKey" : 882,
+              "release" : "1.oe1",
+              "name" : "coreutils-full",
+              "flags" : "EQ",
+              "epoch" : "0",
+              "version" : "8.32"
+            },
+            {
+              "pkgKey" : 882,
+              "release" : "1.oe1",
+              "name" : "fileutils",
+              "flags" : "EQ",
+              "epoch" : "0",
+              "version" : "8.32"
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "libstdbuf.so()(64bit)",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : "1.oe1",
+              "name" : "mktemp",
+              "flags" : "EQ",
+              "epoch" : "4",
+              "version" : "8.32"
+            },
+            {
+              "pkgKey" : 882,
+              "release" : "1.oe1",
+              "name" : "sh-utils",
+              "flags" : "EQ",
+              "epoch" : "0",
+              "version" : "8.32"
+            },
+            {
+              "pkgKey" : 882,
+              "release" : "1.oe1",
+              "name" : "stat",
+              "flags" : "EQ",
+              "epoch" : "0",
+              "version" : "8.32"
+            },
+            {
+              "pkgKey" : 882,
+              "release" : "1.oe1",
+              "name" : "textutils",
+              "flags" : "EQ",
+              "epoch" : "0",
+              "version" : "8.32"
+            }
+          ],
+          "name" : "coreutils",
+          "src_name" : "coreutils",
+          "version" : "8.32"
+        }
+      },
+      {
+        "_index" : "os_version_1-binary",
+        "_type" : "_doc",
+        "_id" : "d5vNx3cBamC2Cm-g8gQh",
+        "_score" : 0.0,
+        "_source" : {
+          "src_version" : "5.1.0",
+          "provides" : [
+            {
+              "pkgKey" : 1525,
+              "release" : null,
+              "name" : "/bin/awk",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 1525,
+              "release" : null,
+              "name" : "/bin/gawk",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 1525,
+              "release" : "1.oe1",
+              "name" : "gawk",
+              "flags" : "EQ",
+              "epoch" : "0",
+              "version" : "5.1.0"
+            },
+            {
+              "pkgKey" : 1525,
+              "release" : "1.oe1",
+              "name" : "gawk(aarch-64)",
+              "flags" : "EQ",
+              "epoch" : "0",
+              "version" : "5.1.0"
+            },
+            {
+              "pkgKey" : 1525,
+              "release" : null,
+              "name" : "gawk(abi)",
+              "flags" : "EQ",
+              "epoch" : "0",
+              "version" : "."
+            }
+          ],
+          "name" : "gawk",
+          "src_name" : "gawk",
+          "version" : "5.1.0"
+        }
+      }
+    ]
+  }
+}

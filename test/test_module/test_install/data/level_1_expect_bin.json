@@ -1,0 +1,1 @@
+{"bash": {"name": "bash", "version": "5.0", "source_name": "bash", "database": "os_version_1"}, "glibc": {"name": "glibc", "version": "2.31", "source_name": "glibc", "database": "os_version_1"}, "Judy": {"name": "Judy", "version": "1.0.5", "source_name": "Judy", "database": "os_version_1", "install": ["bash", "glibc"]}}

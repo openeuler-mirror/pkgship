@@ -1,0 +1,1130 @@
+{
+  "took" : 2,
+  "timed_out" : false,
+  "_shards" : {
+    "total" : 1,
+    "successful" : 1,
+    "skipped" : 0,
+    "failed" : 0
+  },
+  "hits" : {
+    "total" : {
+      "value" : 2,
+      "relation" : "eq"
+    },
+    "max_score" : 0.0,
+    "hits" : [
+      {
+        "_index" : "os_version_1-binary",
+        "_type" : "_doc",
+        "_id" : "eJvNx3cBamC2Cm-g6gAb",
+        "_score" : 0.0,
+        "_source" : {
+          "src_version" : "5.0",
+          "provides" : [
+            {
+              "pkgKey" : 502,
+              "release" : null,
+              "name" : "/bin/bash",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 502,
+              "release" : null,
+              "name" : "/bin/sh",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 502,
+              "release" : "14.oe1",
+              "name" : "bash",
+              "flags" : "EQ",
+              "epoch" : "0",
+              "version" : "5.0"
+            },
+            {
+              "pkgKey" : 502,
+              "release" : "14.oe1",
+              "name" : "bash(aarch-64)",
+              "flags" : "EQ",
+              "epoch" : "0",
+              "version" : "5.0"
+            },
+            {
+              "pkgKey" : 502,
+              "release" : "14.oe1",
+              "name" : "config(bash)",
+              "flags" : "EQ",
+              "epoch" : "0",
+              "version" : "5.0"
+            }
+          ],
+          "name" : "bash",
+          "files" : [
+            {
+              "pkgKey" : 502,
+              "name" : "/etc/skel/.",
+              "type" : "dir"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/etc/skel/..",
+              "type" : "dir"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/etc/skel/../skel",
+              "type" : "dir"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/etc/skel/../skel/.bash_logout",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/etc/skel/../skel/.bash_profile",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/etc/skel/../skel/.bashrc",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/etc/skel/./.bash_logout",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/etc/skel/./.bash_profile",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/etc/skel/./.bashrc",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/etc/skel/.bash_logout",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/etc/skel/.bash_profile",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/etc/skel/.bashrc",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/usr/bin/alias",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/usr/bin/bash",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/usr/bin/bashbug",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/usr/bin/bg",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/usr/bin/cd",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/usr/bin/command",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/usr/bin/fc",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/usr/bin/fg",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/usr/bin/getopts",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/usr/bin/hash",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/usr/bin/jobs",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/usr/bin/read",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/usr/bin/sh",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/usr/bin/type",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/usr/bin/ulimit",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/usr/bin/umask",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/usr/bin/unalias",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/usr/bin/wait",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/etc/ima/digest_lists/0-metadata_list-compact-bash-5.0-14.oe1.aarch64",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 502,
+              "name" : "/etc/ima/digest_lists.tlv/0-metadata_list-compact_tlv-bash-5.0-14.oe1.aarch64",
+              "type" : "file"
+            }
+          ],
+          "src_name" : "bash",
+          "version" : "5.0"
+        }
+      },
+      {
+        "_index" : "os_version_1-binary",
+        "_type" : "_doc",
+        "_id" : "9JvNx3cBamC2Cm-g6gEb",
+        "_score" : 0.0,
+        "_source" : {
+          "src_version" : "8.32",
+          "provides" : [
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/basename",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/cat",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/chgrp",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/chmod",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/chown",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/cp",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/cut",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/date",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/dd",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/df",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/echo",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/env",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/false",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/ln",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/ls",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/mkdir",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/mknod",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/mktemp",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/mv",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/nice",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/pwd",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/readlink",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/rm",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/rmdir",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/sh",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/sleep",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/sort",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/stty",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/sync",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/touch",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/true",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "/bin/uname",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "bundled(gnulib)",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : "1.oe1",
+              "name" : "coreutils",
+              "flags" : "EQ",
+              "epoch" : "0",
+              "version" : "8.32"
+            },
+            {
+              "pkgKey" : 882,
+              "release" : "1.oe1",
+              "name" : "coreutils(aarch-64)",
+              "flags" : "EQ",
+              "epoch" : "0",
+              "version" : "8.32"
+            },
+            {
+              "pkgKey" : 882,
+              "release" : "1.oe1",
+              "name" : "coreutils-common",
+              "flags" : "EQ",
+              "epoch" : "0",
+              "version" : "8.32"
+            },
+            {
+              "pkgKey" : 882,
+              "release" : "1.oe1",
+              "name" : "coreutils-full",
+              "flags" : "EQ",
+              "epoch" : "0",
+              "version" : "8.32"
+            },
+            {
+              "pkgKey" : 882,
+              "release" : "1.oe1",
+              "name" : "fileutils",
+              "flags" : "EQ",
+              "epoch" : "0",
+              "version" : "8.32"
+            },
+            {
+              "pkgKey" : 882,
+              "release" : null,
+              "name" : "libstdbuf.so()(64bit)",
+              "flags" : null,
+              "epoch" : null,
+              "version" : null
+            },
+            {
+              "pkgKey" : 882,
+              "release" : "1.oe1",
+              "name" : "mktemp",
+              "flags" : "EQ",
+              "epoch" : "4",
+              "version" : "8.32"
+            },
+            {
+              "pkgKey" : 882,
+              "release" : "1.oe1",
+              "name" : "sh-utils",
+              "flags" : "EQ",
+              "epoch" : "0",
+              "version" : "8.32"
+            },
+            {
+              "pkgKey" : 882,
+              "release" : "1.oe1",
+              "name" : "stat",
+              "flags" : "EQ",
+              "epoch" : "0",
+              "version" : "8.32"
+            },
+            {
+              "pkgKey" : 882,
+              "release" : "1.oe1",
+              "name" : "textutils",
+              "flags" : "EQ",
+              "epoch" : "0",
+              "version" : "8.32"
+            }
+          ],
+          "name" : "coreutils",
+          "files" : [
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/[",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/arch",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/b2sum",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/base32",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/base64",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/basename",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/basenc",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/cat",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/chcon",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/chgrp",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/chmod",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/chown",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/cksum",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/comm",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/cp",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/csplit",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/cut",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/date",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/dd",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/df",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/dir",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/dircolors",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/dirname",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/du",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/echo",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/env",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/expand",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/expr",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/factor",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/false",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/fmt",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/fold",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/groups",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/head",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/hostid",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/id",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/install",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/join",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/link",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/ln",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/logname",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/ls",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/md5sum",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/mkdir",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/mkfifo",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/mknod",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/mktemp",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/mv",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/nice",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/nl",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/nohup",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/nproc",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/numfmt",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/od",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/paste",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/pathchk",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/pinky",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/pr",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/printenv",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/printf",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/ptx",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/pwd",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/readlink",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/realpath",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/rm",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/rmdir",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/runcon",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/seq",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/sha1sum",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/sha224sum",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/sha256sum",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/sha384sum",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/sha512sum",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/shred",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/shuf",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/sleep",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/sort",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/split",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/stat",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/stdbuf",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/stty",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/sum",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/sync",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/tac",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/tail",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/tee",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/test",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/timeout",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/touch",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/tr",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/true",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/truncate",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/tsort",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/tty",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/uname",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/unexpand",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/uniq",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/unlink",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/users",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/vdir",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/wc",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/who",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/whoami",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/bin/yes",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/usr/sbin/chroot",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/etc/ima/digest_lists/0-metadata_list-compact-coreutils-8.32-1.oe1.aarch64",
+              "type" : "file"
+            },
+            {
+              "pkgKey" : 882,
+              "name" : "/etc/ima/digest_lists.tlv/0-metadata_list-compact_tlv-coreutils-8.32-1.oe1.aarch64",
+              "type" : "file"
+            }
+          ],
+          "src_name" : "coreutils",
+          "version" : "8.32"
+        }
+      }
+    ]
+  }
+}
