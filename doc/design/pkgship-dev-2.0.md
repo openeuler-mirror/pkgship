@@ -76,49 +76,122 @@ Mulan V2
 
 ### 3.4、 部署视图
 
+#### 3.4.1、文件部署视图
+
 ![avatar](./pkgimg/deploy_view.png)
+
+#### 3.4.2、 服务部署视图
+
+![](.\pkgimg\server_deploy.png)
+
+
 
 ### 3.5、 质量属性设计
 
-### 3.5.1、 性能规格
+#### 3.5.1、 软硬件配置
+
+| 配置项        | 推荐规格                                   |
+| ------------- | ------------------------------------------ |
+| CPU           | 8核                                        |
+| 内存          | 32G                                        |
+| 网络带宽      | 300M                                       |
+| I/O           | 375MB/sec                                  |
+| Elasticsearch | 版本7.10.1；单机部署可用；有能力可部署集群 |
+| Redis         | 建议大小配置为内存的3/4                    |
+
+#### 3.5.2、 性能规格
 
 |规格名称|规格指标|
 |:--|:-------|
-|内存占用|  |
-|启动时间| 初始化两个数据库（openEuler-20.09和fedora），启动时间为：120s |
-|响应时间|  3个数据库，80%的查询在5s内给出结果|
+|内存占用| 初始化阶段，五万包占用内存1600M，平均每个包占用32k；运行阶段：小于等于700M。 |
+|启动时间| 初始化两个数据库（openEuler-20.09和os_version_2，15万个包左右），启动时间为：7min。 |
+|响应时间| 3个数据库，90%的查询在5s内给出结果。 |
+|文件规格| 初始化和下载功能需要创建临时文件，两个数据库不超过1G，用完即删。 |
+|日志规格| 每日日志压缩转储，保留一个月日志，大小视业务操作频率而定。 |
 
-### 3.5.2、 系统可靠性设计
+#### 3.5.3、 系统可靠性设计
 
-1. 数据库持久化、备份的方案：
-系统增加定时任务，在特定的时间段内，对系统中的数据做备份，保留最新或最近的数据，便于后期恢复
+1. **数据库**：
 
-2. 服务挂掉自动拉起方案：
-systemctl 实现服务自启动（开发相关），容器挂掉，可以使用k8s自动重启（部署相关）
+    持久化：系统增加定时任务，在特定的时间段内，对系统中的数据做备份，保留最新或最近的数据，便于后期恢复 。
 
-3. 分布式情况、由es去考虑：
-es数据库支持主从节点的配置，数据库可以使用分布式搭建，以主节点的形式进行连接
+    redis淘汰机制： 从设置了过期时间（20分钟）的数据集中挑选最近最少使用的数据淘汰，淘汰算法的控制由redis内部实现 。
 
-4. 多请求并发场景处理方：
-增加redis缓存处理，减少服务器查询带来的计算型压力
-多台服务器分布式部署
+    重新初始化后与redis的同步机制：每次初始化时清空redis，下次查询操作再重新写入redis，保证数据一致性。
 
-### 3.5.3、 安全性设计
+2. **异常情况**：
 
-1. 数据库链接：
-系统中设置数据库连接超时时间，数据库的用户名、密码、连接ip
-遗留问题：安装pkgship时，es是否需要自动化安装部署？
+  使用systemctl机制实现进程异常终止后，服务自启动；
 
-2. 数据库容错：初始化数据库失败时，需要删除已经插入的数据，可能存在：插入数据没有删除干净的情况，如何判断已经删除干净、如果保证数据删除干净
+  容器挂掉，可以使用k8s自动重启。
 
-3. 读写、权限问题：
-分为读服务和写服务，写入服务部署在内网中，不对公网用户开放，读服务发布在公网中，用户只能读取系统中的数据
+3. **数据库部署：**
 
-### 3.5.4、 兼容性设计
+    建议和软件部署到同一节点或者相同网段，减少网络延迟。
 
-### 3.5.5、 可服务性设计
+    目前已满足单机运行诉求，es数据库支持主从节点的配置，数据库可以使用分布式搭建，以主节点的形式进行连接。
 
-### 3.5.6、 可测试性设计
+4. **多请求并发场景处理方**：
+
+    增加redis缓存处理，减少服务器查询带来的计算型压力；
+
+    初始化操作进行唯一性限制，同一时间只有第一个操作可以成功，后面操作均报错。
+
+    增加截流、限流机制，在请求之前控制，同一个ip，同接口，60s内请求次数不得超过20次。
+
+#### 3.5.4、 安全性设计
+
+1. **数据库连接**：
+    由于使用的是公开数据，所以用于本软件的数据库为无密码连接方式，通过网段进行数据库连接限制；
+
+  如果用户已有使用密码登陆的数据库，需要再次安装一个无密码数据库供该软件使用。
+
+  安装pkgship时，提供es自动化安装部署脚本。
+
+2. **数据库容错**：
+
+    每次初始化都会删除已有的数据，然后重新创建。保证每次初始化成功后都是完整数据。
+
+3. **读写问题**：
+    查询操作（读服务）所有用户均可操作，初始化操作（写服务）必须有软件管理员用户（安装时创建）或者root用户操作，代码中进行限制。
+
+4. **权限问题**：
+
+    采用权限最小化策略，主要文件权限如下：
+
+    | 路径                                          | 属主                    | 权限 | 描述                             | 权限说明                                                     |
+    | --------------------------------------------- | ----------------------- | ---- | -------------------------------- | ------------------------------------------------------------ |
+    | /usr/bin/pkgship                              | pkgshipuser pkgshipuser | 755  | 命令行执行                       | 使用场景为所有用户都可以使用命令行执行查询操作，所以设置权限为755。初始化操作通过代码中判断当前登录用户是否为root或者pkgshipuser进行权限控制。 |
+    | /usr/bin/pkgshipd                             | pkgshipuser pkgshipuser | 755  | 命令行执行                       | 启停服务脚本，脚本中限制只有pkgshipuser用户可以执行。        |
+    | /opt/pkgship/tmp                              | pkgshipuser pkgshipuser | 750  | 初始化的临时数据存放文件夹       | pkgshipuser需要写入。                                        |
+    | /etc/pkgship/package.ini                      | pkgshipuser pkgshipuser | 640  | pkgship配置文件                  | pkgshipuser需要写入，其他用户无法读取。                      |
+    | /etc/pkgship/conf.yaml                        | pkgshipuser pkgshipuser | 644  | 初始化时数据来源配置文件         | pkgshipuser需要写入，其他用户可查看当前配置的数据源。        |
+    | /usr/lib/python3.8/site-packages/pkgship      | pkgshipuser pkgshipuser | 755  | pkgship源码                      | 普通用户执行命令时需要读取。                                 |
+    | /lib/systemd/system/pkgship.service           | pkgshipuser pkgshipuser | 640  | system系统文件                   | systemctl启停时，pkgshipuser用户需要读取。                   |
+    | /var/log/pkgship                              | pkgshipuser pkgshipuser | 755  | 业务日志路径                     | 普通用户可以查看业务日志。                                   |
+    | /var/log/pkgship-operation                    | pkgshipuser pkgshipuser | 700  | 操作日志路径                     | 操作日志含有敏感信息，只有pkgshipuser用户可以查看。          |
+    | /etc/pkgship/auto_install_pkgship_requires.sh | root root               | 750  | elasticsearch和redis自动安装脚本 | 涉及rpm包安装，只有root用户可执行。                          |
+    | /etc/pkgship/uwsgi_logrotate.sh               | pkgshipuser pkgshipuser | 750  | 操作日志转储任务脚本             | pkgshipuser在启动时执行。                                    |
+
+5. **启动问题：**
+
+    systemctl start pkgship.service只能由root用户启动
+
+    pkgshipd start 可以只能由pkgshipuser用户启动
+
+6. 命令注入问题：
+
+    命令行操作，入参会做校验，而且后台为解析参数后调用url接口，不存在入参拼接命令执行操作，所以不存在命令注入问题。
+
+#### 3.5.5、 兼容性设计
+
+对外接口只能增量变化，新版本保证旧版本接口可用。
+
+对于底层缓存，数据库的变更，对外不体现，由代码逻辑保证可用性。
+
+#### 3.5.5、 可服务性设计
+
+#### 3.5.6、 可测试性设计
 
 ### 3.6、 特性清单
 
@@ -140,15 +213,15 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
 |:--|:-------|:------|:----|
 | 1 | 获取默认的版本库排序 | 0.3k | |
 | 2 | 获取pkgship的 version 和 release 号 | 0.3k | |
-| 3 | 服务初始化，包含数据库导入依赖关系以及软件包信息，配置文件读取等操作 | 1.5k | |
-| 4 | 获取所有rpm源码包的基本信息，包括license、version、所属版本库等 | 0.5k | |
-| 5 | 获取所有rpm二进制包的基本信息，包括license、version、所属版本库等 | 0.5k | |
-| 6 | 查询单个源码包信息和编译依赖以及对应二进制包的一层安装依赖、被依赖的接口 | 0.8k | |
-| 7 | 查询单个二进制包信息和对应二进制包的一层安装依赖、被依赖、文件列表的接口 | 0.8k | |
+| 3 | 服务初始化，包含数据库导入conf.yaml中配置的本地和远程repo源中的sqlite文件（不支持repo源中无sqlite文件的导入，不支持sqlite文件导入），pkgship配置文件读取解析的操作 | 1.5k | |
+| 4 | 获取所有rpm源码包的基本信息（源码包名称、源码包版本号、源码包所在的版本仓、源码包license和源码包的url地址） | 0.5k | |
+| 5 | 获取所有rpm二进制包的基本信息（二进制包名称、二进制包版本号、二进制包所在的版本仓、二进制包license、二进制包的url地址和二进制包的源码名） | 0.5k | |
+| 6 | 查询单个源码包详细信息（源码包名、 源码包版本号、license、url、summary、description、源码包的编译依赖包列表、源码包提供的二进制包、以及源码包提供的二进制包提供的组件名和依赖的组件名、以及提供的组件名[provides]被哪些二进制包安装依赖[install required by]和被哪些源码包编译依赖[build requied by]，依赖的组件名[requires]被哪些二进制包提供[privided by]） | 0.8k | |
+| 7 | 查询单个二进制包详细信息（二进制包名、 二进制包版本号、license、url、summary、description、二进制包的源码包名、二进制包提供的文件名列表[filelist]、二进制包提供的组件名和依赖的组件名、以及提供的组件名[provides]被哪些二进制包安装依赖[install required by]和被哪些源码包编译依赖[build requied by]，依赖的组件名[requires]被哪些二进制包提供[privided by]） | 0.8k | |
 | 8 | 输入一个（或多个）二进制rpm包名，返回该rpm包的全量（或指定层数）的依赖（安装、编译、自依赖、被依赖）列表 | 3.5k | |
 | 9 | 获取包含详细依赖关系的压缩文件，可提供安装、编译、自依赖和被依赖关系的文件下载 | 1.5k | |
 | 10 | 点击列表中的二进制（源码）rpm包名，获取包含上下两层（共四层）详细依赖关系的图谱，可提供安装、编译、自依赖和被依赖关系的图谱展示 | 1.5k | |
-
+| 11 | 使用systemctl控制pkgship服务的开启和关闭，实现服务挂掉自动拉起，且启动程序时，建立一个服务管理员用户。 | 0.1k | |
 总：11.2k
 
 ### 3.7、 外部接口清单
@@ -159,11 +232,11 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
 |    - |   - |    - |   - |  - |
 | 1 | /db_priority | GET | 获取默认的版本库排序 | 1 |
 | 2 | /version | GET | 获取pkgship的version号| 2 |
-| 3 | /init | POST | 服务初始化，包含数据库导入依赖关系以及软件包信息，配置文件读取等操作| 3 |
-| 4 | /packages/src | GET |  获取所有rpm源码包的基本信息 | 4 |
-| 5 | /packages/bin | GET |   获取所有rpm二进制包的基本信息 | 5 |
-| 6 | /packages/src/$src_name | GET | 查询单个源码包详细信息 | 6 |
-| 7 | /packages/bin/$bin_name | GET | 查询单个二进制包详细信息 | 7 |
+| 3 | /init（删除） | POST | 服务初始化，包含数据库导入conf.yaml中配置的本地和远程repo源中的sqlite文件（不支持repo源中无sqlite文件的导入，不支持sqlite文件导入），pkgship配置文件读取解析的操作| 3 |
+| 4 | /packages/src | GET |  获取所有rpm源码包的基本信息（源码包名称、源码包版本号、源码包所在的版本仓、源码包license和源码包的url地址） | 4 |
+| 5 | /packages/bin | GET |   获取所有rpm二进制包的基本信息（二进制包名称、二进制包版本号、二进制包所在的版本仓、二进制包license、二进制包的url地址和二进制包的源码名） | 5 |
+| 6 | /packages/src/$src_name | GET | 查询单个源码包详细信息（源码包名、 源码包版本号、license、url、summary、description、源码包的编译依赖包列表、源码包提供的二进制包、以及源码包提供的二进制包提供的组件名和依赖的组件名、以及提供的组件名[provides]被哪些二进制包安装依赖[install required by]和被哪些源码包编译依赖[build requied by]，依赖的组件名[requires]被哪些二进制包提供[privided by]） | 6 |
+| 7 | /packages/bin/$bin_name | GET | 查询单个二进制包详细信息（二进制包名、 二进制包版本号、license、url、summary、description、二进制包的源码包名、二进制包提供的文件名列表[filelist]、二进制包提供的组件名和依赖的组件名、以及提供的组件名[provides]被哪些二进制包安装依赖[install required by]和被哪些源码包编译依赖[build requied by]，依赖的组件名[requires]被哪些二进制包提供[privided by]） | 7 |
 | 8 | /dependinfo/dependlist | POST | 获取安装、编译、自依赖和被依赖查询结果的列表 |  8 |
 | 9 | /dependinfo/downloadfiles | POST | 获取包含详细依赖关系的压缩文件 | 9 |
 | 10 | /dependinfo/dependgraph | POST | 获取包含上下两层（共四层）详细依赖关系的图谱 |  10 |
@@ -246,7 +319,8 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
   | database_name | True | string | 数据库pkginfo下的表名，如：mainline, bringInRely|
   | page_num | True | int | 当前所在页数|
   | page_size | True | int | 每页显示的条数|
-  | query_pkg_name | False | string | 源码包名，模糊匹配 |
+  | query_pkg_name | False | string | 源码包名，精确匹配 |
+  | command_line | bool | string | 确定请求url是否来自命令行 |
 
 - 请求参数示例：
 
@@ -255,7 +329,8 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
       "database_name" : "Mainline",
       "page_num": "1",
       "page_size": "2",
-      "query_pkg_name" : "dnf"
+      "query_pkg_name" : "dnf",
+      "command_line ": "False"
   }
   ```
 
@@ -322,7 +397,8 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
   | database_name | True | string | 版本库名，如：mainline, bringInRely|
   | page_num | True | int | 当前所在页数|
   | page_size | True | int | 每页显示的条数|
-  | query_pkg_name | False | string | 二进制包名，模糊匹配 |
+  | query_pkg_name | False | string | 二进制包名，精确匹配 |
+  | command_line | bool | string | 确定请求url是否来自命令行 |
 
 - 请求参数示例：
 
@@ -331,7 +407,8 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
       "database_name" : "Mainline",
       "page_num": "1",
       "page_size": "2",
-      "query_pkg_name" : "dnf"
+      "query_pkg_name" : "dnf",
+      "command_line ": "False"
   }
   ```
 
@@ -506,7 +583,7 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
             "...": "..."
           }
       ],
-      "fedora30": [
+      "os_version_2": [
         {
           "pkg_name": "Judy",
           "...":"..."
@@ -657,7 +734,7 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
           "...": "..."
         }
       ],
-      "fedora":[
+      "os_version_2":[
         {
           "...":"..."
         },
@@ -709,7 +786,7 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
       "packagename": "Judy",
       "depend_type": "installdep",
       "parameter": {
-        "db_priority": ["Mainline","fedora"],
+        "db_priority": ["Mainline","os_version_2"],
         "level": 2
       }
   }
@@ -720,7 +797,7 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
       "packagename": "Judy",
       "depend_type": "builddep",
       "parameter": {
-        "db_priority": ["Mainline","fedora"],
+        "db_priority": ["Mainline","os_version_2"],
         "level": 2,
         "self_build": true
       }
@@ -732,7 +809,7 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
       "packagename": "Judy",
       "depend_type": "selfdep",
       "parameter": {
-        "db_priority": ["Mainline","fedora"],
+        "db_priority": ["Mainline","os_version_2"],
         "self_build": true,
         "packtype": "source",
         "with_subpack": true
@@ -751,7 +828,7 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
         "search_type": "install"
       }
   }
-  ```
+    ```
 
 - 返回体参数：
 
@@ -844,7 +921,7 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
             "source_num": 37
           },
           {
-              "database": "fedora",
+              "database": "os_version_2",
               "binary_num": 33,
               "source_num": 20
           },
@@ -872,12 +949,12 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
   | 参数名 | 必选 | 类型 | 说明 |
   |    - |   - |    - |   - |
   | packagename | True | string | 数据库表里的包名，如：Cunit, dnf|
-  | depend_type   | 是  | str | 需要查询依赖的类型（installdep/builddep/selfdep/bedep） |
+  | download_type   | 是  | str | 需要查询依赖的类型（installdep/builddep/selfdep/bedep/src/bin） |
   | -parameter   | 否  | dict | 查询依赖的相关参数 |
   - parameter
     | 参数名 | 必选 | 类型 | 说明 |
     |    - |   - |    - |   - |
-    | db_priority | False  | list | database的优先级，在be_depend情况下为必选，list长度为1（只有一个版本仓名字）_适用于所有查询_ |
+    | db_list | False  | list | database的优先级，在bedep/src/bin情况下为必选，list长度为1（只有一个版本仓名字）_适用于所有查询_ |
     | level | False | int | 需要查找的依赖层级,传值需>0,不传默认查到底、_适用于 install 和 build 查询_ |
     | packtype     | False  | str source/binary | 指定查询的包是源码包还是二进制,默认binary；_适用于 self和be查询_ |
     | self_build | False  | bool | 指定是否需要查询自编译依赖 默认Flase;_适用于build和self查询_ |
@@ -892,7 +969,7 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
       "depend_type": "builddep",
       "node_name": "glibc",
       "parameter": {
-        "db_priority": ["Mainline","fedora"],
+        "db_priority": ["Mainline","os_version_2"],
         "level": 2,
         "self_build": true
       }
@@ -908,10 +985,10 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
 - 请求参数：
   | 参数名 | 必选 | 类型 | 说明 |
   |    - |   - |    - |   - |
-
   | packagename | True | string | 数据库表里的包名，如：Cunit, dnf|
   | depend_type   | 是  | str | 需要查询依赖的类型（installdep/builddep/selfdep/bedep） |
   | node_name | True | string | 查询的节点（某一个层级中包名称）名称 |
+  | node_type | True | string | 查询的节点（某一个层级中包名称）类型（binary/source） |
   | -parameter   | 否  | dict | 查询依赖的相关参数 |
   - parameter
     | 参数名 | 必选 | 类型 | 说明 |
@@ -930,8 +1007,9 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
       "packagename": "Judy",
       "depend_type": "builddep",
       "node_name": "glibc",
+      "node_type": "binary",
       "parameter": {
-        "db_priority": ["Mainline","fedora"],
+        "db_priority": ["Mainline","os_version_2"],
         "level": 2,
         "self_build": true
       }
@@ -1042,7 +1120,7 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
 
 ##### 3.7.2.1  初始化数据
 
-​`pkgship init [-filepath $path]`
+`pkgship init [-filepath $path]`
 
 * **可选参数**
 
@@ -1054,9 +1132,24 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
   
   * `pkgship init -filepath ~/.conf.yaml`
 
+  conf.yaml格式：
+
+  ```yaml
+  # repo源初始化模式 —— 本地repo源
+  - dbname: os_version_2
+    src_db_file: file:///root/public/initdb/os_version_2/src
+    bin_db_file: file:///root/public/initdb/os_version_2/bin
+    priority: 1
+  # repo源初始化模式 ——远端repo源
+  - dbname: openEuler-20.09-OS
+    src_db_file: https://repo.openeuler.org/openEuler-20.09/source
+    bin_db_file: https://repo.openeuler.org/openEuler-20.09/everything/aarch64
+    priority: 2
+  ```
+
 ##### 3.7.2.2  单包查询
 
-​`pkgship pkginfo $packageName $database [-s]`
+`pkgship pkginfo $packageName $database [-s]`
 
 * **必选参数**
 
@@ -1088,7 +1181,7 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
 
 ##### 3.7.2.3  所有包的信息查询
 
-​`pkgship list $database [-s]`
+`pkgship list $database [-s]`
 
 * **必选参数**
 
@@ -1116,7 +1209,7 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
 
 ##### 3.7.2.3  安装依赖查询
 
-​`pkgship installdep [$binaryName $binaryName1 $binaryName2...] [-dbs] [db1 db2...] [-level] $level`
+`pkgship installdep [$binaryName $binaryName1 $binaryName2...] [-dbs] [db1 db2...] [-level] $level`
 
 * **必传参数**
 
@@ -1142,7 +1235,7 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
 
 ##### 3.7.2.4 编译依赖
 
-​`pkgship builddep [$sourceName $sourceName1 $sourceName2..] -dbs [db1 db2 ..] [-level] $level`
+`pkgship builddep [$sourceName $sourceName1 $sourceName2..] -dbs [db1 db2 ..] [-level] $level`
 
 * **必选参数**
 
@@ -1168,7 +1261,7 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
 
 ##### 3.7.2.5 自依赖
 
-​`pkgship selfbuild [$pkgName1 $pkgName2 $pkgName3 ..] [-dbs] [db1 db2..] [-b] [-s] [-w]`
+`pkgship selfdepend [$pkgName1 $pkgName2 $pkgName3 ..] [-dbs] [db1 db2..] [-b] [-s] [-w]`
 
 * **必选参数**
 
@@ -1197,11 +1290,11 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
 
   * 查询`Judy`,`CUnit`源码包有哪些自依赖,指定仓库优先级`[mainline,20.09]`,查找自编译依赖
 
-    `pkgship selfbuild Judy Cunit -dbs mainline 20.09 -s`
+    `pkgship selfdepend Judy Cunit -dbs mainline 20.09 -s`
 
 ##### 3.7.2.6 被依赖
 
-​`pkgship bedepend dbName [$pkgName1 $pkgName2 $pkgName3] [-w] [-b] [-install/build]`
+`pkgship bedepend dbName [$pkgName1 $pkgName2 $pkgName3] [-w] [-b] [-install/build]`
 
 * **`必选参数`**
 
@@ -1235,11 +1328,93 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
 
 ##### 3.7.2.7 仓库优先级
 
-​`pkgship dbs`
+`pkgship dbs`
 
 ##### 3.7.2.8  获取版本号
 
 `pkgship -v`
+
+##### 3.7.2.9  服务启动和停止
+
+使用systemctl控制服务：
+启动pkgship服务：`systemctl start pkgship.service`
+查看pkgship状态：`systemctl status pkgship.service`
+停止pkgship服务：`systemctl stop pkgship.service`
+
+使用pkgshipd控制服务：
+启动pkgship服务：`pkgshipd start`
+停止pkgship服务：`pkgsdhipd stop`
+
+Attention: pkgship 每次启动和停止周期，仅支持使用其中一种方式。即，不可使用systemctl启动后使用pkgshipd停止服务，反之亦然。
+
+##### 3.7.2.10  配置文件选项
+
+```ini
+[SYSTEM]
+; Configuration file path for data initialization
+init_conf_path=/etc/pkgship/conf.yaml
+
+; Ordinary user query port, only the right to query data, no permission to write data
+
+query_port=8090
+
+; IP address path with permission to query data
+
+query_ip_addr=127.0.0.1
+
+; The address of the remote service, the command line can directly 
+; call the remote service to complete the data request
+remote_host=https://pkgmanage.openeuler.org
+
+; A temporary directory for files downloaded from the network that are cleaned periodically
+; The recommended free space in this dir is 1G
+temporary_directory=/opt/pkgship/tmp/
+
+[LOG]
+; Custom log storage path
+log_path=/var/log/pkgship/
+
+; Logging level
+; The log level option value can only be as follows
+; INFO DEBUG WARNING ERROR CRITICAL
+log_level=INFO
+
+; Maximum capacity of each file, the unit is byte, default is 30M
+max_bytes=31457280
+
+; Number of old logs to keep;default is 30
+backup_count=30
+
+[UWSGI]
+; Operation log storage path
+daemonize=/var/log/pkgship-operation/uwsgi.log
+; The data size transferred from back to forth
+buffer-size=65536
+; HTTP Connection time
+http-timeout=600
+; Server response time
+harakiri=600
+
+[REDIS]
+;The address of the Redis cache server can be either a published
+;domain or an IP address that can be accessed normally
+;The link address defaults to 127.0.0.1
+redis_host=127.0.0.1
+
+;Redis cache server link port number, default is 6379
+redis_port=6379
+
+;Maximum number of connections allowed by RedIS server at one time
+redis_max_connections=10
+
+[DATABASE]
+;Default ip address of database
+database_host=127.0.0.1
+
+;Default port of database
+database_port=9200
+
+```
 
 ### 3.8、 内部模块间接口清单
 
@@ -1253,6 +1428,7 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
 |```DataBase()```| db_priority() | 用于获取版本仓的默认优先级 |
 |```Package()```| all_src_packages() | 用于获取所有rpm源码包的基本信息，包括license、version、所属版本库等 |
 |```Package()```| all_bin_packages() | 用于获取所有rpm二进制包的基本信息，包括license、version、所属版本库等 |
+|```Package()```| download_pkg_files() | 用于获取所有rpm（源码）二进制包的信息，包括license、version、所属版本库等 |
 |```SourcePackage()```| src_package_info() | 用于查询源码包信息和编译依赖以及对应二进制包的一层安装依赖、被依赖的接口 |
 |```BinaryPackage()```| bin_package_info() | 用于查二进制包信息和对应二进制包的一层安装依赖、被依赖、文件列表的接口 |
 | | 安装依赖模块 | 处理安装依赖的具体业务|
@@ -1325,7 +1501,7 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
   raise TypeError
   ```
 
-#### 3.8.2、 Package()
+#### 3.8.2、 包信息模块
 
 ##### 3.8.2.1、 all_src_packages
 
@@ -1341,20 +1517,27 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
   | 参数名 | 必选 | 类型 | 说明 |
   |    - |   - |    - |   - |
   | database | 是 | str | 需要查询的某个版本仓的名字 |
+  | page_num | 是 | int |  分页查询的页码（>=1） |
+  | page_size | 是 | int | 分页查询每页大小（1<=page_size<=200) |
+  | package_list | 是 | list | 要查询的源码包的列表，为空列表时表示查询全部源码包 |
+  | command_line | 是 | bool | 是否是命令行场景，默认为False |
 
 - 请求示例：
 
   ```python
-  all_src_packages('Mainline')
+  all_src_packages('Mainline',1,20,package_list=["Judy"], command_line=False)
   ```
 
 - 预期返回参数
+  | 参数名 | 类型       | 说明           |
+  | ------ | ---------- | -------------- |
+  | total  | int        | 返回数据的数量 |
+  | data   | list(dict) | 返回的具体数据 |
 
-  | 参数名 | 类型 | 说明 |
-  |    - |   - |    - |
-  | package_dict | dict | 包含包基本信息的字典 |
+    
 
-  - package_dict参数：
+- data    
+  
     | 参数名 | 类型 | 说明 |
     |    - |    - |   - |
     | pkg_name | -str | -rpm name |
@@ -1366,23 +1549,25 @@ es数据库支持主从节点的配置，数据库可以使用分布式搭建，
 - 返回示例：
 
 ```json
-resp = [
-  {
-    "pkg_name": "Judy",
-    "license": "Apache 2.0",
-    "version": "2.0.0",
-    "url":"http://www.xxx.com",
-    "database": "Mainline"
-  },
-  ....
-]
+resp = {"total":2300,
+		[
+		  {
+			"pkg_name": "Judy",
+			"license": "Apache 2.0",
+			"version": "2.0.0",
+			"url":"http://www.xxx.com",
+			"database": "Mainline"
+		  },
+		  ....
+		]
+}
 ```
 
-- 异常返回
+- 异常返回参数
   
-    ```python
-    resp = []
-    ```
+    | 异常名                      | 类型   | 说明                                                        |
+    | --------------------------- | ------ | ----------------------------------------------------------- |
+    | ParametersError     | 自定义 | 参数错误        |
 
 ##### 3.8.2.2、 all_bin_packages
 
@@ -1399,19 +1584,25 @@ resp = [
     | 参数名 | 必选 | 类型 | 说明 |
     |    - |   - |    - |   - |
     | database | 是 | str | 需要查询的某个版本仓的名字 |
+	| page_num | 是 | int |  分页查询的页码（>=1） |
+    | page_size | 是 | int | 分页查询每页大小（1<=page_size<=200) |
+    | package_list | 是 | list | 要查询的二进制包的列表，为空列表时表示查询全部二进制包 |
+    | command_line | 是 | bool | 是否是命令行场景，默认为False |
 
 - 请求示例：
 
   ```python
-  all_bin_packages('Mainline')
+  all_bin_packages('Mainline',1,20,package_list=["Judy"], command_line=False)
   ```
 
 - 预期返回参数
 
-  | 参数名 | 类型 | 说明 |
-  |    - |   - |    - |
-  | package_dict | dict | 包含包基本信息的字典 |
+  | 参数名 | 类型       | 说明           |
+  | ------ | ---------- | -------------- |
+  | total  | int        | 返回数据的数量 |
+  | data   | list(dict) | 返回的具体数据 |
 
+- data
   - package_dict参数：
     | 参数名 | 类型 | 说明 |
     |    - |    - |   - |
@@ -1425,26 +1616,28 @@ resp = [
 - 返回示例：
 
 ```json
-resp = [
-  {
-    "pkg_name": "Judy",
-    "license": "Apache 2.0",
-    "version": "2.0.0",
-    "url":"http://www.xxx.com",
-    "source_name": "Judy",
-    "database": "Mainline"
-  },
-  ....
-]
+resp = {"total":2300,
+		[
+		  {
+			"pkg_name": "Judy",
+			"license": "Apache 2.0",
+			"version": "2.0.0",
+			"url":"http://www.xxx.com",
+			"source_name": "Judy",
+			"database": "Mainline"
+		  },
+		  ....
+		]
+}
 ```
 
-- 异常返回
+- 异常返回参数
   
-    ```python
-    resp = []
-    ```
+    | 异常名                      | 类型   | 说明                                                        |
+    | --------------------------- | ------ | ----------------------------------------------------------- |
+    | ParametersError     | 自定义 | 参数错误        |
 
-#### 3.8.3、 SourcePackage()
+#### 3.8.3、 源码包详细信息模块
 
 ##### 3.8.3.1、 src_package_info
 
@@ -1467,7 +1660,7 @@ resp = [
 
 ```python
 # 获取指定database中的Judy信息
-src_package_info(["Judy"],database=['openEuler-20.09','fedora30'])
+src_package_info(["Judy"],database=['openEuler-20.09','os_version_2'])
 # 获取所有database下的Judy信息
 src_package_info(["Judy","glibc"])
 ```
@@ -1574,7 +1767,7 @@ dict:source_dict = {
         "...": "..."
       }
   ],
-  "fedora30": [
+  "os_version_2": [
     {
       "src_name": "Judy",
       "...":"..."
@@ -1593,7 +1786,7 @@ dict:source_dict = {
 | 参数名 | 类型 | 异常说明 |
 |    - |   - |    - |
 
-#### 3.8.4、 BinaryPackage()
+#### 3.8.4、二进制包详细信息模块
 
 ##### 3.8.4.1、 bin_package_info
 
@@ -1616,7 +1809,7 @@ dict:source_dict = {
 
 ```python
 # 获取指定database中的Judy信息
-bin_package_info(["Judy-devel"],database=['openEuler-20.09','fedora30'])
+bin_package_info(["Judy-devel"],database=['openEuler-20.09','os_version_2'])
 # 获取所有database下的Judy信息
 bin_package_info(["Judy-devel","glibc"])
 ```
@@ -1723,7 +1916,7 @@ binary_dict = {
       "...": "..."
     }
   ],
-  "fedora":[
+  "os_version_2":[
     {
       "...":"..."
     },
@@ -1740,7 +1933,7 @@ binary_dict = {
     resp = {}
     ```
 
-#### 3.8.5、 DataBase()
+#### 3.8.5、 数据库信息模块
 
 ##### 3.8.5.1、 db_priority
 
@@ -1780,7 +1973,7 @@ db_priority = ["openEuler:Mainline","openEuler:20.09",..]
     resp = [] 
     ```
 
-#### 3.8.6、 InitializeService()
+#### 3.8.6、初始化模块
 
 ##### 3.8.6.1、 import_depend
 
@@ -1808,9 +2001,9 @@ db_priority = ["openEuler:Mainline","openEuler:20.09",..]
 
   ```yaml
   # repo源初始化模式 —— 本地repo源
-  - dbname: fedora
-    src_db_file: file:///root/public/initdb/fedora/src
-    bin_db_file: file:///root/public/initdb/fedora/bin
+  - dbname: os_version_2
+    src_db_file: file:///root/public/initdb/os_version_2/src
+    bin_db_file: file:///root/public/initdb/os_version_2/bin
     priority: 1
   # repo源初始化模式 ——远端repo源
   - dbname: openEuler-20.09-OS
@@ -1834,7 +2027,7 @@ db_priority = ["openEuler:Mainline","openEuler:20.09",..]
   raise InitializeError
   ```
 
-#### 3.8.7、 InstallDepend()
+#### 3.8.7、 安装依赖模块
 
 ##### 3.8.7.1、 install_depend
 
@@ -1861,14 +2054,14 @@ db_priority = ["openEuler:Mainline","openEuler:20.09",..]
 # 按照指定优先级搜索，搜索两层依赖关系
 install_depend(
     ["Judy","CUnit"],
-    db_priority=["openEuler:Mainline","fedora"],
+    db_priority=["openEuler:Mainline","os_version_2"],
     level = 2
 )
 
 # 不指定level 表示安装依赖会搜索到全部的依赖
 install_depend(
     ["Judy","CUnit"],
-    db_priority=["openEuler:Mainline","fedora"]
+    db_priority=["openEuler:Mainline","os_version_2"]
 )
 ```
 - 预期返回参数
@@ -1879,7 +2072,7 @@ install_depend(
     | 参数名 | 类型 | 异常说明 |
     |    - |   - |    - |
 
-#### 3.8.8、 BuildDepend()
+#### 3.8.8、 编译依赖模块
 
 ##### 3.8.8.1、 build_depend
 
@@ -1907,7 +2100,7 @@ install_depend(
 # 按照指定优先级搜索，搜索两层依赖关系
 build_depend(
     ["Judy","CUnit"],
-    db_priority=["openEuler:Mainline","fedora"],
+    db_priority=["openEuler:Mainline","os_version_2"],
     level = 2,
     self_build = True
 )
@@ -1915,7 +2108,7 @@ build_depend(
 # 不指定level 表示安装依赖会搜索到全部的依赖, 不指定self_build 表示不查询自编译依赖
 build_depend(
     ["glibc"],
-    db_priority=["openEuler:Mainline","fedora"]
+    db_priority=["openEuler:Mainline","os_version_2"]
 )
 ```
 
@@ -1927,7 +2120,7 @@ build_depend(
     | 参数名 | 类型 | 异常说明 |
     |    - |   - |    - |
 
-#### 3.8.9、 SelfDepend()
+#### 3.8.9、 自编译模块
 
 ##### 3.8.9.1、 self_depend
 
@@ -1976,7 +2169,7 @@ build_depend(
     | 参数名 | 类型 | 异常说明 |
     |    - |   - |    - |
 
-#### 3.8.10、 BeDepend()
+#### 3.8.10、被依赖模块
 
 ##### 3.8.10.1、 be_depend
 
@@ -2013,7 +2206,7 @@ build_depend(
     | 参数名 | 类型 | 异常说明 |
     |    - |   - |    - |
 
-#### 3.8.11、 BaseDepend()
+#### 3.8.11、 下载功能、图谱功能模块
 
 ##### 3.8.11.2、 download_depend_files
 
@@ -2137,7 +2330,7 @@ build_depend(
 depend_list(
   ["Judy","CUnit"],
   depend_type="install",
-  db_priority=["Mainline","fedora"],
+  db_priority=["Mainline","os_version_2"],
   level = 3
 )
 
@@ -2145,14 +2338,14 @@ depend_list(
 depend_list(
   ["Judy","CUnit"],
   depend_type="install",
-  db_priority=["Mainline","fedora"]
+  db_priority=["Mainline","os_version_2"]
 )
 
 # 编译依赖，不查询自编译依赖不需要指定self_build 指定level查询到第三层就结束
 depend_list(
   ["Judy","CUnit"],
   depend_type="build",
-  db_priority=["Mainline","fedora"],
+  db_priority=["Mainline","os_version_2"],
   level=3
 )
 
@@ -2160,7 +2353,7 @@ depend_list(
 depend_list(
   ["Judy","CUnit"],
   depend_type="build",
-  db_priority=["Mainline","fedora"],
+  db_priority=["Mainline","os_version_2"],
   self_build=True
 )
 
@@ -2168,7 +2361,7 @@ depend_list(
 depend_list(
   ["Judy","CUnit"],
   depend_type="self",
-  db_priority=["Mainline","fedora"],
+  db_priority=["Mainline","os_version_2"],
   packtype='source',
   self_build=True
 )
@@ -2176,7 +2369,7 @@ depend_list(
 depend_list(
   ["Judy","CUnit"],
   depend_type="self",
-  db_priority=["Mainline","fedora"],
+  db_priority=["Mainline","os_version_2"],
   packtype='binary',
   self_build=True,
   with_subpack=True
@@ -2265,7 +2458,7 @@ binary_data = {
         "version":"v1.20.0.1",
         "source_name" : "Judy",
         "level": 1,
-        "database":"openeuler-20.03",
+        "database":"os_version_1",
         "install" :[
             "Judy-devel"，
             "attr",
@@ -2284,7 +2477,7 @@ binary_data = {
         "version":"v1.20.0.1",
         "source_name" : "Judy",
         "level": 2,
-        "database":"openeuler-20.03",
+        "database":"os_version_1",
         "install" :[
             "attr",
             "Judy"
@@ -2295,7 +2488,7 @@ binary_data = {
         "version":"v1.20.0.1",
         "source_name" : "attr",
         "level": 2,
-        "database":"openeuler-20.03",
+        "database":"os_version_1",
         "install" :[
             "openssl-libs"
         ]
@@ -2307,7 +2500,7 @@ source_data = {
     "Judy": {
         "name": "Judy",
         "version": "v1.20.0.1",
-        "database": "openeuler-20.03",
+        "database": "os_version_1",
         "build": [
             "gcc",
             "make"
@@ -2316,7 +2509,7 @@ source_data = {
     "attr": {
         "name": "attr",
         "version": "v1.20.0.1",
-        "database": "openeuler-20.03"
+        "database": "os_version_1"
     }
 }
 ```
@@ -2379,7 +2572,7 @@ binary_data = {
         "name": "Judy",
         "version":"v1.20.0.1",
         "source_name" : "Judy",
-        "database":"openeuler-20.03",
+        "database":"os_version_1",
         "install" :[
             "libselinux",
             "ncurses",
@@ -2394,7 +2587,7 @@ binary_data = {
         "name": "Judy-devel",
         "version":"v1.20.0.1",
         "source_name" : "Judy",
-        "database":"openeuler-20.03",
+        "database":"os_version_1",
         "install" :[
             "attr",
             "Judy"
@@ -2409,7 +2602,7 @@ binary_data = {
         "name": "attr",
         "version":"v1.20.0.1",
         "source_name" : "attr",
-        "database":"openeuler-20.03",
+        "database":"os_version_1",
         "install" :[
             "openssl-libs"
         ]
@@ -2421,12 +2614,12 @@ source_data = {
     "Judy": {
         "name": "Judy",
         "version": "v1.20.0.1",
-        "database": "openeuler-20.03"
+        "database": "os_version_1"
     },
     "attr": {
         "name": "attr",
         "version": "v1.20.0.1",
-        "database": "openeuler-20.03"
+        "database": "os_version_1"
     }
 
 }
@@ -2437,7 +2630,7 @@ source_data = {
     | 参数名 | 类型 | 异常说明 |
     |    - |   - |    - |
 
-##### 3.8.11.8、 filter_dict（待讨论）
+##### 3.8.11.8、 filter_dict
 
 - 接口描述：
 
@@ -2479,7 +2672,7 @@ binary_data = {
         "name": "Judy",
         "version":"v1.20.0.1",
         "source_name" : "Judy",
-        "database":"openeuler-20.03",
+        "database":"os_version_1",
         "level": 1,
         "direction": "root",
         "requires" :[
@@ -2495,7 +2688,7 @@ binary_data = {
         "name": "attr",
         "version":"v1.20.0.1",
         "source_name" : "attr",
-        "database":"openeuler-20.03",
+        "database":"os_version_1",
         "level": 2,
         "direction": "downward",
         "requires":[
@@ -2507,7 +2700,7 @@ binary_data = {
         "name": "glibc",
         "version":"v1.20.0.1",
         "source_name" : "glibc",
-        "database":"openeuler-20.03",
+        "database":"os_version_1",
         "level": 2,
         "direction": "downward",
         "requires":[
@@ -2519,7 +2712,7 @@ binary_data = {
         "name": "gmp",
         "version":"v1.20.0.1",
         "source_name" : "gmp",
-        "database":"openeuler-20.03",
+        "database":"os_version_1",
         "level": 2,
         "direction": "upward",
         "be_requires":[
@@ -2531,7 +2724,7 @@ binary_data = {
         "name": "openssl-libs",
         "version":"v1.20.0.1",
         "source_name" : "openssl",
-        "database":"openeuler-20.03",
+        "database":"os_version_1",
         "level": 2,
         "direction": "upward",
         "be_requires":[
@@ -2618,7 +2811,7 @@ binary_data = {
     | 参数名 | 类型 | 异常说明 |
     |    - |   - |    - |
 
-#### 3.8.12、 包依赖查询模块
+#### 3.8.12、 包依赖、包信息数据库查询模块
 
 ##### 3.8.12.1 get_install_req
 
@@ -2642,7 +2835,7 @@ binary_data = {
   
 ```python
   get_install_req(["Judy","CUnit"]) 隐式参数 self.database_list
-  get_install_req(["Judy","CUnit"], "openeuler-20.09") 隐式参数 self.database_list
+  get_install_req(["Judy","CUnit"], "os_version_1") 隐式参数 self.database_list
 ```
 
 - 预期返回参数：
@@ -2674,7 +2867,7 @@ binary_data = {
     {
       "binary_name": "Judy",
       "bin_version": "1.1.1",
-      "database": "openeuler-20.09",
+      "database": "os_version_1",
       "src_name": "Judy",
       "src_version": "1.1.1",
       "requires":[
@@ -2684,7 +2877,7 @@ binary_data = {
           "com_bin_version": "1.1.1",
           "com_src_name": "lib",
           "com_src_version": "1.1.1",
-          "com_database": "openeuler-20.09"
+          "com_database": "os_version_1"
         },
         {
           "component": "lib4.so",  
@@ -2692,7 +2885,7 @@ binary_data = {
           "com_bin_version": "1.1.1",
           "com_src_name": "lib",
           "com_src_version": "1.1.1",
-          "com_database": "openeuler-20.09"
+          "com_database": "os_version_1"
         },
         {
           "component": "lib2.so",  
@@ -2701,7 +2894,7 @@ binary_data = {
           "com_src_name": "lib",
           "com_src_version": "1.1.1",
           "com_src_version": "1.1.1",
-          "com_database": "fedora31"
+          "com_database": "os_version_2"
         }
         {
           "component": "lib3.so"
@@ -2711,7 +2904,7 @@ binary_data = {
     {
       "binary_name": "CUit",
       "bin_version": "1.1.1",
-      "database": "openeuler-20.09",
+      "database": "os_version_1",
       "src_name": "CUit",
       "src_version": "1.1.1",
       "requires":[
@@ -2721,7 +2914,7 @@ binary_data = {
           "com_bin_version": "1.1.1",
           "com_src_name": "Judy",
           "com_src_version": "1.1.1",
-          "com_database": "openeuler-20.09"
+          "com_database": "os_version_1"
         },
         {
           "component": "lib4.so",  
@@ -2729,16 +2922,19 @@ binary_data = {
           "com_bin_version": "1.1.1",
           "com_src_name": "Judy",
           "com_src_version": "1.1.1",
-          "com_database": "fedora31"
+          "com_database": "os_version_2"
         }
       ]
     }
   ]
-```
+ ```
 
 - 异常返回参数
-    | 参数名 | 类型 | 异常说明 |
-    |    - |   - |    - |
+  
+    | 异常名                      | 类型   | 说明                                                        |
+    | --------------------------- | ------ | ----------------------------------------------------------- |
+    | DatabaseConfigException     | 自定义 | 数据库配置异常，例如数据库地址为空，数据库类型不支持        |
+    | ElasticSearchQueryException | 自定义 | ES数据库查询异常，例如数据库连接失败，连接超时，index不存在 |
 
 ##### 3.8.12.2 get_build_req
 
@@ -2763,7 +2959,7 @@ binary_data = {
   
 ```python
   get_build_req(["Judy","CUnit"]) 隐式参数 self.database_list
-  get_build_req(["Judy","CUnit"], "openeuler-20.09") 隐式参数 self.database_list
+  get_build_req(["Judy","CUnit"], "os_version_1") 隐式参数 self.database_list
 ```
 
 - 预期返回参数：(可和上面 get_install_req 使用同一个结构)
@@ -2793,7 +2989,7 @@ binary_data = {
     {
       "source_name": "Judy",
       "src_version": "1.1.1",
-      "database": "openeuler-20.09",
+      "database": "os_version_1",
       "requires":[
         {
           "component": "lib",  
@@ -2801,7 +2997,7 @@ binary_data = {
           "com_bin_version": "1.1.1",
           "com_src_name": "make",
           "com_src_version": "1.1.1",
-          "com_database": "openeuler-20.09"
+          "com_database": "os_version_1"
         },
         {
           "component": "lib2",  
@@ -2810,14 +3006,14 @@ binary_data = {
           "com_src_name": "make",
           "version": "1.1.1",
           "com_src_version": "1.1.1",
-          "com_database": "fedora31"
+          "com_database": "os_version_2"
         }
       ]
     },
     {
       "source_name": "CUit",
       "src_version": "1.1.1",
-      "database": "openeuler-20.09",
+      "database": "os_version_1",
       "requires":[
         {
           "component": "lib",  
@@ -2825,7 +3021,7 @@ binary_data = {
           "com_bin_version": "1.1.1",
           "com_src_name": "Judy",
           "com_src_version": "1.1.1",
-          "com_database": "openeuler-20.09"
+          "com_database": "os_version_1"
         },
         {
           "component": "lib2",  
@@ -2833,16 +3029,19 @@ binary_data = {
           "com_bin_version": "1.1.1",
           "com_src_name": "Judy",
           "com_src_version": "1.1.1",
-          "com_database": "fedora31"
+          "com_database": "os_version_2"
         }
         ]
     }
   ]
-```
+ ```
 
 - 异常返回参数
-    | 参数名 | 类型 | 异常说明 |
-    |    - |   - |    - |
+  
+    | 异常名                      | 类型   | 说明                                                        |
+    | --------------------------- | ------ | ----------------------------------------------------------- |
+    | DatabaseConfigException     | 自定义 | 数据库配置异常，例如数据库地址为空，数据库类型不支持        |
+    | ElasticSearchQueryException | 自定义 | ES数据库查询异常，例如数据库连接失败，连接超时，index不存在 |
 
 ##### 3.8.12.3 get_be_req
 
@@ -2863,7 +3062,7 @@ binary_data = {
 - 请求示例：
   
 ```python
-  get_be_req(["Judy","CUnit"],"openeuler-20.09") 
+  get_be_req(["Judy","CUnit"],"os_version_1") 
 ```
 
 - 预期返回参数：
@@ -2984,8 +3183,11 @@ binary_data = {
  ```
 
 - 异常返回参数
-    | 参数名 | 类型 | 异常说明 |
-    |    - |   - |    - |
+  
+    | 异常名                      | 类型   | 说明                                                        |
+    | --------------------------- | ------ | ----------------------------------------------------------- |
+    | DatabaseConfigException     | 自定义 | 数据库配置异常，例如数据库地址为空，数据库类型不支持        |
+    | ElasticSearchQueryException | 自定义 | ES数据库查询异常，例如数据库连接失败，连接超时，index不存在 |
 
 ##### 3.8.12.4 get_src_name
 
@@ -2997,16 +3199,18 @@ binary_data = {
     |    - |   - |
 
 - 请求参数：
-    参数名 | 是否必填 | 类型 | 说明
-    ---------|----------|---------|---------
-    binary_list | 是 | list | 要查询的二进制包的列表
+
+   |参数名 | 是否必填 | 类型 | 说明 |
+   |---------|----------|---------|---------|
+   |binary_list | 是 | list | 要查询的二进制包的列表 |
+   |specify_db | 否 | str | 指定的数据库，当上层调用已知软件包所在数据库时，指定该字段可能加快查询速度 |
 
 > 查询数据所在的数据库列表用初始化方式赋值给所在类的属性，入参中忽略。
 
 - 调用实例：
   
 ```python
-  get_src_name(["Judy","CUnit"]) 隐式参数 self.database_list
+  get_src_name(["Judy","CUnit"], specify_db = "os_version_1") 隐式参数 self.database_list
 ```
 
 - 预期返回参数 （如果和安装、编译依赖的信息有重复，可以考虑移除该方法）
@@ -3025,23 +3229,26 @@ binary_data = {
     {
       "binary_name": "Judy",
       "bin_version": "1.1.1",
-      "database": "openeuler-20.09",
+      "database": "os_version_1",
       "src_name": "Judy",
       "src_version": "1.1.1",
     },
     {
       "binary_name": "CUit",
       "bin_version": "1.1.1",
-      "database": "openeuler-20.09",
+      "database": "os_version_1",
       "src_name": "CUit",
       "src_version": "1.1.1",
     }
   ]
-```
+ ```
 
 - 异常返回参数
-    | 参数名 | 类型 | 异常说明 |
-    |    - |   - |    - |
+  
+    | 异常名                      | 类型   | 说明                                                        |
+    | --------------------------- | ------ | ----------------------------------------------------------- |
+    | DatabaseConfigException     | 自定义 | 数据库配置异常，例如数据库地址为空，数据库类型不支持        |
+    | ElasticSearchQueryException | 自定义 | ES数据库查询异常，例如数据库连接失败，连接超时，index不存在 |
 
 ##### 3.8.12.5 get_bin_name
 
@@ -3054,16 +3261,17 @@ binary_data = {
 
 - 请求参数：
 
-参数名 | 是否必填 | 类型 | 说明
----------|----------|---------|---------
- source_list | 是 | list | 要查询的源码包的列表
+    |参数名 | 是否必填 | 类型 | 说明 |
+    |---------|----------|---------|--------- |
+    |source_list | 是 | list | 要查询的源码包的列表 |
+    |specify_db | 否 | str | 指定的数据库，当上层调用已知软件包所在数据库时，指定该字段可能加快查询速度 |
 
 > 查询数据所在的数据库列表用初始化方式赋值给所在类的属性，入参中忽略。
 
 - 请求示例：
   
 ```python
-  get_bin_name(["Judy","CUnit"]) 隐式参数 self.database_list
+  get_bin_name(["Judy","CUnit"], specify_db = "os_version_1") 隐式参数 self.database_list
 ```
 
 - 预期返回参数：
@@ -3089,7 +3297,7 @@ binary_data = {
     {
       "source_name": "Judy",
       "src_version": "1.1.1",
-      "database": "openeuler-20.09",
+      "database": "os_version_1",
       "binary_infos":[
         {
           "bin_name": "Judy",
@@ -3104,7 +3312,7 @@ binary_data = {
     {
       "source_name": "CUit",
       "src_version": "1.1.1",
-      "database": "openeuler-20.09",
+      "database": "os_version_1",
       "binary_infos":[
         {
           "bin_name": "CUit",
@@ -3120,8 +3328,11 @@ binary_data = {
 ```
 
 - 异常返回参数
-    | 参数名 | 类型 | 异常说明 |
-    |    - |   - |    - |
+  
+    | 异常名                      | 类型   | 说明                                                        |
+    | --------------------------- | ------ | ----------------------------------------------------------- |
+    | DatabaseConfigException     | 自定义 | 数据库配置异常，例如数据库地址为空，数据库类型不支持        |
+    | ElasticSearchQueryException | 自定义 | ES数据库查询异常，例如数据库连接失败，连接超时，index不存在 |
 
 ##### 3.8.12.6 get_src_info
 
@@ -3137,16 +3348,28 @@ binary_data = {
   
     | 参数名 | 必选 | 类型 | 说明 |
     | ----------- | -------- | ---- | ----------- |
-    | src_list | 是  | list(str) | 要查询的源码包的列表  |
+    | src_list | 是  | list | 要查询的源码包的列表，为空列表时表示查询全部源码包 |
     | database    | 是       | str  | 查询源码包所在数据库，只支持在单个数据库中查询 |
-
+    | page_num | 是 | int | 分页查询的页码（>=1） |
+    | page_size | 是 | int | 分页查询每页大小（1<=page_size<=200) |
+    | command_line | 否 | bool | 是否是命令行场景，如果是命令行场景，不分页；UI场景，分页，默认为False |
+  
 - 请求示例：
 
     ```json
-    get_src_info(["Judy","CUnit"],"openeuler-20.09")
+    get_src_info(src_list=["Judy","CUnit"],database="os_version_1",page_num=1,page_size=20,command_line=False)
     ```
 
 - 预期返回参数
+
+    | 参数名 | 类型       | 说明           |
+    | ------ | ---------- | -------------- |
+    | total  | int        | 返回数据的数量 |
+    | data   | list(dict) | 返回的具体数据 |
+
+    
+
+    - data     key值： src_name
 
     | 参数名        | 类型      | 说明                   |
     | ----------- | --------- | ---------------------- |
@@ -3164,37 +3387,50 @@ binary_data = {
 - 返回示例:
 
 ```json
-  resp:{
-    "Judy":{
-      "src_name": "Judy",
-      "version": "1.0.5",
-      "release": "19.oe1",
-      "url": "http://sourceforge.net/projects/judy/",
-      "license": "LGPLv2+",
-      "summary": "Judy",
-      "description": "Judy",
-      "vendor": "http://openeuler.org",
-      "href": "Packages/Judy-1.0.5-19.oe1.src.rpm",
-      "subpacks": ["Judy", "Judy-devel"]
-    },
-    "CUnit":{
-      "src_name": "CUnit",
-      "version": "1.0.5",
-      "release": "19.oe1",
-      "url": "http://sourceforge.net/projects/judy/",
-      "license": "LGPLv2+",
-      "summary": "A Unit Testing Framework for C",
-      "description": "CUnit is a lightweight system for writing, administering, and running .",
-      "vendor": "http://openeuler.org",
-      "href": "Packages/CUnit-2.1.3-21.oe1.src.rpm",
-      "subpacks": ["CUnit", "CUnit-devel", "CUnit-help"]
+{
+    "total": 2020,
+    "data": {
+        "Judy": {
+            "src_name": "Judy",
+            "version": "1.0.5",
+            "release": "19.oe1",
+            "url": "http://sourceforge.net/projects/judy/",
+            "license": "LGPLv2+",
+            "summary": "Judy",
+            "description": "Judy",
+            "vendor": "http://openeuler.org",
+            "href": "Packages/Judy-1.0.5-19.oe1.src.rpm",
+            "subpacks": [
+                "Judy",
+                "Judy-devel"
+            ]
+        },
+        "CUnit": {
+            "src_name": "CUnit",
+            "version": "1.0.5",
+            "release": "19.oe1",
+            "url": "http://sourceforge.net/projects/judy/",
+            "license": "LGPLv2+",
+            "summary": "A Unit Testing Framework for C",
+            "description": "CUnit is a lightweight system for writing, administering, and running .",
+            "vendor": "http://openeuler.org",
+            "href": "Packages/CUnit-2.1.3-21.oe1.src.rpm",
+            "subpacks": [
+                "CUnit",
+                "CUnit-devel",
+                "CUnit-help"
+            ]
+        }
     }
-  }
+}
 ```
 
 - 异常返回参数
-    | 参数名 | 类型 | 异常说明 |
-    |    - |   - |    - |
+
+    | 异常名                      | 类型   | 说明                                                        |
+    | --------------------------- | ------ | ----------------------------------------------------------- |
+    | DatabaseConfigException     | 自定义 | 数据库配置异常，例如数据库地址为空，数据库类型不支持        |
+    | ElasticSearchQueryException | 自定义 | ES数据库查询异常，例如数据库连接失败，连接超时，index不存在 |
 
 ##### 3.8.12.7 get_bin_info
 
@@ -3210,16 +3446,26 @@ binary_data = {
 
     | 参数名        | 必选 | 类型 | 说明        |
     | ----------- | -------- | ---- | -------------- |
-    | binary_list | 是       | list(str) | 要查询的二进制包的列表                           |
+    | binary_list | 是       | list | 要查询的二进制包的列表                           |
     | database    | 是       | str  | 查询二进制包所在数据库，只支持在单个数据库中查询 |
+    | page_num | 是 | int | 分页查询的页码（>=1） |
+    | page_size | 是 | int | 分页查询每页大小（1<=page_size<=200) |
+    | command_line | 否   | bool      | 是否是命令行场景，如果是命令行场景，不分页；UI场景，分页，默认为False |
 
 - 请求示例：
   
 ```python
-  get_bin_info(["Judy-devel"],"fedora32")
+  get_bin_info(bin_list=["Judy","CUnit"],database="os_version_1",page_num=1,page_size=20,command_line=False)
 ```
 
 - 预期返回参数
+
+| 参数名 | 类型       | 说明           |
+| ------ | ---------- | -------------- |
+| total  | int        | 返回数据的数量 |
+| data   | list(dict) | 返回的具体数据 |
+
+- data   key值： bin_name
 
 | 名称        | 类型      | 说明                   |
 | ----------- | --------- | ---------------------- |
@@ -3231,34 +3477,121 @@ binary_data = {
 | summary | str | 二进制包的概要|
 | description | str | 二进制包的详细描述|
 | vendor | str | 二进制包提供者 |
-| sourcerpm | str | 提供二进制包的源码包全称
-| src_name | str | 提供二进制包的源码包名称
-| href | str | 二进制包全路径
+| sourcerpm | str | 提供二进制包的源码包全称 |
+| src_name | str | 提供二进制包的源码包名称 |
+| href | str | 二进制包全路径 |
+| -file_list | list(dict) | 二进制包提供的文件列表 |
+- file_list(dict): 
+
+  | 名称      | 类型 | 说明                                                 |
+  | --------- | ---- | ---------------------------------------------------- |
+  | filenames | str  | 文件名称(可能有多个，以字符串形式返回，业务处理分隔) |
+  | dirname   | str  | 文件所在路径                                         |
+  | filetypes | str  | 文件类型(可能有多个，以字符串形式返回，业务处理分隔) |
 
 - 返回示例：
 
 ```json
-  resp:{
-    "Judy-devel":{
-      "bin_name": "Judy-devel",
-      "version": "1.0.5",
-      "release": "22.fc32",
-      "url": "http://sourceforge.net/projects/judy/",
-      "license": "LGPLv2+",
-      "summary": "Development libraries and headers for Judy",
-      "description": "Thisuse the Judy library.",
-      "vendor": "Fedora Project",
-      "sourcerpm": "Judy-1.0.5-22.fc32.src.rpm",
-      "src_name": "Judy",
-      "href": "Packages/j/Judy-devel-1.0.5-22.fc32.aarch64.rpm"
+{
+    "total": 2020,
+    "data": {
+        "Judy-devel": {
+            "bin_name": "Judy-devel",
+            "version": "1.0.5",
+            "release": "22.fc32",
+            "url": "http://sourceforge.net/projects/judy/",
+            "license": "LGPLv2+",
+            "summary": "Development libraries and headers for Judy",
+            "description": "Thisuse the Judy library.",
+            "vendor": "Fedora Project",
+            "sourcerpm": "Judy-1.0.5-22.fc32.src.rpm",
+            "src_name": "Judy",
+            "href": "Packages/j/Judy-devel-1.0.5-22.fc32.aarch64.rpm",
+            "file_list": [
+                {
+                    "filenames": "ext/int",
+                    "dirname": "/usr/share/doc/Judy-devel/doc",
+                    "filetypes": "dd"
+                },
+                {
+                    "filenames": "libJudy.so",
+                    "dirname": "/usr/lib64",
+                    "filetypes": "f"
+                }
+            ]
+        }
     }
-  }
+}
 ```
 
 - 异常返回参数
 
-    | 参数名 | 类型 | 异常说明 |
-    |    - |   - |    - |
+    | 异常名                      | 类型   | 说明                                                        |
+    | --------------------------- | ------ | ----------------------------------------------------------- |
+    | DatabaseConfigException     | 自定义 | 数据库配置异常，例如数据库地址为空，数据库类型不支持        |
+    | ElasticSearchQueryException | 自定义 | ES数据库查询异常，例如数据库连接失败，连接超时，index不存在 |
+
+### 3.9、日志查看和转储
+
+####  3.9.1、日志查看
+
+ pkgship服务在运行时会产生两种日志，业务日志和操作日志。
+
+ 1、业务日志: 
+
+  路径：/var/log/pkgship/log_info.log（支持在conf.yaml中配置）。
+
+  功能：主要记录代码内部运行的日志，方便问题定位。
+
+  权限：路径权限755，日志文件权限644，普通用户可以查看。
+
+2、操作日志：
+
+路径：/var/log/pkgship-operation/uwsgi.log （支持在conf.yaml中配置）。
+
+功能：记录使用者操作信息，包括ip，访问时间，访问url，访问结果等，方便后续查阅以及记录攻击者信息。
+
+权限：路径权限700，日志文件权限644，只有root和pkgshipuser可以查看。
+
+#### 3.9.2、日志转储
+
+1、业务日志转储：
+
+- 转储机制
+
+  使用python自带的logging内置函数的转储机制，按照日志大小来备份。
+
+> 配置项，package.ini中配置每个日志的容量和备份数量
+>
+> ```ini
+> ; Maximum capacity of each file, the unit is byte, default is 30M
+> max_bytes=31457280
+> 
+> ; Number of old logs to keep;default is 30
+> backup_count=30
+> ```
+
+- 转储过程
+
+  当某次日志写入后，日志文件大小超过配置的日志容量时，会自动压缩转储，压缩后文件名为log_info.log.x.gz， x是数字，数字越小为越新的备份。
+
+  当备份日志数量到达配置的备份数量之后，最早的备份日志会被删除掉，然后备份一个最新的压缩日志文件。
+
+
+
+2、操作日志转储：
+
+- 转储机制
+
+  使用脚本进行转储，按照时间转储，每日转储一次，共保留30天，不支持自定义配置。
+
+  > 脚本位置：/etc/pkgship/uwsgi_logrotate.sh
+
+- 转储过程
+
+  pkgship启动时转储脚本后台运行，从启动时，每隔1天进行转储压缩，共保留30份压缩文件，压缩文件名称为uwsgi.log-20201010x.zip， x为压缩时的小时数。
+
+  pkgship停止后转储脚本停止，不再进行转储，再次启动时，转储脚本重新执行。
 
 ## 4、修改日志
 
@@ -3268,50 +3601,3 @@ binary_data = {
 |||
 
 ## 5、参考目录
-
-## 6、 遗留问题
-
-1. elaticsearch版本号决策、选型：引入哪一个版本比较合适？ --待maintainer决策
-2. usecase： 部署、升级、服务启动； 读写接口进行了网段区分
-3. 用户管理问题：读写分离，依赖公有云进行用户隔离。用IP地址进行区分。（将写接口删掉，只允许在本地调用。不提供写服务，只允许登录到本地服务器后才可以进行写操作 --找小兵确认
-4. 读接口：反复调用，恶意 —— 截流、限流的机制，在请求之前控制，同一个ip同接口60s内请求次数不得超过20次
-5. redis缓存占用内存量、命中率是多少、淘汰算法的控制、需要提供预期数值
-  淘汰机制： 从设置了过期时间（20分钟）的数据集中挑选最近最少使用的数据淘汰
-  淘汰算法的控制由redis内部实现
-  redis缓存占用内存量、命中率： 缺少参考数值
-
-    - noeviction：禁止驱逐数据。默认配置都是这个。当内存使用达到阀值的时候，所有引起申请内存的命令都会报错。
-    - volatile-lru：从设置了过期时间的数据集中挑选最近最少使用的数据淘汰。
-    - volatile-ttl：从已设置了过期时间的数据集中挑选即将要过期的数据淘汰。
-    - volatile-random：从已设置了过期时间的数据集中任意选择数据淘汰。
-    - allkeys-lru：从数据集中挑选最近最少使用的数据淘汰。
-    - allkeys-random：从数据集中任意选择数据淘汰。
-
-6. 数据库导入的情况，基于数据库的大小、给出用户参考的内存量
-  导入一个 150M 的数据库，占用内存量1.68G。
-7. 数据库的修改、redis是否会同步 —— 每次初始化、redis可以清空缓存； 先清空、后台将更新后的数据存入redis
-  每次初始化、redis可以清空缓存；基于特定前缀统一删除（在redis模块提供删除方法）
-8. 提供ES数据库配置意见，建议配置几个节点、如何配置
-  缺少参考对象及后续规划诉求，当前单机足够
-9. systemd系统文件的存放路径 /lib/systemd/system/pkgship.service
-  —— 待补充到部署视图中
-10. tmp目录下的峰值规格是多少，规格需要规定
-  峰值规格：1G
-11. log文件管理，最大多大的log日志、
-  10份日志，每份300M
-  （根据时间、单个文件的上限大小
-12. 服务启动权限最小化，服务启动尽量不要使用root用户权限启动。
-  ——需要把pkgship需读取文件移至其他用户也可以访问的路径下，即可使用非root用户权限启动（方案待确认，正堂）
-13. 文件应该从only root 文件移到普通管理员也可以访问的地址下
-  ——需要把pkgship需读取文件移至其他用户也可以访问的路径下，即可使用非root用户权限启动（方案待确认，正堂）
-14. 校验模块要对命令注入风险进行考虑 —— 是否有命令注入风险
- —— pkgship无执行命令行的操作
-15. 软件升级是否要兼容之前的数据（要有一个兼容周期，保留在哪几个版本内）
-  —— v1.x内数据兼容，v2.x与v1.x数据可不兼容
-16. 模糊匹配性能
-  —— 海炜
-17. 建议依赖查询的时候，不要区分大小写
- —— 海炜
-鉴权：登录内网、公有云的用户，既可以拥有写权限
-
-命令行显示包信息、不分页（分页）问题
