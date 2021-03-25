@@ -374,7 +374,7 @@ class PkgshipVersion(Resource):
         rspmsg = RspMsg()
         version, release = pkg_version.get_pkgship_version()
         if not all([version, release]):
-            return jsonify(rspmsg.body('not_found_database_info'))
+            return jsonify(rspmsg.body('get_pkgship_version_failed'))
         res_dict = rspmsg.body('success', version=version, release=release)
         return jsonify(res_dict)
 
