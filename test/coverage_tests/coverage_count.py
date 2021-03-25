@@ -22,7 +22,7 @@ suite = unittest.TestSuite()
 BASE_PATH = Path(Path(__file__).parents[2],"packageship")
 
 TEST_CASE_PATH = Path(__file__).parent
-sys.path.insert(0, os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+sys.path.insert(0, str(Path(__file__).parents[2]))
 
 cov = coverage.coverage(data_suffix='init', include=[str(BASE_PATH) + '/application/*'],
                         omit=["*__init__.py"], data_file='./.coverage')
