@@ -194,7 +194,7 @@ ERROR_CON = {
                 "the parameters is valid"},
     "REMOTE_ERROR": {
         "ERROR_CONTENT": "",
-        "HINT": "The remote connection is abnormal, please check the ’remote_host‘ parameter value "
+        "HINT": "The remote connection is abnormal, please check the 'remote_host' parameter value "
                 "to ensure the connectivity of the remote address"},
     # Too many request
     429: {
