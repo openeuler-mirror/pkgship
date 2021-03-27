@@ -1,0 +1,79 @@
+#!/usr/bin/python3
+# ******************************************************************************
+# Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+# licensed under the Mulan PSL v2.
+# You can use this software according to the terms and conditions of the Mulan PSL v2.
+# You may obtain a copy of Mulan PSL v2 at:
+#     http://license.coscl.org.cn/MulanPSL2
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
+# PURPOSE.
+# See the Mulan PSL v2 for more details.
+# ******************************************************************************/
+# -*- coding:utf-8 -*-
+import os
+import sys
+import unittest
+from pathlib import Path
+import coverage
+from coverage import CoverageException
+
+suite = unittest.TestSuite()
+BASE_PATH = Path(Path(__file__).parents[2],"packageship")
+
+TEST_CASE_PATH = Path(__file__).parent
+sys.path.insert(0, str(Path(__file__).parents[2]))
+
+cov = coverage.coverage(data_suffix='init', include=[str(BASE_PATH) + '/application/*'],
+                        omit=["*__init__.py"], data_file='./.coverage')
+
+
+def specify_case(file_path):
+    """
+    Test specify test cases
+    Args:
+        file_path: test cases file path
+
+    Returns: discover result
+    """
+    discover = unittest.defaultTestLoader.discover(
+        file_path, pattern="test*.py", top_level_dir=file_path)
+    return discover
+
+
+if __name__ == "__main__":
+    runner = unittest.TextTestRunner()
+    args = sys.argv
+    cov.start()
+    test_case_files = [os.path.join(TEST_CASE_PATH, "test_module/test_database/"),
+                       os.path.join(TEST_CASE_PATH, "test_module/test_database_query/"),
+                       os.path.join(TEST_CASE_PATH, "test_module/test_db_priority/"),
+                       os.path.join(TEST_CASE_PATH, "test_module/test_basedepend/"),
+                       os.path.join(TEST_CASE_PATH, "test_module/test_bedepend/"),
+                       os.path.join(TEST_CASE_PATH, "test_module/test_packages/test_all_src_package/"),
+                       os.path.join(TEST_CASE_PATH, "test_module/test_packages/test_all_bin_package/"),
+                       os.path.join(TEST_CASE_PATH, "test_module/test_packages/test_single_package_info/"),
+                       os.path.join(TEST_CASE_PATH, "test_module/test_pkgship_version/"),
+                       os.path.join(TEST_CASE_PATH, "test_module/test_selfbuild/"),
+                       os.path.join(TEST_CASE_PATH, "test_module/test_install/"),
+                       os.path.join(TEST_CASE_PATH, "test_module/test_build/"),
+                       os.path.join(TEST_CASE_PATH, "test_module/test_graph/")
+                       ]
+
+    errors = []
+    failures = []
+    for file in test_case_files:
+        runner_result = runner.run(specify_case(file))
+        errors.extend(runner_result.errors)
+        failures.extend(runner_result.failures)
+
+    if any([errors, failures]):
+        sys.exit(1)
+
+    cov.stop()
+    try:
+        cov.report(show_missing=True)
+        # cov.html_report()
+    except CoverageException:
+        print("No data to report")
+        sys.exit(1)
