@@ -1,0 +1,50 @@
+{
+  "code": "200",
+  "message": "Successful Operation",
+  "resp": {
+    "os_version_1": [
+      {
+        "bin_name": "Judy",
+        "description": "The package provides the most advanced core technology, the main\nadvantages are scalability, high performance and memory efficiency.",
+        "filelist": {},
+        "provides": [],
+        "requires": [
+          {
+            "component": "/bin/sh",
+            "provided_by": [
+              "bash"
+            ]
+          },
+          {
+            "component": "ld-linux-aarch64.so.1()(64bit)",
+            "provided_by": [
+              "glibc"
+            ]
+          },
+          {
+            "component": "ld-linux-aarch64.so.1(GLIBC_2.17)(64bit)",
+            "provided_by": [
+              "glibc"
+            ]
+          },
+          {
+            "component": "rtld(GNU_HASH)",
+            "provided_by": [
+              "glibc"
+            ]
+          },
+          {
+            "component": "libc.so.6(GLIBC_2.17)(64bit)",
+            "provided_by": [
+              "glibc"
+            ]
+          }
+        ],
+        "src_name": "Judy",
+        "summary": "C library array",
+        "url": "http://sourceforge.net/projects/judy/",
+        "version": "1.0.5"
+      }
+    ]
+  }
+}

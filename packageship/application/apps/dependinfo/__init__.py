@@ -10,18 +10,17 @@
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
+import os
 from flask.blueprints import Blueprint
 from flask_restful import Api
-from packageship import application
 from .url import urls
 
-dependinfo = Blueprint('dependinfo', __name__)
 
-# init restapi
+dependinfo = Blueprint('dependinfo', __name__)
 api = Api()
 
 for view, url, operation in urls:
-    if application.OPERATION and application.OPERATION in operation.keys():
+    if os.environ["PERMISSIONS"] in operation.keys():
         api.add_resource(view, url)
 
 

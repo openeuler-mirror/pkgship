@@ -15,7 +15,7 @@
 The request class that reads the interface in the unit test
 """
 import os
-from packageship.libs.exception import Error
+from packageship.application.common.exc import Error
 from .basetest import TestBase
 
 

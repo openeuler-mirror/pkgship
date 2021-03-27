@@ -1,0 +1,62 @@
+{
+  "took": 0,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 1,
+      "relation": "eq"
+    },
+    "max_score": 0.0,
+    "hits": [
+      {
+        "_index": "os_version_1-bedepend",
+        "_type": "_doc",
+        "_id": "gX9Z-XYBamC2Cm-g0lHS",
+        "_score": 0.0,
+        "_source": {
+          "binary_name": "Judy",
+          "bin_version": "1.0.5",
+          "src_name": "Judy",
+          "src_version": "1.0.5",
+          "provides": [
+            {
+              "component": "Judy",
+              "build_require": [],
+              "install_require": [
+                {
+                  "req_bin_name": "Judy-devel",
+                  "req_bin_version": "1.0.5",
+                  "req_src_name": "Judy",
+                  "req_src_version": "1.0.5"
+                }
+              ]
+            },
+            {
+              "component": "Judy(aarch-64)",
+              "build_require": [],
+              "install_require": []
+            },
+            {
+              "component": "libJudy.so.1()(64bit)",
+              "build_require": [],
+              "install_require": [
+                {
+                  "req_bin_name": "mariadb-oqgraph-engine",
+                  "req_bin_version": "10.3.9",
+                  "req_src_name": "mariadb",
+                  "req_src_version": "10.3.9"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

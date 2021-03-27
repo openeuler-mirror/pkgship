@@ -9,11 +9,6 @@
 # IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
-# ******************************************************************************/
-# -*- coding:utf-8 -*-
-"""
-A way to compare the request mode and the correct result in a unit test
-"""
 import unittest
 import os
 import json
@@ -21,7 +16,7 @@ import shutil
 
 from test.base_code.common_test_code import compare_two_values
 from test.base_code.common_test_code import get_correct_json_by_filename
-from packageship.libs.exception import Error
+from packageship.application.common.exc import Error
 from packageship import BASE_PATH
 from packageship.libs.conf import configuration
 
@@ -57,14 +52,14 @@ class TestBase(unittest.TestCase):
             Json data judgment of corresponding content
         """
         self.assertIn("code", response, msg="Error in data format return")
-        self.assertIn("msg", response, msg="Error in data format return")
-        self.assertIn("data", response, msg="Error in data format return")
+        self.assertIn("message", response, msg="Error in data format return")
+        self.assertIn("resp", response, msg="Error in data format return")
 
     def response_json_error_judge(self, resp, resp_code, method):
         """
         Method of comparison of correct results
         """
-        from packageship.libs.constants import ResponseCode
+        from test.common_files.constant import ResponseCode
 
         common_string = f"\nMethod:{method},\nparams:{method.REQUESTS_KWARGS}"
 
@@ -74,14 +69,14 @@ class TestBase(unittest.TestCase):
                          resp.get("code"),
                          msg=f"Error in status code return {common_string}")
 
-        self.assertIn("msg", resp, msg="Error in data format return")
+        self.assertIn("message", resp, msg="Error in data format return")
         self.assertEqual(ResponseCode.CODE_MSG_MAP.get(resp_code),
-                         resp.get("msg"),
+                         resp.get("message"),
                          msg=f"Error in status prompt return {common_string}")
 
-        self.assertIn("data", resp,
+        self.assertIn("resp", resp,
                       msg=f"Error in data format return {common_string}")
-        self.assertIsNone(resp.get("data"),
+        self.assertIsNone(resp.get("resp"),
                           msg=f"Error in data format return {common_string}")
 
     def without_dbs_folder(self, request_args: dict, met=None, code=None, test_type=None):
@@ -116,7 +111,7 @@ class TestBase(unittest.TestCase):
         When there is no database, expectations are compared to actual results
         """
         try:
-            from packageship.libs.constants import ResponseCode
+            from test.common_files.constant import ResponseCode
 
             configuration.DATABASE_FOLDER_PATH = os.path.join(
                 os.path.dirname(BASE_PATH), 'test', 'common_files', 'empty_dbs')
@@ -162,54 +157,4 @@ class TestBase(unittest.TestCase):
                     resp_dict),
                 msg=f"The answer is not correct \n Method:{met},Params:{met.REQUESTS_KWARGS}")
 
-    def compare_response_get_out(self, file_name, resp_dict):
-        """
-        A comparison between the output and the actual result
-        """
-        correct_list = get_correct_json_by_filename(file_name)
-        self.assertNotEqual(
-            [],
-            correct_list,
-            msg=f"Error reading JSON file name {file_name}")
-        self.assertIn("code", resp_dict, msg="Error in data format return")
-        self.assertIn("data", resp_dict, msg="Error in data format return")
-        self.assertIn("msg", resp_dict, msg="Error in data format return")
-        self.assertTrue(
-            compare_two_values(
-                resp_dict.get("data"),
-                correct_list),
-            msg="Error in data information return")
 
-    def find_all_py_file(self, path_list, file_list=[]):
-        directory_list = []
-        for file_path in path_list:
-            for file in os.listdir(file_path):
-                f_path = file_path + '/' + file
-                if os.path.isdir(f_path):
-                    directory_list.append(f_path)
-                elif ".py" in f_path and ".pyc" not in f_path:
-                    file_list.append(f_path)
-        if directory_list:
-            self.find_all_py_file(directory_list)
-        else:
-            self.check_licence(file_list)
-
-
-    def check_licence(self, file_list):
-        results_list = []
-        str = "# See the Mulan PSL v2 for more details."
-        for file in file_list:
-            rec = open(file, 'r+', encoding="utf-8")
-            line_Infos = rec.readlines()
-            resultFlag = False
-            for row in line_Infos:
-                if row.strip().find(str) != -1:
-                    resultFlag = True
-                    break
-            if resultFlag == False:
-                results_list.append(file)
-            rec.close()
-        if len(results_list) != 0:
-            print("licence error please add The following files licence", results_list)
-        self.assertEqual(0, len(results_list),
-                         msg=f"The licence is not complete, please add")

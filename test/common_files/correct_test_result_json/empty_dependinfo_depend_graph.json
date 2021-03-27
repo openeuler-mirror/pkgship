@@ -1,0 +1,21 @@
+{
+  "input": {
+    "packagename": [
+      "Judy"
+    ],
+    "depend_type": "builddep",
+    "node_name": "Judy",
+    "node_type": "source",
+    "parameter": {
+      "db_priority": [
+        "os_version_1"
+      ],
+      "level": 2,
+      "self_build": false
+    }
+  },
+  "output": {
+    "edges": [],
+    "nodes": []
+  }
+}

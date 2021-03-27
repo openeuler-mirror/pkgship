@@ -1,0 +1,21 @@
+{
+  "input": {
+    "packagename": [
+      "Judy"
+    ],
+    "depend_type": "installdep",
+    "parameter": {
+      "db_priority": [
+        "os_version_1"
+      ],
+      "level": 2
+    }
+  },
+  "output": {
+
+      "binary_list": [],
+      "source_list": [],
+      "statistics": []
+
+    }
+  }

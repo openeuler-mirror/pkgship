@@ -1,0 +1,25 @@
+[
+  {
+    "source_name": "Judy",
+    "src_version": "1.0.5",
+    "database": "os_version_1",
+    "requires": [
+      {
+        "component": "coreutils",
+        "com_bin_name": "coreutils",
+        "com_bin_version": "8.32",
+        "com_src_name": "coreutils",
+        "com_src_version": "8.32",
+        "com_database": "os_version_1"
+      },
+      {
+        "component": "gawk",
+        "com_bin_name": "gawk",
+        "com_bin_version": "5.1.0",
+        "com_src_name": "gawk",
+        "com_src_version": "5.1.0",
+        "com_database": "os_version_1"
+      }
+    ]
+  }
+]

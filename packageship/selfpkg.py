@@ -21,12 +21,13 @@ try:
             'System configuration file:%s' % os.environ.get(
                 'SETTINGS_FILE_PATH'),
             'does not exist, software service cannot be started')
+
     app = init_app("query")
 except ImportError as error:
     raise RuntimeError(
-        "The package management software service failed to start : %s" % error)
+        "The package management software service failed to start : %s" % error) from error
 else:
-    from packageship.application.app_global import identity_verification
+    from packageship.application.appglobal import permissions
     from packageship.libs.conf import configuration
 
 
@@ -35,7 +36,7 @@ def before_request():
     """
     Description: Global request interception
     """
-    if not identity_verification():
+    if not permissions():
         return 'No right to perform operation'
 
 

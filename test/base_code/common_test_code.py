@@ -11,13 +11,11 @@
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
 # -*- coding:utf-8 -*-
-"""
-Compare the values in two Python data types for equality, ignoring the order of values
-"""
-
 import os
 import json
-from packageship.system_config import BASE_PATH
+from unittest import mock
+from requests import Response
+from packageship import BASE_PATH
 
 
 def compare_two_values(obj1, obj2):
@@ -32,7 +30,6 @@ def compare_two_values(obj1, obj2):
 
     """
     # With the help of the str() method provided by python,It's so powerful
-
     return obj1 == obj2 or (isinstance(obj1, type(obj2)) and
                             "".join(sorted(str(obj1))) == "".join(sorted(str(obj2))))
 
@@ -58,3 +55,5 @@ def get_correct_json_by_filename(filename):
         return []
 
     return correct_list
+
+
