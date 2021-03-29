@@ -180,8 +180,8 @@ conf.yaml 文件默认存放在 /etc/pkgship/ 路径下，pkgship会通过该配
 
 ```yaml
 dbname: oe20.03   #数据库名称
-src_db_file: /etc/pkgship/repo/openEuler-20.09/src  #源码包所在的本地路径
-bin_db_file: /etc/pkgship/repo/openEuler-20.09/bin  #二进制包所在的本地路径
+src_db_file: file:///etc/pkgship/repo/openEuler-20.09/src  #源码包所在的本地路径
+bin_db_file: file:///etc/pkgship/repo/openEuler-20.09/bin  #二进制包所在的本地路径
 priority: 1 #数据库优先级
 
 dbname: oe20.09
@@ -194,7 +194,12 @@ priority: 2
 
 > 如需更改存放路径，请更改package.ini下的 init_conf_path 选项。
 >
-> 不支持直接配置sqlite文件路径。
+> sqlite文件配置规格：
+>
+> - 为节省空间，不支持直接使用sqlite文件，请使用包含sqlite文件的压缩包，支持压缩格式为：.bz  .gz  .tar  .zip
+> - sqlite压缩包命名格式为xxx.primary.sqlite.xx，二进制包所在路径下还需使用filelists类型的sqlite压缩文件，命名格式为xxx.filelists.sqlite.xx,一般网络地址下的sqlite压缩包都符合该格式。
+> - 本地路径请使用file://前缀。
+> - 本地路径和网络地址路径都要满足sqlite压缩包位于：配置路径/repodata/xxx.primary.sqlite.xx
 >
 > dbname请使用小写字母或者数字，不支持大写字母。
 
