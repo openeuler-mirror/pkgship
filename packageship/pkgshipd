@@ -247,6 +247,22 @@ daemonize=$daemonize" >$OUT_PATH/${PKGSHIP_CONSTANT}.ini
   chown pkgshipuser: $OUT_PATH/${PKGSHIP_CONSTANT}.ini
   chmod 750 $OUT_PATH/${PKGSHIP_CONSTANT}.ini
   echo "[INFO] create uwsgi file ok"
+
+  # create log_info file
+  echo "[INFO] start to create log_info file"
+  log_file_path=$(get_config "log_path")
+  log_file=${log_file_path}/"log_info.log"
+  if [ ! -e "${log_file}" ]; then
+    touch "${log_file}"
+    chmod 644 "${log_file}"
+  else
+    log_info=$(ls -al "${log_file}")
+    if [[ ! "${log_info}" =~ "pkgshipuser" ]]; then
+      echo "[ERROR] The owner of the ${log_file} is incorrect,please make sure the owner is pkgshipuser"
+      exit 1
+    fi
+  fi
+  echo "[INFO] create log_info file success"
 }
 
 function uwsgi_log_logrotate() {
