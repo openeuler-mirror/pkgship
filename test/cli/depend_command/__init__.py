@@ -107,7 +107,7 @@ class DependTestBase(ClientTest):
         Returns:
             None
         """
-        pkg_lst = self._to_find_key(query_body, k_lst)
+        pkg_lst = self._to_find_value_by_key(query_body, k_lst)
         for pkg_name in pkg_lst:
             pkg_info = data_origin.get(pkg_name)
             if not pkg_info:
