@@ -14,10 +14,7 @@
 """
 test_get_pkgship_cmd
 """
-from unittest import mock
 from packageship.application.cli.commands.db import DbPriorityCommand
-from elasticsearch import Elasticsearch
-from test.cli import data_base_info
 from test.cli.dbs_command import DbsTest
 
 
@@ -27,8 +24,7 @@ class TestDB(DbsTest):
     """
     cmd_class = DbPriorityCommand
 
-    @mock.patch.object(Elasticsearch, "search")
-    def test_true_params(self, mock_search):
+    def test_true_params(self):
         """
         test true params
         """
@@ -36,5 +32,4 @@ class TestDB(DbsTest):
 DB priority
 ['os-version']
         """
-        mock_search.return_value = data_base_info
         self.assert_result()

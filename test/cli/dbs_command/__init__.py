@@ -25,3 +25,4 @@ class DbsTest(ClientTest):
         """
         super(DbsTest, self).setUp()
         RemoteService.get = self.client.get
+        self.mock_es_search_only_db()

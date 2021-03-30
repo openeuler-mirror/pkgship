@@ -12,9 +12,12 @@
 # ******************************************************************************/
 # -*- coding:utf-8 -*-
 from collections import defaultdict
+from unittest.mock import Mock
 from requests.exceptions import RequestException
 from test.cli import ClientTest, data_base_info
 from packageship.application.common.remote import RemoteService
+from redis import RedisError
+from packageship.application.common.constant import REDIS_CONN
 
 
 # Redirect RemoteService request function to the current function
@@ -46,11 +49,11 @@ class DependTestBase(ClientTest):
         """
         cls.data_base_info_dict = data_base_info
         if hasattr(cls, "binary_file"):
-            cls.binary_data = cls.read_mock_data_json(cls.binary_file)
+            cls.binary_data = cls.read_file_content(cls.binary_file)
         if hasattr(cls, "source_file"):
-            cls.source_data = cls.read_mock_data_json(cls.source_file)
+            cls.source_data = cls.read_file_content(cls.source_file)
         if hasattr(cls, "component_file"):
-            cls.component_data = cls.read_mock_data_json(cls.component_file)
+            cls.component_data = cls.read_file_content(cls.component_file)
             cls.component_process_data = defaultdict(set)
             for k, v in cls.component_data.items():
                 for pro in v["_source"]["provides"]:
@@ -67,6 +70,12 @@ class DependTestBase(ClientTest):
         super(DependTestBase, self).setUp()
         RemoteService.post = self.client.post
         RemoteService.request = request
+        self.mock_redis_exists_raise_error()
+
+    def mock_redis_exists_raise_error(self):
+        """mock_redis_exists_side_effect"""
+        REDIS_CONN.exists = Mock()
+        REDIS_CONN.exists.side_effect = RedisError
 
     @staticmethod
     def _to_find_value_by_key(dic: dict, find_k_lst: list):
@@ -128,8 +137,7 @@ class DependTestBase(ClientTest):
         binary_lines = []
         source_lines = []
         # logic
-        return binary_lines,source_lines
-
+        return binary_lines, source_lines
 
     def assert_result(self):
         """
@@ -144,7 +152,7 @@ class DependTestBase(ClientTest):
         self.assertListEqual(sorted(excepted_bin), sorted(current_bin))
         self.assertListEqual(sorted(excepted_src), sorted(current_src))
 
-    def mock_es_result(self, index: str, body: dict):
+    def _es_search_result(self, index: str, body: dict):
         """
         Get different return values through different call parameters
         Args:

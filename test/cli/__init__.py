@@ -19,6 +19,8 @@ import sys
 import unittest
 import json
 from pathlib import Path
+from unittest.mock import Mock
+from elasticsearch import Elasticsearch, helpers
 from flask.wrappers import Response
 from packageship import BASE_PATH
 
@@ -38,7 +40,7 @@ class Redirect:
     _content = ""
 
     def write(self, s):
-        """add stdout result string to _content 
+        """add stdout result string to _content
 
         Args:
             s (str): [description]
@@ -46,8 +48,7 @@ class Redirect:
         self._content += s
 
     def flush(self):
-        """flush _content
-        """
+        """flush _content"""
         self._content = ""
 
     def getvalue(self):
@@ -59,24 +60,153 @@ class Redirect:
         return self._content
 
 
-class BaseTest(unittest.TestCase):
+class TestMixin:
     """
-    class for Test Base
+    Test Mixin class
     """
 
-    cmd_class = None
+    def _es_search_result(self, index, body):
+        """_es_search_result
 
-    def setUp(self) -> None:
+        Args:
+            index (str): query es index
+            body (dict): query es body
+
+        Raises:
+            NotImplementedError:
         """
-        setUp Test Environment
+        raise NotImplementedError
+
+    def _es_index_result(self, index, body, doc_type):
+        """_es_indes_result
+
+        Args:
+            index (str): query es index
+            body (dict): query es body
+            doc_type (str): doc type
+
+        Raises:
+            NotImplementedError:
         """
-        self.command_params = []
-        self.excepted_str = ""
-        self.r = Redirect()
-        sys.stdout = self.r
+        raise NotImplementedError
+
+    def _es_scan_result(self, client, index, query, scroll="3m", timeout="1m"):
+        """_es_sacn_result
+
+        Args:
+            client : es clinet
+            index : query es index
+            query : query es body
+            scroll (str, optional):  Defaults to '3m'.
+            timeout (str, optional):  Defaults to '1m'.
+
+        Raises:
+            NotImplementedError:
+        """
+        raise NotImplementedError
+
+    def _es_count_result(self, index, body):
+        """_es_count_result
+
+        Args:
+            index (str): query es index
+            body (dict): query es body
+            doc_type (str): doc type
+
+        Raises:
+            NotImplementedError:
+        """
+        raise NotImplementedError
+
+    def _es_exists_result(self, index, id, doc_type=None):
+        """_es_exists_result
+
+        Args:
+            index (str): The name of the index
+            id ([type]): The document ID
+            doc_type ([type], optional): The type of the document (use `_all` to fetch the
+                first document matching the ID across all types). Defaults to None.
+            params ([type], optional): [description]. Defaults to None.
+            headers ([type], optional): [description]. Defaults to None.
+
+        Raises:
+            NotImplementedError: [description]
+        """
+        raise NotImplementedError
+
+    def mock_es_search_only_db(self, value=None):
+        """mock es search only for dbs search
+
+        Args:
+            value (optional): es search return value. Defaults to None.
+        """
+        if value is None:
+            value = data_base_info
+        Elasticsearch.search = Mock()
+        Elasticsearch.search.return_value = value
+
+    def mock_es_search_side_effect(self):
+        """mock_es_search_side_effect"""
+        Elasticsearch.search = Mock()
+        Elasticsearch.search.side_effect = self._es_search_result
+
+    def mock_es_scan_return_value(self, value=None):
+        """mock_es_scan_return_value
+
+        Args:
+            value (optional): helpers scan return value. Defaults to None.
+        """
+        if value is None:
+            value = []
+        helpers.scan = Mock()
+        helpers.scan.return_value = value
+
+    def mock_es_scan_side_effect(self):
+        """mock_es_scan_side_effect"""
+        helpers.scan = Mock()
+        helpers.scan.side_effect = self._es_scan_result
+
+    def mock_es_count_return_value(self, count=100):
+        """mock_es_count_return_value
+
+        Args:
+            count (int, optional): The count value in es count return_value dict .
+            Defaults to 100.
+        """
+        count_info = {
+            "count": count,
+            "_shards": {"total": count, "successful": 1, "skipped": 0, "failed": 0},
+        }
+        Elasticsearch.count = Mock()
+        Elasticsearch.count.return_value = count_info
+
+    def mock_es_count_side_effect(self):
+        """mock_es_count_side_effect"""
+        Elasticsearch.count = Mock()
+        Elasticsearch.count.return_value = self._es_count_result
+
+    def mock_es_exists_return_value(self, is_exists=True):
+        """mock_es_exists_return_value
+
+        Args:
+            is_exists (bool, optional): the es exists return value . Defaults to True.
+        """
+        Elasticsearch.exists = Mock()
+        Elasticsearch.exists.return_value = is_exists
+
+    def mock_es_exists_side_effect(self):
+        """mock_es_exists_side_effect"""
+        Elasticsearch.exists = Mock()
+        Elasticsearch.exists.side_effect = self._es_exists_result
+
+    def mock_es_index_side_effect(self):
+        """mock_es_index_side_effect"""
+        Elasticsearch.exists = Mock()
+        Elasticsearch.exists.side_effect = self._es_index_result
+
 
     @staticmethod
-    def read_mock_data_json(file_name: str, is_json=True):
+    def read_file_content(file_name: str, is_json=True):
         """
 
         Args:
@@ -97,6 +227,23 @@ class BaseTest(unittest.TestCase):
                 return json.loads(f_p.read())
             else:
                 return f_p.read()
+
+
+class BaseTest(unittest.TestCase, TestMixin):
+    """
+    class for Test Base
+    """
+
+    cmd_class = None
+
+    def setUp(self) -> None:
+        """
+        setUp Test Environment
+        """
+        self.command_params = []
+        self.excepted_str = ""
+        self.r = Redirect()
+        sys.stdout = self.r
 
     def _execute_command(self):
         """
