@@ -18,6 +18,7 @@ from gevent import monkey
 
 monkey.patch_all()
 
+from collections import Counter
 from packageship.application.common.constant import PROVIDES_NAME, FILES_NAME
 from packageship.application.query import Query
 from packageship.application.query.query_body import QueryBody
@@ -133,28 +134,28 @@ class RequireBase(Query):
         for rpm_info in query_rpm_infos:
             if rpm_info.get('requires'):
                 new_requires_list = []
-                component_bin_count_dict = dict()
+                component_bin_list = []
                 multi_binary_component_list = []
                 for component_name in rpm_info.get('requires'):
-                    self._convert_multi_binary_components(all_component_info_dict, component_bin_count_dict,
+                    self._convert_multi_binary_components(all_component_info_dict, component_bin_list,
                                                           component_name,
                                                           multi_binary_component_list, new_requires_list)
 
-                self._filter_multi_binary_components(component_bin_count_dict, multi_binary_component_list,
+                self._filter_multi_binary_components(component_bin_list, multi_binary_component_list,
                                                      new_requires_list)
                 rpm_info['requires'] = new_requires_list
             else:
                 rpm_info['requires'] = []
 
     @staticmethod
-    def _convert_multi_binary_components(all_component_info_dict, component_bin_count_dict, component_name,
+    def _convert_multi_binary_components(all_component_info_dict, component_bin_list, component_name,
                                          multi_binary_component_list, new_requires_list):
         """
         Add the uniquely determined binary package info to the result list
         Construct a dictionary of occurrences of binary packages and list of repeated binary packages
         Args:
             all_component_info_dict: all components dict
-            component_bin_count_dict: The number of times the binary package of the component is provided
+            component_bin_list: The list of the binary package of the component is provided
             component_name: component name
             multi_binary_component_list: list of repeated binary packages
             new_requires_list: result list
@@ -171,37 +172,33 @@ class RequireBase(Query):
                 # If the component is provided by multiple binary packages, record first and then filter
                 multi_binary_component_list.append(component_info)
             # Construct a dictionary of occurrences of binary packages
-            for component in component_info:
-                try:
-                    com_bin_name_count = component_bin_count_dict[component.get('com_bin_name')]
-                    component_bin_count_dict[component.get('com_bin_name')] = com_bin_name_count + 1
-                except KeyError:
-                    component_bin_count_dict[component.get('com_bin_name')] = 1
+            component_bin_list.extend([component.get('com_bin_name') for component in component_info])
         else:
             new_requires_list.append(dict(component=component_name))
             return
 
     @staticmethod
-    def _filter_multi_binary_components(component_bin_count_dict, multi_binary_component_list, new_requires_list):
+    def _filter_multi_binary_components(component_bin_list, multi_binary_component_list, new_requires_list):
         """
         Filter results based on component name and number of occurrences of binary packages
         Args:
-            component_bin_count_dict: The number of times the binary package of the component is provided
+            component_bin_list: The list of the binary package of the component is provided
             multi_binary_component_list: list of repeated binary packages
             new_requires_list: result list
 
         Returns: None
 
         """
+        component_bin_counter = Counter(component_bin_list)
         for component_list in multi_binary_component_list:
             max_count = 0
             final_component_info = dict()
             # Sort by name first, then filter the results according to the number of occurrences of binary packages
-            component_list.sort(key=lambda x: x.get('component'))
+            component_list.sort(key=lambda x: x.get('com_bin_name'))
             for component in component_list:
-                if component_bin_count_dict.get(component.get('com_bin_name')) > max_count:
+                if component_bin_counter.get(component.get('com_bin_name')) > max_count:
                     final_component_info = component
-                    max_count = component_bin_count_dict.get(component.get('com_bin_name'))
+                    max_count = component_bin_counter.get(component.get('com_bin_name'))
 
             new_requires_list.append(final_component_info)
 
