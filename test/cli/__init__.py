@@ -134,7 +134,7 @@ class TestMixin:
         """
         raise NotImplementedError
 
-    def mock_es_search_only_db(self, value=None):
+    def mock_es_search_return_value(self, value=None):
         """mock es search only for dbs search
 
         Args:

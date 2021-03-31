@@ -25,7 +25,4 @@ class PackageTestBase(ClientTest):
         """
         super(PackageTestBase, self).setUp()
         RemoteService.get = self.client.get
-        self.count_info = {
-            "count": 100,
-            "_shards": {"total": 100, "successful": 1, "skipped": 0, "failed": 0},
-        }
+        self.mock_es_count_return_value(count=100)
