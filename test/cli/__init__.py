@@ -134,76 +134,53 @@ class TestMixin:
         """
         raise NotImplementedError
 
-    def mock_es_search_return_value(self, value=None):
-        """mock es search only for dbs search
-
-        Args:
-            value (optional): es search return value. Defaults to None.
-        """
-        if value is None:
-            value = data_base_info
-        Elasticsearch.search = Mock()
-        Elasticsearch.search.return_value = value
-
-    def mock_es_search_side_effect(self):
-        """mock_es_search_side_effect"""
-        Elasticsearch.search = Mock()
-        Elasticsearch.search.side_effect = self._es_search_result
-
-    def mock_es_scan_return_value(self, value=None):
-        """mock_es_scan_return_value
-
-        Args:
-            value (optional): helpers scan return value. Defaults to None.
-        """
-        if value is None:
-            value = []
-        helpers.scan = Mock()
-        helpers.scan.return_value = value
-
-    def mock_es_scan_side_effect(self):
+    def mock_es_scan(self, **kwargs):
         """mock_es_scan_side_effect"""
-        helpers.scan = Mock()
-        helpers.scan.side_effect = self._es_scan_result
+        if "side_effect" not in kwargs:
+            kwargs["side_effect"] = self._es_scan_result
+        helpers.scan = Mock(**kwargs)
 
-    def mock_es_count_return_value(self, count=100):
+    def mock_es_search(self, **kwargs):
+        """mock_es_scan_side_effect"""
+        if "side_effect" not in kwargs:
+            kwargs["side_effect"] = self._es_search_result
+
+        Elasticsearch.search = Mock(**kwargs)
+
+    def mock_es_count(self, **kwargs):
         """mock_es_count_return_value
 
         Args:
             count (int, optional): The count value in es count return_value dict .
             Defaults to 100.
         """
-        count_info = {
-            "count": count,
-            "_shards": {"total": count, "successful": 1, "skipped": 0, "failed": 0},
-        }
-        Elasticsearch.count = Mock()
-        Elasticsearch.count.return_value = count_info
+        if "return_value" not in kwargs:
+            kwargs["return_value"] = {
+                "count": 10,
+                "_shards": {"total": 10, "successful": 1, "skipped": 0, "failed": 0},
+            }
+        if "side_effect" not in kwargs:
+            kwargs["side_effect"] = self._es_count_result
 
-    def mock_es_count_side_effect(self):
-        """mock_es_count_side_effect"""
-        Elasticsearch.count = Mock()
-        Elasticsearch.count.return_value = self._es_count_result
+        Elasticsearch.count = Mock(**kwargs)
 
-    def mock_es_exists_return_value(self, is_exists=True):
+    def mock_es_exists(self, **kwargs):
         """mock_es_exists_return_value
 
         Args:
             is_exists (bool, optional): the es exists return value . Defaults to True.
         """
-        Elasticsearch.exists = Mock()
-        Elasticsearch.exists.return_value = is_exists
+        if "side_effect" not in kwargs:
+            kwargs["side_effect"] = self._es_exists_result
+        if "return_value" not in kwargs:
+            kwargs["return_value"] = True
+        Elasticsearch.exists = Mock(**kwargs)
 
-    def mock_es_exists_side_effect(self):
-        """mock_es_exists_side_effect"""
-        Elasticsearch.exists = Mock()
-        Elasticsearch.exists.side_effect = self._es_exists_result
-
-    def mock_es_index_side_effect(self):
+    def mock_es_index(self, **kwargs):
         """mock_es_index_side_effect"""
-        Elasticsearch.exists = Mock()
-        Elasticsearch.exists.side_effect = self._es_index_result
-
+        if "side_effect" not in kwargs:
+            kwargs["side_effect"] = self._es_index_result
+        Elasticsearch.exists = Mock(**kwargs)
 
     @staticmethod
     def read_file_content(file_name: str, is_json=True):
