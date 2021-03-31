@@ -12,7 +12,7 @@
 # ******************************************************************************/
 # -*- coding:utf-8 -*-
 
-from test.cli import ClientTest
+from test.cli import ClientTest,ES_COUNT_DATA
 from packageship.application.common.remote import RemoteService
 
 
@@ -25,4 +25,4 @@ class PackageTestBase(ClientTest):
         """
         super(PackageTestBase, self).setUp()
         RemoteService.get = self.client.get
-        self.mock_es_count_return_value(count=100)
+        self.mock_es_count(return_value=ES_COUNT_DATA)
