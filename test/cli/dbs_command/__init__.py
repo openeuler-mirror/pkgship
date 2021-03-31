@@ -12,7 +12,7 @@
 # ******************************************************************************/
 # -*- coding:utf-8 -*-
 from packageship.application.common.remote import RemoteService
-from test.cli import ClientTest
+from test.cli import ClientTest,DATA_BASE_INFO
 
 
 class DbsTest(ClientTest):
@@ -25,4 +25,4 @@ class DbsTest(ClientTest):
         """
         super(DbsTest, self).setUp()
         RemoteService.get = self.client.get
-        self.mock_es_search_only_db()
+        self.mock_es_search(return_value=DATA_BASE_INFO)

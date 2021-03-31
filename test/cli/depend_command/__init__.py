@@ -11,10 +11,12 @@
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
 # -*- coding:utf-8 -*-
+import re
+from itertools import zip_longest
 from collections import defaultdict
 from unittest.mock import Mock
 from requests.exceptions import RequestException
-from test.cli import ClientTest, data_base_info
+from test.cli import ClientTest, DATA_BASE_INFO
 from packageship.application.common.remote import RemoteService
 from redis import RedisError
 from packageship.application.common.constant import REDIS_CONN
@@ -47,11 +49,13 @@ class DependTestBase(ClientTest):
         Returns:
 
         """
-        cls.data_base_info_dict = data_base_info
+        cls.data_base_info_dict = DATA_BASE_INFO
         if hasattr(cls, "binary_file"):
             cls.binary_data = cls.read_file_content(cls.binary_file)
         if hasattr(cls, "source_file"):
             cls.source_data = cls.read_file_content(cls.source_file)
+        if hasattr(cls, "package_source_file"):
+            cls.package_source_data = cls.read_file_content(cls.package_source_file)
         if hasattr(cls, "component_file"):
             cls.component_data = cls.read_file_content(cls.component_file)
             cls.component_process_data = defaultdict(set)
@@ -70,6 +74,7 @@ class DependTestBase(ClientTest):
         super(DependTestBase, self).setUp()
         RemoteService.post = self.client.post
         RemoteService.request = request
+        self.mock_es_search()
         self.mock_redis_exists_raise_error()
 
     def mock_redis_exists_raise_error(self):
@@ -95,7 +100,10 @@ class DependTestBase(ClientTest):
             nonlocal ret
             for k, value in dc.items():
                 if k in find_k_lst:
-                    ret = value
+                    if isinstance(value,str):
+                        ret = [value]
+                    else:
+                        ret = value
                 elif isinstance(value, dict):
                     inner(value)
 
@@ -122,9 +130,52 @@ class DependTestBase(ClientTest):
             if not pkg_info:
                 continue
             ret_dict_p["hits"]["hits"].append(pkg_info)
-
     @staticmethod
-    def _process_depend_command_value(command_res: str):
+    def make_newline_split_res(ln, lines,idx):
+        """return newline list use split rule 
+        
+        Match the position after the string breaks
+            e.g.
+            command lines:
+                binary-name-help-   src-name-help    os-version-orc-
+                1.1                                  123
+            the first row split result is ["binary-name-help-","src-name-help","os-version-orc-"]
+            The expected sharding data for the second row is ["1.1","","123"].
+            And then return it to the upper layer for merge.
+        The function implements is the processing and return of this expected value. 
+        
+        Args:
+            ln (str): line of command lines
+            lines(list):command splitlines result
+            idx (int): index of command lines
+
+        
+        Raises:
+            IndexError: index must be gte 1
+        
+        Returns:
+            list: ["str"*n]
+        """
+        pattern = re.compile("\S+")
+        if idx < 1:
+            raise IndexError("index must be gte 1")
+        last_str_col_pos = [
+            (m.start(), m.end() + 1) for m in pattern.finditer(lines[idx - 1])
+        ]
+
+        ret_line_pos = ["" for _ in last_str_col_pos]
+        curr_ln_col_pos = [(m.start(), m.end() + 1) for m in pattern.finditer(ln)]
+        for curr_range in curr_ln_col_pos:
+            curr_pos_set = set(range(*curr_range))
+            for ids, last_range in enumerate(last_str_col_pos):
+                last_pos_set = set(range(*last_range))
+                if curr_pos_set.intersection(last_pos_set):
+                    ret_line_pos[ids] = ln[slice(*curr_range)]
+                    break
+
+        return ret_line_pos
+    
+    def _process_depend_command_value(self,command_res: str):
         """Processing the output of execute command
 
         Args:
@@ -136,14 +187,66 @@ class DependTestBase(ClientTest):
         """
         binary_lines = []
         source_lines = []
-        # logic
+        is_binary = False
+        is_source = False
+        command_lines = command_res.splitlines()
+
+        def handle_tolong_name_in_newline(ln, target_lst, idx):
+            """to handle tolong col in newline
+
+            Args:
+                ln (str): line of command lines
+                target_lst (list): to update list
+                idx (int): index of command lines
+
+            Returns:
+                bool: midfy or no modify 
+            """
+            try:
+                lst = target_lst[-1]
+                if len(ln.split()) < len(lst):
+
+                    ln_split = self.make_newline_split_res(ln, idx,command_lines)
+                    target_lst[-1] = [
+                        pre + suf for pre, suf in zip_longest(lst, ln_split, fillvalue="")
+                    ]
+                    return True
+                else:
+                    return False
+            except IndexError:
+                return False
+
+        for idx, ln in enumerate(command_lines):
+            line = ln.strip().strip("\r\n").strip("\n")
+            if line.startswith("Statistics"):
+                break
+            if line.startswith("Binary"):
+                is_binary = True
+                continue
+            elif line.startswith("Source"):
+                is_source = True
+                is_binary = False
+                continue
+
+            split_ln = line.strip().split()
+            if is_binary and not line.startswith("===="):
+                if handle_tolong_name_in_newline(ln, binary_lines, idx):
+                    continue
+
+                binary_lines.append(split_ln)
+
+            if is_source and not line.startswith("===="):
+                if handle_tolong_name_in_newline(ln, source_lines, idx):
+                    continue
+                source_lines.append(split_ln)
+
         return binary_lines, source_lines
 
     def assert_result(self):
         """
         to execute and assert result
         Returns:
-
+            None
         """
         excepted_bin, excepted_src = self._process_depend_command_value(
             self.excepted_str
@@ -162,4 +265,22 @@ class DependTestBase(ClientTest):
         Returns:
             ret_dict(dict):Parsable es-like data for the project
         """
-        pass
+
+        ret_dict = {"hits": {"hits": []}}
+        if index == "databaseinfo":
+            return DATA_BASE_INFO
+        elif "binary" in index:
+            if ("files.name" in str(body)) or ("provides.name" in str(body)):
+                pro_lst = self._to_find_value_by_key(body["query"], ["files.name", "provides.name"])
+                for pro_name in pro_lst:
+                    for bin_name in self.component_process_data[pro_name]:
+                        ret_dict["hits"]["hits"].append(self.component_data[bin_name])
+            else:
+                self._update_ret_dict(body["query"], ["name"], ret_dict, self.binary_data)
+            return ret_dict
+        elif "source" in index:
+            self._update_ret_dict(body["query"], ["name"], ret_dict, self.source_data)
+            return ret_dict
+        else:
+            self._update_ret_dict(body["query"], ["binary_name"], ret_dict, self.binary_data)
+            return ret_dict

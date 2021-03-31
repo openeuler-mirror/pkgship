@@ -25,11 +25,16 @@ from flask.wrappers import Response
 from packageship import BASE_PATH
 
 
-mock_data_folder = str(Path(Path(__file__).parent, "mock_data"))
-with open(str(Path(mock_data_folder, "databaseinfo.json")), "r", encoding="utf-8") as f:
-    data_base_info = json.loads(f.read())
+MOCK_DATA_FOLDER = str(Path(Path(__file__).parent, "mock_data"))
+with open(str(Path(MOCK_DATA_FOLDER, "databaseinfo.json")), "r", encoding="utf-8") as f:
+    DATA_BASE_INFO = json.loads(f.read())
 
-correct_data_folder = str(Path(mock_data_folder, "correct_print"))
+CORRECT_DATA_FOLDER = str(Path(MOCK_DATA_FOLDER, "correct_print"))
+
+ES_COUNT_DATA = {
+    "count": 100,
+    "_shards": {"total": 100, "successful": 1, "skipped": 0, "failed": 0},
+}
 
 
 class Redirect:
@@ -136,49 +141,35 @@ class TestMixin:
 
     def mock_es_scan(self, **kwargs):
         """mock_es_scan_side_effect"""
-        if "side_effect" not in kwargs:
+        if "side_effect" not in kwargs and "return_value" not in kwargs:
             kwargs["side_effect"] = self._es_scan_result
         helpers.scan = Mock(**kwargs)
 
     def mock_es_search(self, **kwargs):
         """mock_es_scan_side_effect"""
-        if "side_effect" not in kwargs:
+        if "side_effect" not in kwargs and "return_value" not in kwargs:
             kwargs["side_effect"] = self._es_search_result
 
         Elasticsearch.search = Mock(**kwargs)
 
     def mock_es_count(self, **kwargs):
         """mock_es_count_return_value
-
-        Args:
-            count (int, optional): The count value in es count return_value dict .
-            Defaults to 100.
         """
-        if "return_value" not in kwargs:
-            kwargs["return_value"] = {
-                "count": 10,
-                "_shards": {"total": 10, "successful": 1, "skipped": 0, "failed": 0},
-            }
-        if "side_effect" not in kwargs:
+        if "side_effect" not in kwargs and "return_value" not in kwargs:
             kwargs["side_effect"] = self._es_count_result
 
         Elasticsearch.count = Mock(**kwargs)
 
     def mock_es_exists(self, **kwargs):
         """mock_es_exists_return_value
-
-        Args:
-            is_exists (bool, optional): the es exists return value . Defaults to True.
         """
-        if "side_effect" not in kwargs:
+        if "side_effect" not in kwargs and "return_value" not in kwargs:
             kwargs["side_effect"] = self._es_exists_result
-        if "return_value" not in kwargs:
-            kwargs["return_value"] = True
         Elasticsearch.exists = Mock(**kwargs)
 
     def mock_es_index(self, **kwargs):
         """mock_es_index_side_effect"""
-        if "side_effect" not in kwargs:
+        if "side_effect" not in kwargs and "return_value" not in kwargs:
             kwargs["side_effect"] = self._es_index_result
         Elasticsearch.exists = Mock(**kwargs)
 
@@ -195,9 +186,9 @@ class TestMixin:
 
         """
 
-        curr_p = Path(mock_data_folder, file_name)
+        curr_p = Path(MOCK_DATA_FOLDER, file_name)
         if not curr_p.exists():
-            curr_p = Path(correct_data_folder, file_name)
+            curr_p = Path(CORRECT_DATA_FOLDER, file_name)
 
         with open(str(curr_p), "r", encoding="utf-8") as f_p:
             if is_json:
