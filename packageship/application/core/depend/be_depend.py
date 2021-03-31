@@ -239,6 +239,8 @@ class BeDepend(BaseDepend):
             to_search = next_search - searched_pkgs
 
     def __call__(self, **kwargs):
+        self.__dict__.update(dict(dependency_type="bedep"))
+
         @buffer_cache(depend=self)
         def _depends(**kwargs):
             self.be_depend()
