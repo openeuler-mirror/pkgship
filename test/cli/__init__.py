@@ -25,7 +25,7 @@ from flask.wrappers import Response
 from packageship import BASE_PATH
 
 
-MOCK_DATA_FOLDER = str(Path(Path(__file__).parent, "mock_data"))
+MOCK_DATA_FOLDER = str(Path(Path(__file__).parents[1], "mock_data"))
 with open(str(Path(MOCK_DATA_FOLDER, "databaseinfo.json")), "r", encoding="utf-8") as f:
     DATA_BASE_INFO = json.loads(f.read())
 
@@ -139,38 +139,39 @@ class TestMixin:
         """
         raise NotImplementedError
 
+    @staticmethod
+    def update_mock_kwargs(func, kwargs):
+        if "side_effect" not in kwargs and "return_value" not in kwargs:
+            kwargs["side_effect"] = func
+
     def mock_es_scan(self, **kwargs):
         """mock_es_scan_side_effect"""
-        if "side_effect" not in kwargs and "return_value" not in kwargs:
-            kwargs["side_effect"] = self._es_scan_result
+        self.update_mock_kwargs(self._es_scan_result, kwargs)
+
         helpers.scan = Mock(**kwargs)
 
     def mock_es_search(self, **kwargs):
         """mock_es_scan_side_effect"""
-        if "side_effect" not in kwargs and "return_value" not in kwargs:
-            kwargs["side_effect"] = self._es_search_result
+        self.update_mock_kwargs(self._es_search_result, kwargs)
 
         Elasticsearch.search = Mock(**kwargs)
 
     def mock_es_count(self, **kwargs):
-        """mock_es_count_return_value
-        """
-        if "side_effect" not in kwargs and "return_value" not in kwargs:
-            kwargs["side_effect"] = self._es_count_result
+        """mock_es_count_return_value"""
+        self.update_mock_kwargs(self._es_count_result, kwargs)
 
         Elasticsearch.count = Mock(**kwargs)
 
     def mock_es_exists(self, **kwargs):
-        """mock_es_exists_return_value
-        """
-        if "side_effect" not in kwargs and "return_value" not in kwargs:
-            kwargs["side_effect"] = self._es_exists_result
+        """mock_es_exists_return_value"""
+        self.update_mock_kwargs(self._es_exists_result, kwargs)
+
         Elasticsearch.exists = Mock(**kwargs)
 
     def mock_es_index(self, **kwargs):
         """mock_es_index_side_effect"""
-        if "side_effect" not in kwargs and "return_value" not in kwargs:
-            kwargs["side_effect"] = self._es_index_result
+        self.update_mock_kwargs(self._es_index_result, kwargs)
+
         Elasticsearch.exists = Mock(**kwargs)
 
     @staticmethod
