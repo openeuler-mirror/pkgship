@@ -16,7 +16,7 @@ Module of query require relation
 import gevent
 from gevent import monkey
 
-monkey.patch_all()
+# monkey.patch_all()
 
 from packageship.application.common.constant import PROVIDES_NAME, FILES_NAME
 from packageship.application.query import Query

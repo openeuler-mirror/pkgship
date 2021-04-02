@@ -18,9 +18,13 @@ import os
 import sys
 import unittest
 import json
+from json import JSONDecodeError
 from pathlib import Path
+from unittest import mock
 from unittest.mock import Mock
 from elasticsearch import Elasticsearch, helpers
+import requests
+from requests.exceptions import RequestException
 from flask.wrappers import Response
 from packageship import BASE_PATH
 
@@ -140,37 +144,37 @@ class TestMixin:
         raise NotImplementedError
 
     @staticmethod
-    def update_mock_kwargs(func, kwargs):
+    def _update_mock_kwargs(func, kwargs):
         if "side_effect" not in kwargs and "return_value" not in kwargs:
             kwargs["side_effect"] = func
 
     def mock_es_scan(self, **kwargs):
         """mock_es_scan_side_effect"""
-        self.update_mock_kwargs(self._es_scan_result, kwargs)
+        self._update_mock_kwargs(self._es_scan_result, kwargs)
 
         helpers.scan = Mock(**kwargs)
 
     def mock_es_search(self, **kwargs):
         """mock_es_scan_side_effect"""
-        self.update_mock_kwargs(self._es_search_result, kwargs)
+        self._update_mock_kwargs(self._es_search_result, kwargs)
 
         Elasticsearch.search = Mock(**kwargs)
 
     def mock_es_count(self, **kwargs):
         """mock_es_count_return_value"""
-        self.update_mock_kwargs(self._es_count_result, kwargs)
+        self._update_mock_kwargs(self._es_count_result, kwargs)
 
         Elasticsearch.count = Mock(**kwargs)
 
     def mock_es_exists(self, **kwargs):
         """mock_es_exists_return_value"""
-        self.update_mock_kwargs(self._es_exists_result, kwargs)
+        self._update_mock_kwargs(self._es_exists_result, kwargs)
 
         Elasticsearch.exists = Mock(**kwargs)
 
     def mock_es_index(self, **kwargs):
         """mock_es_index_side_effect"""
-        self.update_mock_kwargs(self._es_index_result, kwargs)
+        self._update_mock_kwargs(self._es_index_result, kwargs)
 
         Elasticsearch.exists = Mock(**kwargs)
 
@@ -274,6 +278,12 @@ class ClientTest(BaseTest):
         self.client = app.test_client()
         Response.text = Response.data
         Response.content = Response.data
+
+    # def mock_remote_raise(self,**kwargs):
+    #     methods = []
+    #     if "methods" in kwargs:
+    #         methods = kwargs.pop("methods")
+    #     if hasattr(RemoteService,)
 
     def tearDown(self) -> None:
         """

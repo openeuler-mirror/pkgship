@@ -16,7 +16,7 @@ Module of query packages' info
 import gevent
 from gevent import monkey
 
-monkey.patch_all()
+# monkey.patch_all()
 
 from packageship.application.common.constant import UNDERLINE, BINARY_DB_TYPE, SOURCE_DB_TYPE, MAX_PAGE_SIZE, \
     DEFAULT_PAGE_NUM
