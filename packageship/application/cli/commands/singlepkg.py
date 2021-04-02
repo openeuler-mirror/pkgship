@@ -98,6 +98,8 @@ class SingleCommand(BaseCommand):
         for key, name_value in _show_field_name.items():
             value = _package_detail_info.get(key, "")
             if isinstance(value, list):
+                if not value:
+                    _line_content.append("%-15s:%s" % (name_value, ""))
                 value_s = self.show_separation(
                     value, LIST_LEN, separation_str=',')
                 for idx, con in enumerate(value_s):
@@ -134,11 +136,9 @@ class SingleCommand(BaseCommand):
                     _provide_list) if _provide_list else ''
                 self.provides_table.add_row(
                     [_provide['component'], _required_by])
-        self.print_('Provides')
         if getattr(self.provides_table, 'rowcount'):
+            self.print_('Provides')
             print(self.provides_table)
-        else:
-            print('No relevant dependent data')
         self.provides_table.clear_rows()
 
     def __parse_requires(self, requires):
@@ -156,11 +156,9 @@ class SingleCommand(BaseCommand):
                     _require.get('provided_by', ''))
                 self.requires_table.add_row(
                     [_require.get('component', ''), _provide_by])
-        self.print_('Requires')
         if getattr(self.requires_table, 'rowcount'):
+            self.print_('Requires')
             print(self.requires_table)
-        else:
-            print('No related components')
         self.requires_table.clear_rows()
 
     def __parse_subpack(self, subpacks):
@@ -192,11 +190,9 @@ class SingleCommand(BaseCommand):
             _filelist = '\n'.join(value) if value else ''
             self.file_list_table.add_row([key, _filelist])
 
-        self.print_('File List')
         if getattr(self.file_list_table, 'rowcount'):
+            self.print_('File List')
             print(self.file_list_table)
-        else:
-            print('No related components')
         self.file_list_table.clear_rows()
 
     def __parse_src_package(self, response_data, database, src_or_bin):
@@ -210,12 +206,9 @@ class SingleCommand(BaseCommand):
 
         """
         parse_data = response_data['resp'].get(database)[ZERO]
-        try:
-            _subpacks = parse_data['subpacks']
-            self.__parse_package_detail(parse_data, src_or_bin)
-            self.__parse_subpack(_subpacks)
-        except KeyError as key_error:
-            print('No related components')
+        _subpacks = parse_data.get('subpacks')
+        self.__parse_package_detail(parse_data, src_or_bin)
+        self.__parse_subpack(_subpacks)
 
     def __parse_bin_package(self, response_data, database, src_or_bin):
         """
@@ -229,15 +222,12 @@ class SingleCommand(BaseCommand):
         """
         parse_data = response_data['resp'].get(database)[ZERO]
         self.__parse_package_detail(parse_data, src_or_bin)
-        try:
-            _provides = parse_data['provides']
-            self.__parse_provides(_provides)
-            _requires = parse_data['requires']
-            self.__parse_requires(_requires)
-            _filelist = parse_data['filelist']
-            self.__parse_filelist(_filelist)
-        except KeyError as key_error:
-            print('No related components')
+        _provides = parse_data.get('provides')
+        self.__parse_provides(_provides)
+        _requires = parse_data.get('requires')
+        self.__parse_requires(_requires)
+        _filelist = parse_data.get('filelist')
+        self.__parse_filelist(_filelist)
 
     def do_command(self, params):
         """
