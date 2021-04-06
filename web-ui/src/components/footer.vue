@@ -26,7 +26,7 @@ export default {
                 rightList: [
                     {
                         name: 'Trademark',
-                        link: 'https://openeuler.org/zh/other/brand/'
+                        link: 'https://openeuler.org/eh/other/brand/'
                     },
                     {
                         name: 'Legal Notice',
