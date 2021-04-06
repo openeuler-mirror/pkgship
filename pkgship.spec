@@ -6,16 +6,6 @@ License:        Mulan 2.0
 URL:            https://gitee.com/openeuler/pkgship
 Source0:        https://gitee.com/openeuler/pkgship-%{version}.tar.gz
 
-patch0001:      0001-optimization-printing-progress-bar.patch
-patch0002:      0002-update-doc.patch
-patch0003:      0003-fix-pkginfo-queries.patch
-patch0004:      0004-wrong-judgment-of-startup-success.patch
-patch0005:      0005-canonical-naming.patch
-patch0006:      0006-add-check-service-status-when-init.patch
-patch0007:      0007-update-readme.patch
-patch0008:      0008-update-patch-import.patch
-patch0009:      0009-add-es-insert-test-cases.patch
-
 BuildArch:      noarch
 
 BuildRequires: shadow python3-mock
