@@ -14,12 +14,10 @@
 import re
 from itertools import zip_longest
 from collections import defaultdict
-from unittest.mock import Mock
 from requests.exceptions import RequestException
 from test.cli import ClientTest, DATA_BASE_INFO
 from packageship.application.common.remote import RemoteService
 from redis import RedisError
-from packageship.application.common.constant import REDIS_CONN
 
 
 # Redirect RemoteService request function to the current function
@@ -72,15 +70,16 @@ class DependTestBase(ClientTest):
 
         """
         super(DependTestBase, self).setUp()
-        RemoteService.post = self.client.post
         RemoteService.request = request
+        self.mock_requests_post(side_effect=self.client.post)
         self.mock_es_search()
         self.mock_redis_exists_raise_error()
 
     def mock_redis_exists_raise_error(self):
         """mock_redis_exists_side_effect"""
-        REDIS_CONN.exists = Mock()
-        REDIS_CONN.exists.side_effect = RedisError
+        self._to_update_kw_and_make_mock(
+            "packageship.application.common.constant.REDIS_CONN.exists", RedisError
+        )
 
     @staticmethod
     def _to_find_value_by_key(dic: dict, find_k_lst: list):

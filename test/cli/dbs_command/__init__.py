@@ -11,8 +11,7 @@
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
 # -*- coding:utf-8 -*-
-from packageship.application.common.remote import RemoteService
-from test.cli import ClientTest,DATA_BASE_INFO
+from test.cli import ClientTest
 
 
 class DbsTest(ClientTest):
@@ -24,5 +23,4 @@ class DbsTest(ClientTest):
 
         """
         super(DbsTest, self).setUp()
-        RemoteService.get = self.client.get
-        self.mock_es_search(return_value=DATA_BASE_INFO)
+        self.mock_requests_get(side_effect=self.client.get)

@@ -18,16 +18,10 @@ import os
 import sys
 import unittest
 import json
-from json import JSONDecodeError
 from pathlib import Path
 from unittest import mock
-from unittest.mock import Mock
-from elasticsearch import Elasticsearch, helpers
-import requests
-from requests.exceptions import RequestException
 from flask.wrappers import Response
 from packageship import BASE_PATH
-
 
 MOCK_DATA_FOLDER = str(Path(Path(__file__).parents[1], "mock_data"))
 with open(str(Path(MOCK_DATA_FOLDER, "databaseinfo.json")), "r", encoding="utf-8") as f:
@@ -74,6 +68,8 @@ class TestMixin:
     Test Mixin class
     """
 
+    _to_clean_mock_patchers = []
+
     def _es_search_result(self, index, body):
         """_es_search_result
 
@@ -87,7 +83,7 @@ class TestMixin:
         raise NotImplementedError
 
     def _es_index_result(self, index, body, doc_type):
-        """_es_indes_result
+        """_es_index_result
 
         Args:
             index (str): query es index
@@ -100,7 +96,7 @@ class TestMixin:
         raise NotImplementedError
 
     def _es_scan_result(self, client, index, query, scroll="3m", timeout="1m"):
-        """_es_sacn_result
+        """_es_scan_result
 
         Args:
             client : es clinet
@@ -143,40 +139,129 @@ class TestMixin:
         """
         raise NotImplementedError
 
-    @staticmethod
-    def _update_mock_kwargs(func, kwargs):
+    def _es_index_result(self, *args, **kwargs):
+        """_es_index_result
+
+        Raises:
+            NotImplementedError: [description]
+        """
+        raise NotImplementedError
+
+    def _es_delete_result(self, *args, **kwargs):
+        """_es_delete_result
+
+        Raises:
+            NotImplementedError: [description]
+        """
+        raise NotImplementedError
+
+    def _es_create_result(self, *args, **kwargs):
+        """_es_create_result
+
+        Raises:
+            NotImplementedError: [description]
+        """
+        raise NotImplementedError
+
+    def _requests_get(self, *args, **kwargs):
+        """_request_get"""
+        raise NotImplementedError
+
+    def _requests_post(self, *args, **kwargs):
+        """_request_post"""
+        raise NotImplementedError
+
+    def _create_patch(self, mock_name):
+        """create_patch
+
+        Args:
+            method_name (str): mock method or attribute name
+
+        Returns:
+            [type]: [description]
+        """
+        patcher = mock.patch(mock_name)
+        self._to_clean_mock_patchers.append(patcher)
+        return patcher.start()
+
+    def _to_update_kw_and_make_mock(self, mock_name, effect, **kwargs):
+        """_to_update_kw_and_make_mock
+
+        Args:
+            mock_name (str): mock method or attribute name
+            effect (any): side effect value
+        """
         if "side_effect" not in kwargs and "return_value" not in kwargs:
-            kwargs["side_effect"] = func
+            kwargs["side_effect"] = effect
+
+        mock_patch = self._create_patch(mock_name)
+        for met, val in kwargs.items():
+            setattr(mock_patch, met, val)
 
     def mock_es_scan(self, **kwargs):
-        """mock_es_scan_side_effect"""
-        self._update_mock_kwargs(self._es_scan_result, kwargs)
-
-        helpers.scan = Mock(**kwargs)
+        """mock_es_scan"""
+        self._to_update_kw_and_make_mock(
+            "elasticsearch.helpers.scan", self._es_scan_result, **kwargs
+        )
 
     def mock_es_search(self, **kwargs):
-        """mock_es_scan_side_effect"""
-        self._update_mock_kwargs(self._es_search_result, kwargs)
-
-        Elasticsearch.search = Mock(**kwargs)
+        """mock_es_search"""
+        self._to_update_kw_and_make_mock(
+            "elasticsearch.Elasticsearch.search", self._es_search_result, **kwargs
+        )
 
     def mock_es_count(self, **kwargs):
-        """mock_es_count_return_value"""
-        self._update_mock_kwargs(self._es_count_result, kwargs)
-
-        Elasticsearch.count = Mock(**kwargs)
+        """mock_es_count"""
+        self._to_update_kw_and_make_mock(
+            "elasticsearch..Elasticsearch.count", self._es_count_result, **kwargs
+        )
 
     def mock_es_exists(self, **kwargs):
-        """mock_es_exists_return_value"""
-        self._update_mock_kwargs(self._es_exists_result, kwargs)
+        """mock_es_exists"""
 
-        Elasticsearch.exists = Mock(**kwargs)
+        self._to_update_kw_and_make_mock(
+            "elasticsearch.client.indices.IndicesClient.exists",
+            self._es_exists_result,
+            **kwargs,
+        )
 
-    def mock_es_index(self, **kwargs):
-        """mock_es_index_side_effect"""
-        self._update_mock_kwargs(self._es_index_result, kwargs)
+    def mock_es_delete(self, **kwargs):
+        """mock elasticsearch delete"""
+        self._to_update_kw_and_make_mock(
+            "elasticsearch.client.indices.IndicesClient.delete",
+            self._es_delete_result,
+            **kwargs,
+        )
 
-        Elasticsearch.exists = Mock(**kwargs)
+    def mock_es_insert(self, **kwargs):
+        """mock_es_insert"""
+        self._to_update_kw_and_make_mock(
+            "elasticsearch.Elasticsearch.index", self._es_index_result, **kwargs
+        )
+
+    def mock_es_create(self, **kwargs):
+        """mock_es_create"""
+        self._to_update_kw_and_make_mock(
+            "elasticsearch.client.indices.IndicesClient.create",
+            self._es_create_result,
+            **kwargs,
+        )
+
+    def mock_requests_get(self, **kwargs):
+        """mock_requests_get"""
+        self._to_update_kw_and_make_mock(
+            "packageship.application.common.remote.RemoteService.get",
+            self._requests_get,
+            **kwargs,
+        )
+
+    def mock_requests_post(self, **kwargs):
+        """mock_requests_post"""
+        self._to_update_kw_and_make_mock(
+            "packageship.application.common.remote.RemoteService.post",
+            self._requests_post,
+            **kwargs,
+        )
 
     @staticmethod
     def read_file_content(file_name: str, is_json=True):
@@ -208,14 +293,16 @@ class BaseTest(unittest.TestCase, TestMixin):
     """
 
     cmd_class = None
+    command_params = []
+    excepted_str = ""
+    r = Redirect()
 
     def setUp(self) -> None:
         """
         setUp Test Environment
         """
         self.command_params = []
-        self.excepted_str = ""
-        self.r = Redirect()
+        self.r.flush()
         sys.stdout = self.r
 
     def _execute_command(self):
@@ -264,6 +351,17 @@ class BaseTest(unittest.TestCase, TestMixin):
         """
         sys.stdout = sys.__stdout__
 
+    def _to_add_cleanup(self):
+        """_to_add_cleanup"""
+        for tc in self._to_clean_mock_patchers:
+            self.addCleanup(tc.stop)
+        self._to_clean_mock_patchers.clear()
+
+    def tearDown(self) -> None:
+        """tearDown"""
+        self._to_add_cleanup()
+        return super().tearDown()
+
 
 class ClientTest(BaseTest):
     def setUp(self) -> None:
@@ -278,12 +376,6 @@ class ClientTest(BaseTest):
         self.client = app.test_client()
         Response.text = Response.data
         Response.content = Response.data
-
-    # def mock_remote_raise(self,**kwargs):
-    #     methods = []
-    #     if "methods" in kwargs:
-    #         methods = kwargs.pop("methods")
-    #     if hasattr(RemoteService,)
 
     def tearDown(self) -> None:
         """
