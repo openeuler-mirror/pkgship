@@ -11,3 +11,87 @@
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
 # -*- coding:utf-8 -*-
+import os
+import uuid
+from unittest.mock import Mock
+import requests
+import json
+from test.cli import BaseTest
+from packageship.application.cli.commands.initialize import InitDatabaseCommand, InitServiceThread
+from packageship.application.common.exc import InitializeError, ResourceCompetitionError
+from elasticsearch import helpers, Elasticsearch
+from packageship.application.initialize.integration import InitializeService, RepoConfig
+from packageship.application.database.session import DatabaseSession
+from packageship.application.database.engines.elastic import ElasticSearch
+
+
+def _init_(self, func, param, *args, **kwargs):
+    super(InitServiceThread, self).__init__(*args, **kwargs)
+    self.error = True
+
+
+class InitTestBase(BaseTest):
+    cmd_class = InitDatabaseCommand
+
+    def setUp(self):
+        super(InitTestBase, self).setUp()
+        self.init_service = InitializeService()
+
+    @property
+    def _create_file_path(self):
+        path = os.path.join(
+            self._dirname, "conf", "{}.yaml".format(uuid.uuid1()))
+        return path
+
+    def create_conf_file(self, content, path):
+        """
+        Creating configuration files
+        """
+        with open(path, "w", encoding="utf-8") as file:
+            file.write(content)
+        return path
+
+    def comparsion_than(self):
+        self.mock_version()
+        self.mock_init_thread()
+        self.mock_es_exists(return_value=False)
+        self.mock_es_delete(return_value=None)
+        self.mock_es_search(return_value=dict(hits={"hits": []}))
+        self.mock_es_create(return_value=None)
+        self._mock_bulk()
+        self.mock_es_insert(return_value=None)
+
+    def init_true(self):
+        InitServiceThread.__init__ = _init_
+
+    def mock_version(self):
+        response = requests.Response()
+        response.status_code = 200
+        requests.get = Mock()
+        requests.get.return_value = response
+
+    def thread_start(self):
+        try:
+            self.init_service.import_depend(path=self._conf)
+        except (InitializeError, ResourceCompetitionError) as error:
+            print('\r', error)
+
+    def mock_init_thread(self):
+        InitServiceThread.start = Mock()
+        InitServiceThread.start.side_effect = self.thread_start
+
+    def _mock_bulk(self):
+        helpers.bulk = Mock()
+        helpers.bulk.side_effect = self._comparison_result
+
+    def _mock_binary_depend(self):
+        InitializeService._binary_depend = Mock()
+        InitializeService._binary_depend.return_value = None
+
+    def _mock_source_depend(self):
+        InitializeService._source_depend = Mock()
+        InitializeService._source_depend.return_value = None
+
+    def _load_json(self, path):
+        with open(path) as f:
+            return json.loads(f.read())

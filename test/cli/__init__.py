@@ -23,10 +23,12 @@ from pathlib import Path
 from unittest import mock
 from unittest.mock import Mock
 from elasticsearch import Elasticsearch, helpers
+from elasticsearch.client.indices import IndicesClient
 import requests
 from requests.exceptions import RequestException
 from flask.wrappers import Response
 from packageship import BASE_PATH
+from packageship.application.database.session import DatabaseSession
 
 
 MOCK_DATA_FOLDER = str(Path(Path(__file__).parents[1], "mock_data"))
@@ -170,13 +172,25 @@ class TestMixin:
         """mock_es_exists_return_value"""
         self._update_mock_kwargs(self._es_exists_result, kwargs)
 
-        Elasticsearch.exists = Mock(**kwargs)
+        IndicesClient.exists = Mock(**kwargs)
 
-    def mock_es_index(self, **kwargs):
+    def mock_es_delete(self, **kwargs):
+        """mock elasticsearch delete"""
+        self._update_mock_kwargs(self._es_exists_result, kwargs)
+
+        IndicesClient.delete = Mock(**kwargs)
+
+    def mock_es_insert(self, **kwargs):
         """mock_es_index_side_effect"""
         self._update_mock_kwargs(self._es_index_result, kwargs)
 
-        Elasticsearch.exists = Mock(**kwargs)
+        Elasticsearch.index = Mock(**kwargs)
+
+    def mock_es_create(self, **kwargs):
+        """mock_es_index_side_effect"""
+        self._update_mock_kwargs(self._es_index_result, kwargs)
+
+        IndicesClient.create = Mock(**kwargs)
 
     @staticmethod
     def read_file_content(file_name: str, is_json=True):
