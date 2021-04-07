@@ -12,6 +12,8 @@
 # ******************************************************************************/
 # -*- coding:utf-8 -*-
 import os
+from unittest import mock
+import requests
 from test.cli.init_command import InitTestBase
 from test.cli.init_command.relationship_than import RelationComparison
 
@@ -41,9 +43,13 @@ class ComparisonBinary(InitTestBase, RelationComparison):
         """
         Compare the results of the source package
         """
-        self.command_params = []
-        self._execute_command()
-        self.assertEqual(True, self._pass)
+        with mock.patch.object(requests, "get") as req_get:
+            response = requests.Response()
+            response.status_code = 200
+            req_get.return_value = response
+            self.command_params = []
+            self._execute_command()
+            self.assertEqual(True, self._pass)
 
     def tearDown(self) -> None:
         self.tear_down()

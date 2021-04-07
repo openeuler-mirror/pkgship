@@ -13,6 +13,7 @@
 # -*- coding:utf-8 -*-
 import os
 import uuid
+import pwd
 from unittest.mock import Mock
 import requests
 import json
@@ -52,8 +53,8 @@ class InitTestBase(BaseTest):
         return path
 
     def comparsion_than(self):
-        self.mock_version()
         self.mock_init_thread()
+        self.mock_user()
         self.mock_es_exists(return_value=False)
         self.mock_es_delete(return_value=None)
         self.mock_es_search(return_value=dict(hits={"hits": []}))
@@ -63,12 +64,6 @@ class InitTestBase(BaseTest):
 
     def init_true(self):
         InitServiceThread.__init__ = _init_
-
-    def mock_version(self):
-        response = requests.Response()
-        response.status_code = 200
-        requests.get = Mock()
-        requests.get.return_value = response
 
     def thread_start(self):
         try:
@@ -91,6 +86,9 @@ class InitTestBase(BaseTest):
     def _mock_source_depend(self):
         InitializeService._source_depend = Mock()
         InitializeService._source_depend.return_value = None
+
+    def mock_user(self):
+        pwd.getpwuid = Mock(return_value=["root"])
 
     def _load_json(self, path):
         with open(path) as f:
