@@ -31,8 +31,8 @@ function prepare_rpmbuild_dir()
 
 function install_require() 
 {
-  sudo yum install rpm-build -y --enablerepo=pkgship_openEuler-$os_version
-  sudo yum install python3-Flask-Limiter python3-coverage python3-elasticsearch python3-elasticsearch python3-flask python3-flask-restful python3-gevent python3-marshmallow python3-prettytable python3-pyyaml python3-redis python3-requests python3-retrying python3-uWSGI python3-concurrent-log-handler python3-mock -y --enablerepo=pkgship_openEuler-$os_version
+  sudo dnf install rpm-build 'dnf-command(builddep)' -y --enablerepo=pkgship_openEuler-$os_version
+  sudo dnf builddep pkgship/pkgship.spec
   if [ $? -ne 0 ]; then
     echo "install require rpm failed"
     exit 1
@@ -61,7 +61,7 @@ function build_install_rpm()
   # build pkgship rpm
   rpmbuild  -bb  /home/jenkins/rpmbuild/SPECS/pkgship.spec
   # install pkgship rpm
-  sudo yum install -y /home/jenkins/rpmbuild/RPMS/noarch/pkgship* --enablerepo=pkgship_openEuler-21.03
+  sudo dnf install -y /home/jenkins/rpmbuild/RPMS/noarch/pkgship* --enablerepo=pkgship_openEuler-21.03
 }
 
 export TZ=Asia/Shanghai
