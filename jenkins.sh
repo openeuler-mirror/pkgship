@@ -40,7 +40,6 @@ function build_install_rpm()
                    break
         fi
     done <pkgship/pkgship.spec
-    echo $version
 	pkgship_name="pkgship-"$version
     mv pkgship $pkgship_name
 	tar -zcvf  /home/jenkins/rpmbuild/SOURCES/$pkgship_name.tar.gz $pkgship_name &>/dev/null
