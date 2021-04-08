@@ -9,7 +9,7 @@ function clear_env(){
 function update_repo()
 {
   if [ ! -f ${REPO_CONFIG_FILE} ]; then
-    touch ${REPO_CONFIG_FILE}
+     sudo touch ${REPO_CONFIG_FILE}
   fi
   sudo bash -c "cat>${REPO_CONFIG_FILE}"<<EOF
 [pkgship_openEuler-21.03]
