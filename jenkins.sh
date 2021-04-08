@@ -32,7 +32,7 @@ function prepare_rpmbuild_dir()
 function install_require() 
 {
   sudo dnf install rpm-build 'dnf-command(builddep)' -y --enablerepo=pkgship_openEuler-$os_version
-  sudo dnf builddep pkgship/pkgship.spec
+  sudo dnf builddep pkgship/pkgship.spec -y --enablerepo=pkgship_openEuler-$os_version
   if [ $? -ne 0 ]; then
     echo "install require rpm failed"
     exit 1
