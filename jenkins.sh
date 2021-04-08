@@ -1,4 +1,6 @@
 #!/bin/bash
+REPO_CONFIG_FILE="/etc/yum.repos.d/openEuler_pkgship.repo"
+pkgship_spec_path="pkgship/pkgship.spec"
 
 function clear_env(){
   rm -rf /home/jenkins/rpmbuild || echo "clear env"
@@ -6,7 +8,10 @@ function clear_env(){
 
 function update_repo()
 {
-sudo bash -c "cat>/etc/yum.repos.d/openeuler.repo"<<EOF
+  if [ ! -f ${REPO_CONFIG_FILE} ]; then
+    touch ${REPO_CONFIG_FILE}
+  fi
+  sudo bash -c "cat>${REPO_CONFIG_FILE}"<<EOF
 [openEuler-21.03]
 name=openEuler-21.03
 baseurl=http://119.3.219.20:82/openEuler:/21.03/standard_aarch64/
@@ -27,10 +32,18 @@ function install_require()
 {
   sudo yum install rpm-build -y
   sudo yum install python3-Flask-Limiter python3-coverage python3-elasticsearch python3-elasticsearch python3-flask python3-flask-restful python3-gevent python3-marshmallow python3-prettytable python3-pyyaml python3-redis python3-requests python3-retrying python3-uWSGI python3-concurrent-log-handler python3-mock -y
+  if [ $? -ne 0 ]; then
+    echo "install require rpm failed"
+    exit 1
+  fi
 }
 
 function build_install_rpm()
 {
+  if [ ! -f ${pkgship_spec_path} ]; then
+    echo "pkgship.spec file not exists."
+    exit 1
+  fi
   version=""
   while read line
   do
@@ -39,7 +52,7 @@ function build_install_rpm()
         version=`echo ${line: 9} | sed 's/ //g'`
         break
   fi
-  done <pkgship/pkgship.spec
+  done <${pkgship_spec_path}
   pkgship_name="pkgship-"$version
   mv pkgship $pkgship_name
   tar -zcvf  /home/jenkins/rpmbuild/SOURCES/$pkgship_name.tar.gz $pkgship_name &>/dev/null
