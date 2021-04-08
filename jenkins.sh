@@ -12,8 +12,8 @@ function update_repo()
     touch ${REPO_CONFIG_FILE}
   fi
   sudo bash -c "cat>${REPO_CONFIG_FILE}"<<EOF
-[openEuler-21.03]
-name=openEuler-21.03
+[pkgship_openEuler-21.03]
+name=pkgship_openEuler-21.03
 baseurl=http://119.3.219.20:82/openEuler:/21.03/standard_aarch64/
 enabled=1
 gpgcheck=0
@@ -30,8 +30,8 @@ function prepare_rpmbuild_dir()
 
 function install_require() 
 {
-  sudo yum install rpm-build -y
-  sudo yum install python3-Flask-Limiter python3-coverage python3-elasticsearch python3-elasticsearch python3-flask python3-flask-restful python3-gevent python3-marshmallow python3-prettytable python3-pyyaml python3-redis python3-requests python3-retrying python3-uWSGI python3-concurrent-log-handler python3-mock -y
+  sudo yum install rpm-build -y --enablerepo=pkgship_openEuler-21.03
+  sudo yum install python3-Flask-Limiter python3-coverage python3-elasticsearch python3-elasticsearch python3-flask python3-flask-restful python3-gevent python3-marshmallow python3-prettytable python3-pyyaml python3-redis python3-requests python3-retrying python3-uWSGI python3-concurrent-log-handler python3-mock -y --enablerepo=pkgship_openEuler-21.03
   if [ $? -ne 0 ]; then
     echo "install require rpm failed"
     exit 1
@@ -60,7 +60,7 @@ function build_install_rpm()
   # build pkgship rpm
   rpmbuild  -bb  /home/jenkins/rpmbuild/SPECS/pkgship.spec
   # install pkgship rpm
-  sudo yum install -y /home/jenkins/rpmbuild/RPMS/noarch/pkgship*
+  sudo yum install -y /home/jenkins/rpmbuild/RPMS/noarch/pkgship* --enablerepo=pkgship_openEuler-21.03
 }
 
 export TZ=Asia/Shanghai
