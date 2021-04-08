@@ -1,5 +1,5 @@
 <template>
-    <div id="app" v-cloak :class="{'lang-cn': $i18n.locale==='zh-cn'}">
+    <div id="app" v-cloak>
         <i-header></i-header>
         <div class="content">
             <router-view />

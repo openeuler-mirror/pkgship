@@ -172,38 +172,24 @@
     "excepted_bedepend_dict": {
         "A1": {
             "build": [],
-            "database": "Mainline",
-            "install": [
-                "B1",
-                "Judy"
-            ],
-            "name": "A1",
-            "source_name": "A",
-            "version": "1.1"
-        },
-        "B1": {
-            "build": [],
-            "database": "os_version_2",
-            "install": [
-                "Judy"
-            ],
-            "name": "B1",
-            "source_name": "B",
-            "version": "1.1"
-        },
-        "Judy": {
-            "build": [
-                "A"
-            ],
-            "database": "Mainline",
-            "install": [
-                "A1",
-                "glibc"
-            ],
-            "name": "Judy",
-            "source_name": "Judy",
-            "version": "1.2"
-        }
+        "database": "Mainline",
+        "install": ["Judy"],
+        "name": "A1",
+        "source_name": "A",
+        "version": "1.1"},
+         "B1": {"build": [],
+                "database": "os_version_2",
+                "install": [],
+                "name": "B1",
+                "source_name": "B",
+                "version": "1.1"},
+         "Judy": {"build": ["A"],
+                  "database": "Mainline",
+                  "install": [],
+                  "name": "Judy",
+                  "source_name": "Judy",
+                  "version": "1.2"}
+
     },
     "binary_source_dict": [
         {

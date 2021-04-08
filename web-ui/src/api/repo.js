@@ -3,25 +3,41 @@
  * */
 
 import appAjax from './../libs/ajax-utils';
-export const packages = ({
-    pageNum,
-    pageSize,
-    tableName,
-    queryPkgName,
-    maintainer,
-    maintainlevel
-}) => {
+
+export const dbPriority = () => {
     return new Promise((resolve, reject) => {
         appAjax.postJson({
-            url: '/packages',
+            url: '/db_priority',
+            type: 'get',
+            success(result) {
+                if (result) {
+                    resolve(result);
+                    return;
+                }
+                reject(result);
+            },
+            error(msg) {
+                reject(msg);
+            }
+        });
+    });
+};
+
+export const packageSrc = ({
+                               pageNum,
+                               pageSize,
+                               queryPkgName,
+                               tableName
+                           }) => {
+    return new Promise((resolve, reject) => {
+        appAjax.postJson({
+            url: '/packages/src',
             type: 'get',
             params: {
+                database_name: tableName,
                 page_num: pageNum,
                 page_size: pageSize,
-                table_name: tableName,
-                query_pkg_name: queryPkgName,
-                maintainer,
-                maintainlevel
+                query_pkg_name: queryPkgName
             },
             success(result) {
                 if (result) {
@@ -38,56 +54,15 @@ export const packages = ({
 
     });
 };
-export const productVersion = () => {
+
+export const packageDetail = ({databaseName, pkgName}) => {
     return new Promise((resolve, reject) => {
         appAjax.postJson({
-            url: '/lifeCycle/tables',
-            type: 'get',
-            success(result) {
-                if (result) {
-                    resolve(result);
-                    return;
-                }
-                reject(result);
-            },
-            error(msg) {
-                reject(msg);
-            }
-
-        });
-
-    });
-};
-
-export const tableCol = () => {
-    return new Promise((resolve, reject) => {
-        appAjax.postJson({
-            url: '/packages/tablecol',
-            type: 'get',
-            success(result) {
-                if (result) {
-                    resolve(result);
-                    return;
-                }
-                reject(result);
-            },
-            error(msg) {
-                reject(msg);
-            }
-
-        });
-
-    });
-};
-
-export const packageDetail = ({table_name, pkg_name}) => {
-    return new Promise((resolve, reject) => {
-        appAjax.postJson({
-            url: '/packages/packageInfo',
+            url: `/packages/src/${pkgName}`,
             type: 'get',
             params: {
-                table_name,
-                pkg_name
+                database_name: databaseName,
+                pkg_name: pkgName
             },
             success(result) {
                 if (result) {
@@ -99,29 +74,6 @@ export const packageDetail = ({table_name, pkg_name}) => {
             error(msg) {
                 reject(msg);
             }
-
         });
-
-    });
-};
-
-export const maintainer = () => {
-    return new Promise((resolve, reject) => {
-        appAjax.postJson({
-            url: '/lifeCycle/maintainer',
-            type: 'get',
-            success(result) {
-                if (result) {
-                    resolve(result);
-                    return;
-                }
-                reject(result);
-            },
-            error(msg) {
-                reject(msg);
-            }
-
-        });
-
     });
 };

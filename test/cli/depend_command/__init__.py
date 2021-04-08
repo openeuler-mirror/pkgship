@@ -14,12 +14,10 @@
 import re
 from itertools import zip_longest
 from collections import defaultdict
-from unittest.mock import Mock
 from requests.exceptions import RequestException
 from test.cli import ClientTest, DATA_BASE_INFO
 from packageship.application.common.remote import RemoteService
 from redis import RedisError
-from packageship.application.common.constant import REDIS_CONN
 
 
 # Redirect RemoteService request function to the current function
@@ -58,12 +56,13 @@ class DependTestBase(ClientTest):
             cls.package_source_data = cls.read_file_content(cls.package_source_file)
         if hasattr(cls, "component_file"):
             cls.component_data = cls.read_file_content(cls.component_file)
-            cls.component_process_data = defaultdict(set)
+            cls.component_provides_process_data = defaultdict(set)
+            cls.component_files_process_data = defaultdict(set)
             for k, v in cls.component_data.items():
                 for pro in v["_source"]["provides"]:
-                    cls.component_process_data[pro["name"]].add(k)
+                    cls.component_provides_process_data[pro["name"]].add(k)
                 for fs in v["_source"]["files"]:
-                    cls.component_process_data[fs["name"]].add(k)
+                    cls.component_files_process_data[fs["name"]].add(k)
 
     def setUp(self) -> None:
         """
@@ -72,15 +71,16 @@ class DependTestBase(ClientTest):
 
         """
         super(DependTestBase, self).setUp()
-        RemoteService.post = self.client.post
         RemoteService.request = request
+        self.mock_requests_post(side_effect=self.client.post)
         self.mock_es_search()
         self.mock_redis_exists_raise_error()
 
     def mock_redis_exists_raise_error(self):
         """mock_redis_exists_side_effect"""
-        REDIS_CONN.exists = Mock()
-        REDIS_CONN.exists.side_effect = RedisError
+        self._to_update_kw_and_make_mock(
+            "packageship.application.common.constant.REDIS_CONN.exists", RedisError
+        )
 
     @staticmethod
     def _to_find_value_by_key(dic: dict, find_k_lst: list):
@@ -100,7 +100,7 @@ class DependTestBase(ClientTest):
             nonlocal ret
             for k, value in dc.items():
                 if k in find_k_lst:
-                    if isinstance(value,str):
+                    if isinstance(value, str):
                         ret = [value]
                     else:
                         ret = value
@@ -111,7 +111,7 @@ class DependTestBase(ClientTest):
         return ret
 
     def _update_ret_dict(
-        self, query_body: dict, k_lst: list, ret_dict_p: dict, data_origin: dict
+            self, query_body: dict, k_lst: list, ret_dict_p: dict, data_origin: dict
     ):
         """
         Assemble the acquired data into es return values that can be parsed by the project
@@ -130,10 +130,11 @@ class DependTestBase(ClientTest):
             if not pkg_info:
                 continue
             ret_dict_p["hits"]["hits"].append(pkg_info)
+
     @staticmethod
-    def make_newline_split_res(ln, lines,idx):
-        """return newline list use split rule 
-        
+    def make_newline_split_res(ln, lines, idx):
+        """return newline list use split rule
+
         Match the position after the string breaks
             e.g.
             command lines:
@@ -142,17 +143,17 @@ class DependTestBase(ClientTest):
             the first row split result is ["binary-name-help-","src-name-help","os-version-orc-"]
             The expected sharding data for the second row is ["1.1","","123"].
             And then return it to the upper layer for merge.
-        The function implements is the processing and return of this expected value. 
-        
+        The function implements is the processing and return of this expected value.
+
         Args:
             ln (str): line of command lines
             lines(list):command splitlines result
             idx (int): index of command lines
 
-        
+
         Raises:
             IndexError: index must be gte 1
-        
+
         Returns:
             list: ["str"*n]
         """
@@ -174,8 +175,8 @@ class DependTestBase(ClientTest):
                     break
 
         return ret_line_pos
-    
-    def _process_depend_command_value(self,command_res: str):
+
+    def _process_depend_command_value(self, command_res: str):
         """Processing the output of execute command
 
         Args:
@@ -200,15 +201,15 @@ class DependTestBase(ClientTest):
                 idx (int): index of command lines
 
             Returns:
-                bool: midfy or no modify 
+                bool: midfy or no modify
             """
             try:
                 lst = target_lst[-1]
                 if len(ln.split()) < len(lst):
 
-                    ln_split = self.make_newline_split_res(ln, idx,command_lines)
+                    ln_split = self.make_newline_split_res(ln, command_lines, idx)
                     target_lst[-1] = [
-                        pre + suf for pre, suf in zip_longest(lst, ln_split, fillvalue="")
+                        pre.strip() + suf.strip() for pre, suf in zip_longest(lst, ln_split, fillvalue="")
                     ]
                     return True
                 else:
@@ -270,17 +271,28 @@ class DependTestBase(ClientTest):
         if index == "databaseinfo":
             return DATA_BASE_INFO
         elif "binary" in index:
-            if ("files.name" in str(body)) or ("provides.name" in str(body)):
-                pro_lst = self._to_find_value_by_key(body["query"], ["files.name", "provides.name"])
-                for pro_name in pro_lst:
-                    for bin_name in self.component_process_data[pro_name]:
-                        ret_dict["hits"]["hits"].append(self.component_data[bin_name])
+            if "provides.name" in str(body):
+                self._get_components_info(body, ret_dict, "provides.name", self.component_provides_process_data)
+            elif "files.name" in str(body):
+                self._get_components_info(body, ret_dict, "files.name", self.component_files_process_data)
             else:
                 self._update_ret_dict(body["query"], ["name"], ret_dict, self.binary_data)
             return ret_dict
         elif "source" in index:
-            self._update_ret_dict(body["query"], ["name"], ret_dict, self.source_data)
+            if "subpacks" in str(body):
+                self._update_ret_dict(body["query"], ["name"], ret_dict, self.package_source_data)
+            else:
+                self._update_ret_dict(body["query"], ["name"], ret_dict, self.source_data)
             return ret_dict
         else:
             self._update_ret_dict(body["query"], ["binary_name"], ret_dict, self.binary_data)
             return ret_dict
+
+    def _get_components_info(self, body, ret_dict, component_location, components_dict):
+        bin_name_set = set()
+        pro_lst = self._to_find_value_by_key(body["query"], component_location)
+        for pro_name in pro_lst:
+            for bin_name in components_dict[pro_name]:
+                if bin_name not in bin_name_set:
+                    ret_dict["hits"]["hits"].append(self.component_data[bin_name])
+                    bin_name_set.add(bin_name)

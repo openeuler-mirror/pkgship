@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="29px" height="28px" viewBox="0 0 29 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Style</title>
+    <g id="控件" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icon可点击" transform="translate(-354.000000, -395.000000)" fill="#252C32">
+            <path d="M364.11,422.41 L364.11,407.41 L354,395 L382.22,395 L372.11,407.36 L372.11,413.17 C372.1093,413.965381 371.79277,414.727931 371.23,415.29 L364.11,422.41 Z M358.22,397 L366.11,406.64 L366.11,417.64 L369.82,413.93 C370.002734,413.738366 370.106317,413.484767 370.11,413.22 L370.11,406.64 L378,397 L358.22,397 Z" id="Style"></path>
+        </g>
+    </g>
+</svg>

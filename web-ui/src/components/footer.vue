@@ -3,13 +3,13 @@
         <div class="footer-content">
             <div class="footer-left">
                 <img src="@/assets/images/footer-logo.png" class="footer-logo">
-                <div class="footer-mail">{{ $t("common.footer.mail") }}</div>
+                <div class="footer-mail">{{ footer.mail }}</div>
             </div>
             <div class="footer-right">
                 <ul class="right-list">
-                    <li v-for="(item, index) in $t('common.footer.rightList')" :key="index"><a href="/">{{ item }}</a></li>
+                    <li v-for="(item, index) in footer.rightList" :key="index"><a :href="item.link" target="_blank">{{ item.name }}</a></li>
                 </ul>
-                <p class="footer-copyright">{{ $t("common.footer.copyright") }}</p>
+                <p class="footer-copyright">{{ footer.copyright }}</p>
             </div>
         </div>
     </div>
@@ -18,7 +18,26 @@
 <script>
 export default {
     data() {
-        return {};
+        return {
+            footer: {
+                leftLogo: 'openEuler',
+                mail: 'contact@openeuler.org',
+                copyright: '版权所有 © 2020 openeuler 保留一切权利',
+                rightList: [
+                    {
+                        name: 'Trademark',
+                        link: 'https://openeuler.org/en/other/brand/'
+                    },
+                    {
+                        name: 'Legal Notice',
+                        link: 'https://openeuler.org/en/other/legal/'
+                    },
+                    {
+                        name: 'Privacy Policy',
+                        link: 'https://openeuler.org/en/other/privacy/'
+                    }]
+            }
+        };
     },
     components: {}
 };
@@ -79,11 +98,11 @@ export default {
                 align-items: flex-end;
                 .fz14();
                 li {
-                    padding: 0 15px;  
+                    padding: 0 15px;
                     a {
                         color: #fff;
                         text-decoration: none;
-                    } 
+                    }
                 }
                 li:nth-child(2){
                     padding: 0 16px;
@@ -93,10 +112,8 @@ export default {
                 li:nth-child(3){
                     padding-right: 0;
                 }
-               
             }
         }
     }
-    
 }
 </style>

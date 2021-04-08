@@ -45,6 +45,7 @@ class BeDepend(BaseDepend):
                 searched_pkg.add(pkg_info.get("src_name"))
                 binary_pkgs.update(set(pkg_info.get("subpacks", [])))
 
+        self._search_set.update(searched_pkg)
         if is_init:
             not_found_pkg = str(set(pkg_name_lst) - searched_pkg)
             self.log_msg = f"source packages {not_found_pkg} not found in {self.database}"
@@ -158,6 +159,8 @@ class BeDepend(BaseDepend):
         """
         next_search_pkgs = set()
         src_key = req_src_info["req_src_name"]
+        if src_key not in self._search_set:
+            next_search_pkgs.update(self.__get_subpacks([src_key]))
         if src_key not in self.source_dict:
             self.source_dict[src_key] = {
                 "name": src_key,
@@ -165,7 +168,6 @@ class BeDepend(BaseDepend):
                 "database": self.database,
                 "build": [dep_name],
             }
-            next_search_pkgs.update(self.__get_subpacks([src_key]))
         else:
             if dep_name not in self.source_dict[src_key]["build"]:
                 self.source_dict[src_key]["build"].append(dep_name)
@@ -239,6 +241,8 @@ class BeDepend(BaseDepend):
             to_search = next_search - searched_pkgs
 
     def __call__(self, **kwargs):
+        self.__dict__.update(dict(dependency_type="bedep"))
+
         @buffer_cache(depend=self)
         def _depends(**kwargs):
             self.be_depend()

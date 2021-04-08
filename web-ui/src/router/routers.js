@@ -3,12 +3,16 @@
  * */
 
 export default [{
-        path: '/',
-        component: () => import('@/views/home/home.vue')
+    path: '/',
+    component: () => import('@/views/home/home.vue')
+},
+    {
+        path: '/source-detail',
+        component: () => import('@/views/package/source-detail.vue')
     },
     {
-        path: '/package-detail',
-        component: () => import('@/views/package/package-detail.vue')
+        path: '/binary-detail',
+        component: () => import('@/views/package/binary-detail.vue')
     },
     {
         path: '*',
