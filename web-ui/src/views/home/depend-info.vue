@@ -280,7 +280,7 @@ export default {
             },
             parameter: {
                 db_priority: [],
-                level: 'All',
+                level: 'ALL',
                 search_type: ''
             },
             searchName: "",
@@ -291,8 +291,8 @@ export default {
             isShowTable: false,
             checkList: ['source'],
             typeName: "",
-            typeLevel: 'All',
-            levelList: ['All', 1, 2, 3, 4, 5, 6 , 7, 8, 9, 10],
+            typeLevel: 'ALL',
+            levelList: ['ALL', 1, 2, 3, 4, 5, 6 , 7, 8, 9, 10],
             searchType: '',
             searchBe: ['install', 'build'],
             searchSource: false,
@@ -340,7 +340,7 @@ export default {
             this.formData.queryPkgName = this.changePkgQueryName(this.searchName);
             let current = this.currentButton.toLowerCase();
             if(current=== 'install' || current === 'build') {
-                this.typeLevel === 'All' ? delete this.parameter.level : this.parameter.level =  Number(this.typeLevel);
+                this.typeLevel === 'ALL' ? delete this.parameter.level : this.parameter.level =  Number(this.typeLevel);
             } else {
                 delete this.parameter.level;
             }
@@ -399,7 +399,7 @@ export default {
             let text = event.currentTarget.innerHTML;
             text = text.split(' ', 1)[0];
             this.currentButton = text;
-            this.typeLevel = 'All';
+            this.typeLevel = 'ALL';
             if (text === 'Install') {
                 this.searchTitle = 'Please enter a binary package name';
             }else if (text === 'Self') {

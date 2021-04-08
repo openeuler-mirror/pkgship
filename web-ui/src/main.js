@@ -17,8 +17,8 @@ if (!localStorage.getItem('locale') || localStorage.getItem('locale') === 'zh-en
 }
 
 Vue.use(ElementUI, {locale});
-Vue.use(echarts)
-Vue.prototype.$echarts = echarts
+Vue.use(echarts);
+Vue.prototype.$echarts = echarts;
 Vue.config.productionTip = false;
 
 new Vue({
