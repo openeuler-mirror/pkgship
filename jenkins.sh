@@ -44,8 +44,9 @@ function build_install_rpm()
   mv pkgship $pkgship_name
 	tar -zcvf  /home/jenkins/rpmbuild/SOURCES/$pkgship_name.tar.gz $pkgship_name &>/dev/null
 	cp $pkgship_name/pkgship.spec /home/jenkins/rpmbuild/SPECS/
-
+  # build pkgship rpm
 	rpmbuild  -bb  /home/jenkins/rpmbuild/SPECS/pkgship.spec
+	# install pkgship rpm
   sudo yum install -y /home/jenkins/rpmbuild/RPMS/noarch/pkgship*
 }
 
