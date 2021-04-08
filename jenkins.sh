@@ -32,7 +32,7 @@ function prepare_rpmbuild_dir()
 function install_require() 
 {
   sudo yum install rpm-build -y --enablerepo=pkgship_openEuler-$os_version
-  sudo yum-builddep pkgship/pkgship.spec -y --enablerepo=pkgship_openEuler-$os_version
+  sudo dnf builddep pkgship/pkgship.spec -y --enablerepo=pkgship_openEuler-$os_version
   if [ $? -ne 0 ]; then
     echo "install require rpm failed"
     exit 1
