@@ -147,8 +147,8 @@ class BaseDepend:
 
         for bin_name, values in self.binary_dict.items():
             bedep_dict[bin_name] = copy.deepcopy(values)
-            bedep_dict[bin_name].setdefault("build", [])
-            bedep_dict[bin_name].setdefault("install", [])
+            bedep_dict[bin_name]["build"] = []
+            bedep_dict[bin_name]["install"] = []
             _update_install_lst(bin_name, values)
 
         _update_build_lst()

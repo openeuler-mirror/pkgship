@@ -340,7 +340,7 @@ class Download:
         if self.depend_type == "bedep":
             return self.folder_path
         self.__write_install_csv()
-        if self.depend_type == "selfdep":
+        if self.depend_type in ["selfdep", "builddep"]:
             self.__write_build_csv()
         return self.folder_path
 
