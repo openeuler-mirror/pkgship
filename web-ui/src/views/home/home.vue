@@ -1,7 +1,6 @@
 <template>
     <div class="home">
         <h1>Package Management</h1>
-
         <div class="switcher">
             <a :class="{'active': isInfoShow }" @click="showInfo">Source Info</a>
             <a :class="{'active': isListShow }" @click="showList">Binary Info</a>
@@ -41,7 +40,6 @@ export default {
             this.isInfoShow = true;
             this.isListShow = false;
             this.isDependShow = false;
-
         },
         showList() {
             this.isListShow = true;
@@ -53,14 +51,9 @@ export default {
             this.isListShow = false;
             this.isDependShow = true;
         }
-
     }
 };
 </script>
-
-<style lang="less">
-
-</style>
 
 <style scoped>
 h1 {

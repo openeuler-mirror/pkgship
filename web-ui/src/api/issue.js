@@ -4,8 +4,8 @@
 
 import appAjax from './../libs/ajax-utils';
 export const packageBin = ({
-                               pageNum,  //当前页数
-                               pageSize,  // 每页条数
+                               pageNum,
+                               pageSize,
                                queryPkgName,
                                tableName
                            }) => {
@@ -35,14 +35,14 @@ export const packageBin = ({
     });
 };
 
-export const issueDetail = ({database_name, pkg_name}) => {
+export const issueDetail = ({databaseName, pkgName}) => {
     return new Promise((resolve, reject) => {
         appAjax.postJson({
-            url: `/packages/bin/${pkg_name}`,
+            url: `/packages/bin/${pkgName}`,
             type: 'get',
             params: {
-                database_name,
-                pkg_name
+                database_name: databaseName,
+                pkg_name: pkgName
             },
             success(result) {
                 if (result) {

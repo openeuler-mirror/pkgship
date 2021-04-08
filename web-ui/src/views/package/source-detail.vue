@@ -30,9 +30,7 @@
                 <li class="detail-title">Required：</li>
                 <li class="detail-item"><span v-for="(item, index) in detailData.build_dep" :key="index">{{ item }} </span></li>
             </ul>
-
         </div>
-
         <div class="subpack" v-for="(tables, index) in detailData.subpacks" :key="index">
             <p class="subpack-title">{{ tables.bin_name }}</p>
             <div class="package-table">
@@ -108,19 +106,21 @@ export default {
     methods: {
         getPackageDetail () {
             packageDetail({
-                pkg_name: decodeURIComponent(this.$route.query.pkg_name),
-                database_name: decodeURIComponent(this.$route.query.database_name)
+                pkgName: decodeURIComponent(this.$route.query.pkg_name),
+                databaseName: decodeURIComponent(this.$route.query.database_name)
             })
                 .then(response => {
                     if(response.code === '200') {
                         this.loading = false;
                         this.detailData = response.resp[this.$route.query.database_name][0];
                     } else {
+                        this.loading = false;
                         this.$message.error(response.message + '\n' + response.tip);
                     }
                 })
                 .catch(response => {
-                    this.$message.error(response);
+                    this.loading = false;
+                    this.$message.error(response.message + '\n' + response.tip);
                 });
         }
     }

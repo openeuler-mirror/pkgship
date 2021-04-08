@@ -108,8 +108,8 @@ export default {
     methods: {
         getIssueDetail () {
             issueDetail({
-                pkg_name: decodeURIComponent(this.$route.query.pkg_name),
-                database_name: decodeURIComponent(this.$route.query.database_name)
+                pkgName: decodeURIComponent(this.$route.query.pkg_name),
+                databaseName: decodeURIComponent(this.$route.query.database_name)
             })
                 .then(response => {
                     this.loading = false;

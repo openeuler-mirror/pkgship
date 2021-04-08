@@ -27,7 +27,7 @@ let postJson = params => {
                 new Vue().$message.error('Please try again later');
             }
         } else {
-            const data = typeof d.data == 'string' ? JSON.parse(d.data) : d.data;
+            const data = typeof d.data === 'string' ? JSON.parse(d.data) : d.data;
             if (data.code === '200') {
                 params.success(data);
             } else {
@@ -41,7 +41,7 @@ let postJson = params => {
         url: params['url'],
         data: dataStr,
         params: params['params'],
-        responseType: params['responseType']|| 'json',
+        responseType: params['responseType'] || 'json',
         timeout: 60000
     }).then(ajaxParams['success']).catch(params['error']);
 };

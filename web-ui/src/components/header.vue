@@ -18,12 +18,6 @@
                     :class="{ mask: menuMobileFlag }"
                     @click="menuMobileFlag = false"
                 ></div>
-                <!--                <ul class="nav-other">-->
-                <!--                    <li>-->
-                <!--                        <img src="@/assets/images/Gitee.png" alt="" />-->
-                <!--                        <span>{{ $t("common.gitee") }}</span>-->
-                <!--                    </li>-->
-                <!--                </ul>-->
             </div>
         </div>
     </div>
@@ -51,14 +45,6 @@ export default {
         showSub(toggleClass) {
             toggleClass.push("show-sub-menu");
         },
-        hideSub(toggleClass) {
-            toggleClass.pop();
-        },
-        toggleLang() {
-            const locale = this.$i18n.locale === "zh-cn" ? "zh-en" : "zh-cn";
-            window.localStorage.setItem("locale", locale);
-            window.location.reload(true);
-        },
         menuActiveFn(item) {
             let $route = this.$route;
             return (
@@ -83,7 +69,6 @@ export default {
             } else {
                 item.class.push("arrow-active");
             }
-            console.log(item.class);
         },
         subMenuMobileFn(item) {
             let $route = this.$route;

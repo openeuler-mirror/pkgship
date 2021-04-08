@@ -81,7 +81,6 @@
                     label="src-package">
                 </el-table-column>
             </el-table>
-
             <div class="mobile-pkg-table" v-for="(item, index) in tableData" :key="index">
                 <ul class="pkg-line">
                     <li class="detail-title">Name：</li>
@@ -133,7 +132,6 @@ import {
     packageBin
 } from "../../api/issue";
 import {
-    packagevsersion,
     dbPriority,
 } from "../../api/repo";
 import { dependDown } from '../../api/depend';
@@ -155,7 +153,6 @@ export default {
         }
     },
     mounted() {
-        this.getPkgVersion();
         this.getDbPriority();
     },
     methods: {
@@ -180,18 +177,6 @@ export default {
             };
             this.getdependDown(listRes);
         },
-        getData(func, verb) {
-            this.tableLoading = true;
-            func()
-                .then(response => {
-                    this.tableLoading = false;
-                    this[verb] = response.data;
-                })
-                .catch(response => {
-                    this.tableLoading = false;
-                    this.$message.error(response);
-                });
-        },
         getPkgBin(require) {
             packageBin(require)
                 .then(response => {
@@ -208,21 +193,6 @@ export default {
                     this.$message.error(response.message + '\n' + response.tip);
                 });
         },
-        getPkgVersion() {
-            packagevsersion()
-                .then(response => {
-                    if(response.code === '200') {
-                        this.tableLoading = false;
-                    } else {
-                        this.tableLoading = false;
-                        this.$message.error(response.message + '\n' + response.tip);
-                    }
-                })
-                .catch(response => {
-                    this.tableLoading = false;
-                    this.$message.error(response.message + '\n' + response.tip);
-                });
-        },
         getDbPriority() {
             dbPriority()
                 .then(response => {
@@ -231,7 +201,6 @@ export default {
                         this.productV = response.resp;
                         this.formData.tableName = response.resp[0];
                         this.initData(1);
-
                     } else {
                         this.$message.error(response.message + '\n' + response.tip);
                     }

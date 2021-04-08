@@ -77,7 +77,6 @@
                     label="License">
                 </el-table-column>
             </el-table>
-
             <div class="mobile-pkg-table" v-for="(item, index) in tableData" :key="index">
                 <ul class="pkg-line">
                     <li class="detail-title">Name：</li>
@@ -124,8 +123,6 @@
 import {
     dbPriority,
     packageSrc,
-    packageTablecol,
-    packagevsersion
 } from "../../api/repo";
 import { dependDown } from '../../api/depend';
 
@@ -151,8 +148,6 @@ export default {
     },
     mounted() {
         this.getDbPriority();
-        this.getPkgTablecol();
-        this.getPkgVersion();
     },
     methods: {
         getTablePage (flag) {
@@ -220,36 +215,6 @@ export default {
                         this.tableData = response.resp;
                         this.total = response.total_count;
                     } else {
-                        this.$message.error(response.message + '\n' + response.tip);
-                    }
-                })
-                .catch(response => {
-                    this.tableLoading = false;
-                    this.$message.error(response.message + '\n' + response.tip);
-                });
-        },
-        getPkgTablecol() {
-            packageTablecol()
-                .then(response => {
-                    if(response.code === '200') {
-                        this.tableLoading = false;
-                    } else {
-                        this.tableLoading = false;
-                        this.$message.error(response.message + '\n' + response.tip);
-                    }
-                })
-                .catch(response => {
-                    this.tableLoading = false;
-                    this.$message.error('error', response);
-                });
-        },
-        getPkgVersion() {
-            packagevsersion()
-                .then(response => {
-                    if(response.code === '200') {
-                        this.tableLoading = false;
-                    } else {
-                        this.tableLoading = false;
                         this.$message.error(response.message + '\n' + response.tip);
                     }
                 })

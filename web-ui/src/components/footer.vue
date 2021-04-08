@@ -26,7 +26,7 @@ export default {
                 rightList: [
                     {
                         name: 'Trademark',
-                        link: 'https://openeuler.org/eh/other/brand/'
+                        link: 'https://openeuler.org/en/other/brand/'
                     },
                     {
                         name: 'Legal Notice',
@@ -82,7 +82,6 @@ export default {
                 height: 50%;
                 align-items: unset;
                 padding-bottom: 67px;
-                // width: 100%
             }
             height: 100%;
             display: flex;
@@ -116,6 +115,5 @@ export default {
             }
         }
     }
-
 }
 </style>

@@ -23,27 +23,6 @@ export const dbPriority = () => {
     });
 };
 
-export const version = () => {
-    return new Promise((resolve, reject) => {
-        appAjax.postJson({
-            url: '/version',
-            type: 'get',
-            success(result) {
-                if (result) {
-                    resolve(result);
-                    return;
-                }
-                reject(result);
-            },
-            error(msg) {
-                reject(msg);
-            }
-
-        });
-
-    });
-};
-
 export const packageSrc = ({
                                pageNum,
                                pageSize,
@@ -76,14 +55,14 @@ export const packageSrc = ({
     });
 };
 
-export const packageDetail = ({database_name, pkg_name}) => {
+export const packageDetail = ({databaseName, pkgName}) => {
     return new Promise((resolve, reject) => {
         appAjax.postJson({
-            url: `/packages/src/${pkg_name}`,
+            url: `/packages/src/${pkgName}`,
             type: 'get',
             params: {
-                database_name,
-                pkg_name
+                database_name: databaseName,
+                pkg_name: pkgName
             },
             success(result) {
                 if (result) {
@@ -96,75 +75,5 @@ export const packageDetail = ({database_name, pkg_name}) => {
                 reject(msg);
             }
         });
-    });
-};
-
-export const packageSrcName = ({
-                                   database_name,
-                                   pkg_name
-                               }, url) => {
-    return new Promise((resolve, reject) => {
-        appAjax.postJson({
-            url: `/packages/src/$${url}`,
-            type: 'get',
-            params: {
-                database_name,
-                pkg_name
-            },
-            success(result) {
-                if (result) {
-                    resolve(result);
-                    return;
-                }
-                reject(result);
-            },
-            error(msg) {
-                reject(msg);
-            }
-
-        });
-
-    });
-};
-
-
-export const packageTablecol = () => {
-    return new Promise((resolve, reject) => {
-        appAjax.postJson({
-            url: '/packages/tablecol',
-            type: 'get',
-            success(result) {
-                if (result) {
-                    resolve(result);
-                    return;
-                }
-                reject(result);
-            },
-            error(msg) {
-                reject(msg);
-            }
-
-        });
-
-    });
-};
-export const packagevsersion = () => {
-    return new Promise((resolve, reject) => {
-        appAjax.postJson({
-            url: '/version',
-            type: 'get',
-            success(result) {
-                if (result) {
-                    resolve(result);
-                    return;
-                }
-                reject(result);
-            },
-            error(msg) {
-                reject(msg);
-            }
-
-        });
-
     });
 };

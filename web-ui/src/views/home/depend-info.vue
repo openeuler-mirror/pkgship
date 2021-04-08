@@ -8,7 +8,6 @@
                 <button :class="{'active': currentButton === 'Self'}" @click="clickButton($event)">Self Depend</button>
                 <button :class="{'active': currentButton === 'Bedepend'}" @click="clickButton($event)">Bedepend</button>
             </div>
-
             <div class="self-checkBox" :class="{'show': currentButton === 'Self'}">
                 <template>
                     <el-checkbox-group v-model="checkList">
@@ -18,7 +17,6 @@
                     </el-checkbox-group>
                 </template>
             </div>
-
             <div class="be-select" :class="{'show': currentButton === 'Bedepend'}">
                 <template>
                     <el-select class="type-select" v-model="typeName">
@@ -44,7 +42,6 @@
                 </template>
             </div>
         </div>
-
         <div class="depend-search">
             <el-form
                 :inline="true"
@@ -67,7 +64,6 @@
                     </el-input>
                 </el-form-item>
             </el-form>
-
             <div class="be-select source" :class="{'show': currentButton === 'Bedepend'}">
                 <template>
                     <el-select class="type-select" v-model="searchType">
@@ -82,7 +78,6 @@
                 </template>
             </div>
         </div>
-
         <div class="click-transfer" v-if="currentButton !== 'Bedepend'">
             <p>
                 Search Priority:
@@ -91,7 +86,6 @@
                 <el-button class="click-btn" type="text" @click="dialogVisible = true">click here</el-button>
                 to change.
             </p>
-
             <el-dialog
                 title="Set Search Priority"
                 :visible.sync="dialogVisible"
@@ -114,7 +108,6 @@
                 </span>
             </el-dialog>
         </div>
-
         <div class="depend-info" v-loading="loading" v-if="isShowTable">
             <div class="excel-button">
                 <el-form
@@ -126,7 +119,6 @@
                     </a>
                 </el-form>
             </div>
-
             <div class="package-table">
                 <div class="pkg-tables">
                     <div class="table-content binary">
@@ -288,7 +280,7 @@ export default {
             },
             parameter: {
                 db_priority: [],
-                level: 'all',
+                level: 'All',
                 search_type: ''
             },
             searchName: "",
@@ -299,8 +291,8 @@ export default {
             isShowTable: false,
             checkList: ['source'],
             typeName: "",
-            typeLevel: 'all',
-            levelList: ['all', 1, 2, 3, 4, 5, 6 , 7, 8, 9, 10],
+            typeLevel: 'All',
+            levelList: ['All', 1, 2, 3, 4, 5, 6 , 7, 8, 9, 10],
             searchType: '',
             searchBe: ['install', 'build'],
             searchSource: false,
@@ -345,16 +337,13 @@ export default {
             this.isAll = false;
             this.loading = true;
             this.isShowTable = true;
-
             this.formData.queryPkgName = this.changePkgQueryName(this.searchName);
-
             let current = this.currentButton.toLowerCase();
             if(current=== 'install' || current === 'build') {
-                this.typeLevel === 'all' ? delete this.parameter.level : this.parameter.level =  Number(this.typeLevel);
+                this.typeLevel === 'All' ? delete this.parameter.level : this.parameter.level =  Number(this.typeLevel);
             } else {
                 delete this.parameter.level;
             }
-
             let required = this.updateParamter();
             this.getdependList(required);
         },
@@ -363,19 +352,15 @@ export default {
             required.parameter = this.parameter;
             let data = this.formData;
             let current = this.currentButton.toLowerCase();
-
             required.parameter.db_priority = this.tableName;
             if (current === 'self') {
                 current += 'dep';
                 let checked = this.checkList;
-
                 required.parameter.self_build = false;
                 if (checked.includes('Self-build')) {
                     required.parameter.self_build = true;
                 }
-
                 required.parameter.packtype = checked.includes('source') ? 'source' : 'binary';
-
                 required.parameter.with_subpack = false;
                 if (checked.includes('with-subpack')) {
                     required.parameter.with_subpack = true;
@@ -393,16 +378,11 @@ export default {
                 required.parameter.db_priority.push(this.typeName);
                 required.parameter.with_subpack = this.typeList;
                 delete required.parameter.self_build;
-
                 required.parameter.packtype = this.searchSource ? 'source' : 'binary';
-
             }
-
             data.dependType = current;
-
             required.queryPkgName = data.queryPkgName;
             required.dependType = data.dependType;
-
             return required
         },
         toggleData(current) {
@@ -419,7 +399,7 @@ export default {
             let text = event.currentTarget.innerHTML;
             text = text.split(' ', 1)[0];
             this.currentButton = text;
-            this.typeLevel = 'all';
+            this.typeLevel = 'All';
             if (text === 'Install') {
                 this.searchTitle = 'Please enter a binary package name';
             }else if (text === 'Self') {
@@ -443,7 +423,6 @@ export default {
             let echarts = require('echarts');
             let id = this.$refs.diagram;
             let myChart = echarts.init(id);
-
             let data = this.Ddata;
             let option = {
                 animationDurationUpdate: 1500,
@@ -489,13 +468,12 @@ export default {
                     }
                 ],
             };
-
             myChart.setOption(option);
             myChart.off('click');
             myChart.on('click', function (params) {
                 let current = params.data.id;
                 _self.formData.node_name = current;
-                _self.getGraphData(true);
+                _self.getGraphData(true, 'binary');
             });
         },
         drawNodeGraph(value, isSource) {
@@ -590,7 +568,6 @@ export default {
                         this.statistics = response.resp.statistics;
                         this.binaryQueryList = response.resp.binary_list;
                         this.sourceQueryList = response.resp.source_list;
-
                         this.getGraphData(false);
                         this.excelDownload();
                     } else {
@@ -620,17 +597,14 @@ export default {
             required.parameter = this.parameter;
             let data = this.formData;
             let current = this.currentButton.toLowerCase();
-
             required.parameter.db_priority = this.tableName;
             if (current === 'self') {
                 current += 'dep';
                 let checked = this.checkList;
-
                 required.parameter.self_build = false;
                 if (checked.includes('Self-build')) {
                     required.parameter.self_build = true;
                 }
-
                 required.parameter.packtype = checked.includes('source') ? 'source' : 'binary';
                 required.node_type = isSource ||'binary';
                 required.parameter.with_subpack = false;
@@ -640,6 +614,7 @@ export default {
             } else if (current !== 'bedepend') {
                 current += 'dep';
                 required.node_type = current.includes('install') ? isSource || 'binary' : isSource || 'source';
+                // required.node_type = 'binary'
                 required.parameter.packtype = '';
                 required.parameter.search_type = '';
                 required.parameter.with_subpack = false;
@@ -650,7 +625,6 @@ export default {
                 required.parameter.db_priority.push(this.typeName);
                 required.parameter.with_subpack = this.typeList;
                 delete required.parameter.self_build;
-
                 if (this.searchSource) {
                     required.parameter.packtype = 'source';
                 } else {
@@ -658,12 +632,9 @@ export default {
                 }
                 required.node_type = isSource ||'binary';
             }
-
             data.dependType = current;
-
             required.queryPkgName = data.queryPkgName;
             required.dependType = data.dependType;
-
             if (isCLicked) {
                 required.node_name = data.node_name;
             } else {
