@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function clear_env(){
-	rm -rf /home/jenkins/rpmbuild || echo "clear env"
+  rm -rf /home/jenkins/rpmbuild || echo "clear env"
 }
 
 function update_repo()
@@ -25,28 +25,28 @@ function prepare_rpmbuild_dir()
 
 function install_require() 
 {
-	sudo yum install rpm-build -y
-	sudo yum install python3-Flask-Limiter python3-coverage python3-elasticsearch python3-elasticsearch python3-flask python3-flask-restful python3-gevent python3-marshmallow python3-prettytable python3-pyyaml python3-redis python3-requests python3-retrying python3-uWSGI python3-concurrent-log-handler python3-mock -y
+  sudo yum install rpm-build -y
+  sudo yum install python3-Flask-Limiter python3-coverage python3-elasticsearch python3-elasticsearch python3-flask python3-flask-restful python3-gevent python3-marshmallow python3-prettytable python3-pyyaml python3-redis python3-requests python3-retrying python3-uWSGI python3-concurrent-log-handler python3-mock -y
 }
 
 function build_install_rpm()
 {
-    version=""
-    while read line
-    do
-        if [[ $line =~ "Version" ]]
-            then
-            	   version=`echo ${line: 9} | sed 's/ //g'`
-                   break
-        fi
-    done <pkgship/pkgship.spec
-	pkgship_name="pkgship-"$version
+  version=""
+  while read line
+  do
+  if [[ $line =~ "Version" ]]
+      then
+        version=`echo ${line: 9} | sed 's/ //g'`
+        break
+  fi
+  done <pkgship/pkgship.spec
+  pkgship_name="pkgship-"$version
   mv pkgship $pkgship_name
-	tar -zcvf  /home/jenkins/rpmbuild/SOURCES/$pkgship_name.tar.gz $pkgship_name &>/dev/null
-	cp $pkgship_name/pkgship.spec /home/jenkins/rpmbuild/SPECS/
+  tar -zcvf  /home/jenkins/rpmbuild/SOURCES/$pkgship_name.tar.gz $pkgship_name &>/dev/null
+  cp $pkgship_name/pkgship.spec /home/jenkins/rpmbuild/SPECS/
   # build pkgship rpm
-	rpmbuild  -bb  /home/jenkins/rpmbuild/SPECS/pkgship.spec
-	# install pkgship rpm
+  rpmbuild  -bb  /home/jenkins/rpmbuild/SPECS/pkgship.spec
+  # install pkgship rpm
   sudo yum install -y /home/jenkins/rpmbuild/RPMS/noarch/pkgship*
 }
 
