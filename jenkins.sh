@@ -8,13 +8,14 @@ function clear_env(){
 
 function update_repo()
 {
+  architecture=`uname -p`
   if [ ! -f ${REPO_CONFIG_FILE} ]; then
      sudo touch ${REPO_CONFIG_FILE}
   fi
   sudo bash -c "cat>${REPO_CONFIG_FILE}"<<EOF
 [pkgship_openEuler-21.03]
 name=pkgship_openEuler-21.03
-baseurl=http://119.3.219.20:82/openEuler:/21.03/standard_aarch64/
+baseurl=http://119.3.219.20:82/openEuler:/21.03/standard_$architecture/
 enabled=1
 gpgcheck=0
 EOF
