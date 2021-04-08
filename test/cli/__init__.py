@@ -68,8 +68,6 @@ class TestMixin:
     Test Mixin class
     """
 
-    _to_clean_mock_patchers = []
-
     def _es_search_result(self, index, body):
         """_es_search_result
 
@@ -293,16 +291,16 @@ class BaseTest(unittest.TestCase, TestMixin):
     """
 
     cmd_class = None
-    command_params = []
-    excepted_str = ""
-    r = Redirect()
 
     def setUp(self) -> None:
         """
         setUp Test Environment
         """
+        self._to_clean_mock_patchers = []
+        self.r = Redirect()
         self.command_params = []
-        self.r.flush()
+        self.excepted_str = ""
+        self.command_params = []
         sys.stdout = self.r
 
     def _execute_command(self):
