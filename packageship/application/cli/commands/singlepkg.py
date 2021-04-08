@@ -131,7 +131,7 @@ class SingleCommand(BaseCommand):
         if provides and isinstance(provides, list):
             for _provide in provides:
                 _provide_list = _provide.get('required_by_bin', '') + \
-                    _provide.get('required_by_src', '')
+                                _provide.get('required_by_src', '')
                 _required_by = '\n'.join(
                     _provide_list) if _provide_list else ''
                 self.provides_table.add_row(
@@ -206,7 +206,7 @@ class SingleCommand(BaseCommand):
 
         """
         parse_data = response_data['resp'].get(database)[ZERO]
-        _subpacks = parse_data.get('subpacks')
+        _subpacks = parse_data.get('subpacks') if parse_data.get('subpacks') else []
         self.__parse_package_detail(parse_data, src_or_bin)
         self.__parse_subpack(_subpacks)
 
@@ -222,11 +222,11 @@ class SingleCommand(BaseCommand):
         """
         parse_data = response_data['resp'].get(database)[ZERO]
         self.__parse_package_detail(parse_data, src_or_bin)
-        _provides = parse_data.get('provides')
+        _provides = parse_data.get('provides') if parse_data.get('provides') else []
         self.__parse_provides(_provides)
-        _requires = parse_data.get('requires')
+        _requires = parse_data.get('requires') if parse_data.get('requires') else []
         self.__parse_requires(_requires)
-        _filelist = parse_data.get('filelist')
+        _filelist = parse_data.get('filelist') if parse_data.get('filelist') else {}
         self.__parse_filelist(_filelist)
 
     def do_command(self, params):
@@ -246,7 +246,7 @@ class SingleCommand(BaseCommand):
         self._set_read_host(params.remote)
 
         _url = self.read_host + \
-            '/packages/{src_or_bin}/{packagename}?database_name={database}&pkg_name={pkg_name}' \
+               '/packages/{src_or_bin}/{packagename}?database_name={database}&pkg_name={pkg_name}' \
                    .format(src_or_bin=src_or_bin, packagename=params.packagename, database=params.database,
                            pkg_name=params.packagename)
         try:
