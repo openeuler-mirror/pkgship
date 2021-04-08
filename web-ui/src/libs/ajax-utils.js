@@ -14,16 +14,25 @@ let postJson = params => {
 
     // 请求数据
     let dataStr = params['data'] && ((typeof (params['data']) === 'object')
-    ? JSON.stringify(params['data']) : params['data']);
+        ? JSON.stringify(params['data']) : params['data']);
 
     let ajaxParams = {};
     // success方法重载
     ajaxParams['success'] = function (d) {
-        const data = typeof d.data == 'string' ? JSON.parse(d.data) : d.data;
-        if (data) {
-            params.success(data);
+        if (params.responseType) {
+            const data = d.data;
+            if (data) {
+                params.success(data);
+            } else {
+                new Vue().$message.error('Please try again later');
+            }
         } else {
-            new Vue().$message.error('开小差~请稍后重试。');
+            const data = typeof d.data === 'string' ? JSON.parse(d.data) : d.data;
+            if (data.code === '200') {
+                params.success(data);
+            } else {
+                new Vue().$message.error(data.message + '\n' + data.tip);
+            }
         }
     };
 
@@ -32,7 +41,8 @@ let postJson = params => {
         url: params['url'],
         data: dataStr,
         params: params['params'],
-        responseType: 'json'
+        responseType: params['responseType'] || 'json',
+        timeout: 60000
     }).then(ajaxParams['success']).catch(params['error']);
 };
 
