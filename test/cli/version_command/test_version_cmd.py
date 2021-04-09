@@ -15,13 +15,10 @@
 test_get_pkgship_version
 """
 import os
-from pathlib import Path
 from packageship.application.cli.commands.version import VersionCommand
 from packageship.application.core.baseinfo import pkg_version
+from test.cli import MOCK_DATA_FOLDER
 from test.cli.version_command import VersionTest
-
-MOCK_DATA_FOLDER = str(Path(Path(__file__).parents[2], "mock_data"))
-
 
 
 class TestVersion(VersionTest):
