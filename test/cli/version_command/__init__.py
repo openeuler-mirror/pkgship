@@ -36,7 +36,7 @@ class VersionTest(ClientTest):
 
     def setUp(self) -> None:
         super(VersionTest, self).setUp()
-        RemoteService.get = self.client.get
+        self.mock_requests_get(side_effect=self.client.get)
         VersionCommand.__init__ = _init
 
 
