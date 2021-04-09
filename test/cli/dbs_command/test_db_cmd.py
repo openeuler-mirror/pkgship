@@ -15,6 +15,7 @@
 test_get_pkgship_cmd
 """
 from packageship.application.cli.commands.db import DbPriorityCommand
+from test.cli import DATA_BASE_INFO
 from test.cli.dbs_command import DbsTest
 
 
@@ -28,8 +29,43 @@ class TestDB(DbsTest):
         """
         test true params
         """
+        self.mock_es_search(return_value=DATA_BASE_INFO)
         self.excepted_str = """
 DB priority
 ['os-version']
         """
+        self.assert_result()
+
+
+    def test_different_db_priority(self):
+        """
+        test different db priority
+        """
+        self.excepted_str = """
+DB priority
+['os-version-1', 'os-version-2', 'os-version-3']
+        """
+        self.mock_es_search(return_value=self.read_file_content("different_priority_dbs.json"))
+        self.assert_result()
+
+    def test_same_db_priority(self):
+        """
+        test same db priority
+        """
+        self.excepted_str = """
+DB priority
+['os-version-1', 'aa', 'bbb', 'test']
+        """
+        self.mock_es_search(return_value=self.read_file_content("same_priority_dbs.json"))
+        self.assert_result()
+
+    def test_wrong_db_data(self):
+        """
+        test wrong dbs data
+        """
+        self.excepted_str = """
+ERROR_CONTENT  :Unable to get the generated database information
+HINT           :Make sure the generated database information is valid
+        """
+        self.mock_es_search(return_value={})
         self.assert_result()

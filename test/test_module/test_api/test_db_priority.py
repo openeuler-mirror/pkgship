@@ -36,48 +36,6 @@ class TestGetDBPriority(ReadTestBase):
         "method": "GET"
     }
 
-    def test_db_priority(self):
-        """
-            Test the actual data sheet
-        """
-        self.REQUESTS_KWARGS["url"] = self.BASE_URL
-        resp_dict = self.client_request(**self.REQUESTS_KWARGS)
-        self.assertEqual(ResponseCode.SUCCESS,
-                         resp_dict.get("code"),
-                         msg="Error in status code return")
-        self.assertEqual(["os_version_1", "os_version_2"], resp_dict.get(
-            'resp'), msg="The data content is incorrect")
-
-    def test_true_result(self):
-        """
-        test_true_params_result
-        Returns:
-
-        """
-        db_priority = DatabasePriority()
-        with app.app_context():
-            response = db_priority.get()
-            output_data = response.json
-            self.assertEqual(
-                {'code': '200', 'message': 'Successful Operation', 'resp': ["os_version_1", "os_version_2"]},
-                output_data)
-
-    def test_wrong_result(self):
-        """
-        test_true_params_result
-        Returns:
-
-        """
-        db_priority = DatabasePriority()
-        database.get_db_priority = mock.Mock(return_value=[])
-        with app.app_context():
-            response = db_priority.get()
-            output_data = response.json
-            self.assertEqual(
-                {'code': '4011', 'message': 'Unable to get the generated database information', 'resp': None,
-                 'tip': 'Make sure the generated database information is valid'}, output_data,
-                msg="Error getting pkgship version")
-
     @mock.patch("packageship.application.query.database.get_db_priority",
                 side_effect=ElasticSearchQueryException('es error'))
     def test_es_error(self, mock_es_error):
