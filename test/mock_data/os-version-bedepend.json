@@ -1,0 +1,1109 @@
+{
+    "Judy": {
+        "_source": {
+            "binary_name": "Judy",
+            "bin_version": "1.0.5",
+            "src_name": "Judy",
+            "src_version": "1.0.5",
+            "provides": [
+                {
+                    "component": "Judy",
+                    "build_require": [],
+                    "install_require": [
+                        {
+                            "req_bin_name": "Judy-devel",
+                            "req_bin_version": "1.0.5",
+                            "req_src_name": "Judy",
+                            "req_src_version": "1.0.5"
+                        }
+                    ]
+                },
+                {
+                    "component": "Judy(aarch-64)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "libJudy.so.1()(64bit)",
+                    "build_require": [],
+                    "install_require": [
+                        {
+                            "req_bin_name": "mariadb-oqgraph-engine",
+                            "req_bin_version": "10.3.9",
+                            "req_src_name": "mariadb",
+                            "req_src_version": "10.3.9"
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "Judy-devel": {
+        "_source": {
+            "binary_name": "Judy-devel",
+            "bin_version": "1.0.5",
+            "src_name": "Judy",
+            "src_version": "1.0.5",
+            "provides": [
+                {
+                    "component": "Judy-devel",
+                    "build_require": [
+                        {
+                            "req_src_name": "mariadb",
+                            "req_src_version": "10.3.9"
+                        }
+                    ],
+                    "install_require": []
+                },
+                {
+                    "component": "Judy-devel(aarch-64)",
+                    "build_require": [],
+                    "install_require": []
+                }
+            ]
+        }
+    },
+    "Judy-help": {
+        "_source": {
+            "binary_name": "Judy-help",
+            "bin_version": "1.0.5",
+            "src_name": "Judy",
+            "src_version": "1.0.5",
+            "provides": [
+                {
+                    "component": "Judy-help",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "Judy-help(aarch-64)",
+                    "build_require": [],
+                    "install_require": []
+                }
+            ]
+        }
+    },
+    "mariadb": {
+        "_source": {
+            "binary_name": "mariadb",
+            "bin_version": "10.3.9",
+            "src_name": "mariadb",
+            "src_version": "10.3.9",
+            "provides": [
+                {
+                    "component": "config(mariadb)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "mariadb",
+                    "build_require": [],
+                    "install_require": [
+                        {
+                            "req_bin_name": "obs-api-deps",
+                            "req_bin_version": "2.10.1",
+                            "req_src_name": "obs-bundled-gems",
+                            "req_src_version": "2.10.1"
+                        }
+                    ]
+                },
+                {
+                    "component": "mariadb(aarch-64)",
+                    "build_require": [],
+                    "install_require": [
+                        {
+                            "req_bin_name": "mariadb-server",
+                            "req_bin_version": "10.3.9",
+                            "req_src_name": "mariadb",
+                            "req_src_version": "10.3.9"
+                        },
+                        {
+                            "req_bin_name": "mariadb-test",
+                            "req_bin_version": "10.3.9",
+                            "req_src_name": "mariadb",
+                            "req_src_version": "10.3.9"
+                        }
+                    ]
+                },
+                {
+                    "component": "mariadb-galera",
+                    "build_require": [],
+                    "install_require": []
+                }
+            ]
+        }
+    },
+    "mariadb-backup": {
+        "_source": {
+            "binary_name": "mariadb-backup",
+            "bin_version": "10.3.9",
+            "src_name": "mariadb",
+            "src_version": "10.3.9",
+            "provides": [
+                {
+                    "component": "mariadb-backup",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "mariadb-backup(aarch-64)",
+                    "build_require": [],
+                    "install_require": []
+                }
+            ]
+        }
+    },
+    "mariadb-common": {
+        "_source": {
+            "binary_name": "mariadb-common",
+            "bin_version": "10.3.9",
+            "src_name": "mariadb",
+            "src_version": "10.3.9",
+            "provides": [
+                {
+                    "component": "config(mariadb-common)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "mariadb-common",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "mariadb-common(aarch-64)",
+                    "build_require": [],
+                    "install_require": [
+                        {
+                            "req_bin_name": "mariadb",
+                            "req_bin_version": "10.3.9",
+                            "req_src_name": "mariadb",
+                            "req_src_version": "10.3.9"
+                        },
+                        {
+                            "req_bin_name": "mariadb-embedded",
+                            "req_bin_version": "10.3.9",
+                            "req_src_name": "mariadb",
+                            "req_src_version": "10.3.9"
+                        },
+                        {
+                            "req_bin_name": "mariadb-errmessage",
+                            "req_bin_version": "10.3.9",
+                            "req_src_name": "mariadb",
+                            "req_src_version": "10.3.9"
+                        },
+                        {
+                            "req_bin_name": "mariadb-server",
+                            "req_bin_version": "10.3.9",
+                            "req_src_name": "mariadb",
+                            "req_src_version": "10.3.9"
+                        },
+                        {
+                            "req_bin_name": "mariadb-server-galera",
+                            "req_bin_version": "10.3.9",
+                            "req_src_name": "mariadb",
+                            "req_src_version": "10.3.9"
+                        },
+                        {
+                            "req_bin_name": "mariadb-test",
+                            "req_bin_version": "10.3.9",
+                            "req_src_name": "mariadb",
+                            "req_src_version": "10.3.9"
+                        }
+                    ]
+                },
+                {
+                    "component": "mariadb-galera-common",
+                    "build_require": [],
+                    "install_require": []
+                }
+            ]
+        }
+    },
+    "mariadb-cracklib": {
+        "_source": {
+            "binary_name": "mariadb-cracklib",
+            "bin_version": "10.3.9",
+            "src_name": "mariadb",
+            "src_version": "10.3.9",
+            "provides": [
+                {
+                    "component": "config(mariadb-cracklib)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "cracklib-password-check",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "cracklib-password-check(aarch-64)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "mariadb-cracklib",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "mariadb-cracklib(aarch-64)",
+                    "build_require": [],
+                    "install_require": []
+                }
+            ]
+        }
+    },
+    "mariadb-devel": {
+        "_source": {
+            "binary_name": "mariadb-devel",
+            "bin_version": "10.3.9",
+            "src_name": "mariadb",
+            "src_version": "10.3.9",
+            "provides": [
+                {
+                    "component": "mariadb-devel",
+                    "build_require": [
+                        {
+                            "req_src_name": "sysbench",
+                            "req_src_version": "1.0.20"
+                        }
+                    ],
+                    "install_require": []
+                },
+                {
+                    "component": "mariadb-devel(aarch-64)",
+                    "build_require": [],
+                    "install_require": [
+                        {
+                            "req_bin_name": "mariadb-embedded-devel",
+                            "req_bin_version": "10.3.9",
+                            "req_src_name": "mariadb",
+                            "req_src_version": "10.3.9"
+                        }
+                    ]
+                },
+                {
+                    "component": "pkgconfig(mariadb)",
+                    "build_require": [
+                        {
+                            "req_src_name": "glpk",
+                            "req_src_version": "4.65"
+                        }
+                    ],
+                    "install_require": []
+                }
+            ]
+        }
+    },
+    "mariadb-embedded": {
+        "_source": {
+            "binary_name": "mariadb-embedded",
+            "bin_version": "10.3.9",
+            "src_name": "mariadb",
+            "src_version": "10.3.9",
+            "provides": [
+                {
+                    "component": "libmariadbd.so.19()(64bit)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "mariadb-embedded",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "mariadb-embedded(aarch-64)",
+                    "build_require": [],
+                    "install_require": [
+                        {
+                            "req_bin_name": "mariadb-embedded-devel",
+                            "req_bin_version": "10.3.9",
+                            "req_src_name": "mariadb",
+                            "req_src_version": "10.3.9"
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "mariadb-embedded-devel": {
+        "_source": {
+            "binary_name": "mariadb-embedded-devel",
+            "bin_version": "10.3.9",
+            "src_name": "mariadb",
+            "src_version": "10.3.9",
+            "provides": [
+                {
+                    "component": "mariadb-embedded-devel",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "mariadb-embedded-devel(aarch-64)",
+                    "build_require": [],
+                    "install_require": []
+                }
+            ]
+        }
+    },
+    "mariadb-errmessage": {
+        "_source": {
+            "binary_name": "mariadb-errmessage",
+            "bin_version": "10.3.9",
+            "src_name": "mariadb",
+            "src_version": "10.3.9",
+            "provides": [
+                {
+                    "component": "errmsg",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "errmsg(aarch-64)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "mariadb-errmessage",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "mariadb-errmessage(aarch-64)",
+                    "build_require": [],
+                    "install_require": [
+                        {
+                            "req_bin_name": "mariadb-embedded",
+                            "req_bin_version": "10.3.9",
+                            "req_src_name": "mariadb",
+                            "req_src_version": "10.3.9"
+                        },
+                        {
+                            "req_bin_name": "mariadb-server",
+                            "req_bin_version": "10.3.9",
+                            "req_src_name": "mariadb",
+                            "req_src_version": "10.3.9"
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "mariadb-gssapi-server": {
+        "_source": {
+            "binary_name": "mariadb-gssapi-server",
+            "bin_version": "10.3.9",
+            "src_name": "mariadb",
+            "src_version": "10.3.9",
+            "provides": [
+                {
+                    "component": "config(mariadb-gssapi-server)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "mariadb-gssapi-server",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "mariadb-gssapi-server(aarch-64)",
+                    "build_require": [],
+                    "install_require": []
+                }
+            ]
+        }
+    },
+    "mariadb-oqgraph-engine": {
+        "_source": {
+            "binary_name": "mariadb-oqgraph-engine",
+            "bin_version": "10.3.9",
+            "src_name": "mariadb",
+            "src_version": "10.3.9",
+            "provides": [
+                {
+                    "component": "config(mariadb-oqgraph-engine)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "mariadb-oqgraph-engine",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "mariadb-oqgraph-engine(aarch-64)",
+                    "build_require": [],
+                    "install_require": []
+                }
+            ]
+        }
+    },
+    "mariadb-server": {
+        "_source": {
+            "binary_name": "mariadb-server",
+            "bin_version": "10.3.9",
+            "src_name": "mariadb",
+            "src_version": "10.3.9",
+            "provides": [
+                {
+                    "component": "config(mariadb-server)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "libdaemon_example.so()(64bit)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "mariadb-server",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "mariadb-server(aarch-64)",
+                    "build_require": [],
+                    "install_require": [
+                        {
+                            "req_bin_name": "mariadb-backup",
+                            "req_bin_version": "10.3.9",
+                            "req_src_name": "mariadb",
+                            "req_src_version": "10.3.9"
+                        },
+                        {
+                            "req_bin_name": "mariadb-cracklib",
+                            "req_bin_version": "10.3.9",
+                            "req_src_name": "mariadb",
+                            "req_src_version": "10.3.9"
+                        },
+                        {
+                            "req_bin_name": "mariadb-gssapi-server",
+                            "req_bin_version": "10.3.9",
+                            "req_src_name": "mariadb",
+                            "req_src_version": "10.3.9"
+                        },
+                        {
+                            "req_bin_name": "mariadb-oqgraph-engine",
+                            "req_bin_version": "10.3.9",
+                            "req_src_name": "mariadb",
+                            "req_src_version": "10.3.9"
+                        },
+                        {
+                            "req_bin_name": "mariadb-server-galera",
+                            "req_bin_version": "10.3.9",
+                            "req_src_name": "mariadb",
+                            "req_src_version": "10.3.9"
+                        },
+                        {
+                            "req_bin_name": "mariadb-test",
+                            "req_bin_version": "10.3.9",
+                            "req_src_name": "mariadb",
+                            "req_src_version": "10.3.9"
+                        }
+                    ]
+                },
+                {
+                    "component": "server_utils",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "server_utils(aarch-64)",
+                    "build_require": [],
+                    "install_require": []
+                }
+            ]
+        }
+    },
+    "mariadb-server-galera": {
+        "_source": {
+            "binary_name": "mariadb-server-galera",
+            "bin_version": "10.3.9",
+            "src_name": "mariadb",
+            "src_version": "10.3.9",
+            "provides": [
+                {
+                    "component": "config(mariadb-server-galera)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "mariadb-galera-server",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "mariadb-server-galera",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "mariadb-server-galera(aarch-64)",
+                    "build_require": [],
+                    "install_require": []
+                }
+            ]
+        }
+    },
+    "mariadb-test": {
+        "_source": {
+            "binary_name": "mariadb-test",
+            "bin_version": "10.3.9",
+            "src_name": "mariadb",
+            "src_version": "10.3.9",
+            "provides": [
+                {
+                    "component": "mariadb-test",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "mariadb-test(aarch-64)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Config)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Config::Group)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Config::Group::ENV)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Config::Group::OPT)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Config::Option)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::ConfigFactory)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::CoreDump)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::File::Path)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Find)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Handles)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Options)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Platform)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::SafeProcess)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::SafeProcess::Base)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Suite)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Suite::Archive)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Suite::AuthGSSAPI)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Suite::BinlogEncryption)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Suite::CTest)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Suite::Connect)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Suite::Disks)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Suite::Encryption)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Suite::Federated)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Suite::GALERA_3NODES)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Suite::Galera)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Suite::MTR2::MyISAM)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Suite::MTR::Example)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Suite::Main)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Suite::Maria)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Suite::MariaBackup)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Suite::Metadata_lock_info)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Suite::OQGraph)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Suite::Plugins)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Suite::Query_response_time)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Suite::SQL_Discovery)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Suite::Sequence)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Suite::Sphinx)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Suite::Spider)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Suite::User_variables)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Suite::WSREP)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Suite::WSREP_INFO)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::SysInfo)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Tee)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(My::Test)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(mtr_cases)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(mtr_match)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(mtr_report)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(mtr_results)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "perl(mtr_unique)",
+                    "build_require": [],
+                    "install_require": []
+                }
+            ]
+        }
+    },
+    "glpk": {
+        "_source": {
+            "binary_name": "glpk",
+            "bin_version": "4.65",
+            "src_name": "glpk",
+            "src_version": "4.65",
+            "provides": [
+                {
+                    "component": "bundled(minisat)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "glpk",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "glpk(aarch-64)",
+                    "build_require": [],
+                    "install_require": [
+                        {
+                            "req_bin_name": "glpk-devel",
+                            "req_bin_version": "4.65",
+                            "req_src_name": "glpk",
+                            "req_src_version": "4.65"
+                        },
+                        {
+                            "req_bin_name": "glpk-utils",
+                            "req_bin_version": "4.65",
+                            "req_src_name": "glpk",
+                            "req_src_version": "4.65"
+                        }
+                    ]
+                },
+                {
+                    "component": "libglpk.so.40()(64bit)",
+                    "build_require": [],
+                    "install_require": [
+                        {
+                            "req_bin_name": "glpk-utils",
+                            "req_bin_version": "4.65",
+                            "req_src_name": "glpk",
+                            "req_src_version": "4.65"
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "glpk-devel": {
+        "_source": {
+            "binary_name": "glpk-devel",
+            "bin_version": "4.65",
+            "src_name": "glpk",
+            "src_version": "4.65",
+            "provides": [
+                {
+                    "component": "glpk-devel",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "glpk-devel(aarch-64)",
+                    "build_require": [],
+                    "install_require": []
+                }
+            ]
+        }
+    },
+    "glpk-doc": {
+        "_source": {
+            "binary_name": "glpk-doc",
+            "bin_version": "4.65",
+            "src_name": "glpk",
+            "src_version": "4.65",
+            "provides": [
+                {
+                    "component": "glpk-doc",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "glpk-doc(aarch-64)",
+                    "build_require": [],
+                    "install_require": []
+                }
+            ]
+        }
+    },
+    "glpk-utils": {
+        "_source": {
+            "binary_name": "glpk-utils",
+            "bin_version": "4.65",
+            "src_name": "glpk",
+            "src_version": "4.65",
+            "provides": [
+                {
+                    "component": "glpk-utils",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "glpk-utils(aarch-64)",
+                    "build_require": [],
+                    "install_require": []
+                }
+            ]
+        }
+    },
+    "obs-api-deps": {
+        "_source": {
+            "binary_name": "obs-api-deps",
+            "bin_version": "2.10.1",
+            "src_name": "obs-bundled-gems",
+            "src_version": "2.10.1",
+            "provides": [
+                {
+                    "component": "obs-api-deps",
+                    "build_require": [],
+                    "install_require": [
+                        {
+                            "req_bin_name": "obs-api",
+                            "req_bin_version": "2.10.1",
+                            "req_src_name": "obs-server",
+                            "req_src_version": "2.10.1"
+                        }
+                    ]
+                },
+                {
+                    "component": "obs-api-deps(aarch-64)",
+                    "build_require": [],
+                    "install_require": []
+                }
+            ]
+        }
+    },
+    "obs-bundled-gems": {
+        "_source": {
+            "binary_name": "obs-bundled-gems",
+            "bin_version": "2.10.1",
+            "src_name": "obs-bundled-gems",
+            "src_version": "2.10.1",
+            "provides": [
+                {
+                    "component": "libsass.so()(64bit)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "obs-bundled-gems",
+                    "build_require": [
+                        {
+                            "req_src_name": "obs-server",
+                            "req_src_version": "2.10.1"
+                        }
+                    ],
+                    "install_require": [
+                        {
+                            "req_bin_name": "obs-api",
+                            "req_bin_version": "2.10.1",
+                            "req_src_name": "obs-server",
+                            "req_src_version": "2.10.1"
+                        },
+                        {
+                            "req_bin_name": "obs-api-deps",
+                            "req_bin_version": "2.10.1",
+                            "req_src_name": "obs-bundled-gems",
+                            "req_src_version": "2.10.1"
+                        }
+                    ]
+                },
+                {
+                    "component": "obs-bundled-gems(aarch-64)",
+                    "build_require": [],
+                    "install_require": []
+                }
+            ]
+        }
+    },
+    "sysbench": {
+        "_source": {
+            "binary_name": "sysbench",
+            "bin_version": "1.0.20",
+            "src_name": "sysbench",
+            "src_version": "1.0.20",
+            "provides": [
+                {
+                    "component": "sysbench",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "sysbench(aarch-64)",
+                    "build_require": [],
+                    "install_require": []
+                }
+            ]
+        }
+    },
+    "obs-api": {
+        "_source": {
+            "binary_name": "obs-api",
+            "bin_version": "2.10.1",
+            "src_name": "obs-server",
+            "src_version": "2.10.1",
+            "provides": [
+                {
+                    "component": "config(obs-api)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "obs-api",
+                    "build_require": [],
+                    "install_require": []
+                }
+            ]
+        }
+    },
+    "obs-common": {
+        "_source": {
+            "binary_name": "obs-common",
+            "bin_version": "2.10.1",
+            "src_name": "obs-server",
+            "src_version": "2.10.1",
+            "provides": [
+                {
+                    "component": "obs-common",
+                    "build_require": [],
+                    "install_require": [
+                        {
+                            "req_bin_name": "obs-server",
+                            "req_bin_version": "2.10.1",
+                            "req_src_name": "obs-server",
+                            "req_src_version": "2.10.1"
+                        }
+                    ]
+                }
+            ]
+        }
+    },
+    "obs-server": {
+        "_source": {
+            "binary_name": "obs-server",
+            "bin_version": "2.10.1",
+            "src_name": "obs-server",
+            "src_version": "2.10.1",
+            "provides": [
+                {
+                    "component": "config(obs-server)",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "obs-devel",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "obs-productconverter",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "obs-server",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "obs-source_service",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "obs-tests-appliance",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "obs-utils",
+                    "build_require": [],
+                    "install_require": []
+                },
+                {
+                    "component": "obs-worker",
+                    "build_require": [],
+                    "install_require": []
+                }
+            ]
+        }
+    }
+}
