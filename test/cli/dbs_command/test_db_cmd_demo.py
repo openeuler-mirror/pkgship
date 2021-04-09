@@ -15,6 +15,7 @@
 test_get_pkgship_cmd
 """
 from packageship.application.cli.commands.db import DbPriorityCommand
+from test.cli import DATA_BASE_INFO
 from test.cli.dbs_command import DbsTest
 
 
@@ -28,6 +29,7 @@ class TestDB(DbsTest):
         """
         test true params
         """
+        self.mock_es_search(return_value=DATA_BASE_INFO)
         self.excepted_str = """
 DB priority
 ['os-version']
