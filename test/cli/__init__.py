@@ -14,6 +14,7 @@
 """
 test_pkgship_cmd
 """
+import argparse
 import os
 import sys
 import unittest
@@ -22,6 +23,7 @@ from pathlib import Path
 from unittest import mock
 from flask.wrappers import Response
 from packageship import BASE_PATH
+from packageship.application.cli.base import BaseCommand
 
 MOCK_DATA_FOLDER = str(Path(Path(__file__).parents[1], "mock_data"))
 with open(str(Path(MOCK_DATA_FOLDER, "databaseinfo.json")), "r", encoding="utf-8") as f:
@@ -266,27 +268,47 @@ class TestMixin:
         )
 
     @staticmethod
-    def read_file_content(file_name: str, is_json=True):
-        """
-
+    def read_file_content(path, is_json=True):
+        """to read file content if is_json is True return dict else return str
         Args:
-            file_name: file name in mock_data folder or in correct_print folder
-            is_json: return data is json load to dict or not json
+            path: Absolute path or 
+                path relative to mock_data folder and correct_print folder
+                e.g.:
+                    1,-mock_data
+                        -123.txt
+                    given '123.txt' please
+
+                    2,-mock_data
+                        -correct_print
+                            -123.txt
+                    given 'correct_print/123.txt'
+
+                    3, absolute path
+                        like '/usr/123.txt' str
+                        like os.path object or pathlib object
+            
+            is_json: if is True use json.loads to load data else not load
+
+        Raises:
+            FileNotFoundError:Check Your path Please
+            JSONDecodeError:Check Your Josn flie Please
 
         Returns:
             file's content:if is_json is True return dict else return str
-
         """
-
-        curr_p = Path(MOCK_DATA_FOLDER, file_name)
-        if not curr_p.exists():
-            curr_p = Path(CORRECT_DATA_FOLDER, file_name)
-
-        with open(str(curr_p), "r", encoding="utf-8") as f_p:
-            if is_json:
-                return json.loads(f_p.read())
-            else:
-                return f_p.read()
+        for curr_p in [
+            Path(str(path)),
+            Path(MOCK_DATA_FOLDER, str(path)),
+            Path(CORRECT_DATA_FOLDER, str(path)),
+        ]:
+            if not curr_p.exists():
+                continue
+            with open(str(curr_p), "r", encoding="utf-8") as f_p:
+                if is_json:
+                    return json.loads(f_p.read())
+                else:
+                    return f_p.read()
+        raise FileNotFoundError("Check Your path Please!")
 
 
 class BaseTest(unittest.TestCase, TestMixin):
@@ -360,6 +382,13 @@ class BaseTest(unittest.TestCase, TestMixin):
 
     def tearDown(self) -> None:
         """tearDown"""
+
+        BaseCommand.parser = argparse.ArgumentParser(
+            description="package related dependency management"
+        )
+        BaseCommand.subparsers = BaseCommand.parser.add_subparsers(
+            help="package related dependency management"
+        )
         self._to_add_cleanup()
         return super().tearDown()
 
