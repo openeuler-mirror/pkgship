@@ -77,7 +77,7 @@ class InitTestBase(BaseTest):
 
     def _mock_bulk(self):
         helpers.bulk = Mock()
-        helpers.bulk.side_effect = self._comparison_result
+        helpers.bulk.side_effect = self.comparsion_result
 
     def _mock_binary_depend(self):
         InitializeService._binary_depend = Mock()
@@ -89,7 +89,3 @@ class InitTestBase(BaseTest):
 
     def mock_user(self):
         pwd.getpwuid = Mock(return_value=["root"])
-
-    def _load_json(self, path):
-        with open(path) as f:
-            return json.loads(f.read())

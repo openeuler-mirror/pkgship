@@ -14,6 +14,7 @@
 """
 test_pkgship_cmd
 """
+import argparse
 import os
 import sys
 import unittest
@@ -22,7 +23,7 @@ from pathlib import Path
 from unittest import mock
 from flask.wrappers import Response
 from packageship import BASE_PATH
-from packageship.application.database.session import DatabaseSession
+from packageship.application.cli.base import BaseCommand
 
 MOCK_DATA_FOLDER = str(Path(Path(__file__).parents[1], "mock_data"))
 with open(str(Path(MOCK_DATA_FOLDER, "databaseinfo.json")), "r", encoding="utf-8") as f:
@@ -170,32 +171,36 @@ class TestMixin:
         """_request_post"""
         raise NotImplementedError
 
-    def _create_patch(self, mock_name):
+    def _create_patch(self, mock_name, **kwargs):
         """create_patch
 
         Args:
             method_name (str): mock method or attribute name
 
-        Returns:
-            [type]: [description]
         """
-        patcher = mock.patch(mock_name)
+        patcher = mock.patch(mock_name, **kwargs)
         self._to_clean_mock_patchers.append(patcher)
-        return patcher.start()
+        patcher.start()
 
-    def _to_update_kw_and_make_mock(self, mock_name, effect, **kwargs):
+    def _to_update_kw_and_make_mock(self, mock_name, effect=None, **kwargs):
         """_to_update_kw_and_make_mock
 
         Args:
-            mock_name (str): mock method or attribute name
-            effect (any): side effect value
+            mock_name (str):  mock method or attribute name
+            effect (Any, optional): side effect value
+
+        Raises:
+            ValueError: If the side_effect or return_value keyword parameter is not specified
+                        specify the value of the effect keyword parameter
         """
         if "side_effect" not in kwargs and "return_value" not in kwargs:
+            if effect is None:
+                raise ValueError(
+                    "If the side_effect or return_value keyword parameter is not specified,"
+                    "specify the value of the effect keyword parameter"
+                )
             kwargs["side_effect"] = effect
-
-        mock_patch = self._create_patch(mock_name)
-        for met, val in kwargs.items():
-            setattr(mock_patch, met, val)
+        self._create_patch(mock_name, **kwargs)
 
     def mock_es_scan(self, **kwargs):
         """mock_es_scan"""
@@ -212,7 +217,7 @@ class TestMixin:
     def mock_es_count(self, **kwargs):
         """mock_es_count"""
         self._to_update_kw_and_make_mock(
-            "elasticsearch..Elasticsearch.count", self._es_count_result, **kwargs
+            "elasticsearch.Elasticsearch.count", self._es_count_result, **kwargs
         )
 
     def mock_es_exists(self, **kwargs):
@@ -263,27 +268,45 @@ class TestMixin:
         )
 
     @staticmethod
-    def read_file_content(file_name: str, is_json=True):
-        """
-
+    def read_file_content(path, is_json=True):
+        """ to read file content if is_json is True return dict else return str
         Args:
-            file_name: file name in mock_data folder or in correct_print folder
-            is_json: return data is json load to dict or not json
+            path: absolute path or the path relative of 
+                  mock_data folder or correct_print folder
+                e.g:
+                    1,-mock_data
+                        -123.txt
+                    given '123.txt' please
+
+                    2,-mock_data
+                        -correct_print
+                            -123.txt
+                    given 'correct_print/123.txt'
+
+                    3, absolute path 
+                    like '/usr/123.txt'
+                    like os.path object or pathlib object
+
+        Raises:
+            FileNotFoundError:Check Your Path Please
+            JSONDecodeError:Check Your Josn flie Please
 
         Returns:
             file's content:if is_json is True return dict else return str
-
         """
-
-        curr_p = Path(MOCK_DATA_FOLDER, file_name)
-        if not curr_p.exists():
-            curr_p = Path(CORRECT_DATA_FOLDER, file_name)
-
-        with open(str(curr_p), "r", encoding="utf-8") as f_p:
-            if is_json:
-                return json.loads(f_p.read())
-            else:
-                return f_p.read()
+        for curr_p in [
+            Path(str(path)),
+            Path(MOCK_DATA_FOLDER, str(path)),
+            Path(CORRECT_DATA_FOLDER, str(path))
+        ]:
+            if not curr_p.exists():
+                continue
+            with open(str(curr_p), "r", encoding="utf-8") as f_p:
+                if is_json:
+                    return json.loads(f_p.read())
+                else:
+                    return f_p.read()
+        raise FileNotFoundError("Check Your Path Please!")
 
 
 class BaseTest(unittest.TestCase, TestMixin):
@@ -299,7 +322,6 @@ class BaseTest(unittest.TestCase, TestMixin):
         """
         self._to_clean_mock_patchers = []
         self.r = Redirect()
-        self.command_params = []
         self.excepted_str = ""
         self.command_params = []
         sys.stdout = self.r
@@ -358,6 +380,13 @@ class BaseTest(unittest.TestCase, TestMixin):
 
     def tearDown(self) -> None:
         """tearDown"""
+
+        BaseCommand.parser = argparse.ArgumentParser(
+            description="package related dependency management"
+        )
+        BaseCommand.subparsers = BaseCommand.parser.add_subparsers(
+            help="package related dependency management"
+        )
         self._to_add_cleanup()
         return super().tearDown()
 

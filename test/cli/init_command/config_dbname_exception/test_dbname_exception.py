@@ -36,6 +36,17 @@ DBNAME_NOT_EXISTS = """
   priority: 2
 """
 
+DBNAME_REPEAT = """
+- dbname: openeuler
+  src_db_file: https://mirrors.huaweicloud.com/fedora/releases/30/Everything/source/tree/
+  bin_db_file: https://mirrors.huaweicloud.com/fedora/releases/30/Everything/aarch64/os/
+  priority: 2
+- dbname: openeuler
+  src_db_file: https://mirrors.huaweicloud.com/fedora/releases/30/Everything/source/tree/
+  bin_db_file: https://mirrors.huaweicloud.com/fedora/releases/30/Everything/aarch64/os/
+  priority: 1
+"""
+
 
 class DbnameException(InitTestBase):
     """database name is none"""
@@ -49,6 +60,8 @@ class DbnameException(InitTestBase):
             content=DBNAME_UPPER, path=self._create_file_path)
         self._dbname_not_exists = self.create_conf_file(
             content=DBNAME_NOT_EXISTS, path=self._create_file_path)
+        self._dbname_repeat = self.create_conf_file(
+            content=DBNAME_REPEAT, path=self._create_file_path)
         self._init_service = InitializeService()
 
     def test_dbname_none_exception(self):
@@ -71,6 +84,13 @@ class DbnameException(InitTestBase):
         """
         with self.assertRaises(InitializeError):
             self.init_service.import_depend(path=self._dbname_not_exists)
+
+    def test_dbname_repeat_exception(self):
+        """
+        Database name repeat in configuration file
+        """
+        with self.assertRaises(InitializeError):
+            self.init_service.import_depend(path=self._dbname_repeat)
 
     def tearDown(self) -> None:
         folder = os.path.join(self._dirname, "conf")
