@@ -275,17 +275,28 @@ class TestMixin:
                 path relative to mock_data folder and correct_print folder
                 e.g.:
                     1,-mock_data
-                        -123.txt
+                       -123.txt
                     given '123.txt' please
 
                     2,-mock_data
-                        -correct_print
-                            -123.txt
-                    given 'correct_print/123.txt'
-
-                    3, absolute path
-                        like '/usr/123.txt' str
-                        like os.path object or pathlib object
+                       -correct_print
+                        -123.txt
+                    given '123.txt' please
+                    
+                    3,-mock_data
+                       -depend
+                        -123.txt
+                    given 'depend/123.txt' please
+                    
+                    4,-mock_data
+                       -correct_print
+                        -depend
+                        -123.txt
+                    given 'depend/123.txt' please
+                    
+                    5,absolute path
+                      like '/usr/123.txt' str
+                      like os.path object or pathlib object
             
             is_json: if is True use json.loads to load data else not load
 
