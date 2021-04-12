@@ -284,7 +284,7 @@ class TestMixin:
         """
         curr_path = Path(folder, path)
         if Path(path).is_absolute():
-            curr_path = Path(path)
+            curr_path = path
 
         with open(str(curr_path), "r", encoding="utf-8") as f_p:
             if is_json:
