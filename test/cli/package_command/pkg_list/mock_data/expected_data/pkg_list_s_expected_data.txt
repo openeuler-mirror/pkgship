@@ -1,0 +1,7 @@
+====================================================================================================
+  Package Name         Database     Version    License          URL
+====================================================================================================
+  389-ds-base          os-version   1.4.0.31   GPLv3+           https://www.port389.org
+  BareBonesBrowser     os-version   3.1        Public Domain    http://www.centerkey.com/java
+  CUnit                os-version   2.1.3      LGPLv2+          http://cunit.sourceforge.net/
+====================================================================================================
