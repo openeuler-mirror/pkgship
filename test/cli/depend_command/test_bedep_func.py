@@ -14,12 +14,15 @@
 """
 test_be_depend_cmd
 """
+from pathlib import Path
 from unittest.mock import PropertyMock
 from requests.exceptions import ConnectionError, RequestException
 from packageship.application.common.exc import ElasticSearchQueryException
 from packageship.application.cli.commands.bedepend import BeDependCommand
 from test.cli import DATA_BASE_INFO
 from test.cli.depend_command import DependTestBase
+
+BEDEPEND_EXPECTED_DATA_FOLDER = Path(Path(__file__).parent, "expected_data")
 
 
 class TestBeDepend(DependTestBase):
@@ -48,7 +51,9 @@ class TestBeDepend(DependTestBase):
 
         self.command_params = ["os-version", "Judy"]
         self.excepted_str = self.read_file_content(
-            "bedepend_data/bedepend_Judy.txt", is_json=False
+            "bedepend_data/bedepend_Judy.txt",
+            folder=BEDEPEND_EXPECTED_DATA_FOLDER,
+            is_json=False,
         )
         self.assert_result()
 
@@ -59,7 +64,9 @@ class TestBeDepend(DependTestBase):
 
         self.command_params = ["os-version", "Judy", "-b"]
         self.excepted_str = self.read_file_content(
-            "bedepend_data/bedepend_Judy_b.txt", is_json=False
+            "bedepend_data/bedepend_Judy_b.txt",
+            folder=BEDEPEND_EXPECTED_DATA_FOLDER,
+            is_json=False,
         )
         self.assert_result()
 
@@ -70,7 +77,9 @@ class TestBeDepend(DependTestBase):
 
         self.command_params = ["os-version", "Judy", "-w"]
         self.excepted_str = self.read_file_content(
-            "bedepend_data/bedepend_Judy_w.txt", is_json=False
+            "bedepend_data/bedepend_Judy_w.txt",
+            folder=BEDEPEND_EXPECTED_DATA_FOLDER,
+            is_json=False,
         )
         self.assert_result()
 
@@ -81,7 +90,9 @@ class TestBeDepend(DependTestBase):
 
         self.command_params = ["os-version", "Judy", "-w", "-b"]
         self.excepted_str = self.read_file_content(
-            "bedepend_data/bedepend_Judy_w_b.txt", is_json=False
+            "bedepend_data/bedepend_Judy_w_b.txt",
+            folder=BEDEPEND_EXPECTED_DATA_FOLDER,
+            is_json=False,
         )
         self.assert_result()
 
@@ -92,7 +103,9 @@ class TestBeDepend(DependTestBase):
 
         self.command_params = ["os-version", "Judy", "-install"]
         self.excepted_str = self.read_file_content(
-            "bedepend_data/bedepend_Judy_install.txt", is_json=False
+            "bedepend_data/bedepend_Judy_install.txt",
+            folder=BEDEPEND_EXPECTED_DATA_FOLDER,
+            is_json=False,
         )
         self.assert_result()
 
@@ -103,7 +116,9 @@ class TestBeDepend(DependTestBase):
 
         self.command_params = ["os-version", "Judy", "-build"]
         self.excepted_str = self.read_file_content(
-            "bedepend_data/bedepend_Judy_build.txt", is_json=False
+            "bedepend_data/bedepend_Judy_build.txt",
+            folder=BEDEPEND_EXPECTED_DATA_FOLDER,
+            is_json=False,
         )
         self.assert_result()
 
@@ -114,7 +129,9 @@ class TestBeDepend(DependTestBase):
 
         self.command_params = ["os-version", "Judy", "-b", "-install"]
         self.excepted_str = self.read_file_content(
-            "bedepend_data/bedepend_Judy_b_install.txt", is_json=False
+            "bedepend_data/bedepend_Judy_b_install.txt",
+            folder=BEDEPEND_EXPECTED_DATA_FOLDER,
+            is_json=False,
         )
         self.assert_result()
 
@@ -125,7 +142,9 @@ class TestBeDepend(DependTestBase):
 
         self.command_params = ["os-version", "Judy", "-b", "-build"]
         self.excepted_str = self.read_file_content(
-            "bedepend_data/bedepend_Judy_b_build.txt", is_json=False
+            "bedepend_data/bedepend_Judy_b_build.txt",
+            folder=BEDEPEND_EXPECTED_DATA_FOLDER,
+            is_json=False,
         )
         self.assert_result()
 
@@ -136,7 +155,9 @@ class TestBeDepend(DependTestBase):
 
         self.command_params = ["os-version", "Judy", "-w", "-install"]
         self.excepted_str = self.read_file_content(
-            "bedepend_data/bedepend_Judy_w_install.txt", is_json=False
+            "bedepend_data/bedepend_Judy_w_install.txt",
+            folder=BEDEPEND_EXPECTED_DATA_FOLDER,
+            is_json=False,
         )
         self.assert_result()
 
@@ -147,7 +168,9 @@ class TestBeDepend(DependTestBase):
 
         self.command_params = ["os-version", "Judy", "-w", "-build"]
         self.excepted_str = self.read_file_content(
-            "bedepend_data/bedepend_Judy_w_build.txt", is_json=False
+            "bedepend_data/bedepend_Judy_w_build.txt",
+            folder=BEDEPEND_EXPECTED_DATA_FOLDER,
+            is_json=False,
         )
         self.assert_result()
 
@@ -158,7 +181,9 @@ class TestBeDepend(DependTestBase):
 
         self.command_params = ["os-version", "Judy", "-w", "-b", "-install"]
         self.excepted_str = self.read_file_content(
-            "bedepend_data/bedepend_Judy_b_w_install.txt", is_json=False
+            "bedepend_data/bedepend_Judy_b_w_install.txt",
+            folder=BEDEPEND_EXPECTED_DATA_FOLDER,
+            is_json=False,
         )
         self.assert_result()
 
@@ -169,7 +194,9 @@ class TestBeDepend(DependTestBase):
 
         self.command_params = ["os-version", "Judy", "-w", "-b", "-build"]
         self.excepted_str = self.read_file_content(
-            "bedepend_data/bedepend_Judy_b_w_build.txt", is_json=False
+            "bedepend_data/bedepend_Judy_b_w_build.txt",
+            folder=BEDEPEND_EXPECTED_DATA_FOLDER,
+            is_json=False,
         )
         self.assert_result()
 
