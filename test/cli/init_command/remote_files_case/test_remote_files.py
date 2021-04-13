@@ -53,8 +53,8 @@ class RemoteFiles(InitTestBase):
         """
         _repo_conf = {
             "dbname": "openeuler",
-            "src_db_file": "https://openeuler.test.repo/sources",
-            "bin_db_file": "https://openeuler.test.repo/binary",
+            "src_db_file": "https://www.baidu.com/sources",
+            "bin_db_file": "https://www.baidu.com/binary",
             "priority": 1
         }
         with self.assertRaises(FileNotFoundError):
