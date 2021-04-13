@@ -169,6 +169,10 @@ class RequireBase(Query):
             if len(component_info) <= 1:
                 new_requires_list.extend(component_info)
             else:
+                # De-duplicate data with the same key and value in the list
+                component_info = [dict(be_duplication_dict)
+                                  for be_duplication_dict in set([tuple(component_binary_dict.items())
+                                                                  for component_binary_dict in component_info])]
                 # If the component is provided by multiple binary packages, record first and then filter
                 multi_binary_component_list.append(component_info)
             # Construct a dictionary of occurrences of binary packages
