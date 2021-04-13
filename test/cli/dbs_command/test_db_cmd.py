@@ -14,9 +14,15 @@
 """
 test_get_pkgship_cmd
 """
+from pathlib import Path
+from unittest.mock import PropertyMock
+from requests import RequestException
 from packageship.application.cli.commands.db import DbPriorityCommand
+from packageship.application.common.exc import ElasticSearchQueryException
 from test.cli import DATA_BASE_INFO
 from test.cli.dbs_command import DbsTest
+
+DATA_FOLDER = Path(Path(__file__).parent, "mock_data")
 
 
 class TestDB(DbsTest):
@@ -45,7 +51,9 @@ DB priority
 DB priority
 ['os-version-1', 'os-version-2', 'os-version-3']
         """
-        self.mock_es_search(return_value=self.read_file_content("different_priority_dbs.json"))
+        self.mock_es_search(return_value=self.read_file_content(
+            "different_priority_dbs.json",
+            folder=DATA_FOLDER))
         self.assert_result()
 
     def test_same_db_priority(self):
@@ -56,7 +64,9 @@ DB priority
 DB priority
 ['os-version-1', 'aa', 'bbb', 'test']
         """
-        self.mock_es_search(return_value=self.read_file_content("same_priority_dbs.json"))
+        self.mock_es_search(return_value=self.read_file_content(
+            "same_priority_dbs.json",
+            folder=DATA_FOLDER))
         self.assert_result()
 
     def test_wrong_db_data(self):
@@ -69,3 +79,54 @@ HINT           :Make sure the generated database information is valid
         """
         self.mock_es_search(return_value={})
         self.assert_result()
+
+    def test_raise_es_error(self):
+        """test_raise_es_error"""
+
+        self.excepted_str = """
+ERROR_CONTENT  :Unable to get the generated database information
+HINT           :Make sure the generated database information is valid
+"""
+        self.mock_es_search(side_effect=ElasticSearchQueryException)
+        self.assert_result()
+
+    def test_request_raise_requestexception(self):
+        """test_request_raise_requestexception"""
+
+        self.excepted_str = """
+ERROR_CONTENT  :
+HINT           :The remote connection is abnormal, please check the 'remote_host' parameter value to ensure the connectivity of the remote address
+"""
+        self._to_update_kw_and_make_mock(
+            "packageship.application.common.remote.RemoteService.get",
+            effect=RequestException,
+        )
+        self.assert_result()
+
+    def test_request_text_raise_jsonerror(self):
+        """test_request_text_raise_jsonerror"""
+
+        class Resp:
+            text = """{"test":\'123\',}"""
+            status_code = 200
+
+        self.excepted_str = """
+ERROR_CONTENT  :{"test":\'123\',}
+HINT           :The content is not a legal json format,please check the parameters is valid
+"""
+        self.mock_requests_get(return_value=Resp())
+        self.assert_result()
+
+    def test_request_status_500(self):
+        """test_request_status_500"""
+
+        self.excepted_str = """
+ERROR_CONTENT  :Server error
+HINT           :Please check the service and try again
+"""
+
+        self._to_update_kw_and_make_mock(
+            "packageship.application.common.remote.RemoteService.status_code",
+            new_callable=PropertyMock,
+            return_value=500,
+        )

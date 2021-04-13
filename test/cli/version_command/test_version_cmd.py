@@ -15,10 +15,14 @@
 test_get_pkgship_version
 """
 import os
+from pathlib import Path
+from unittest.mock import PropertyMock
+from requests import RequestException
 from packageship.application.cli.commands.version import VersionCommand
 from packageship.application.core.baseinfo import pkg_version
-from test.cli import MOCK_DATA_FOLDER
 from test.cli.version_command import VersionTest
+
+DATA_FOLDER = Path(Path(__file__).parent, "mock_data")
 
 
 class TestVersion(VersionTest):
@@ -35,7 +39,7 @@ class TestVersion(VersionTest):
 Version:2.1.0
 Release:7.oe1
         """
-        pkg_version.file_path = os.path.join(MOCK_DATA_FOLDER, "version.yaml")
+        pkg_version.file_path = os.path.join(DATA_FOLDER, "version.yaml")
         self.command_params = ["-v"]
         self.assert_result()
 
@@ -47,6 +51,47 @@ Release:7.oe1
 ERROR_CONTENT  :get pkgship version failed
 HINT           :Make sure the file is valid
         """
-        pkg_version.file_path = os.path.join(MOCK_DATA_FOLDER, "tmp_version.yaml")
+        pkg_version.file_path = os.path.join(DATA_FOLDER, "tmp_version.yaml")
         self.command_params = ["-v"]
         self.assert_result()
+
+    def test_request_raise_requestexception(self):
+        """test_request_raise_requestexception"""
+        self.command_params = ["-v"]
+        self.excepted_str = """
+ERROR_CONTENT  :
+HINT           :The remote connection is abnormal, please check the 'remote_host' parameter value to ensure the connectivity of the remote address
+"""
+        self._to_update_kw_and_make_mock(
+            "packageship.application.common.remote.RemoteService.get",
+            effect=RequestException,
+        )
+        self.assert_result()
+
+    def test_request_text_raise_jsonerror(self):
+        """test_request_text_raise_jsonerror"""
+        self.command_params = ["-v"]
+
+        class Resp:
+            text = """{"test":\'123\',}"""
+            status_code = 200
+
+        self.excepted_str = """
+ERROR_CONTENT  :{"test":'123',}
+HINT           :The content is not a legal json format,please check the parameters is valid
+        """
+        self.mock_requests_get(return_value=Resp())
+        self.assert_result()
+
+    def test_request_status_500(self):
+        """test_request_status_500"""
+
+        self.excepted_str = """
+ERROR_CONTENT  :Server error
+HINT           :Please check the service and try again
+"""
+        self._to_update_kw_and_make_mock(
+            "packageship.application.common.remote.RemoteService.status_code",
+            new_callable=PropertyMock,
+            return_value=500,
+        )

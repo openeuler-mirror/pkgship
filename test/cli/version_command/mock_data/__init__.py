@@ -10,14 +10,3 @@
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
-
-from packageship.application.cli.commands.version import VersionCommand
-from test.cli import ClientTest
-
-class VersionTest(ClientTest):
-
-    def setUp(self) -> None:
-        super(VersionTest, self).setUp()
-        self.mock_requests_get(side_effect=self.client.get)
-
-
