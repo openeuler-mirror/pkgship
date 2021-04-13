@@ -150,7 +150,7 @@ HINT           :Use the correct package name and try again
 ERROR_CONTENT  :Server error
 HINT           :Please check the service and try again
     """
-        self.mock_es_search(side_effect=[DATA_BASE_INFO, ElasticSearchQueryException])
+        self.mock_es_search(side_effect=[DATA_BASE_INFO, [], ElasticSearchQueryException])
         self._execute_command()
 
     def test_request_raise_requestexception(self):
