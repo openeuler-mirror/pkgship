@@ -29,8 +29,6 @@ MOCK_DATA_FOLDER = str(Path(Path(__file__).parents[1], "mock_data"))
 with open(str(Path(MOCK_DATA_FOLDER, "databaseinfo.json")), "r", encoding="utf-8") as f:
     DATA_BASE_INFO = json.loads(f.read())
 
-CORRECT_DATA_FOLDER = str(Path(MOCK_DATA_FOLDER, "correct_print"))
-
 ES_COUNT_DATA = {
     "count": 100,
     "_shards": {"total": 100, "successful": 1, "skipped": 0, "failed": 0},
@@ -205,19 +203,21 @@ class TestMixin:
     def mock_es_scan(self, **kwargs):
         """mock_es_scan"""
         self._to_update_kw_and_make_mock(
-            "elasticsearch.helpers.scan", self._es_scan_result, **kwargs
+            "elasticsearch.helpers.scan", effect=self._es_scan_result, **kwargs
         )
 
     def mock_es_search(self, **kwargs):
         """mock_es_search"""
         self._to_update_kw_and_make_mock(
-            "elasticsearch.Elasticsearch.search", self._es_search_result, **kwargs
+            "elasticsearch.Elasticsearch.search",
+            effect=self._es_search_result,
+            **kwargs,
         )
 
     def mock_es_count(self, **kwargs):
         """mock_es_count"""
         self._to_update_kw_and_make_mock(
-            "elasticsearch.Elasticsearch.count", self._es_count_result, **kwargs
+            "elasticsearch.Elasticsearch.count", effect=self._es_count_result, **kwargs
         )
 
     def mock_es_exists(self, **kwargs):
@@ -225,7 +225,7 @@ class TestMixin:
 
         self._to_update_kw_and_make_mock(
             "elasticsearch.client.indices.IndicesClient.exists",
-            self._es_exists_result,
+            effect=self._es_exists_result,
             **kwargs,
         )
 
@@ -233,21 +233,21 @@ class TestMixin:
         """mock elasticsearch delete"""
         self._to_update_kw_and_make_mock(
             "elasticsearch.client.indices.IndicesClient.delete",
-            self._es_delete_result,
+            effect=self._es_delete_result,
             **kwargs,
         )
 
     def mock_es_insert(self, **kwargs):
         """mock_es_insert"""
         self._to_update_kw_and_make_mock(
-            "elasticsearch.Elasticsearch.index", self._es_index_result, **kwargs
+            "elasticsearch.Elasticsearch.index", effect=self._es_index_result, **kwargs
         )
 
     def mock_es_create(self, **kwargs):
         """mock_es_create"""
         self._to_update_kw_and_make_mock(
             "elasticsearch.client.indices.IndicesClient.create",
-            self._es_create_result,
+            effect=self._es_create_result,
             **kwargs,
         )
 
@@ -255,7 +255,7 @@ class TestMixin:
         """mock_requests_get"""
         self._to_update_kw_and_make_mock(
             "packageship.application.common.remote.RemoteService.get",
-            self._requests_get,
+            effect=self._requests_get,
             **kwargs,
         )
 
@@ -263,50 +263,34 @@ class TestMixin:
         """mock_requests_post"""
         self._to_update_kw_and_make_mock(
             "packageship.application.common.remote.RemoteService.post",
-            self._requests_post,
+            effect=self._requests_post,
             **kwargs,
         )
 
     @staticmethod
-    def read_file_content(path, is_json=True):
-        """ to read file content if is_json is True return dict else return str
+    def read_file_content(path, folder=MOCK_DATA_FOLDER, is_json=True):
+        """to read file content if is_json is True return dict else return str
+
         Args:
-            path: absolute path or the path relative of 
-                  mock_data folder or correct_print folder
-                e.g:
-                    1,-mock_data
-                        -123.txt
-                    given '123.txt' please
-
-                    2,-mock_data
-                        -correct_print
-                            -123.txt
-                    given 'correct_print/123.txt'
-
-                    3, absolute path 
-                    like '/usr/123.txt'
-                    like os.path object or pathlib object
+            path: Absolute path or the path relative of mock_data folder
+            is_json: if is True use json.loads to load data else not load
 
         Raises:
-            FileNotFoundError:Check Your Path Please
+            FileNotFoundError:Check Your path Please
             JSONDecodeError:Check Your Josn flie Please
 
         Returns:
             file's content:if is_json is True return dict else return str
         """
-        for curr_p in [
-            Path(str(path)),
-            Path(MOCK_DATA_FOLDER, str(path)),
-            Path(CORRECT_DATA_FOLDER, str(path))
-        ]:
-            if not curr_p.exists():
-                continue
-            with open(str(curr_p), "r", encoding="utf-8") as f_p:
-                if is_json:
-                    return json.loads(f_p.read())
-                else:
-                    return f_p.read()
-        raise FileNotFoundError("Check Your Path Please!")
+        curr_path = Path(folder, path)
+        if Path(path).is_absolute():
+            curr_path = path
+
+        with open(str(curr_path), "r", encoding="utf-8") as f_p:
+            if is_json:
+                return json.loads(f_p.read())
+            else:
+                return f_p.read()
 
 
 class BaseTest(unittest.TestCase, TestMixin):
