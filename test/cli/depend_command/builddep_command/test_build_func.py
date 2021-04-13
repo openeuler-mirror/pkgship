@@ -17,6 +17,7 @@ test_build_dep_cmd
 from test.cli import DATA_BASE_INFO
 from unittest.mock import PropertyMock
 from test.cli.depend_command import DependTestBase
+from packageship.application.common.exc import ElasticSearchQueryException
 from requests.exceptions import ConnectionError, RequestException
 from packageship.application.cli.commands.builddep import BuildDepCommand
 
@@ -108,6 +109,17 @@ HINT           :Use the correct package name and try again
 """
         self.mock_es_search(side_effect=[DATA_BASE_INFO, {}])
         self._assert_result()
+
+    def test_raise_es_error(self):
+        """test_raise_es_error"""
+
+        self.command_params = ["Judy", "-dbs=os-version"]
+        self.excepted_str = """
+ERROR_CONTENT  :Server error
+HINT           :Please check the service and try again
+    """
+        self.mock_es_search(side_effect=[DATA_BASE_INFO, ElasticSearchQueryException])
+        self._execute_command()
 
     def test_request_raise_connecterror(self):
         """test_request_raise_connecterror"""
