@@ -56,70 +56,94 @@ class RequireBase(Query):
             return
         # Used to record the package information of all found components
         # key: component name; value: package information of provide component
-        all_components_info_dict = dict()
-        for databse in self.db_list:
+        all_queried_components_dict = dict()
+        # Used to record the queried components
+        all_queried_components_set = set()
+        for database in self.db_list:
             # First query all components of not found by "provides.name"
-            component_batch_list = [component_list[i:i + self.BATCH_SIZE_200] for i in
-                                    range(0, len(component_list), self.BATCH_SIZE_200)]
-            next_query_rpms = []
-            works = [
-                gevent.spawn(self._gevent_component_job, databse, components, all_components_info_dict,
-                             PROVIDES_NAME) for components in component_batch_list]
-            gevent.joinall(works)
-            for work in works:
-                next_query_rpms.extend(work.value if work.value else [])
-            if not next_query_rpms:
+            components_batch_list = [component_list[i:i + self.BATCH_SIZE_200] for i in
+                                     range(0, len(component_list), self.BATCH_SIZE_200)]
+            next_query_components = self._gevent_query_components(all_queried_components_dict,
+                                                                  all_queried_components_set,
+                                                                  components_batch_list,
+                                                                  database,
+                                                                  PROVIDES_NAME)
+            # if all components queried by "provides.name",stop query
+            if not next_query_components:
                 break
+            all_queried_components_set.difference_update(next_query_components)
 
             # if not found by "provides.name",query components by "files.name"
-            query_files_rpms = [next_query_rpms[i:i + self.BATCH_SIZE_100]
-                                for i in range(0, len(next_query_rpms), self.BATCH_SIZE_100) if
-                                next_query_rpms[i:i + self.BATCH_SIZE_100]]
-            works = [
-                gevent.spawn(self._gevent_component_job, databse, components, all_components_info_dict, FILES_NAME)
-                for components in query_files_rpms]
-            gevent.joinall(works)
-            component_list = []
-            for work in works:
-                component_list.extend(work.value if work.value else [])
-
+            components_need_query_by_files = [next_query_components[i:i + self.BATCH_SIZE_100]
+                                              for i in range(0, len(next_query_components), self.BATCH_SIZE_100)]
+            next_database_query_components = self._gevent_query_components(all_queried_components_dict,
+                                                                           all_queried_components_set,
+                                                                           components_need_query_by_files,
+                                                                           database,
+                                                                           FILES_NAME)
             # if all components found,stop query
-            # if not found by "provides.name" and "files.name",query to the next database
-            if not component_list:
+            if not next_database_query_components:
                 break
+            # if not found by "provides.name" and "files.name",query to the next database
+            all_queried_components_set.difference_update(next_database_query_components)
+            component_list = next_database_query_components
 
         # update info of components
-        self._update_requires(all_components_info_dict, query_rpm_infos)
+        self._update_requires(all_queried_components_dict, query_rpm_infos)
 
-    def _gevent_component_job(self, database, components, all_components_info_dict, query_content_name):
+    def _gevent_query_components(self, all_queried_components_dict, all_queried_components_set, components_batch_list,
+                                 database, query_content_name):
+        """
+        Query component task
+        Args:
+            all_queried_components_dict: A dictionary of component names and binary packages that have been found
+            all_queried_components_set: All queried components
+            components_batch_list: Batch list of need query components
+            database: database
+            query_content_name: provides.name or files.name
+        Returns: The list of components not queried this time
+        """
+        works = [
+            gevent.spawn(self._gevent_component_job, database, components, all_queried_components_dict,
+                         all_queried_components_set, query_content_name) for components in components_batch_list]
+        gevent.joinall(works)
+        no_queried_components = []
+        for work in works:
+            no_queried_components.extend(work.value if work.value else [])
+        return no_queried_components
+
+    def _gevent_component_job(self, database, next_query_components, all_queried_components_dict,
+                              all_queried_components_set, query_content_name):
         """
         multi-ctrip of query component info
         Args:
             database: database
-            components: components of need query
-            all_components_info_dict: dict of components found
+            next_query_components: components of need query
+            all_queried_components_dict: dict of components found
+            all_queried_components_set: queried components set
             query_content_name: query field
 
         Returns: components not found
 
         """
         # First filter from the queried dict
-        query_all_components_name_set = set(list(all_components_info_dict.keys()))
-        no_query_components = set(components)
-        if query_all_components_name_set:
-            no_query_components.difference_update(query_all_components_name_set)
+        no_query_components = set(next_query_components)
+        if all_queried_components_set:
+            no_query_components.difference_update(all_queried_components_set)
         if not no_query_components:
             return []
-        # Then query by query field(provides.name or files.name)
-        components = list(no_query_components)
-        _query_body = self._format_terms_index_and_body(database=database,
-                                                        query_content={query_content_name: components},
-                                                        source=self._source_data)
-        result = self.session.query(index=self.binary_index, body=_query_body)
-        pending_query_components = self._query_complete(components, database, result,
-                                                        all_components_info_dict, query_content_name)
+        all_queried_components_set.union(no_query_components)
 
-        return pending_query_components
+        # Then query by query field(provides.name or files.name)
+        next_query_components_list = list(no_query_components)
+        query_body = self._format_terms_index_and_body(database=database,
+                                                       query_content={query_content_name: next_query_components_list},
+                                                       source=self._source_data)
+        query_result = self.session.query(index=self.binary_index, body=query_body)
+        pending_next_query_components = self._query_complete(next_query_components_list, database, query_result,
+                                                             all_queried_components_dict, query_content_name)
+
+        return pending_next_query_components
 
     def _update_requires(self, all_component_info_dict, query_rpm_infos):
         """
@@ -169,10 +193,6 @@ class RequireBase(Query):
             if len(component_info) <= 1:
                 new_requires_list.extend(component_info)
             else:
-                # De-duplicate data with the same key and value in the list
-                component_info = [dict(be_duplication_dict)
-                                  for be_duplication_dict in set([tuple(component_binary_dict.items())
-                                                                  for component_binary_dict in component_info])]
                 # If the component is provided by multiple binary packages, record first and then filter
                 multi_binary_component_list.append(component_info)
             # Construct a dictionary of occurrences of binary packages
@@ -207,10 +227,12 @@ class RequireBase(Query):
             new_requires_list.append(final_component_info)
 
     @staticmethod
-    def _query_complete(component_list, database, query_result, all_components_info_dict, component_source_type):
+    def _query_complete(need_query_component_list, database, query_result, all_components_info_dict,
+                        component_source_type):
         """
         Query the binary packages information according to the component
         Args:
+            need_query_component_list: need queried components list
             database: database
             query_result: binary packages
             all_components_info_dict: component info dict, first query from this dict,if query no result,
@@ -218,6 +240,8 @@ class RequireBase(Query):
         Returns: is or not query all result
 
         """
+        # Record the components found this time
+        current_queried_components = set()
         try:
             for data_source in query_result['hits']['hits']:
                 data_rpm = data_source['_source']
@@ -228,23 +252,27 @@ class RequireBase(Query):
                     _component_list = data_rpm.get('files')
                 # Add the components provided by the found binary package to the dictionary
                 if not _component_list:
-                    return component_list
+                    return need_query_component_list
 
-                for provide_info in _component_list:
-                    _key = provide_info.get('name')
-                    _component_info = RequireBase._process_component_info(_key, data_rpm, database)
-                    try:
-                        all_components_info_dict[_key].append(_component_info)
-                    except KeyError:
-                        all_components_info_dict[_key] = [_component_info]
+                # Record the queried components and corresponding binary packages
+                for _component_info in _component_list:
+                    _key = _component_info.get('name')
+                    # Only record the components that need to be queried
+                    if _key in need_query_component_list:
+                        _component_info = RequireBase._process_component_info(_key, data_rpm, database)
+                        try:
+                            all_components_info_dict[_key].append(_component_info)
+                        except KeyError:
+                            all_components_info_dict[_key] = [_component_info]
+                        current_queried_components.add(_key)
+
             # Filter the components that have been found
-            query_data_set = set(list(all_components_info_dict.keys()))
-            pending_query_set = set(component_list)
-            if query_data_set:
-                pending_query_set.difference_update(query_data_set)
-            return list(pending_query_set)
+            pending_next_query_set = set(need_query_component_list)
+            if current_queried_components:
+                pending_next_query_set.difference_update(current_queried_components)
+            return list(pending_next_query_set)
         except KeyError:
-            return component_list
+            return need_query_component_list
 
     @staticmethod
     def _process_component_info(component, data_rpm, database):
