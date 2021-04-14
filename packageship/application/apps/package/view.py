@@ -29,7 +29,8 @@ from packageship.application.core.pkginfo.pkg import SourcePackage
 from packageship.application.core.pkginfo.pkg import BinaryPackage
 from packageship.application.serialize.validate import validate
 from packageship.application.common.rsp import RspMsg
-from packageship.application.common.exc import ElasticSearchQueryException, DatabaseConfigException
+from packageship.application.common.exc import ElasticSearchQueryException, DatabaseConfigException, \
+    PackageInfoGettingError
 
 
 class ParsePackageMethod(Resource):
@@ -113,7 +114,7 @@ class SourcePackages(ParsePackageMethod):
             result_all = find_package.all_src_packages(
                 result.get("database_name"), page_num=page_num, page_size=page_size, package_list=query_pkg_name,
                 command_line=result.get("command_line"))
-        except (ElasticSearchQueryException, DatabaseConfigException) as e:
+        except (ElasticSearchQueryException, DatabaseConfigException, PackageInfoGettingError) as e:
             return jsonify(self.rspmsg.body('connect_db_error'))
         if result_all:
             return jsonify(self.parse_package(result_all, page_size))
@@ -172,7 +173,7 @@ class BinaryPackages(ParsePackageMethod):
             result_all = find_package.all_bin_packages(
                 result.get("database_name"), page_num=page_num, page_size=page_size, package_list=query_pkg_name,
                 command_line=result.get("command_line"))
-        except (ElasticSearchQueryException, DatabaseConfigException) as e:
+        except (ElasticSearchQueryException, DatabaseConfigException, PackageInfoGettingError) as e:
             return jsonify(self.rspmsg.body('connect_db_error'))
         if result_all:
             return jsonify(self.parse_package(result_all, page_size))
