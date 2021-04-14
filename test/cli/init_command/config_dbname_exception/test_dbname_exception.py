@@ -12,6 +12,7 @@
 # ******************************************************************************/
 # -*- coding:utf-8 -*-
 import os
+import shutil
 from test.cli.init_command import InitTestBase
 from packageship.application.initialize.integration import InitializeService, InitializeError, del_temporary_file
 
@@ -54,14 +55,14 @@ class DbnameException(InitTestBase):
 
     def setUp(self):
         super(DbnameException, self).setUp()
-        self._dbname_none = self.create_conf_file(
-            content=DBNAME_NONE, path=self._create_file_path)
-        self._dbname_upper = self.create_conf_file(
-            content=DBNAME_UPPER, path=self._create_file_path)
-        self._dbname_not_exists = self.create_conf_file(
-            content=DBNAME_NOT_EXISTS, path=self._create_file_path)
-        self._dbname_repeat = self.create_conf_file(
-            content=DBNAME_REPEAT, path=self._create_file_path)
+        self._dbname_none = self.create_file(
+            write_content=DBNAME_NONE, path=self._create_file_path)
+        self._dbname_upper = self.create_file(
+            write_content=DBNAME_UPPER, path=self._create_file_path)
+        self._dbname_not_exists = self.create_file(
+            write_content=DBNAME_NOT_EXISTS, path=self._create_file_path)
+        self._dbname_repeat = self.create_file(
+            write_content=DBNAME_REPEAT, path=self._create_file_path)
         self._init_service = InitializeService()
 
     def test_dbname_none_exception(self):
@@ -93,5 +94,5 @@ class DbnameException(InitTestBase):
             self.init_service.import_depend(path=self._dbname_repeat)
 
     def tearDown(self) -> None:
-        folder = os.path.join(self._dirname, "conf")
-        del_temporary_file(path=folder, folder=True)
+        folder = os.path.join(self._dirname, "tmp")
+        shutil.rmtree(folder)

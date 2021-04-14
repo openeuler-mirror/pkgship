@@ -12,8 +12,9 @@
 # ******************************************************************************/
 # -*- coding:utf-8 -*-
 import os
+import shutil
 from test.cli.init_command import InitTestBase
-from packageship.application.initialize.integration import del_temporary_file, InitializeService
+from packageship.application.initialize.integration import InitializeService
 from packageship.libs.conf import configuration
 
 
@@ -42,13 +43,13 @@ class TestImportRelation(InitTestBase):
         super(TestImportRelation, self).setUp()
         _location_path = os.path.join(self._dirname, "sqlites")
 
-        self._location_config = self.create_conf_file(
-            content=LOCATION_CONFIG.format(src="file://" + os.path.join(_location_path, "src"),
-                                           bin="file://" + os.path.join(_location_path, "bin")),
+        self._location_config = self.create_file(
+            write_content=LOCATION_CONFIG.format(src="file://" + os.path.join(_location_path, "src"),
+                                                 bin="file://" + os.path.join(_location_path, "bin")),
             path=self._create_file_path)
 
-        self._remote_config = self.create_conf_file(
-            content=REMOTE_CONFIG,
+        self._remote_config = self.create_file(
+            write_content=REMOTE_CONFIG,
             path=self._create_file_path)
 
         configuration.TEMPORARY_DIRECTORY = os.path.join(self._dirname, "tmp")
@@ -79,6 +80,6 @@ class TestImportRelation(InitTestBase):
         self.assertEqual(True, init_service.success)
 
     def tearDown(self) -> None:
-        del_temporary_file(path=os.path.join(
-            self._dirname, "conf"), folder=True)
+        shutil.rmtree(os.path.join(
+            self._dirname, "tmp"))
         configuration.TEMPORARY_DIRECTORY = "/opt/pkgship/tmp/"

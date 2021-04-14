@@ -41,15 +41,7 @@ class InitTestBase(BaseTest):
     @property
     def _create_file_path(self):
         path = os.path.join(
-            self._dirname, "conf", "{}.yaml".format(uuid.uuid1()))
-        return path
-
-    def create_conf_file(self, content, path):
-        """
-        Creating configuration files
-        """
-        with open(path, "w", encoding="utf-8") as file:
-            file.write(content)
+            self._dirname, "tmp", "{}.yaml".format(uuid.uuid1()))
         return path
 
     def comparsion_than(self):

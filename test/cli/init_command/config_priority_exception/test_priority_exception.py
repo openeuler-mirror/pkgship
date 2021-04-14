@@ -12,8 +12,9 @@
 # ******************************************************************************/
 # -*- coding:utf-8 -*-
 import os
+import shutil
 from test.cli.init_command import InitTestBase
-from packageship.application.initialize.integration import del_temporary_file, RepoConfig
+from packageship.application.initialize.integration import RepoConfig
 
 
 PRIORITY_NOT_INT = """
@@ -58,16 +59,16 @@ class PriorityException(InitTestBase):
 
     def setUp(self):
         super(PriorityException, self).setUp()
-        self._priority_not_int = self.create_conf_file(
-            content=PRIORITY_NOT_INT, path=self._create_file_path)
-        self._priority_is_zero = self.create_conf_file(
-            content=PRIORITY_IS_ZERO, path=self._create_file_path)
-        self._priority_is_decimal = self.create_conf_file(
-            content=PRIORITY_IS_DECIMAL, path=self._create_file_path)
-        self._priority_g_100 = self.create_conf_file(
-            content=PRIORITY_G_100, path=self._create_file_path)
-        self._priority_right = self.create_conf_file(
-            content=PRIORITY_RIGHT, path=self._create_file_path)
+        self._priority_not_int = self.create_file(
+            write_content=PRIORITY_NOT_INT, path=self._create_file_path)
+        self._priority_is_zero = self.create_file(
+            write_content=PRIORITY_IS_ZERO, path=self._create_file_path)
+        self._priority_is_decimal = self.create_file(
+            write_content=PRIORITY_IS_DECIMAL, path=self._create_file_path)
+        self._priority_g_100 = self.create_file(
+            write_content=PRIORITY_G_100, path=self._create_file_path)
+        self._priority_right = self.create_file(
+            write_content=PRIORITY_RIGHT, path=self._create_file_path)
 
         self._repo_config = RepoConfig()
 
@@ -107,5 +108,5 @@ class PriorityException(InitTestBase):
         self.assertEqual(True, self._repo_config.validate)
 
     def tearDown(self) -> None:
-        folder = os.path.join(self._dirname, "conf")
-        del_temporary_file(path=folder, folder=True)
+        folder = os.path.join(self._dirname, "tmp")
+        shutil.rmtree(folder)

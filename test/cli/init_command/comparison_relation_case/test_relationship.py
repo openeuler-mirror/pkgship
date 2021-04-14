@@ -12,11 +12,10 @@
 # ******************************************************************************/
 # -*- coding:utf-8 -*-
 import os
-from unittest import mock
+import shutil
 from pathlib import Path
 from requests import RequestException
 from packageship.libs.conf import configuration
-from packageship.application.initialize.integration import del_temporary_file
 from packageship.application.core.baseinfo import pkg_version
 from test.cli.init_command import InitTestBase
 from test.cli import ClientTest
@@ -46,8 +45,8 @@ class ComparisonRelationShip(InitTestBase, ClientTest):
         path = os.path.join(dirname, "sqlites")
         _cofig_content = CONFIG_CONTENT.format(src="file://" + os.path.join(path, "src"),
                                                bin="file://" + os.path.join(path, "bin"))
-        self._conf = self.create_conf_file(
-            content=_cofig_content, path=self._create_file_path)
+        self._conf = self.create_file(
+            write_content=_cofig_content, path=self._create_file_path)
         configuration.TEMPORARY_DIRECTORY = os.path.join(dirname, "tmp")
         self.comparsion_than()
 
@@ -109,8 +108,6 @@ class ComparisonRelationShip(InitTestBase, ClientTest):
 
     def tearDown(self) -> None:
         super().tearDown()
-        folder = os.path.join(self._dirname, "conf")
-        del_temporary_file(path=folder, folder=True)
-        del_temporary_file(path=os.path.join(
-            self._dirname, "tmp"), folder=True)
+        shutil.rmtree(os.path.join(
+            self._dirname, "tmp"))
         configuration.TEMPORARY_DIRECTORY = "/opt/pkgship/tmp/"

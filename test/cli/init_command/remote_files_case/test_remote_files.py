@@ -12,8 +12,8 @@
 # ******************************************************************************/
 # -*- coding:utf-8 -*-
 import os
+import shutil
 from test.cli.init_command import InitTestBase
-from packageship.application.initialize.integration import del_temporary_file
 from packageship.application.initialize.repo import RepoFile
 
 
@@ -62,4 +62,4 @@ class RemoteFiles(InitTestBase):
 
     def tearDown(self) -> None:
         folder = os.path.join(self._dirname, "tmp")
-        del_temporary_file(path=folder, folder=True)
+        shutil.rmtree(folder)

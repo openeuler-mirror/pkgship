@@ -12,8 +12,9 @@
 # ******************************************************************************/
 # -*- coding:utf-8 -*-
 import os
+import shutil
 from test.cli.init_command import InitTestBase
-from packageship.application.initialize.integration import del_temporary_file, RepoConfig
+from packageship.application.initialize.integration import RepoConfig
 
 
 SRC_FILE_NONE = """
@@ -58,16 +59,16 @@ class FileException(InitTestBase):
 
     def setUp(self):
         super(FileException, self).setUp()
-        self._src_file_none = self.create_conf_file(
-            content=SRC_FILE_NONE, path=self._create_file_path)
-        self._bin_file_none = self.create_conf_file(
-            content=BIN_FILE_NONE, path=self._create_file_path)
-        self._src_file_error = self.create_conf_file(
-            content=SRC_FILE_ERROR, path=self._create_file_path)
-        self._bin_file_error = self.create_conf_file(
-            content=BIN_FILE_ERROR, path=self._create_file_path)
-        self._right_file_config = self.create_conf_file(
-            content=RIGHT_FILE_CONFIG, path=self._create_file_path)
+        self._src_file_none = self.create_file(
+            write_content=SRC_FILE_NONE, path=self._create_file_path)
+        self._bin_file_none = self.create_file(
+            write_content=BIN_FILE_NONE, path=self._create_file_path)
+        self._src_file_error = self.create_file(
+            write_content=SRC_FILE_ERROR, path=self._create_file_path)
+        self._bin_file_error = self.create_file(
+            write_content=BIN_FILE_ERROR, path=self._create_file_path)
+        self._right_file_config = self.create_file(
+            write_content=RIGHT_FILE_CONFIG, path=self._create_file_path)
 
         self._repo_config = RepoConfig()
 
@@ -107,5 +108,5 @@ class FileException(InitTestBase):
         self.assertEqual(True, self._repo_config.validate)
 
     def tearDown(self) -> None:
-        folder = os.path.join(self._dirname, "conf")
-        del_temporary_file(path=folder, folder=True)
+        folder = os.path.join(self._dirname, "tmp")
+        shutil.rmtree(folder)
