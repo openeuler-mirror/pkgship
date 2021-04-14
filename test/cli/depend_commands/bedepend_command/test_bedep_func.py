@@ -38,10 +38,10 @@ class TestBeDepend(DependTestBase):
         test install build exist at the same time
         """
         self.command_params = ["os-version", "Judy", "CUnit", "-install", "-build"]
-        self.excepted_str = ""
+        self.excepted_str = "error: argument -install not allowed with argument -build"
         with self.assertRaises(SystemExit):
-            self.assertTrue(self.excepted_str in self.r.getvalue())
             self._execute_command()
+            self.assertTrue(self.excepted_str in self.r.getvalue())
 
     def test_true_param_with_db_pkgname(self):
         """
