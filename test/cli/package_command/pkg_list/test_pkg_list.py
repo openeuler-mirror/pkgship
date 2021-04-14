@@ -15,8 +15,7 @@
 test get all binary packages
 """
 from pathlib import Path
-from unittest.mock import PropertyMock
-from requests import RequestException
+from requests import RequestException, Response
 from packageship.application.cli.commands.allpkg import AllPackageCommand
 from packageship.application.common.exc import ElasticSearchQueryException
 from test.cli import DATA_BASE_INFO
@@ -103,19 +102,16 @@ HINT           :Check the connection
 ERROR_CONTENT  :
 HINT           :The remote connection is abnormal, please check the 'remote_host' parameter value to ensure the connectivity of the remote address
 """
-        self._to_update_kw_and_make_mock(
-            "packageship.application.common.remote.RemoteService.get",
-            effect=RequestException,
-        )
+        self.mock_requests_get(side_effect=[RequestException])
         self.assert_result()
 
     def test_request_text_raise_jsonerror(self):
         """test_request_text_raise_jsonerror"""
-        self.command_params = ["os-version"]
         class Resp:
             text = """{"test":\'123\',}"""
             status_code = 200
 
+        self.command_params = ["os-version"]
         self.excepted_str = """
 ERROR_CONTENT  :{"test":'123',}
 HINT           :The content is not a legal json format,please check the parameters is valid
@@ -123,16 +119,27 @@ HINT           :The content is not a legal json format,please check the paramete
         self.mock_requests_get(return_value=Resp())
         self.assert_result()
 
-    def test_request_status_500(self):
-        """test_request_status_500"""
+    def test_request_status_429(self):
+        """test_request_status_429"""
+        class Resp:
+            status_code = 429
+
         self.command_params = ["os-version"]
         self.excepted_str = """
-ERROR_CONTENT  :Server error
-HINT           :Please check the service and try again
+Too many requests in a short time, please request again later
 """
-        self._to_update_kw_and_make_mock(
-            "packageship.application.common.remote.RemoteService.status_code",
-            new_callable=PropertyMock,
-            return_value=500,
-        )
+        self.mock_requests_get(return_value=Resp())
+        self.assert_result()
+
+    def test_request_status_500(self):
+        """test_request_status_500"""
+        self.excepted_str = """
+ERROR_CONTENT  :500 Server Error: None for url: None
+HINT           :The remote connection is abnormal, please check the 'remote_host' parameter value to ensure the connectivity of the remote address
+"""
+        self.command_params = ["os-version", "-s"]
+        r = Response()
+        r.status_code = 500
+        self.mock_requests_get(return_value=r)
+        self.assert_result()
 
