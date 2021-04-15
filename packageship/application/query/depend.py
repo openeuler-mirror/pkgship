@@ -16,7 +16,7 @@ Module of query require relation
 import gevent
 from gevent import monkey
 
-monkey.patch_all()
+monkey.patch_all(ssl=False)
 
 from collections import Counter
 from packageship.application.common.constant import PROVIDES_NAME, FILES_NAME
