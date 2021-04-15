@@ -12,88 +12,92 @@
 # ******************************************************************************/
 # -*- coding:utf-8 -*-
 """
-test_get_pkgship_cmd
+test get all source packages
 """
 from pathlib import Path
-from requests import Response
 from unittest.mock import PropertyMock
-from requests import RequestException
-from packageship.application.cli.commands.db import DbPriorityCommand
+from requests import RequestException, Response
+from packageship.application.cli.commands.allpkg import AllPackageCommand
 from packageship.application.common.exc import ElasticSearchQueryException
 from test.cli import DATA_BASE_INFO
-from test.cli.dbs_command import DbsTest
+from test.cli.package_command import PackageTestBase
 
-DATA_FOLDER = Path(Path(__file__).parent, "mock_data")
+MOCK_DATA_FOLDER = Path(Path(__file__).parent, "mock_data")
+EXPECTED_DATA_FOLDER = Path(Path(__file__).parent, "mock_data", "expected_data")
 
 
-class TestDB(DbsTest):
+class TestAllPackage(PackageTestBase):
     """
-    class for test DB priority
+    class for test all binary packages
     """
-    cmd_class = DbPriorityCommand
+    cmd_class = AllPackageCommand
 
     def test_true_params(self):
         """
-        test true params
+        test true params for all source packages
         """
+        self.excepted_str = self.read_file_content(
+            "pkg_list_s_expected_data.txt",
+            folder=EXPECTED_DATA_FOLDER,
+            is_json=False
+        )
+        self.command_params = ["os-version", "-s"]
         self.mock_es_search(return_value=DATA_BASE_INFO)
-        self.excepted_str = """
-DB priority
-['os-version']
-        """
+        self.mock_es_scan(return_value=self.read_file_content(
+            "pkg_list_s.json",
+            folder=MOCK_DATA_FOLDER))
         self.assert_result()
 
+    def test_wrong_dbs(self):
+        """
+        test wrong dbs for all source packages
+        """
 
-    def test_different_db_priority(self):
-        """
-        test different db priority
-        """
         self.excepted_str = """
-DB priority
-['os-version-1', 'os-version-2', 'os-version-3']
-        """
-        self.mock_es_search(return_value=self.read_file_content(
-            "different_priority_dbs.json",
-            folder=DATA_FOLDER))
+ERROR_CONTENT  :Request parameter error
+HINT           :Please check the parameter is valid and query again"""
+        self.command_params = ["version123", "-s"]
+        self.mock_es_search(return_value=DATA_BASE_INFO)
         self.assert_result()
 
-    def test_same_db_priority(self):
+    def test_None_src_packages_info(self):
         """
-        test same db priority
+        test none src packages info
         """
         self.excepted_str = """
-DB priority
-['os-version-1', 'aa', 'bbb', 'test']
-        """
-        self.mock_es_search(return_value=self.read_file_content(
-            "same_priority_dbs.json",
-            folder=DATA_FOLDER))
+ERROR_CONTENT  :There is no such table in the database
+HINT           :Make sure the table is valid"""
+        self.command_params = ["os-version", "-s"]
+        self.mock_es_search(return_value=DATA_BASE_INFO)
+        self.mock_es_scan(return_value=None)
         self.assert_result()
 
-    def test_wrong_db_data(self):
+    def test_pkgInfoGetingError(self):
         """
-        test wrong dbs data
+        test pkgInfoGettingError
         """
         self.excepted_str = """
-ERROR_CONTENT  :Unable to get the generated database information
-HINT           :Make sure the generated database information is valid
-        """
-        self.mock_es_search(return_value={})
+ERROR_CONTENT  :Failed to Connect the database
+HINT           :Check the connection"""
+        self.command_params = ["os-version", "-s"]
+        self.mock_es_search(return_value=DATA_BASE_INFO)
+        self.mock_es_scan(return_value=[])
         self.assert_result()
 
     def test_raise_es_error(self):
         """test_raise_es_error"""
-
+        self.command_params = ["os-version", "-s"]
+        self.mock_es_search(return_value=DATA_BASE_INFO)
+        self.mock_es_scan(side_effect=ElasticSearchQueryException)
         self.excepted_str = """
-ERROR_CONTENT  :Unable to get the generated database information
-HINT           :Make sure the generated database information is valid
+ERROR_CONTENT  :Failed to Connect the database
+HINT           :Check the connection
 """
-        self.mock_es_search(side_effect=ElasticSearchQueryException)
         self.assert_result()
 
     def test_request_raise_requestexception(self):
         """test_request_raise_requestexception"""
-
+        self.command_params = ["os-version", "-s"]
         self.excepted_str = """
 ERROR_CONTENT  :
 HINT           :The remote connection is abnormal, please check the 'remote_host' parameter value to ensure the connectivity of the remote address
@@ -103,21 +107,22 @@ HINT           :The remote connection is abnormal, please check the 'remote_host
 
     def test_request_text_raise_jsonerror(self):
         """test_request_text_raise_jsonerror"""
+        self.command_params = ["os-version", "-s"]
 
         class Resp:
             text = """{"test":\'123\',}"""
             status_code = 200
 
         self.excepted_str = """
-ERROR_CONTENT  :{"test":\'123\',}
-HINT           :The content is not a legal json format,please check the parameters is valid
-"""
+        ERROR_CONTENT  :{"test":'123',}
+        HINT           :The content is not a legal json format,please check the parameters is valid
+        """
         self.mock_requests_get(return_value=Resp())
         self.assert_result()
 
     def test_request_status_429(self):
         """test_request_status_429"""
-
+        self.command_params = ["os-version", "-s"]
         self.excepted_str = """
 Too many requests in a short time, please request again later
 """
@@ -132,6 +137,7 @@ Too many requests in a short time, please request again later
 ERROR_CONTENT  :500 Server Error: None for url: None
 HINT           :The remote connection is abnormal, please check the 'remote_host' parameter value to ensure the connectivity of the remote address
 """
+        self.command_params = ["os-version", "-s"]
         r = Response()
         r.status_code = 500
         self.mock_requests_get(return_value=r)
