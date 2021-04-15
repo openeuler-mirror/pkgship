@@ -199,10 +199,6 @@ class TestBeDepend(DependTestBase):
         )
         self.assert_result()
 
-    def _assert_result(self):
-        """ new assert_result method user assertEqual"""
-        self.assertEqual(self.excepted_str.strip("\n").strip(), self.print_result)
-
     def test_db_name_error(self):
         """test_db_name_error"""
 
@@ -211,7 +207,7 @@ class TestBeDepend(DependTestBase):
 ERROR_CONTENT  :Request parameter error
 HINT           :Please check the parameter is valid and query again
 """
-        self._assert_result()
+        self.assert_exc_result()
 
     def test_package_not_found_src(self):
         """test_package_not_found"""
@@ -221,7 +217,7 @@ HINT           :Please check the parameter is valid and query again
 ERROR_CONTENT  :The querying package does not exist in the databases
 HINT           :Use the correct package name and try again
 """
-        self._assert_result()
+        self.assert_exc_result()
 
     def test_package_not_found_bin(self):
         """test_package_not_found"""
@@ -231,7 +227,7 @@ HINT           :Use the correct package name and try again
 ERROR_CONTENT  :The querying package does not exist in the databases
 HINT           :Use the correct package name and try again
 """
-        self._assert_result()
+        self.assert_exc_result()
 
     def test_error_es_data_return_not_resp(self):
         """test_get_be_req_error_data_to_raise_keyerror"""
@@ -242,7 +238,7 @@ ERROR_CONTENT  :The querying package does not exist in the databases
 HINT           :Use the correct package name and try again
 """
         self.mock_es_search(side_effect=[DATA_BASE_INFO, {}])
-        self._assert_result()
+        self.assert_exc_result()
 
     def test_raise_es_error(self):
         """test_raise_es_error"""
@@ -253,7 +249,7 @@ ERROR_CONTENT  :Failed to Connect the database
 HINT           :Check the connection
 """
         self.mock_es_search(side_effect=[DATA_BASE_INFO, ElasticSearchQueryException])
-        self._assert_result()
+        self.assert_exc_result()
 
     def test_request_raise_connecterror(self):
         """test_request_raise_connecterror"""
@@ -267,7 +263,7 @@ HINT           :Please check the connection and try again
             "packageship.application.common.remote.RemoteService.request",
             effect=ConnectionError,
         )
-        self._assert_result()
+        self.assert_exc_result()
 
     def test_request_raise_requestexception(self):
         """test_request_raise_requestexception"""
@@ -281,7 +277,7 @@ HINT           :The remote connection is abnormal, please check the 'remote_host
             "packageship.application.common.remote.RemoteService.request",
             effect=RequestException,
         )
-        self._assert_result()
+        self.assert_exc_result()
 
     def test_request_text_raise_jsonerror(self):
         """test_request_text_raise_jsonerror"""
@@ -296,7 +292,7 @@ HINT           :The content is not a legal json format,please check the paramete
             new_callable=PropertyMock,
             return_value="""{"test":'123',}""",
         )
-        self._assert_result()
+        self.assert_exc_result()
 
     def test_request_status_500(self):
         """test_request_status_500"""
@@ -318,4 +314,4 @@ HINT           :Please check the service and try again
             new_callable=PropertyMock,
             return_value="",
         )
-        self._assert_result()
+        self.assert_exc_result()
