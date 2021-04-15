@@ -19,6 +19,7 @@ import os
 import sys
 import unittest
 import json
+import pathlib
 from pathlib import Path
 from unittest import mock
 from flask.wrappers import Response
@@ -361,6 +362,18 @@ class BaseTest(unittest.TestCase, TestMixin):
         for tc in self._to_clean_mock_patchers:
             self.addCleanup(tc.stop)
         self._to_clean_mock_patchers.clear()
+
+    def create_file(self, path, write_content=None):
+        """Create a temporary file"""
+        if not os.path.exists(path):
+            try:
+                os.makedirs(os.path.split(path)[0])
+            except FileExistsError:
+                pathlib.Path(path).touch()
+        if write_content:
+            with open(path, "w", encoding="utf-8") as file:
+                file.write(write_content)
+        return path
 
     def tearDown(self) -> None:
         """tearDown"""

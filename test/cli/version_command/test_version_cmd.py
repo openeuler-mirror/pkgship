@@ -16,8 +16,7 @@ test_get_pkgship_version
 """
 import os
 from pathlib import Path
-from unittest.mock import PropertyMock
-from requests import RequestException
+from requests import RequestException, Response
 from packageship.application.cli.commands.version import VersionCommand
 from packageship.application.core.baseinfo import pkg_version
 from test.cli.version_command import VersionTest
@@ -62,10 +61,7 @@ HINT           :Make sure the file is valid
 ERROR_CONTENT  :
 HINT           :The remote connection is abnormal, please check the 'remote_host' parameter value to ensure the connectivity of the remote address
 """
-        self._to_update_kw_and_make_mock(
-            "packageship.application.common.remote.RemoteService.get",
-            effect=RequestException,
-        )
+        self.mock_requests_get(side_effect=[RequestException])
         self.assert_result()
 
     def test_request_text_raise_jsonerror(self):
@@ -83,15 +79,25 @@ HINT           :The content is not a legal json format,please check the paramete
         self.mock_requests_get(return_value=Resp())
         self.assert_result()
 
+    def test_request_status_429(self):
+        """test_request_status_429"""
+        self.command_params = ["-v"]
+        self.excepted_str = """
+Too many requests in a short time, please request again later
+"""
+        r = Response()
+        r.status_code = 429
+        self.mock_requests_get(return_value=r)
+        self.assert_result()
+
     def test_request_status_500(self):
         """test_request_status_500"""
-
+        self.command_params = ["-v"]
         self.excepted_str = """
-ERROR_CONTENT  :Server error
-HINT           :Please check the service and try again
+ERROR_CONTENT  :500 Server Error: None for url: None
+HINT           :The remote connection is abnormal, please check the 'remote_host' parameter value to ensure the connectivity of the remote address
 """
-        self._to_update_kw_and_make_mock(
-            "packageship.application.common.remote.RemoteService.status_code",
-            new_callable=PropertyMock,
-            return_value=500,
-        )
+        r = Response()
+        r.status_code = 500
+        self.mock_requests_get(return_value=r)
+        self.assert_result()

@@ -190,6 +190,7 @@ class DependTestBase(ClientTest):
         source_lines = []
         is_binary = False
         is_source = False
+        normal_query_judgment_lst = [False, False, False]
         command_lines = command_res.splitlines()
 
         def handle_tolong_name_in_newline(ln, target_lst, idx):
@@ -220,11 +221,14 @@ class DependTestBase(ClientTest):
         for idx, ln in enumerate(command_lines):
             line = ln.strip().strip("\r\n").strip("\n")
             if line.startswith("Statistics"):
+                normal_query_judgment_lst[0] = True
                 break
             if line.startswith("Binary"):
+                normal_query_judgment_lst[1] = True
                 is_binary = True
                 continue
             elif line.startswith("Source"):
+                normal_query_judgment_lst[2] = True
                 is_source = True
                 is_binary = False
                 continue
@@ -240,7 +244,12 @@ class DependTestBase(ClientTest):
                 if handle_tolong_name_in_newline(ln, source_lines, idx):
                     continue
                 source_lines.append(split_ln)
-
+        
+        if not all(normal_query_judgment_lst):
+            raise ValueError(
+                "check Your expected str please, must be a normal query result"
+            )
+            
         return binary_lines, source_lines
 
     def assert_result(self):
@@ -255,7 +264,12 @@ class DependTestBase(ClientTest):
         current_bin, current_src = self._process_depend_command_value(self.print_result)
         self.assertListEqual(sorted(excepted_bin), sorted(current_bin))
         self.assertListEqual(sorted(excepted_src), sorted(current_src))
-
+    
+    def assert_exc_result(self):
+        """assert_exc_result
+        """
+        super(DependTestBase,self).assert_result()
+    
     def _es_search_result(self, index: str, body: dict):
         """
         Get different return values through different call parameters

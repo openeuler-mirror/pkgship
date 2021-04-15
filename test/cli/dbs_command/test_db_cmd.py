@@ -15,6 +15,7 @@
 test_get_pkgship_cmd
 """
 from pathlib import Path
+from requests import Response
 from unittest.mock import PropertyMock
 from requests import RequestException
 from packageship.application.cli.commands.db import DbPriorityCommand
@@ -97,10 +98,7 @@ HINT           :Make sure the generated database information is valid
 ERROR_CONTENT  :
 HINT           :The remote connection is abnormal, please check the 'remote_host' parameter value to ensure the connectivity of the remote address
 """
-        self._to_update_kw_and_make_mock(
-            "packageship.application.common.remote.RemoteService.get",
-            effect=RequestException,
-        )
+        self.mock_requests_get(side_effect=[RequestException])
         self.assert_result()
 
     def test_request_text_raise_jsonerror(self):
@@ -117,16 +115,24 @@ HINT           :The content is not a legal json format,please check the paramete
         self.mock_requests_get(return_value=Resp())
         self.assert_result()
 
-    def test_request_status_500(self):
-        """test_request_status_500"""
+    def test_request_status_429(self):
+        """test_request_status_429"""
 
         self.excepted_str = """
-ERROR_CONTENT  :Server error
-HINT           :Please check the service and try again
+Too many requests in a short time, please request again later
 """
+        r = Response()
+        r.status_code = 429
+        self.mock_requests_get(return_value=r)
+        self.assert_result()
 
-        self._to_update_kw_and_make_mock(
-            "packageship.application.common.remote.RemoteService.status_code",
-            new_callable=PropertyMock,
-            return_value=500,
-        )
+    def test_request_status_500(self):
+        """test_request_status_500"""
+        self.excepted_str = """
+ERROR_CONTENT  :500 Server Error: None for url: None
+HINT           :The remote connection is abnormal, please check the 'remote_host' parameter value to ensure the connectivity of the remote address
+"""
+        r = Response()
+        r.status_code = 500
+        self.mock_requests_get(return_value=r)
+        self.assert_result()
