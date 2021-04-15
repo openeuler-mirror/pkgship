@@ -1,0 +1,230 @@
+{
+    "pkgKey": 35,
+    "pkgId": "df487e3623660d477f556899fce77ac650322c4362d82e047c6efc013e07ae5b",
+    "name": "Judy",
+    "arch": "aarch64",
+    "version": "1.0.5",
+    "epoch": "0",
+    "release": "19.oe1",
+    "summary": "C library array",
+    "description": "The package provides the most advanced core technology, the main\nadvantages are scalability, high performance and memory efficiency.",
+    "url": "http://sourceforge.net/projects/judy/",
+    "time_file": 1601219934,
+    "time_build": 1601219910,
+    "rpm_license": "LGPLv2+",
+    "rpm_vendor": "http://openeuler.org",
+    "rpm_group": "Unspecified",
+    "rpm_buildhost": "obs-worker-0016",
+    "rpm_sourcerpm": "Judy-1.0.5-19.oe1.src.rpm",
+    "rpm_header_start": 5096,
+    "rpm_header_end": 8772,
+    "rpm_packager": "http://openeuler.org",
+    "size_package": 114276,
+    "size_installed": 356971,
+    "size_archive": 358048,
+    "location_href": "Packages/Judy-1.0.5-19.oe1.aarch64.rpm",
+    "location_base": null,
+    "checksum_type": "sha256",
+    "src_name": "Judy",
+    "provides": [
+      {
+        "name": "Judy",
+        "flags": "EQ",
+        "epoch": "0",
+        "version": "1.0.5",
+        "release": "19.oe1",
+        "pkgKey": 35
+      },
+      {
+        "name": "Judy(aarch-64)",
+        "flags": "EQ",
+        "epoch": "0",
+        "version": "1.0.5",
+        "release": "19.oe1",
+        "pkgKey": 35
+      },
+      {
+        "name": "libJudy.so.1()(64bit)",
+        "flags": null,
+        "epoch": null,
+        "version": null,
+        "release": null,
+        "pkgKey": 35
+      }
+    ],
+    "files": [
+      {
+        "name": "/etc/ima/digest_lists/0-metadata_list-compact-Judy-1.0.5-19.oe1.aarch64",
+        "type": "file",
+        "pkgKey": 35
+      },
+      {
+        "name": "/etc/ima/digest_lists.tlv/0-metadata_list-compact_tlv-Judy-1.0.5-19.oe1.aarch64",
+        "type": "file",
+        "pkgKey": 35
+      }
+    ],
+    "filelists": [
+      {
+        "pkgKey": 35,
+        "dirname": "/usr/share/licenses",
+        "filenames": "Judy",
+        "filetypes": "d"
+      },
+      {
+        "pkgKey": 35,
+        "dirname": "/usr/share/licenses/Judy",
+        "filenames": "COPYING",
+        "filetypes": "f"
+      },
+      {
+        "pkgKey": 35,
+        "dirname": "/etc/ima/digest_lists.tlv",
+        "filenames": "0-metadata_list-compact_tlv-Judy-1.0.5-19.oe1.aarch64",
+        "filetypes": "f"
+      },
+      {
+        "pkgKey": 35,
+        "dirname": "/usr/lib64",
+        "filenames": "libJudy.so.1/libJudy.so.1.0.3",
+        "filetypes": "ff"
+      },
+      {
+        "pkgKey": 35,
+        "dirname": "/etc/ima/digest_lists",
+        "filenames": "0-metadata_list-compact-Judy-1.0.5-19.oe1.aarch64",
+        "filetypes": "f"
+      }
+    ],
+    "src_version": "1.0.5",
+    "requires": [
+      {
+        "name": "coreutils",
+        "flags": null,
+        "epoch": null,
+        "version": null,
+        "release": null,
+        "pkgKey": 14,
+        "pre": "FALSE",
+        "relation": [{ "bin_name": "coreutils", "src_name": "coreutils" }],
+        "requires_type": "build"
+      },
+      {
+        "name": "gawk",
+        "flags": null,
+        "epoch": null,
+        "version": null,
+        "release": null,
+        "pkgKey": 14,
+        "pre": "FALSE",
+        "relation": [{ "bin_name": "gawk", "src_name": "gawk" }],
+        "requires_type": "build"
+      },
+      {
+        "name": "gcc",
+        "flags": "GE",
+        "epoch": "0",
+        "version": "4.1",
+        "release": null,
+        "pkgKey": 14,
+        "pre": "FALSE",
+        "relation": [{ "bin_name": "gcc", "src_name": "gcc" }],
+        "requires_type": "build"
+      },
+      {
+        "name": "make",
+        "flags": null,
+        "epoch": null,
+        "version": null,
+        "release": null,
+        "pkgKey": 14,
+        "pre": "FALSE",
+        "relation": [{ "bin_name": "make", "src_name": "make" }],
+        "requires_type": "build"
+      },
+      {
+        "name": "sed",
+        "flags": null,
+        "epoch": null,
+        "version": null,
+        "release": null,
+        "pkgKey": 14,
+        "pre": "FALSE",
+        "relation": [{ "bin_name": "sed", "src_name": "sed" }],
+        "requires_type": "build"
+      },
+      {
+        "name": "/bin/sh",
+        "flags": null,
+        "epoch": null,
+        "version": null,
+        "release": null,
+        "pkgKey": 35,
+        "pre": "TRUE",
+        "relation": [
+          { "bin_name": "bash", "src_name": "bash" },
+          { "bin_name": "coreutils", "src_name": "coreutils" }
+        ],
+        "requires_type": "install"
+      },
+      {
+        "name": "/bin/sh",
+        "flags": null,
+        "epoch": null,
+        "version": null,
+        "release": null,
+        "pkgKey": 35,
+        "pre": "FALSE",
+        "relation": [
+          { "bin_name": "bash", "src_name": "bash" },
+          { "bin_name": "coreutils", "src_name": "coreutils" }
+        ],
+        "requires_type": "install"
+      },
+      {
+        "name": "ld-linux-aarch64.so.1()(64bit)",
+        "flags": null,
+        "epoch": null,
+        "version": null,
+        "release": null,
+        "pkgKey": 35,
+        "pre": "FALSE",
+        "relation": [{ "bin_name": "glibc", "src_name": "glibc" }],
+        "requires_type": "install"
+      },
+      {
+        "name": "ld-linux-aarch64.so.1(GLIBC_2.17)(64bit)",
+        "flags": null,
+        "epoch": null,
+        "version": null,
+        "release": null,
+        "pkgKey": 35,
+        "pre": "FALSE",
+        "relation": [{ "bin_name": "glibc", "src_name": "glibc" }],
+        "requires_type": "install"
+      },
+      {
+        "name": "rtld(GNU_HASH)",
+        "flags": null,
+        "epoch": null,
+        "version": null,
+        "release": null,
+        "pkgKey": 35,
+        "pre": "FALSE",
+        "relation": [{ "bin_name": "glibc", "src_name": "glibc" }],
+        "requires_type": "install"
+      },
+      {
+        "name": "libc.so.6(GLIBC_2.17)(64bit)",
+        "flags": null,
+        "epoch": null,
+        "version": null,
+        "release": null,
+        "pkgKey": 35,
+        "pre": "FALSE",
+        "relation": [{ "bin_name": "glibc", "src_name": "glibc" }],
+        "requires_type": "install"
+      }
+    ]
+  }
+  
