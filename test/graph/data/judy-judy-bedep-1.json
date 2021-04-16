@@ -1,0 +1,26 @@
+{
+    "request": {
+        "packagename": [
+            "Judy"
+        ],
+        "depend_type": "bedep",
+        "node_name": "Judy",
+        "node_type": "binary",
+        "parameter": {
+            "db_priority": [
+                "os-version"
+            ],
+            "packtype": "binary"
+        }
+    },
+    "edges": [
+        {
+            "sourceID": "Judy-devel",
+            "targetID": "Judy"
+        },
+        {
+            "sourceID": "mariadb-oqgraph-engine",
+            "targetID": "Judy"
+        }
+    ]
+}

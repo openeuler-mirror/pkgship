@@ -12,17 +12,16 @@
 # ******************************************************************************/
 # -*- coding:utf-8 -*-
 import os
-import unittest
-from unittest import mock
+from unittest import mock, TestCase
 from packageship.application.common.compress import Unpack
 from packageship.application.common.exc import UnpackError
 
 
-class TestUnpack(unittest.TestCase):
+class TestUnpack(TestCase):
     """File decompression test"""
 
     def setUp(self):
-        self.path = os.path.join(os.path.dirname(__file__), "data")
+        self.path = os.path.join(os.path.dirname(__file__), "compress_files")
 
     def test_bz2_unpack(self):
         """unpack bz2 file"""

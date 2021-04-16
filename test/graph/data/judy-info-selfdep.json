@@ -1,0 +1,153 @@
+{
+    "request": {
+        "packagename": [
+            "Judy"
+        ],
+        "depend_type": "builddep",
+        "node_name": "info",
+        "node_type": "binary",
+        "parameter": {
+            "db_priority": [
+                "os-version"
+            ]
+        }
+    },
+    "edges": [
+        {
+            "sourceID": "info",
+            "targetID": "ncurses-libs"
+        },
+        {
+            "sourceID": "info",
+            "targetID": "zlib"
+        },
+        {
+            "sourceID": "info",
+            "targetID": "glibc"
+        },
+        {
+            "sourceID": "info",
+            "targetID": "bash"
+        },
+        {
+            "sourceID": "coreutils",
+            "targetID": "info"
+        },
+        {
+            "sourceID": "make",
+            "targetID": "info"
+        },
+        {
+            "sourceID": "binutils",
+            "targetID": "info"
+        },
+        {
+            "sourceID": "glibc-devel",
+            "targetID": "info"
+        },
+        {
+            "sourceID": "findutils",
+            "targetID": "info"
+        },
+        {
+            "sourceID": "ncurses-libs",
+            "targetID": "ncurses-base"
+        },
+        {
+            "sourceID": "ncurses-libs",
+            "targetID": "glibc"
+        },
+        {
+            "sourceID": "zlib",
+            "targetID": "glibc"
+        },
+        {
+            "sourceID": "glibc",
+            "targetID": "glibc-common"
+        },
+        {
+            "sourceID": "glibc",
+            "targetID": "basesystem"
+        },
+        {
+            "sourceID": "bash",
+            "targetID": "ncurses-libs"
+        },
+        {
+            "sourceID": "bash",
+            "targetID": "glibc"
+        },
+        {
+            "sourceID": "bash",
+            "targetID": "filesystem"
+        },
+        {
+            "sourceID": "gcc",
+            "targetID": "glibc-devel"
+        },
+        {
+            "sourceID": "libxcrypt-devel",
+            "targetID": "glibc-devel"
+        },
+        {
+            "sourceID": "gcc",
+            "targetID": "binutils"
+        },
+        {
+            "sourceID": "kernel-devel",
+            "targetID": "findutils"
+        },
+        {
+            "sourceID": "openEuler-rpm-config",
+            "targetID": "findutils"
+        },
+        {
+            "sourceID": "binutils",
+            "targetID": "coreutils"
+        },
+        {
+            "sourceID": "glibc-devel",
+            "targetID": "coreutils"
+        },
+        {
+            "sourceID": "guile",
+            "targetID": "coreutils"
+        },
+        {
+            "sourceID": "ca-certificates",
+            "targetID": "coreutils"
+        },
+        {
+            "sourceID": "crypto-policies",
+            "targetID": "coreutils"
+        },
+        {
+            "sourceID": "slang",
+            "targetID": "coreutils"
+        },
+        {
+            "sourceID": "systemd-libs",
+            "targetID": "coreutils"
+        },
+        {
+            "sourceID": "groff",
+            "targetID": "coreutils"
+        },
+        {
+            "sourceID": "krb5-libs",
+            "targetID": "coreutils"
+        },
+        {
+            "sourceID": "rpm",
+            "targetID": "coreutils"
+        },
+        {
+            "sourceID": "libblkid",
+            "targetID": "coreutils"
+        },
+        {
+            "sourceID": "logrotate",
+            "targetID": "coreutils"
+        }
+    ]
+}
