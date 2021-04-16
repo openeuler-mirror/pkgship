@@ -26,7 +26,8 @@ class RemoteFiles(InitTestBase):
         super(RemoteFiles, self).setUp()
         self.repo_file = RepoFile(temporary_directory=os.path.join(
             self._dirname, "tmp"))
-        del sys.modules["gevent.monkey"]
+        if "gevent.monkey" in sys.modules:
+            del sys.modules["gevent.monkey"]
 
     def _get_repo_file_path(self, repo):
         _src_db_file = self.repo_file.remote_file(path=repo["src_db_file"])
