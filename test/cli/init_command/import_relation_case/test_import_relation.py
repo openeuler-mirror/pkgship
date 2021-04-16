@@ -12,6 +12,7 @@
 # ******************************************************************************/
 # -*- coding:utf-8 -*-
 import os
+import sys
 import shutil
 from test.cli.init_command import InitTestBase
 from packageship.application.initialize.integration import InitializeService
@@ -42,6 +43,7 @@ class TestImportRelation(InitTestBase):
     def setUp(self):
         super(TestImportRelation, self).setUp()
         _location_path = os.path.join(self._dirname, "sqlites")
+        del sys.modules["gevent.monkey"]
 
         self._location_config = self.create_file(
             write_content=LOCATION_CONFIG.format(src="file://" + os.path.join(_location_path, "src"),
