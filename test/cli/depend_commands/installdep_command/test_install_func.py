@@ -44,7 +44,7 @@ class TestInstallDep(DependTestBase):
 ERROR_CONTENT  :Request parameter error
 HINT           :Please check the parameter is valid and query again
         """
-        self.assert_result()
+        self.assert_exc_result()
 
     def test_wrong_level_0(self):
         """
@@ -52,10 +52,10 @@ HINT           :Please check the parameter is valid and query again
         """
         self.command_params = ["Judy", "-level=0"]
         self.excepted_str = """
-    ERROR_CONTENT  :Request parameter error
-    HINT           :Please check the parameter is valid and query again
+ERROR_CONTENT  :Request parameter error
+HINT           :Please check the parameter is valid and query again
             """
-        self.assert_result()
+        self.assert_exc_result()
 
     def test_wrong_package_name(self):
         """
@@ -66,7 +66,7 @@ HINT           :Please check the parameter is valid and query again
 ERROR_CONTENT  :The querying package does not exist in the databases
 HINT           :Use the correct package name and try again
             """
-        self.assert_result()
+        self.assert_exc_result()
 
     def test_wrong_db_name(self):
         """
@@ -74,10 +74,10 @@ HINT           :Use the correct package name and try again
         """
         self.command_params = ["CUnit", "-dbs=test"]
         self.excepted_str = """
-    ERROR_CONTENT  :Request parameter error
-    HINT           :Please check the parameter is valid and query again
+ERROR_CONTENT  :Request parameter error
+HINT           :Please check the parameter is valid and query again
                 """
-        self.assert_result()
+        self.assert_exc_result()
 
     def test_true_level_0(self):
         """
@@ -127,10 +127,6 @@ HINT           :Use the correct package name and try again
             is_json=False)
         self.assert_result()
 
-    def _assert_result(self):
-        """ new assert_result method user assertEqual"""
-        self.assertEqual(self.excepted_str.strip("\n").strip(), self.print_result)
-
     def test_error_es_data_return_not_resp(self):
         """test_get_install_error_data_to_raise_keyerror"""
 
@@ -140,18 +136,7 @@ ERROR_CONTENT  :The querying package does not exist in the databases
 HINT           :Use the correct package name and try again
     """
         self.mock_es_search(side_effect=[DATA_BASE_INFO, {}])
-        self._assert_result()
-
-    def test_raise_es_error(self):
-        """test_raise_es_error"""
-
-        self.command_params = ["Judy", "-dbs=os-version"]
-        self.excepted_str = """
-ERROR_CONTENT  :Server error
-HINT           :Please check the service and try again
-    """
-        self.mock_es_search(side_effect=[DATA_BASE_INFO, [], ElasticSearchQueryException])
-        self._execute_command()
+        self.assert_exc_result()
 
     def test_request_raise_requestexception(self):
         """test_request_raise_requestexception"""
@@ -165,7 +150,7 @@ HINT           :The remote connection is abnormal, please check the 'remote_host
             "packageship.application.common.remote.RemoteService.request",
             effect=RequestException,
         )
-        self._assert_result()
+        self.assert_exc_result()
 
     def test_request_text_raise_jsonerror(self):
         """test_request_text_raise_jsonerror"""
@@ -180,7 +165,7 @@ HINT           :The content is not a legal json format,please check the paramete
             new_callable=PropertyMock,
             return_value="""{"test":'123',}""",
         )
-        self._assert_result()
+        self.assert_exc_result()
 
     def test_request_status_500(self):
         """test_request_status_500"""
@@ -202,4 +187,4 @@ HINT           :Please check the service and try again
             new_callable=PropertyMock,
             return_value="",
         )
-        self._assert_result()
+        self.assert_exc_result()
