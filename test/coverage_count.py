@@ -11,6 +11,8 @@
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
 # -*- coding:utf-8 -*-
+from gevent import monkey
+monkey.patch_all(socket=False,ssl=False)
 import os
 import sys
 import unittest
