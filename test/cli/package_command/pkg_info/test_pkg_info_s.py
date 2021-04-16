@@ -12,7 +12,7 @@
 # ******************************************************************************/
 # -*- coding:utf-8 -*-
 """
-test get single binary package info
+test get single source package info
 """
 from pathlib import Path
 from requests import RequestException, Response
@@ -101,8 +101,8 @@ HINT           :Use the correct package name and try again"""
         self.mock_es_search(side_effect=empty_requires_single_src)
         self.assert_result()
 
-    def test_error_single_bin_package(self):
-        """test error single bin package"""
+    def test_error_single_src_package(self):
+        """test error single src package"""
         self.excepted_str = """
 ERROR_CONTENT  :The querying package does not exist in the databases
 HINT           :Use the correct package name and try again
