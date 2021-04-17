@@ -71,13 +71,13 @@ class TestImportRelation(InitTestBase):
         init_service.import_depend(path=self._location_config)
         self.assertEqual(True, init_service.success)
 
-    def test_import_remote_repo(self):
-        """
-        Import data relationships as remote files
-        """
-        init_service = InitializeService()
-        init_service.import_depend(path=self._remote_config)
-        self.assertEqual(True, init_service.success)
+    # def test_import_remote_repo(self):
+    #     """
+    #     Import data relationships as remote files
+    #     """
+    #     init_service = InitializeService()
+    #     init_service.import_depend(path=self._remote_config)
+    #     self.assertEqual(True, init_service.success)
 
     def tearDown(self) -> None:
         shutil.rmtree(os.path.join(
