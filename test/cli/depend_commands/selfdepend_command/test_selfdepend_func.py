@@ -139,24 +139,28 @@ class TestSelfDepend(DependTestBase):
         """
         Test elasticsearch is uninviliable
         Returns:
-
         """
         self.command_params = ['Judy', '-dbs', 'os-version']
         self.mock_es_search(side_effect=[ElasticSearchQueryException])
         self.excepted_str = "ERROR_CONTENT  :Request parameter error\n" \
                             "HINT           :Please check the parameter is valid and query again"
-        self.assert_result()
-
-    def test_remote_query(self):
-        self.command_params = ['Judy', '-dbs', 'os-version', '-remote']
-        self.excepted_str = self.read_file_content(self._get_expect_data('selfdep.txt'), is_json=False)
-        self.assert_result()
+        self.assert_exc_result()
 
     def test_request_exception(self):
+        """
+        Test request has exception
+        Returns:
+        """
         self.command_params = ['Judy', '-dbs', 'os-version']
         self.mock_requests_post(return_value=self.PostResponse(status_code=500, text=""))
-        self.assert_result()
+        self.assert_exc_result()
 
     @staticmethod
     def _get_expect_data(file_name):
+        """
+        Get expected data
+        Args:
+            file_name: file of  expected data
+        Returns:
+        """
         return os.path.join(EXPECT_DATA_FILE, file_name)
