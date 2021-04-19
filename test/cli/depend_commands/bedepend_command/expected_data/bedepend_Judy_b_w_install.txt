@@ -1,0 +1,44 @@
+query ['Judy'] beDepend result display:
+Binary
+===================================================================================================
+  Binary name                          Source name                Version     Database name        
+===================================================================================================
+  Judy                                 Judy                       1.0.5       os-version            
+  Judy-devel                           Judy                       1.0.5       os-version            
+  mariadb-oqgraph-engine               mariadb                    10.3.9      os-version            
+  Judy-help                            Judy                       1.0.5       os-version            
+  mariadb                              mariadb                    10.3.9      os-version            
+  obs-api-deps                         obs-bundled-gems           2.10.1      os-version            
+  mariadb-server                       mariadb                    10.3.9      os-version            
+  mariadb-test                         mariadb                    10.3.9      os-version            
+  mariadb-backup                       mariadb                    10.3.9      os-version            
+  mariadb-common                       mariadb                    10.3.9      os-version            
+  mariadb-embedded                     mariadb                    10.3.9      os-version            
+  mariadb-errmessage                   mariadb                    10.3.9      os-version            
+  mariadb-server-galera                mariadb                    10.3.9      os-version            
+  mariadb-cracklib                     mariadb                    10.3.9      os-version            
+  mariadb-devel                        mariadb                    10.3.9      os-version            
+  mariadb-embedded-devel               mariadb                    10.3.9      os-version            
+  mariadb-gssapi-server                mariadb                    10.3.9      os-version            
+  obs-api                              obs-server                 2.10.1      os-version            
+  obs-bundled-gems                     obs-bundled-gems           2.10.1      os-version            
+  obs-common                           obs-server                 2.10.1      os-version            
+  obs-server                           obs-server                 2.10.1      os-version            
+===================================================================================================
+Source
+====================================================================================================
+  Source name                        Version                Database name                           
+====================================================================================================
+====================================================================================================
+Statistics
+====================================================================================================
+  Database name                          Binary Sum                    Source Sum                   
+====================================================================================================
+  os-version                              21                            0                            
+====================================================================================================
+Sum
+====================================================================================================
+  Sum           Binary Sum                                Source Sum                                
+====================================================================================================
+  Sum           21                                        0                                         
+====================================================================================================

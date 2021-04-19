@@ -1,0 +1,1910 @@
+{
+    "Judy": {
+        "_source": {
+            "pkgKey": 14,
+            "pkgId": "7565d7efaa800410896daa212b2c1f5e74598558050b15a992ae1bdb347dbf72",
+            "name": "Judy",
+            "arch": "src",
+            "version": "1.0.5",
+            "epoch": "0",
+            "release": "19.oe1",
+            "summary": "C library array",
+            "description": "The package provides the most advanced core technology, the main\nadvantages are scalability, high performance and memory efficiency.",
+            "url": "http://sourceforge.net/projects/judy/",
+            "time_file": 1601219934,
+            "time_build": 1601219910,
+            "rpm_license": "LGPLv2+",
+            "rpm_vendor": "http://openeuler.org",
+            "rpm_group": "Unspecified",
+            "rpm_buildhost": "obs-worker-0016",
+            "rpm_sourcerpm": "",
+            "rpm_header_start": 5096,
+            "rpm_header_end": 7056,
+            "rpm_packager": "http://openeuler.org",
+            "size_package": 1144835,
+            "size_installed": 1149275,
+            "size_archive": 1149648,
+            "location_href": "Packages/Judy-1.0.5-19.oe1.src.rpm",
+            "location_base": null,
+            "checksum_type": "sha256",
+            "requires": [
+                {
+                    "name": "coreutils",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 14,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "coreutils",
+                            "src_name": "coreutils"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "gawk",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 14,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "gawk",
+                            "src_name": "gawk"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "gcc",
+                    "flags": "GE",
+                    "epoch": "0",
+                    "version": "4.1",
+                    "release": null,
+                    "pkgKey": 14,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "gcc",
+                            "src_name": "gcc"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "make",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 14,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "make",
+                            "src_name": "make"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "sed",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 14,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "sed",
+                            "src_name": "sed"
+                        }
+                    ],
+                    "requires_type": "build"
+                }
+            ],
+            "subpacks": [
+                {
+                    "name": "Judy",
+                    "version": "1.0.5"
+                },
+                {
+                    "name": "Judy-devel",
+                    "version": "1.0.5"
+                },
+                {
+                    "name": "Judy-help",
+                    "version": "1.0.5"
+                }
+            ]
+        }
+    },
+    "mariadb": {
+        "_source": {
+            "pkgKey": 1613,
+            "pkgId": "6bc18f12db6879fec1de1a883ec2f2da9032a0ad778c172a9de73dd044972c07",
+            "name": "mariadb",
+            "arch": "src",
+            "version": "10.3.9",
+            "epoch": "3",
+            "release": "10.oe1",
+            "summary": "One of the most popular database servers",
+            "description": "MariaDB turns data into structured information in a wide array of applications,\nranging from banking to websites. It is an enhanced, drop-in replacement for MySQL.\nMariaDB is used because it is fast, scalable and robust, with a rich ecosystem of storage\nengines, plugins and many other tools make it very versatile for a wide variety of use cases.",
+            "url": "http://mariadb.org",
+            "time_file": 1600967801,
+            "time_build": 1600965719,
+            "rpm_license": "GPLv2 with exceptions and LGPLv2 and BSD",
+            "rpm_vendor": "http://openeuler.org",
+            "rpm_group": "Unspecified",
+            "rpm_buildhost": "obs-worker-0011",
+            "rpm_sourcerpm": "",
+            "rpm_header_start": 5096,
+            "rpm_header_end": 9220,
+            "rpm_packager": "http://openeuler.org",
+            "size_package": 66413505,
+            "size_installed": 72219623,
+            "size_archive": 72220464,
+            "location_href": "Packages/mariadb-10.3.9-10.oe1.src.rpm",
+            "location_base": null,
+            "checksum_type": "sha256",
+            "requires": [
+                {
+                    "name": "Judy-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "Judy-devel",
+                            "src_name": "Judy"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "bison",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "bison",
+                            "src_name": "bison"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "bison-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "bison-devel",
+                            "src_name": "bison"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "boost-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "boost-devel",
+                            "src_name": "boost"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "cmake",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "cmake",
+                            "src_name": "cmake"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "cracklib-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "cracklib-devel",
+                            "src_name": "cracklib"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "cracklib-dicts",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "cracklib",
+                            "src_name": "cracklib"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "gcc-c++",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "gcc-c++",
+                            "src_name": "gcc"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "krb5-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "krb5-devel",
+                            "src_name": "krb5"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "libaio-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "libaio-devel",
+                            "src_name": "libaio"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "libarchive-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "libarchive-devel",
+                            "src_name": "libarchive"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "libedit-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "libedit-devel",
+                            "src_name": "libedit"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "lz4-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "lz4-devel",
+                            "src_name": "lz4"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "ncurses-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "ncurses-devel",
+                            "src_name": "ncurses"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "openssl",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "openssl",
+                            "src_name": "openssl"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "openssl-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "openssl-devel",
+                            "src_name": "openssl"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "pam-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "pam-devel",
+                            "src_name": "pam"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "pcre-devel",
+                    "flags": "GE",
+                    "epoch": "0",
+                    "version": "8.35",
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "pcre-devel",
+                            "src_name": "pcre"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "perl(Data::Dumper)",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "perl-Data-Dumper",
+                            "src_name": "perl-Data-Dumper"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "perl(Env)",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "perl-Env",
+                            "src_name": "perl-Env"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "perl(Exporter)",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "perl-Exporter",
+                            "src_name": "perl-Exporter"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "perl(Fcntl)",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "perl",
+                            "src_name": "perl"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "perl(File::Temp)",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "perl-File-Temp",
+                            "src_name": "perl-File-Temp"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "perl(Getopt::Long)",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "perl-Getopt-Long",
+                            "src_name": "perl-Getopt-Long"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "perl(IPC::Open3)",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "perl",
+                            "src_name": "perl"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "perl(Memoize)",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "perl",
+                            "src_name": "perl"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "perl(Socket)",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "perl-Socket",
+                            "src_name": "perl-Socket"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "perl(Symbol)",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "perl",
+                            "src_name": "perl"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "perl(Sys::Hostname)",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "perl",
+                            "src_name": "perl"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "perl(Test::More)",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "perl-Test-Simple",
+                            "src_name": "perl-Test-Simple"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "perl(Time::HiRes)",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "perl-Time-HiRes",
+                            "src_name": "perl-Time-HiRes"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "perl-generators",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "perl-generators",
+                            "src_name": "perl-generators"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "perl-interpreter",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "perl",
+                            "src_name": "perl"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "pkgconf",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "pkgconf",
+                            "src_name": "pkgconf"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "procps",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "procps-ng",
+                            "src_name": "procps-ng"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "python3",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "python3",
+                            "src_name": "python3"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "selinux-policy-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "selinux-policy-devel",
+                            "src_name": "selinux-policy"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "systemd",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "systemd",
+                            "src_name": "systemd"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "systemd-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "systemd-devel",
+                            "src_name": "systemd"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "systemtap-sdt-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "systemtap-sdt-devel",
+                            "src_name": "systemtap"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "time",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "time",
+                            "src_name": "time"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "zlib-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1613,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "zlib-devel",
+                            "src_name": "zlib"
+                        }
+                    ],
+                    "requires_type": "build"
+                }
+            ],
+            "subpacks": [
+                {
+                    "name": "mariadb",
+                    "version": "10.3.9"
+                },
+                {
+                    "name": "mariadb-backup",
+                    "version": "10.3.9"
+                },
+                {
+                    "name": "mariadb-common",
+                    "version": "10.3.9"
+                },
+                {
+                    "name": "mariadb-cracklib",
+                    "version": "10.3.9"
+                },
+                {
+                    "name": "mariadb-devel",
+                    "version": "10.3.9"
+                },
+                {
+                    "name": "mariadb-embedded",
+                    "version": "10.3.9"
+                },
+                {
+                    "name": "mariadb-embedded-devel",
+                    "version": "10.3.9"
+                },
+                {
+                    "name": "mariadb-errmessage",
+                    "version": "10.3.9"
+                },
+                {
+                    "name": "mariadb-gssapi-server",
+                    "version": "10.3.9"
+                },
+                {
+                    "name": "mariadb-oqgraph-engine",
+                    "version": "10.3.9"
+                },
+                {
+                    "name": "mariadb-server",
+                    "version": "10.3.9"
+                },
+                {
+                    "name": "mariadb-server-galera",
+                    "version": "10.3.9"
+                },
+                {
+                    "name": "mariadb-test",
+                    "version": "10.3.9"
+                }
+            ]
+        }
+    },
+    "obs-bundled-gems": {
+        "_source": {
+            "pkgKey": 1928,
+            "pkgId": "9c2dd8b62f1bfbfcf38f655c75d69a62e9f0f4985d2c56e3ae8ced5eb08e89bb",
+            "name": "obs-bundled-gems",
+            "arch": "src",
+            "version": "2.10.1",
+            "epoch": "0",
+            "release": "0.oe1",
+            "summary": "The Open Build Service -- Bundled Gems",
+            "description": "This package is useful for the Open Build Service. It will figure out\ndenpendent gems, and add them to spec file.",
+            "url": "http://www.openbuildservice.org",
+            "time_file": 1601220535,
+            "time_build": 1601220186,
+            "rpm_license": "GPL-2.0-only OR GPL-3.0-only",
+            "rpm_vendor": "http://openeuler.org",
+            "rpm_group": "Unspecified",
+            "rpm_buildhost": "obs-worker-009",
+            "rpm_sourcerpm": "",
+            "rpm_header_start": 5096,
+            "rpm_header_end": 7352,
+            "rpm_packager": "http://openeuler.org",
+            "size_package": 15098,
+            "size_installed": 24090,
+            "size_archive": 24596,
+            "location_href": "Packages/obs-bundled-gems-2.10.1-0.oe1.src.rpm",
+            "location_base": null,
+            "checksum_type": "sha256",
+            "requires": [
+                {
+                    "name": "cyrus-sasl-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1928,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "cyrus-sasl-devel",
+                            "src_name": "cyrus-sasl"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "gcc",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1928,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "gcc",
+                            "src_name": "gcc"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "gcc-c++",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1928,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "gcc-c++",
+                            "src_name": "gcc"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "glibc-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1928,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "glibc-devel",
+                            "src_name": "glibc"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "libtool",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1928,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "libtool",
+                            "src_name": "libtool"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "libxml2-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1928,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "libxml2-devel",
+                            "src_name": "libxml2"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "libxslt-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1928,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "libxslt-devel",
+                            "src_name": "libxslt"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "mariadb-connector-c-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1928,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "mariadb-connector-c-devel",
+                            "src_name": "mariadb-connector-c"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "nodejs",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1928,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "nodejs",
+                            "src_name": "nodejs"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "openldap-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1928,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "openldap-devel",
+                            "src_name": "openldap"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "python3-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1928,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "python3-devel",
+                            "src_name": "python3"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "ruby-common",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1928,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "ruby-common",
+                            "src_name": "ruby-common"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "ruby-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1928,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "ruby-devel",
+                            "src_name": "ruby"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "rubygem-bundler",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1928,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "rubygem-bundler",
+                            "src_name": "rubygem-bundler"
+                        }
+                    ],
+                    "requires_type": "build"
+                }
+            ],
+            "subpacks": [
+                {
+                    "name": "obs-api-deps",
+                    "version": "2.10.1"
+                },
+                {
+                    "name": "obs-bundled-gems",
+                    "version": "2.10.1"
+                }
+            ]
+        }
+    },
+    "sysbench": {
+        "_source": {
+            "pkgKey": 3061,
+            "pkgId": "a965129c0dfcdae31e3bdc1dee2c80248a526e7e468d648bff3e8ac09a96e807",
+            "name": "sysbench",
+            "arch": "src",
+            "version": "1.0.20",
+            "epoch": "0",
+            "release": "1.oe1",
+            "summary": "Scriptable database and system performance benchmark",
+            "description": "sysbench is a scriptable multi-threaded benchmark tool based on LuaJIT. It is most frequently used for database benchmarks, but can also be used to create arbitrarily complex workloads that do not involve a database server.",
+            "url": "https://github.com/akopytov/sysbench",
+            "time_file": 1601221776,
+            "time_build": 1601221727,
+            "rpm_license": "GPL2",
+            "rpm_vendor": "http://openeuler.org",
+            "rpm_group": "Unspecified",
+            "rpm_buildhost": "obs-worker-009",
+            "rpm_sourcerpm": "",
+            "rpm_header_start": 5096,
+            "rpm_header_end": 7192,
+            "rpm_packager": "http://openeuler.org",
+            "size_package": 1514454,
+            "size_installed": 1510578,
+            "size_archive": 1510964,
+            "location_href": "Packages/sysbench-1.0.20-1.oe1.src.rpm",
+            "location_base": null,
+            "checksum_type": "sha256",
+            "requires": [
+                {
+                    "name": "autoconf",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 3061,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "autoconf",
+                            "src_name": "autoconf"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "automake",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 3061,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "automake",
+                            "src_name": "automake"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "ck-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 3061,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "ck-devel",
+                            "src_name": "ck"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "gcc",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 3061,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "gcc",
+                            "src_name": "gcc"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "libaio-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 3061,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "libaio-devel",
+                            "src_name": "libaio"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "libtool",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 3061,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "libtool",
+                            "src_name": "libtool"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "libxslt",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 3061,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "libxslt",
+                            "src_name": "libxslt"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "mariadb-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 3061,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "mariadb-devel",
+                            "src_name": "mariadb"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "postgresql-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 3061,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "postgresql-devel",
+                            "src_name": "postgresql"
+                        }
+                    ],
+                    "requires_type": "build"
+                }
+            ],
+            "subpacks": [
+                {
+                    "name": "sysbench",
+                    "version": "1.0.20"
+                }
+            ]
+        }
+    },
+    "glpk": {
+        "_source": {
+            "pkgKey": 622,
+            "pkgId": "b910834a58e5f60cf8605b7f59484add7ef7d351f8b64b8e699472145fcae741",
+            "name": "glpk",
+            "arch": "src",
+            "version": "4.65",
+            "epoch": "0",
+            "release": "1.oe1",
+            "summary": "GNU Linear Programming Kit",
+            "description": "The GLPK (GNU Linear Programming Kit) package is intended for solving\nlarge-scale linear programming (LP), mixed integer programming (MIP),\nand other related problems. It is a set of routines written in ANSI C\nand organized in the form of a callable library.\n\nGLPK supports the GNU MathProg language, which is a subset of the AMPL\nlanguage.\n\nThe GLPK package includes the following main components:\n\n * Revised simplex method.\n * Primal-dual interior point method.\n * Branch-and-bound method.\n * Translator for GNU MathProg.\n * Application program interface (API).\n * Stand-alone LP/MIP solver.",
+            "url": "http://www.gnu.org/software/glpk/glpk.html",
+            "time_file": 1601221177,
+            "time_build": 1601221165,
+            "rpm_license": "GPLv3+",
+            "rpm_vendor": "http://openeuler.org",
+            "rpm_group": "Unspecified",
+            "rpm_buildhost": "obs-worker-0028",
+            "rpm_sourcerpm": "",
+            "rpm_header_start": 5096,
+            "rpm_header_end": 7532,
+            "rpm_packager": "http://openeuler.org",
+            "size_package": 4176119,
+            "size_installed": 4170277,
+            "size_archive": 4170652,
+            "location_href": "Packages/glpk-4.65-1.oe1.src.rpm",
+            "location_base": null,
+            "checksum_type": "sha256",
+            "requires": [
+                {
+                    "name": "autoconf",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 622,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "autoconf",
+                            "src_name": "autoconf"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "automake",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 622,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "automake",
+                            "src_name": "automake"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "gmp-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 622,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "gmp-devel",
+                            "src_name": "gmp"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "libtool",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 622,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "libtool",
+                            "src_name": "libtool"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "pkgconfig(libiodbc)",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 622,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "libiodbc-devel",
+                            "src_name": "libiodbc"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "pkgconfig(mariadb)",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 622,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "mariadb-devel",
+                            "src_name": "mariadb"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "pkgconfig(zlib)",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 622,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "zlib-devel",
+                            "src_name": "zlib"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "suitesparse-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 622,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "suitesparse-devel",
+                            "src_name": "suitesparse"
+                        }
+                    ],
+                    "requires_type": "build"
+                }
+            ],
+            "subpacks": [
+                {
+                    "name": "glpk",
+                    "version": "4.65"
+                },
+                {
+                    "name": "glpk-devel",
+                    "version": "4.65"
+                },
+                {
+                    "name": "glpk-doc",
+                    "version": "4.65"
+                },
+                {
+                    "name": "glpk-utils",
+                    "version": "4.65"
+                }
+            ]
+        }
+    },
+    "obs-server": {
+        "_source": {
+            "pkgKey": 1930,
+            "pkgId": "b28856a1ed970b3c43ffc4f62b00e673ad2bde9b2f940007e4c79a76b7641bd6",
+            "name": "obs-server",
+            "arch": "src",
+            "version": "2.10.1",
+            "epoch": "0",
+            "release": "lp151.23.6.oe1",
+            "summary": "The Open Build Service -- Server Component",
+            "description": "The Open Build Service (OBS) backend is used to store all sources and binaries.\nIt also calculates the need for new build jobs and distributes it.",
+            "url": "http://www.openbuildservice.org",
+            "time_file": 1601221063,
+            "time_build": 1601220956,
+            "rpm_license": "GPL-2.0-only OR GPL-3.0-only",
+            "rpm_vendor": "http://openeuler.org",
+            "rpm_group": "Unspecified",
+            "rpm_buildhost": "obs-worker-009",
+            "rpm_sourcerpm": "",
+            "rpm_header_start": 5096,
+            "rpm_header_end": 8280,
+            "rpm_packager": "http://openeuler.org",
+            "size_package": 5033862,
+            "size_installed": 5037118,
+            "size_archive": 5037664,
+            "location_href": "Packages/obs-server-2.10.1-lp151.23.6.oe1.src.rpm",
+            "location_base": null,
+            "checksum_type": "sha256",
+            "requires": [
+                {
+                    "name": "libxml2",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1930,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "libxml2",
+                            "src_name": "libxml2"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "nodejs",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1930,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "nodejs",
+                            "src_name": "nodejs"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "obs-bundled-gems",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1930,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "obs-bundled-gems",
+                            "src_name": "obs-bundled-gems"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "openssl",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1930,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "openssl",
+                            "src_name": "openssl"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "perl(Test::Simple)",
+                    "flags": "GT",
+                    "epoch": "0",
+                    "version": "1",
+                    "release": null,
+                    "pkgKey": 1930,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "perl-Test-Simple",
+                            "src_name": "perl-Test-Simple"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "perl-BSSolv",
+                    "flags": "GE",
+                    "epoch": "0",
+                    "version": "0.36",
+                    "release": null,
+                    "pkgKey": 1930,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "perl-BSSolv",
+                            "src_name": "perl-BSSolv"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "perl-Compress-Zlib",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1930,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "perl-IO-Compress",
+                            "src_name": "perl-IO-Compress"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "perl-File-Sync",
+                    "flags": "GE",
+                    "epoch": "0",
+                    "version": "0.10",
+                    "release": null,
+                    "pkgKey": 1930,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "perl-File-Sync",
+                            "src_name": "perl-File-Sync"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "perl-JSON-XS",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1930,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "perl-JSON-XS",
+                            "src_name": "perl-JSON-XS"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "perl-Net-SSLeay",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1930,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "perl-Net-SSLeay",
+                            "src_name": "perl-Net-SSLeay"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "perl-Socket-MsgHdr",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1930,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "perl-Socket-MsgHdr",
+                            "src_name": "perl-Socket-MsgHdr"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "perl-TimeDate",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1930,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "perl-TimeDate",
+                            "src_name": "perl-TimeDate"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "perl-XML-Parser",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1930,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "perl-XML-Parser",
+                            "src_name": "perl-XML-Parser"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "perl-XML-Simple",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1930,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "perl-XML-Simple",
+                            "src_name": "perl-XML-Simple"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "perl-YAML-LibYAML",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1930,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "perl-YAML-LibYAML",
+                            "src_name": "perl-YAML-LibYAML"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "procps",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1930,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "procps-ng",
+                            "src_name": "procps-ng"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "python-devel",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1930,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "python2-devel",
+                            "src_name": "python2"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "rubygem-bigdecimal",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1930,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "rubygem-bigdecimal",
+                            "src_name": null
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "rubygem-bundler",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1930,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "rubygem-bundler",
+                            "src_name": "rubygem-bundler"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "rubygem-rake",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1930,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "rubygem-rake",
+                            "src_name": null
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "tzdata",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1930,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "tzdata",
+                            "src_name": "tzdata"
+                        }
+                    ],
+                    "requires_type": "build"
+                },
+                {
+                    "name": "xz",
+                    "flags": null,
+                    "epoch": null,
+                    "version": null,
+                    "release": null,
+                    "pkgKey": 1930,
+                    "pre": "FALSE",
+                    "relation": [
+                        {
+                            "bin_name": "xz",
+                            "src_name": "xz"
+                        }
+                    ],
+                    "requires_type": "build"
+                }
+            ],
+            "subpacks": [
+                {
+                    "name": "obs-api",
+                    "version": "2.10.1"
+                },
+                {
+                    "name": "obs-common",
+                    "version": "2.10.1"
+                },
+                {
+                    "name": "obs-server",
+                    "version": "2.10.1"
+                }
+            ]
+        }
+    }
+}
