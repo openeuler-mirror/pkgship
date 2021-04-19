@@ -14,20 +14,21 @@
 """
 test_pkgship_cmd
 """
+import argparse
 import os
 import sys
 import unittest
 import json
+import pathlib
 from pathlib import Path
 from unittest import mock
 from flask.wrappers import Response
 from packageship import BASE_PATH
+from packageship.application.cli.base import BaseCommand
 
 MOCK_DATA_FOLDER = str(Path(Path(__file__).parents[1], "mock_data"))
 with open(str(Path(MOCK_DATA_FOLDER, "databaseinfo.json")), "r", encoding="utf-8") as f:
     DATA_BASE_INFO = json.loads(f.read())
-
-CORRECT_DATA_FOLDER = str(Path(MOCK_DATA_FOLDER, "correct_print"))
 
 ES_COUNT_DATA = {
     "count": 100,
@@ -203,19 +204,21 @@ class TestMixin:
     def mock_es_scan(self, **kwargs):
         """mock_es_scan"""
         self._to_update_kw_and_make_mock(
-            "elasticsearch.helpers.scan", self._es_scan_result, **kwargs
+            "elasticsearch.helpers.scan", effect=self._es_scan_result, **kwargs
         )
 
     def mock_es_search(self, **kwargs):
         """mock_es_search"""
         self._to_update_kw_and_make_mock(
-            "elasticsearch.Elasticsearch.search", self._es_search_result, **kwargs
+            "elasticsearch.Elasticsearch.search",
+            effect=self._es_search_result,
+            **kwargs,
         )
 
     def mock_es_count(self, **kwargs):
         """mock_es_count"""
         self._to_update_kw_and_make_mock(
-            "elasticsearch.Elasticsearch.count", self._es_count_result, **kwargs
+            "elasticsearch.Elasticsearch.count", effect=self._es_count_result, **kwargs
         )
 
     def mock_es_exists(self, **kwargs):
@@ -223,7 +226,7 @@ class TestMixin:
 
         self._to_update_kw_and_make_mock(
             "elasticsearch.client.indices.IndicesClient.exists",
-            self._es_exists_result,
+            effect=self._es_exists_result,
             **kwargs,
         )
 
@@ -231,21 +234,21 @@ class TestMixin:
         """mock elasticsearch delete"""
         self._to_update_kw_and_make_mock(
             "elasticsearch.client.indices.IndicesClient.delete",
-            self._es_delete_result,
+            effect=self._es_delete_result,
             **kwargs,
         )
 
     def mock_es_insert(self, **kwargs):
         """mock_es_insert"""
         self._to_update_kw_and_make_mock(
-            "elasticsearch.Elasticsearch.index", self._es_index_result, **kwargs
+            "elasticsearch.Elasticsearch.index", effect=self._es_index_result, **kwargs
         )
 
     def mock_es_create(self, **kwargs):
         """mock_es_create"""
         self._to_update_kw_and_make_mock(
             "elasticsearch.client.indices.IndicesClient.create",
-            self._es_create_result,
+            effect=self._es_create_result,
             **kwargs,
         )
 
@@ -253,7 +256,7 @@ class TestMixin:
         """mock_requests_get"""
         self._to_update_kw_and_make_mock(
             "packageship.application.common.remote.RemoteService.get",
-            self._requests_get,
+            effect=self._requests_get,
             **kwargs,
         )
 
@@ -261,28 +264,30 @@ class TestMixin:
         """mock_requests_post"""
         self._to_update_kw_and_make_mock(
             "packageship.application.common.remote.RemoteService.post",
-            self._requests_post,
+            effect=self._requests_post,
             **kwargs,
         )
 
     @staticmethod
-    def read_file_content(file_name: str, is_json=True):
-        """
+    def read_file_content(path, folder=MOCK_DATA_FOLDER, is_json=True):
+        """to read file content if is_json is True return dict else return str
 
         Args:
-            file_name: file name in mock_data folder or in correct_print folder
-            is_json: return data is json load to dict or not json
+            path: Absolute path or the path relative of mock_data folder
+            is_json: if is True use json.loads to load data else not load
+
+        Raises:
+            FileNotFoundError:Check Your path Please
+            JSONDecodeError:Check Your Josn flie Please
 
         Returns:
             file's content:if is_json is True return dict else return str
-
         """
+        curr_path = Path(folder, path)
+        if Path(path).is_absolute():
+            curr_path = path
 
-        curr_p = Path(MOCK_DATA_FOLDER, file_name)
-        if not curr_p.exists():
-            curr_p = Path(CORRECT_DATA_FOLDER, file_name)
-
-        with open(str(curr_p), "r", encoding="utf-8") as f_p:
+        with open(str(curr_path), "r", encoding="utf-8") as f_p:
             if is_json:
                 return json.loads(f_p.read())
             else:
@@ -358,8 +363,27 @@ class BaseTest(unittest.TestCase, TestMixin):
             self.addCleanup(tc.stop)
         self._to_clean_mock_patchers.clear()
 
+    def create_file(self, path, write_content=None):
+        """Create a temporary file"""
+        if not os.path.exists(path):
+            try:
+                os.makedirs(os.path.split(path)[0])
+            except FileExistsError:
+                pathlib.Path(path).touch()
+        if write_content:
+            with open(path, "w", encoding="utf-8") as file:
+                file.write(write_content)
+        return path
+
     def tearDown(self) -> None:
         """tearDown"""
+
+        BaseCommand.parser = argparse.ArgumentParser(
+            description="package related dependency management"
+        )
+        BaseCommand.subparsers = BaseCommand.parser.add_subparsers(
+            help="package related dependency management"
+        )
         self._to_add_cleanup()
         return super().tearDown()
 

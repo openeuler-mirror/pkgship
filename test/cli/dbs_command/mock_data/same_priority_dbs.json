@@ -1,0 +1,59 @@
+{
+  "took": 4,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 4,
+      "relation": "eq"
+    },
+    "max_score": 1.0,
+    "hits": [
+      {
+        "_index": "databaseinfo",
+        "_type": "_doc",
+        "_id": "XbsffHgBBmo9lzLh7QTF",
+        "_score": 1.0,
+        "_source": {
+          "database_name": "os-version-1",
+          "priority": 1
+        }
+      },
+      {
+        "_index": "databaseinfo",
+        "_type": "_doc",
+        "_id": "gbshfHgBBmo9lzLhG4K0",
+        "_score": 1.0,
+        "_source": {
+          "database_name": "aa",
+          "priority": 2
+        }
+      },
+      {
+        "_index": "databaseinfo",
+        "_type": "_doc",
+        "_id": "pbwhfHgBBmo9lzLh9gB_",
+        "_score": 1.0,
+        "_source": {
+          "database_name": "test",
+          "priority": 2
+        }
+      },
+      {
+        "_index": "databaseinfo",
+        "_type": "_doc",
+        "_id": "ybwjfHgBBmo9lzLhGn6v",
+        "_score": 1.0,
+        "_source": {
+          "database_name": "bbb",
+          "priority": 2
+        }
+      }
+    ]
+  }
+}
