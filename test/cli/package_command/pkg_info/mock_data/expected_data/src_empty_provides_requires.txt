@@ -5,7 +5,7 @@ License        :LGPLv2+
 Summary        :C library array
 Description    :The package provides the most advanced core technology, the main advantages are
                :scalability, high performance and memory efficiency.
-Build Depend   :coreutils,gawk,gcc,make,sed
+Build Depend   :
 Subpacks       :Judy,Judy-devel,Judy-help
 --------------------------------------------------
 Judy

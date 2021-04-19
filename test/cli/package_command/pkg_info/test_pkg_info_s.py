@@ -96,8 +96,8 @@ HINT           :Use the correct package name and try again"""
             folder=EXPECTED_DATA_FOLDER,
             is_json=False)
         self.command_params = ["Judy", "os-version", "-s"]
-        empty_requires_single_src = self.read_file_content("pkg_info_s.json",
-                                                           folder=MOCK_DATA_FOLDER)[:3]
+        empty_requires_single_src = self.read_file_content("empty_provides_requires.json",
+                                                           folder=MOCK_DATA_FOLDER)
         self.mock_es_search(side_effect=empty_requires_single_src)
         self.assert_result()
 
