@@ -301,7 +301,7 @@ function start_service() {
         echo "[INFO] Start pkgship service success!!!"
         exit 0
       fi
-      sleep 2s
+      sleep 1s
     done
 
     echo "[ERROR] Service failed to start, please check log $(get_config "daemonize")"

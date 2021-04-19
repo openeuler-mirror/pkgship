@@ -67,7 +67,7 @@ class VersionCommand(BaseCommand):
         _url = self.read_host + '/version'
 
         try:
-            response = self.request.get(_url, headers=self.headers)
+            response = self.request.get(_url, headers=self.headers, timeout=2)
         except ConnErr as conn_error:
             self.output_error_formatted("", "CONN_ERROR")
         except RequestException as request_exception:

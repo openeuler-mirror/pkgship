@@ -14,10 +14,13 @@
 from packageship.application.cli.commands.version import VersionCommand
 from test.cli import ClientTest
 
+
 class VersionTest(ClientTest):
 
     def setUp(self) -> None:
         super(VersionTest, self).setUp()
-        self.mock_requests_get(side_effect=self.client.get)
+        self.mock_requests_get()
 
-
+    def _requests_get(self, *args, **kwargs):
+        kwargs.pop('timeout')
+        return self.client.get(*args, **kwargs)
