@@ -79,7 +79,7 @@ class Package:
             all_src_info = query_package.get_src_info(
                 package_list, database, page_num, page_size, command_line)
 
-            if not all_src_info:
+            if not all_src_info["data"]:
                 _msg = "An error occurred when querying source package info."
                 raise PackageInfoGettingError(_msg)
             # parse all source package info
@@ -90,10 +90,6 @@ class Package:
                                            for pkgname, info_values in pkg_info.items())
             all_src_dict = {"total": total_num, "data": parsed_all_src_info}
             return all_src_dict
-        except DatabaseConfigException:
-            raise DatabaseConfigException()
-        except ElasticSearchQueryException:
-            raise ElasticSearchQueryException()
         except (AttributeError, KeyError, TypeError) as e:
             LOGGER.error(e)
             return {}
@@ -130,7 +126,7 @@ class Package:
             all_bin_info = query_package.get_bin_info(
                 package_list, database, page_num, page_size, command_line)
 
-            if not all_bin_info:
+            if not all_bin_info["data"]:
                 _msg = "An error occurred when getting bianry package info."
                 raise PackageInfoGettingError(_msg)
 
@@ -145,10 +141,6 @@ class Package:
                 parsed_all_bin_info.append(single_pkg)
             all_bin_dict = {"total": total_num, "data": parsed_all_bin_info}
             return all_bin_dict
-        except DatabaseConfigException:
-            raise DatabaseConfigException()
-        except ElasticSearchQueryException:
-            raise ElasticSearchQueryException()
         except (AttributeError, KeyError, TypeError) as e:
             LOGGER.error(e)
             return {}
