@@ -1,5 +1,5 @@
 <template>
-    <div class="depend">
+    <div class="depend" v-loading="loading">
         <div class="depend-type">
             <span class="h5-type">Type</span>
             <div class="type-btns">
@@ -47,6 +47,9 @@
                 :inline="true"
                 class="form">
                 <el-form-item label="Search" class="searching">
+                    <el-tooltip class="tool-tips" content="The package name is case-sensitive" placement="bottom" effect="light">
+                        <el-button><img src="@/assets/images/question.svg" alt=""></el-button>
+                    </el-tooltip>
                     <el-input
                         v-model="searchName"
                         class="pc-search"
@@ -108,7 +111,7 @@
                 </span>
             </el-dialog>
         </div>
-        <div class="depend-info" v-loading="loading" v-if="isShowTable">
+        <div class="depend-info" v-if="isShowTable">
             <div class="excel-button">
                 <el-form
                     :inline="true"
@@ -336,7 +339,7 @@ export default {
         initData() {
             this.isAll = false;
             this.loading = true;
-            this.isShowTable = true;
+            this.isShowTable = false;
             this.formData.queryPkgName = this.changePkgQueryName(this.searchName);
             let current = this.currentButton.toLowerCase();
             if(current=== 'install' || current === 'build') {
@@ -408,7 +411,7 @@ export default {
                 this.searchTitle = 'Please enter a source package name';
             }
             this.isShowTable = false;
-            this.loading = true;
+
             this.getDbPriority();
         },
         clickFilter(filter) {
@@ -563,6 +566,7 @@ export default {
                 .then(response => {
                     this.loading = false;
                     if(response.code === '200') {
+                        this.isShowTable = true;
                         this.binaryList = response.resp.binary_list;
                         this.sourceList = response.resp.source_list;
                         this.statistics = response.resp.statistics;
@@ -642,6 +646,7 @@ export default {
             }
             dependGraph (required)
                 .then(response => {
+                    this.isShowTable = true;
                     this.loading = false;
                     if (response.code === '200') {
                         this.Ddata = response.resp;
@@ -684,6 +689,15 @@ export default {
 </script>
 
 <style lang="less">
+.tool-tips {
+    position: absolute;
+    left: -12px;
+    top: 12px;
+}
+.el-scrollbar__wrap {
+    overflow-y: scroll !important;
+    overflow-x: hidden;
+}
 .el-loading-mask {
     z-index: 5;
 }
@@ -864,7 +878,8 @@ li:first-child {
 }
 .pc-search,
 .pc-select {
-    display: block;
+    display: inline-block;
+    margin-left: 20px;
 }
 .icon-search {
     cursor: pointer;

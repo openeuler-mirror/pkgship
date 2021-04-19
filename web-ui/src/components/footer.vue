@@ -2,8 +2,9 @@
     <div class="footer-wrapper">
         <div class="footer-content">
             <div class="footer-left">
-                <img src="@/assets/images/footer-logo.png" class="footer-logo">
-                <div class="footer-mail">{{ footer.mail }}</div>
+                <a href="https://gitee.com/openeuler/pkgship" target="_blank">
+                    <img src="@/assets/images/pkgLogo.svg" class="footer-logo">
+                </a>
             </div>
             <div class="footer-right">
                 <ul class="right-list">
