@@ -371,8 +371,8 @@ class ClientTest(BaseTest):
         Set Environment variable "SETTINGS_FILE_PATH" to project pacjage.ini path
         """
         os.environ["SETTINGS_FILE_PATH"] = str(Path(BASE_PATH, "package.ini"))
-        from packageship.selfpkg import app
-
+        from packageship.application import init_app
+        app = init_app("query")
         super(ClientTest, self).setUp()
         self.client = app.test_client()
         Response.text = Response.data
