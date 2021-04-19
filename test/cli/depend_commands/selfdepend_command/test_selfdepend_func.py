@@ -49,8 +49,7 @@ class TestSelfDepend(DependTestBase):
         Returns:
         """
         self.command_params = ['Judy', '-dbs', 'os-version', '-b']
-        self.excepted_str = self.read_file_content(
-            self._get_expect_data(self._get_expect_data('selfdep_b.txt')), is_json=False)
+        self.excepted_str = self.read_file_content(self._get_expect_data('selfdep_b.txt'), is_json=False)
         self.assert_result()
 
     def test_normal_with_bs(self):
