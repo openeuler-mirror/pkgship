@@ -46,7 +46,7 @@ export default {
 
 <style lang="less" scoped>
 .footer-wrapper {
-    height: 176px;
+    height: 160px;
     background-color: #111;
     @media (max-width: 1000px) {
         height: 280px;
