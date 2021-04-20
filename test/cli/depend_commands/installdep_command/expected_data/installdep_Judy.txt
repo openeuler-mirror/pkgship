@@ -1,0 +1,54 @@
+query ['Judy'] installDepend result display:
+Binary
+===================================================================================================
+  Binary name                     Source name                   Version      Database name
+===================================================================================================
+  Judy                            Judy                          1.0.5        os-version
+  bash                            bash                          5.0          os-version
+  glibc                           glibc                         2.31         os-version
+  glibc-common                    glibc                         2.31         os-version
+  ncurses-libs                    ncurses                       6.2          os-version
+  basesystem                      basesystem                    12           os-version
+  filesystem                      filesystem                    3.14         os-version
+  ncurses-base                    ncurses                       6.2          os-version
+  tzdata                          tzdata                        2020a        os-version
+  libselinux                      libselinux                    3.1          os-version
+  setup                           setup                         2.13.7       os-version
+  openEuler-release               openEuler-release             20.09        os-version
+  libsepol                        libsepol                      3.1          os-version
+  pcre2                           pcre2                         10.35        os-version
+  readline                        readline                      8.0          os-version
+  openEuler-repos                 openEuler-repos               1.0          os-version
+  openEuler-gpg-keys              openEuler-repos               1.0          os-version
+===================================================================================================
+Source
+====================================================================================================
+  Source name                                  Version            Database name
+====================================================================================================
+  Judy                                         1.0.5              os-version
+  bash                                         5.0                os-version
+  glibc                                        2.31               os-version
+  ncurses                                      6.2                os-version
+  basesystem                                   12                 os-version
+  filesystem                                   3.14               os-version
+  tzdata                                       2020a              os-version
+  libselinux                                   3.1                os-version
+  setup                                        2.13.7             os-version
+  openEuler-release                            20.09              os-version
+  libsepol                                     3.1                os-version
+  pcre2                                        10.35              os-version
+  readline                                     8.0                os-version
+  openEuler-repos                              1.0                os-version
+====================================================================================================
+Statistics
+====================================================================================================
+  Database name                          Binary Sum                    Source Sum
+====================================================================================================
+  os-version                             17                            14
+====================================================================================================
+Sum
+====================================================================================================
+  Sum           Binary Sum                                Source Sum
+====================================================================================================
+  Sum           17                                        14
+====================================================================================================
