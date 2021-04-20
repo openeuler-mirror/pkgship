@@ -49,8 +49,6 @@ if __name__ == "__main__":
                        os.path.join(TEST_CASE_PATH, "cli/package_command"),
                     #    os.path.join(TEST_CASE_PATH, "test_module/test_database/"),
                        os.path.join(TEST_CASE_PATH, "test_module/test_database_query/"),
-                       os.path.join(TEST_CASE_PATH, "test_module/test_basedepend/"),
-                       os.path.join(TEST_CASE_PATH, "test_module/test_bedepend/"),
                        os.path.join(TEST_CASE_PATH, "test_module/test_selfbuild/"),
                        os.path.join(TEST_CASE_PATH, "test_module/test_build/"),
                        os.path.join(TEST_CASE_PATH, "test_module/test_graph/")
