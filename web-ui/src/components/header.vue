@@ -8,12 +8,6 @@
                     class="nav-logo"
                     @click="go('/')"
                 />
-                <img
-                    src="@/assets/images/logo-mobile.png"
-                    alt=""
-                    class="nav-logo nav-logo-mobile"
-                    @click="go('/')"
-                />
                 <div
                     :class="{ mask: menuMobileFlag }"
                     @click="menuMobileFlag = false"
@@ -40,6 +34,7 @@ export default {
             if (path) {
                 this.$router.push(path);
                 this.menuMobileFlag = false;
+                location.reload(false);
             }
         },
         showSub(toggleClass) {
@@ -142,7 +137,7 @@ export default {
     background-color: rgba(0, 0, 0, 0.4);
 }
 .nav-fill {
-    height: 110px;
+    height: 60px;
     @media (max-width: 1000px) {
         height: 70px;
     }

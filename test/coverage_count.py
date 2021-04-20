@@ -51,8 +51,7 @@ if __name__ == "__main__":
         os.path.join(TEST_CASE_PATH, "test_module/test_database_query/"),
         os.path.join(TEST_CASE_PATH,
                      "test_module/test_packages/test_single_package_info/"),
-        os.path.join(TEST_CASE_PATH, "test_module/test_selfbuild/"),
-        os.path.join(TEST_CASE_PATH, "test_module/test_install/"),
+        os.path.join(TEST_CASE_PATH, "test_module/test_selfbuild/"),       
         os.path.join(TEST_CASE_PATH, "test_module/test_graph/")
     ]
 

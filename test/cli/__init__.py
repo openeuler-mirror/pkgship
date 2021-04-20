@@ -397,6 +397,7 @@ class ClientTest(BaseTest):
         os.environ["SETTINGS_FILE_PATH"] = str(Path(BASE_PATH, "package.ini"))
         from packageship.application import init_app
         app = init_app("query")
+
         super(ClientTest, self).setUp()
         self.client = app.test_client()
         Response.text = Response.data
