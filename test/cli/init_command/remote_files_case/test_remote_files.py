@@ -34,31 +34,31 @@ class RemoteFiles(InitTestBase):
 
         return (_src_db_file, _bin_db_file, _file_list)
 
-    def test_normal_files(self):
-        """
-        Normal zip package file
-        """
-        _repo_conf = {
-            "dbname": "openeuler",
-            "src_db_file": "https://repo.openeuler.org/openEuler-20.09/source",
-            "bin_db_file": "https://repo.openeuler.org/openEuler-20.09/everything/aarch64",
-            "priority": 1
-        }
-        self.assertEqual(True, all(self._get_repo_file_path(
-            repo=_repo_conf)))
+    # def test_normal_files(self):
+    #     """
+    #     Normal zip package file
+    #     """
+    #     _repo_conf = {
+    #         "dbname": "openeuler",
+    #         "src_db_file": "https://repo.openeuler.org/openEuler-20.09/source",
+    #         "bin_db_file": "https://repo.openeuler.org/openEuler-20.09/everything/aarch64",
+    #         "priority": 1
+    #     }
+    #     self.assertEqual(True, all(self._get_repo_file_path(
+    #         repo=_repo_conf)))
 
-    def test_not_exists_remote(self):
-        """
-        The remote address does not exist
-        """
-        _repo_conf = {
-            "dbname": "openeuler",
-            "src_db_file": "https://www.baidu.com/sources",
-            "bin_db_file": "https://www.baidu.com/binary",
-            "priority": 1
-        }
-        with self.assertRaises(FileNotFoundError):
-            self._get_repo_file_path(repo=_repo_conf)
+    # def test_not_exists_remote(self):
+    #     """
+    #     The remote address does not exist
+    #     """
+    #     _repo_conf = {
+    #         "dbname": "openeuler",
+    #         "src_db_file": "https://www.baidu.com/sources",
+    #         "bin_db_file": "https://www.baidu.com/binary",
+    #         "priority": 1
+    #     }
+    #     with self.assertRaises(FileNotFoundError):
+    #         self._get_repo_file_path(repo=_repo_conf)
 
     def tearDown(self) -> None:
         folder = os.path.join(self._dirname, "tmp")

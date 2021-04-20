@@ -28,11 +28,7 @@ let postJson = params => {
             }
         } else {
             const data = typeof d.data === 'string' ? JSON.parse(d.data) : d.data;
-            if (data.code === '200') {
-                params.success(data);
-            } else {
-                new Vue().$message.error(data.message + '\n' + data.tip);
-            }
+            params.success(data);
         }
     };
 
