@@ -1,0 +1,38 @@
+Binary Name    :Judy
+Source Name    :Judy
+Version        :1.0.5
+Url            :http://sourceforge.net/projects/judy/
+License        :LGPLv2+
+Release        :19.oe1
+Summary        :C library array
+Description    :The package provides the most advanced core technology, the main advantages are
+               :scalability, high performance and memory efficiency.
+Provides
+====================================================================================================
+  Symbol                                          Required by
+====================================================================================================
+  Judy                                            Judy-devel
+  Judy(aarch-64)
+  libJudy.so.1()(64bit)                           mariadb-oqgraph-engine
+====================================================================================================
+Requires
+====================================================================================================
+  Symbol                                                                       Provides by
+====================================================================================================
+  ld-linux-aarch64.so.1()(64bit)                                               glibc
+  ld-linux-aarch64.so.1(GLIBC_2.17)(64bit)                                     glibc
+  rtld(GNU_HASH)                                                               glibc
+  libc.so.6(GLIBC_2.17)(64bit)                                                 glibc
+  /bin/sh                                                                      bash
+====================================================================================================
+File List
+====================================================================================================
+  Symbol   File List
+====================================================================================================
+  dir     /usr/share/licenses/Judy
+  file    /usr/share/licenses/Judy/COPYING
+          /etc/ima/digest_lists.tlv/0-metadata_list-compact_tlv-Judy-1.0.5-19.oe1.aarch64
+          /usr/lib64/libJudy.so.1.0.3
+          /etc/ima/digest_lists/0-metadata_list-compact-Judy-1.0.5-19.oe1.aarch64
+  ghost   /usr/lib64/libJudy.so.1
+====================================================================================================

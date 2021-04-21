@@ -1,0 +1,360 @@
+[
+    {
+        "took": 1,
+        "timed_out": false,
+        "_shards": {
+            "total": 1,
+            "successful": 1,
+            "skipped": 0,
+            "failed": 0
+        },
+        "hits": {
+            "total": {
+                "value": 1,
+                "relation": "eq"
+            },
+            "max_score": 1.0,
+            "hits": [
+                {
+                    "_index": "databaseinfo",
+                    "_type": "_doc",
+                    "_id": "PbcTX3gBBmo9lzLhnhOx",
+                    "_score": 1.0,
+                    "_source": {
+                        "database_name": "os-version",
+                        "priority": 1
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "took": 3,
+        "timed_out": false,
+        "_shards": {
+            "total": 1,
+            "successful": 1,
+            "skipped": 0,
+            "failed": 0
+        },
+        "hits": {
+            "total": {
+                "value": 1,
+                "relation": "eq"
+            },
+            "max_score": 0.0,
+            "hits": [
+                {
+                    "_index": "os-version-source",
+                    "_type": "_doc",
+                    "_id": "J7YTX3gBBmo9lzLhHZXQ",
+                    "_score": 0.0,
+                    "_source": {
+                        "pkgKey": 14,
+                        "pkgId": "7565d7efaa800410896daa212b2c1f5e74598558050b15a992ae1bdb347dbf72",
+                        "name": "Judy",
+                        "arch": "src",
+                        "version": "1.0.5",
+                        "epoch": "0",
+                        "release": "19.oe1",
+                        "summary": "C library array",
+                        "description": "The package provides the most advanced core technology, the main\nadvantages are scalability, high performance and memory efficiency.",
+                        "url": "http://sourceforge.net/projects/judy/",
+                        "time_file": 1601219934,
+                        "time_build": 1601219910,
+                        "rpm_license": "LGPLv2+",
+                        "rpm_vendor": "http://os-version.org",
+                        "rpm_group": "Unspecified",
+                        "rpm_buildhost": "obs-worker-0016",
+                        "rpm_sourcerpm": "",
+                        "rpm_header_start": 5096,
+                        "rpm_header_end": 7056,
+                        "rpm_packager": "http://os-version.org",
+                        "size_package": 1144835,
+                        "size_installed": 1149275,
+                        "size_archive": 1149648,
+                        "location_href": "Packages/Judy-1.0.5-19.oe1.src.rpm",
+                        "location_base": null,
+                        "checksum_type": "sha256",
+                        "requires": [
+                            {
+                                "name": "coreutils",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null,
+                                "release": null,
+                                "pkgKey": 14,
+                                "pre": "FALSE",
+                                "relation": [
+                                    {
+                                        "bin_name": "coreutils",
+                                        "src_name": "coreutils"
+                                    }
+                                ],
+                                "requires_type": "build"
+                            },
+                            {
+                                "name": "gawk",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null,
+                                "release": null,
+                                "pkgKey": 14,
+                                "pre": "FALSE",
+                                "relation": [
+                                    {
+                                        "bin_name": "gawk",
+                                        "src_name": "gawk"
+                                    }
+                                ],
+                                "requires_type": "build"
+                            },
+                            {
+                                "name": "gcc",
+                                "flags": "GE",
+                                "epoch": "0",
+                                "version": "4.1",
+                                "release": null,
+                                "pkgKey": 14,
+                                "pre": "FALSE",
+                                "relation": [
+                                    {
+                                        "bin_name": "gcc",
+                                        "src_name": "gcc"
+                                    }
+                                ],
+                                "requires_type": "build"
+                            },
+                            {
+                                "name": "make",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null,
+                                "release": null,
+                                "pkgKey": 14,
+                                "pre": "FALSE",
+                                "relation": [
+                                    {
+                                        "bin_name": "make",
+                                        "src_name": "make"
+                                    }
+                                ],
+                                "requires_type": "build"
+                            },
+                            {
+                                "name": "sed",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null,
+                                "release": null,
+                                "pkgKey": 14,
+                                "pre": "FALSE",
+                                "relation": [
+                                    {
+                                        "bin_name": "sed",
+                                        "src_name": "sed"
+                                    }
+                                ],
+                                "requires_type": "build"
+                            }
+                        ],
+                        "subpacks": [
+                            {
+                                "name": "Judy",
+                                "version": "1.0.5"
+                            },
+                            {
+                                "name": "Judy-devel",
+                                "version": "1.0.5"
+                            },
+                            {
+                                "name": "Judy-help",
+                                "version": "1.0.5"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "took": 2,
+        "timed_out": false,
+        "_shards": {
+            "total": 1,
+            "successful": 1,
+            "skipped": 0,
+            "failed": 0
+        },
+        "hits": {
+            "total": {
+                "value": 1,
+                "relation": "eq"
+            },
+            "max_score": 0.0,
+            "hits": []
+        }
+    },
+    {
+        "took": 11,
+        "timed_out": false,
+        "_shards": {
+            "total": 1,
+            "successful": 1,
+            "skipped": 0,
+            "failed": 0
+        },
+        "hits": {
+            "total": {
+                "value": 5,
+                "relation": "eq"
+            },
+            "max_score": 0.0,
+            "hits": []
+        }
+    },
+    {
+        "took": 2,
+        "timed_out": false,
+        "_shards": {
+            "total": 1,
+            "successful": 1,
+            "skipped": 0,
+            "failed": 0
+        },
+        "hits": {
+            "total": {
+                "value": 1,
+                "relation": "eq"
+            },
+            "max_score": 0.0,
+            "hits": []
+        }
+    },
+    {
+        "took": 2,
+        "timed_out": false,
+        "_shards": {
+            "total": 1,
+            "successful": 1,
+            "skipped": 0,
+            "failed": 0
+        },
+        "hits": {
+            "total": {
+                "value": 1,
+                "relation": "eq"
+            },
+            "max_score": 0.0,
+            "hits": []
+        }
+    },
+    {
+        "took": 6,
+        "timed_out": false,
+        "_shards": {
+            "total": 1,
+            "successful": 1,
+            "skipped": 0,
+            "failed": 0
+        },
+        "hits": {
+            "total": {
+                "value": 3,
+                "relation": "eq"
+            },
+            "max_score": 0.0,
+            "hits": []
+        }
+    },
+    {
+        "took": 2,
+        "timed_out": false,
+        "_shards": {
+            "total": 1,
+            "successful": 1,
+            "skipped": 0,
+            "failed": 0
+        },
+        "hits": {
+            "total": {
+                "value": 1,
+                "relation": "eq"
+            },
+            "max_score": 0.0,
+            "hits": []
+        }
+    },
+    {
+        "took": 2,
+        "timed_out": false,
+        "_shards": {
+            "total": 1,
+            "successful": 1,
+            "skipped": 0,
+            "failed": 0
+        },
+        "hits": {
+            "total": {
+                "value": 1,
+                "relation": "eq"
+            },
+            "max_score": 0.0,
+            "hits": []
+        }
+    },
+    {
+        "took": 2,
+        "timed_out": false,
+        "_shards": {
+            "total": 1,
+            "successful": 1,
+            "skipped": 0,
+            "failed": 0
+        },
+        "hits": {
+            "total": {
+                "value": 1,
+                "relation": "eq"
+            },
+            "max_score": 0.0,
+            "hits": []
+        }
+    },
+    {
+        "took": 2,
+        "timed_out": false,
+        "_shards": {
+            "total": 1,
+            "successful": 1,
+            "skipped": 0,
+            "failed": 0
+        },
+        "hits": {
+            "total": {
+                "value": 1,
+                "relation": "eq"
+            },
+            "max_score": 0.0,
+            "hits": []
+        }
+    },
+    {
+        "took": 3,
+        "timed_out": false,
+        "_shards": {
+            "total": 1,
+            "successful": 1,
+            "skipped": 0,
+            "failed": 0
+        },
+        "hits": {
+            "total": {
+                "value": 1,
+                "relation": "eq"
+            },
+            "max_score": 0.0,
+            "hits": []
+        }
+    }
+]
