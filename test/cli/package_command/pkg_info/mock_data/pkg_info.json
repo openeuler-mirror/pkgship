@@ -1,0 +1,2313 @@
+[
+    {
+        "took": 1,
+        "timed_out": false,
+        "_shards": {
+            "total": 1,
+            "successful": 1,
+            "skipped": 0,
+            "failed": 0
+        },
+        "hits": {
+            "total": {
+                "value": 1,
+                "relation": "eq"
+            },
+            "max_score": 1.0,
+            "hits": [
+                {
+                    "_index": "databaseinfo",
+                    "_type": "_doc",
+                    "_id": "PbcTX3gBBmo9lzLhnhOx",
+                    "_score": 1.0,
+                    "_source": {
+                        "database_name": "os-version",
+                        "priority": 1
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "took": 2,
+        "timed_out": false,
+        "_shards": {
+            "total": 1,
+            "successful": 1,
+            "skipped": 0,
+            "failed": 0
+        },
+        "hits": {
+            "total": {
+                "value": 1,
+                "relation": "eq"
+            },
+            "max_score": 0.0,
+            "hits": [
+                {
+                    "_index": "os-version-binary",
+                    "_type": "_doc",
+                    "_id": "TbYTX3gBBmo9lzLhS6Ls",
+                    "_score": 0.0,
+                    "_source": {
+                        "pkgKey": 35,
+                        "pkgId": "df487e3623660d477f556899fce77ac650322c4362d82e047c6efc013e07ae5b",
+                        "name": "Judy",
+                        "arch": "aarch64",
+                        "version": "1.0.5",
+                        "epoch": "0",
+                        "release": "19.oe1",
+                        "summary": "C library array",
+                        "description": "The package provides the most advanced core technology, the main\nadvantages are scalability, high performance and memory efficiency.",
+                        "url": "http://sourceforge.net/projects/judy/",
+                        "time_file": 1601219934,
+                        "time_build": 1601219910,
+                        "rpm_license": "LGPLv2+",
+                        "rpm_vendor": "http://os-version.org",
+                        "rpm_group": "Unspecified",
+                        "rpm_buildhost": "obs-worker-0016",
+                        "rpm_sourcerpm": "Judy-1.0.5-19.oe1.src.rpm",
+                        "rpm_header_start": 5096,
+                        "rpm_header_end": 8772,
+                        "rpm_packager": "http://os-version.org",
+                        "size_package": 114276,
+                        "size_installed": 356971,
+                        "size_archive": 358048,
+                        "location_href": "Packages/Judy-1.0.5-19.oe1.aarch64.rpm",
+                        "location_base": null,
+                        "checksum_type": "sha256",
+                        "src_name": "Judy",
+                        "provides": [
+                            {
+                                "name": "Judy",
+                                "flags": "EQ",
+                                "epoch": "0",
+                                "version": "1.0.5",
+                                "release": "19.oe1",
+                                "pkgKey": 35
+                            },
+                            {
+                                "name": "Judy(aarch-64)",
+                                "flags": "EQ",
+                                "epoch": "0",
+                                "version": "1.0.5",
+                                "release": "19.oe1",
+                                "pkgKey": 35
+                            },
+                            {
+                                "name": "libJudy.so.1()(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null,
+                                "release": null,
+                                "pkgKey": 35
+                            }
+                        ],
+                        "files": [
+                            {
+                                "name": "/etc/ima/digest_lists/0-metadata_list-compact-Judy-1.0.5-19.oe1.aarch64",
+                                "type": "file",
+                                "pkgKey": 35
+                            },
+                            {
+                                "name": "/etc/ima/digest_lists.tlv/0-metadata_list-compact_tlv-Judy-1.0.5-19.oe1.aarch64",
+                                "type": "file",
+                                "pkgKey": 35
+                            }
+                        ],
+                        "filelists": [
+                            {
+                                "pkgKey": 35,
+                                "dirname": "/usr/share/licenses",
+                                "filenames": "Judy",
+                                "filetypes": "d"
+                            },
+                            {
+                                "pkgKey": 35,
+                                "dirname": "/usr/share/licenses/Judy",
+                                "filenames": "COPYING",
+                                "filetypes": "f"
+                            },
+                            {
+                                "pkgKey": 35,
+                                "dirname": "/etc/ima/digest_lists.tlv",
+                                "filenames": "0-metadata_list-compact_tlv-Judy-1.0.5-19.oe1.aarch64",
+                                "filetypes": "f"
+                            },
+                            {
+                                "pkgKey": 35,
+                                "dirname": "/usr/lib64",
+                                "filenames": "libJudy.so.1/libJudy.so.1.0.3",
+                                "filetypes": "gf"
+                            },
+                            {
+                                "pkgKey": 35,
+                                "dirname": "/etc/ima/digest_lists",
+                                "filenames": "0-metadata_list-compact-Judy-1.0.5-19.oe1.aarch64",
+                                "filetypes": "f"
+                            }
+                        ],
+                        "requires": [
+                            {
+                                "name": "coreutils",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null,
+                                "release": null,
+                                "pkgKey": 14,
+                                "pre": "FALSE",
+                                "relation": [
+                                    {
+                                        "bin_name": "coreutils",
+                                        "src_name": "coreutils"
+                                    }
+                                ],
+                                "requires_type": "build"
+                            },
+                            {
+                                "name": "gawk",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null,
+                                "release": null,
+                                "pkgKey": 14,
+                                "pre": "FALSE",
+                                "relation": [
+                                    {
+                                        "bin_name": "gawk",
+                                        "src_name": "gawk"
+                                    }
+                                ],
+                                "requires_type": "build"
+                            },
+                            {
+                                "name": "gcc",
+                                "flags": "GE",
+                                "epoch": "0",
+                                "version": "4.1",
+                                "release": null,
+                                "pkgKey": 14,
+                                "pre": "FALSE",
+                                "relation": [
+                                    {
+                                        "bin_name": "gcc",
+                                        "src_name": "gcc"
+                                    }
+                                ],
+                                "requires_type": "build"
+                            },
+                            {
+                                "name": "make",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null,
+                                "release": null,
+                                "pkgKey": 14,
+                                "pre": "FALSE",
+                                "relation": [
+                                    {
+                                        "bin_name": "make",
+                                        "src_name": "make"
+                                    }
+                                ],
+                                "requires_type": "build"
+                            },
+                            {
+                                "name": "sed",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null,
+                                "release": null,
+                                "pkgKey": 14,
+                                "pre": "FALSE",
+                                "relation": [
+                                    {
+                                        "bin_name": "sed",
+                                        "src_name": "sed"
+                                    }
+                                ],
+                                "requires_type": "build"
+                            },
+                            {
+                                "name": "/bin/sh",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null,
+                                "release": null,
+                                "pkgKey": 35,
+                                "pre": "TRUE",
+                                "relation": [
+                                    {
+                                        "bin_name": "bash",
+                                        "src_name": "bash"
+                                    },
+                                    {
+                                        "bin_name": "coreutils",
+                                        "src_name": "coreutils"
+                                    }
+                                ],
+                                "requires_type": "install"
+                            },
+                            {
+                                "name": "/bin/sh",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null,
+                                "release": null,
+                                "pkgKey": 35,
+                                "pre": "FALSE",
+                                "relation": [
+                                    {
+                                        "bin_name": "bash",
+                                        "src_name": "bash"
+                                    },
+                                    {
+                                        "bin_name": "coreutils",
+                                        "src_name": "coreutils"
+                                    }
+                                ],
+                                "requires_type": "install"
+                            },
+                            {
+                                "name": "ld-linux-aarch64.so.1()(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null,
+                                "release": null,
+                                "pkgKey": 35,
+                                "pre": "FALSE",
+                                "relation": [
+                                    {
+                                        "bin_name": "glibc",
+                                        "src_name": "glibc"
+                                    }
+                                ],
+                                "requires_type": "install"
+                            },
+                            {
+                                "name": "ld-linux-aarch64.so.1(GLIBC_2.17)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null,
+                                "release": null,
+                                "pkgKey": 35,
+                                "pre": "FALSE",
+                                "relation": [
+                                    {
+                                        "bin_name": "glibc",
+                                        "src_name": "glibc"
+                                    }
+                                ],
+                                "requires_type": "install"
+                            },
+                            {
+                                "name": "rtld(GNU_HASH)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null,
+                                "release": null,
+                                "pkgKey": 35,
+                                "pre": "FALSE",
+                                "relation": [
+                                    {
+                                        "bin_name": "glibc",
+                                        "src_name": "glibc"
+                                    }
+                                ],
+                                "requires_type": "install"
+                            },
+                            {
+                                "name": "libc.so.6(GLIBC_2.17)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null,
+                                "release": null,
+                                "pkgKey": 35,
+                                "pre": "FALSE",
+                                "relation": [
+                                    {
+                                        "bin_name": "glibc",
+                                        "src_name": "glibc"
+                                    }
+                                ],
+                                "requires_type": "install"
+                            }
+                        ],
+                        "src_version": "1.0.5"
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "took": 1,
+        "timed_out": false,
+        "_shards": {
+            "total": 1,
+            "successful": 1,
+            "skipped": 0,
+            "failed": 0
+        },
+        "hits": {
+            "total": {
+                "value": 1,
+                "relation": "eq"
+            },
+            "max_score": 0.0,
+            "hits": [
+                {
+                    "_index": "os-version-bedepend",
+                    "_type": "_doc",
+                    "_id": "1rYTX3gBBmo9lzLhg9pG",
+                    "_score": 0.0,
+                    "_source": {
+                        "binary_name": "Judy",
+                        "bin_version": "1.0.5",
+                        "src_name": "Judy",
+                        "src_version": "1.0.5",
+                        "provides": [
+                            {
+                                "component": "Judy",
+                                "build_require": [],
+                                "install_require": [
+                                    {
+                                        "req_bin_name": "Judy-devel",
+                                        "req_bin_version": "1.0.5",
+                                        "req_src_name": "Judy",
+                                        "req_src_version": "1.0.5"
+                                    }
+                                ]
+                            },
+                            {
+                                "component": "Judy(aarch-64)",
+                                "build_require": [],
+                                "install_require": []
+                            },
+                            {
+                                "component": "libJudy.so.1()(64bit)",
+                                "build_require": [],
+                                "install_require": [
+                                    {
+                                        "req_bin_name": "mariadb-oqgraph-engine",
+                                        "req_bin_version": "10.3.9",
+                                        "req_src_name": "mariadb",
+                                        "req_src_version": "10.3.9"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "took": 2,
+        "timed_out": false,
+        "_shards": {
+            "total": 1,
+            "successful": 1,
+            "skipped": 0,
+            "failed": 0
+        },
+        "hits": {
+            "total": {
+                "value": 1,
+                "relation": "eq"
+            },
+            "max_score": 0.0,
+            "hits": [
+                {
+                    "_index": "os-version-binary",
+                    "_type": "_doc",
+                    "_id": "TbYTX3gBBmo9lzLhS6Ls",
+                    "_score": 0.0,
+                    "_source": {
+                        "src_version": "1.0.5",
+                        "name": "Judy",
+                        "src_name": "Judy",
+                        "version": "1.0.5",
+                        "requires": [
+                            {
+                                "pkgKey": 14,
+                                "pre": "FALSE",
+                                "requires_type": "build",
+                                "release": null,
+                                "name": "coreutils",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null,
+                                "relation": [
+                                    {
+                                        "bin_name": "coreutils",
+                                        "src_name": "coreutils"
+                                    }
+                                ]
+                            },
+                            {
+                                "pkgKey": 14,
+                                "pre": "FALSE",
+                                "requires_type": "build",
+                                "release": null,
+                                "name": "gawk",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null,
+                                "relation": [
+                                    {
+                                        "bin_name": "gawk",
+                                        "src_name": "gawk"
+                                    }
+                                ]
+                            },
+                            {
+                                "pkgKey": 14,
+                                "pre": "FALSE",
+                                "requires_type": "build",
+                                "release": null,
+                                "name": "gcc",
+                                "flags": "GE",
+                                "epoch": "0",
+                                "version": "4.1",
+                                "relation": [
+                                    {
+                                        "bin_name": "gcc",
+                                        "src_name": "gcc"
+                                    }
+                                ]
+                            },
+                            {
+                                "pkgKey": 14,
+                                "pre": "FALSE",
+                                "requires_type": "build",
+                                "release": null,
+                                "name": "make",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null,
+                                "relation": [
+                                    {
+                                        "bin_name": "make",
+                                        "src_name": "make"
+                                    }
+                                ]
+                            },
+                            {
+                                "pkgKey": 14,
+                                "pre": "FALSE",
+                                "requires_type": "build",
+                                "release": null,
+                                "name": "sed",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null,
+                                "relation": [
+                                    {
+                                        "bin_name": "sed",
+                                        "src_name": "sed"
+                                    }
+                                ]
+                            },
+                            {
+                                "pkgKey": 35,
+                                "pre": "TRUE",
+                                "requires_type": "install",
+                                "release": null,
+                                "name": "/bin/sh",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null,
+                                "relation": [
+                                    {
+                                        "bin_name": "bash",
+                                        "src_name": "bash"
+                                    },
+                                    {
+                                        "bin_name": "coreutils",
+                                        "src_name": "coreutils"
+                                    }
+                                ]
+                            },
+                            {
+                                "pkgKey": 35,
+                                "pre": "FALSE",
+                                "requires_type": "install",
+                                "release": null,
+                                "name": "/bin/sh",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null,
+                                "relation": [
+                                    {
+                                        "bin_name": "bash",
+                                        "src_name": "bash"
+                                    },
+                                    {
+                                        "bin_name": "coreutils",
+                                        "src_name": "coreutils"
+                                    }
+                                ]
+                            },
+                            {
+                                "pkgKey": 35,
+                                "pre": "FALSE",
+                                "requires_type": "install",
+                                "release": null,
+                                "name": "ld-linux-aarch64.so.1()(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null,
+                                "relation": [
+                                    {
+                                        "bin_name": "glibc",
+                                        "src_name": "glibc"
+                                    }
+                                ]
+                            },
+                            {
+                                "pkgKey": 35,
+                                "pre": "FALSE",
+                                "requires_type": "install",
+                                "release": null,
+                                "name": "ld-linux-aarch64.so.1(GLIBC_2.17)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null,
+                                "relation": [
+                                    {
+                                        "bin_name": "glibc",
+                                        "src_name": "glibc"
+                                    }
+                                ]
+                            },
+                            {
+                                "pkgKey": 35,
+                                "pre": "FALSE",
+                                "requires_type": "install",
+                                "release": null,
+                                "name": "rtld(GNU_HASH)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null,
+                                "relation": [
+                                    {
+                                        "bin_name": "glibc",
+                                        "src_name": "glibc"
+                                    }
+                                ]
+                            },
+                            {
+                                "pkgKey": 35,
+                                "pre": "FALSE",
+                                "requires_type": "install",
+                                "release": null,
+                                "name": "libc.so.6(GLIBC_2.17)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null,
+                                "relation": [
+                                    {
+                                        "bin_name": "glibc",
+                                        "src_name": "glibc"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "took": 7,
+        "timed_out": false,
+        "_shards": {
+            "total": 1,
+            "successful": 1,
+            "skipped": 0,
+            "failed": 0
+        },
+        "hits": {
+            "total": {
+                "value": 3,
+                "relation": "eq"
+            },
+            "max_score": 0.0,
+            "hits": [
+                {
+                    "_index": "os-version-binary",
+                    "_type": "_doc",
+                    "_id": "ILYTX3gBBmo9lzLhTqR8",
+                    "_score": 0.0,
+                    "_source": {
+                        "src_version": "5.0",
+                        "provides": [
+                            {
+                                "pkgKey": 502,
+                                "release": null,
+                                "name": "/bin/bash",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 502,
+                                "release": null,
+                                "name": "/bin/sh",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 502,
+                                "release": "14.oe1",
+                                "name": "bash",
+                                "flags": "EQ",
+                                "epoch": "0",
+                                "version": "5.0"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "release": "14.oe1",
+                                "name": "bash(aarch-64)",
+                                "flags": "EQ",
+                                "epoch": "0",
+                                "version": "5.0"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "release": "14.oe1",
+                                "name": "config(bash)",
+                                "flags": "EQ",
+                                "epoch": "0",
+                                "version": "5.0"
+                            }
+                        ],
+                        "name": "bash",
+                        "files": [
+                            {
+                                "pkgKey": 502,
+                                "name": "/etc/skel/.",
+                                "type": "dir"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/etc/skel/..",
+                                "type": "dir"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/etc/skel/../skel",
+                                "type": "dir"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/etc/skel/../skel/.bash_logout",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/etc/skel/../skel/.bash_profile",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/etc/skel/../skel/.bashrc",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/etc/skel/./.bash_logout",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/etc/skel/./.bash_profile",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/etc/skel/./.bashrc",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/etc/skel/.bash_logout",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/etc/skel/.bash_profile",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/etc/skel/.bashrc",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/usr/bin/alias",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/usr/bin/bash",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/usr/bin/bashbug",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/usr/bin/bg",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/usr/bin/cd",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/usr/bin/command",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/usr/bin/fc",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/usr/bin/fg",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/usr/bin/getopts",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/usr/bin/hash",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/usr/bin/jobs",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/usr/bin/read",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/usr/bin/sh",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/usr/bin/type",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/usr/bin/ulimit",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/usr/bin/umask",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/usr/bin/unalias",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/usr/bin/wait",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/etc/ima/digest_lists/0-metadata_list-compact-bash-5.0-14.oe1.aarch64",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 502,
+                                "name": "/etc/ima/digest_lists.tlv/0-metadata_list-compact_tlv-bash-5.0-14.oe1.aarch64",
+                                "type": "file"
+                            }
+                        ],
+                        "src_name": "bash",
+                        "version": "5.0"
+                    }
+                },
+                {
+                    "_index": "os-version-binary",
+                    "_type": "_doc",
+                    "_id": "nLYTX3gBBmo9lzLhTqV9",
+                    "_score": 0.0,
+                    "_source": {
+                        "src_version": "8.32",
+                        "provides": [
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/basename",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/cat",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/chgrp",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/chmod",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/chown",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/cp",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/cut",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/date",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/dd",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/df",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/echo",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/env",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/false",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/ln",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/ls",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/mkdir",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/mknod",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/mktemp",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/mv",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/nice",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/pwd",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/readlink",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/rm",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/rmdir",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/sh",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/sleep",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/sort",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/stty",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/sync",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/touch",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/true",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "/bin/uname",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "bundled(gnulib)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": "1.oe1",
+                                "name": "coreutils",
+                                "flags": "EQ",
+                                "epoch": "0",
+                                "version": "8.32"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": "1.oe1",
+                                "name": "coreutils(aarch-64)",
+                                "flags": "EQ",
+                                "epoch": "0",
+                                "version": "8.32"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": "1.oe1",
+                                "name": "coreutils-common",
+                                "flags": "EQ",
+                                "epoch": "0",
+                                "version": "8.32"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": "1.oe1",
+                                "name": "coreutils-full",
+                                "flags": "EQ",
+                                "epoch": "0",
+                                "version": "8.32"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": "1.oe1",
+                                "name": "fileutils",
+                                "flags": "EQ",
+                                "epoch": "0",
+                                "version": "8.32"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": null,
+                                "name": "libstdbuf.so()(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": "1.oe1",
+                                "name": "mktemp",
+                                "flags": "EQ",
+                                "epoch": "4",
+                                "version": "8.32"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": "1.oe1",
+                                "name": "sh-utils",
+                                "flags": "EQ",
+                                "epoch": "0",
+                                "version": "8.32"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": "1.oe1",
+                                "name": "stat",
+                                "flags": "EQ",
+                                "epoch": "0",
+                                "version": "8.32"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "release": "1.oe1",
+                                "name": "textutils",
+                                "flags": "EQ",
+                                "epoch": "0",
+                                "version": "8.32"
+                            }
+                        ],
+                        "name": "coreutils",
+                        "files": [
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/[",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/arch",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/b2sum",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/base32",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/base64",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/basename",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/basenc",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/cat",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/chcon",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/chgrp",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/chmod",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/chown",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/cksum",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/comm",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/cp",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/csplit",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/cut",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/date",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/dd",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/df",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/dir",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/dircolors",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/dirname",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/du",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/echo",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/env",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/expand",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/expr",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/factor",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/false",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/fmt",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/fold",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/groups",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/head",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/hostid",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/id",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/install",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/join",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/link",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/ln",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/logname",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/ls",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/md5sum",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/mkdir",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/mkfifo",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/mknod",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/mktemp",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/mv",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/nice",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/nl",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/nohup",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/nproc",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/numfmt",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/od",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/paste",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/pathchk",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/pinky",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/pr",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/printenv",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/printf",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/ptx",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/pwd",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/readlink",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/realpath",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/rm",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/rmdir",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/runcon",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/seq",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/sha1sum",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/sha224sum",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/sha256sum",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/sha384sum",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/sha512sum",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/shred",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/shuf",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/sleep",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/sort",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/split",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/stat",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/stdbuf",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/stty",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/sum",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/sync",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/tac",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/tail",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/tee",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/test",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/timeout",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/touch",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/tr",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/true",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/truncate",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/tsort",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/tty",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/uname",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/unexpand",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/uniq",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/unlink",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/users",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/vdir",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/wc",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/who",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/whoami",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/bin/yes",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/usr/sbin/chroot",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/etc/ima/digest_lists/0-metadata_list-compact-coreutils-8.32-1.oe1.aarch64",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 882,
+                                "name": "/etc/ima/digest_lists.tlv/0-metadata_list-compact_tlv-coreutils-8.32-1.oe1.aarch64",
+                                "type": "file"
+                            }
+                        ],
+                        "src_name": "coreutils",
+                        "version": "8.32"
+                    }
+                },
+                {
+                    "_index": "os-version-binary",
+                    "_type": "_doc",
+                    "_id": "4bYTX3gBBmo9lzLhVagL",
+                    "_score": 0.0,
+                    "_source": {
+                        "src_version": "2.31",
+                        "provides": [
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "bundled(gnulib)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": "5.oe1",
+                                "name": "config(glibc)",
+                                "flags": "EQ",
+                                "epoch": "0",
+                                "version": "2.31"
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": "5.oe1",
+                                "name": "glibc",
+                                "flags": "EQ",
+                                "epoch": "0",
+                                "version": "2.31"
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": "5.oe1",
+                                "name": "glibc(aarch-64)",
+                                "flags": "EQ",
+                                "epoch": "0",
+                                "version": "2.31"
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "ld-linux-aarch64.so.1()(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "ld-linux-aarch64.so.1(GLIBC_2.17)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "ldconfig",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libBrokenLocale.so.1()(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libBrokenLocale.so.1(GLIBC_2.17)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libCNS.so()(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libGB.so()(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libISOIR165.so()(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libJIS.so()(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libJISX0213.so()(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libKSC.so()(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libSegFault.so()(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libanl.so.1()(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libanl.so.1(GLIBC_2.17)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libc.so.6()(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libc.so.6(GLIBC_2.17)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libc.so.6(GLIBC_2.18)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libc.so.6(GLIBC_2.22)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libc.so.6(GLIBC_2.23)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libc.so.6(GLIBC_2.24)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libc.so.6(GLIBC_2.25)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libc.so.6(GLIBC_2.26)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libc.so.6(GLIBC_2.27)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libc.so.6(GLIBC_2.28)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libc.so.6(GLIBC_2.29)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libc.so.6(GLIBC_2.30)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libdl.so.2()(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libdl.so.2(GLIBC_2.17)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libm.so.6()(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libm.so.6(GLIBC_2.17)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libm.so.6(GLIBC_2.18)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libm.so.6(GLIBC_2.23)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libm.so.6(GLIBC_2.24)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libm.so.6(GLIBC_2.25)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libm.so.6(GLIBC_2.27)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libm.so.6(GLIBC_2.28)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libm.so.6(GLIBC_2.29)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libm.so.6(GLIBC_2.31)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libmemusage.so()(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libnss_compat.so.2()(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libnss_dns.so.2()(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libnss_files.so.2()(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libpcprofile.so()(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libpthread.so.0()(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libpthread.so.0(GLIBC_2.17)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libpthread.so.0(GLIBC_2.18)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libpthread.so.0(GLIBC_2.28)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libpthread.so.0(GLIBC_2.30)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libpthread.so.0(GLIBC_2.31)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libresolv.so.2()(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libresolv.so.2(GLIBC_2.17)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "librt.so.1()(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "librt.so.1(GLIBC_2.17)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libthread_db.so.1()(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libthread_db.so.1(GLIBC_2.17)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libutil.so.1()(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "libutil.so.1(GLIBC_2.17)(64bit)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "release": null,
+                                "name": "rtld(GNU_HASH)",
+                                "flags": null,
+                                "epoch": null,
+                                "version": null
+                            }
+                        ],
+                        "name": "glibc",
+                        "files": [
+                            {
+                                "pkgKey": 1719,
+                                "name": "/etc/gai.conf",
+                                "type": "ghost"
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "name": "/etc/ld.so.cache",
+                                "type": "ghost"
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "name": "/etc/ld.so.conf",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "name": "/etc/ld.so.conf.d",
+                                "type": "dir"
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "name": "/etc/nsswitch.conf",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "name": "/etc/rpc",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "name": "/sbin/ldconfig",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "name": "/usr/sbin/iconvconfig",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "name": "/etc/ima/digest_lists/0-metadata_list-compact-glibc-2.31-5.oe1.aarch64",
+                                "type": "file"
+                            },
+                            {
+                                "pkgKey": 1719,
+                                "name": "/etc/ima/digest_lists.tlv/0-metadata_list-compact_tlv-glibc-2.31-5.oe1.aarch64",
+                                "type": "file"
+                            }
+                        ],
+                        "src_name": "glibc",
+                        "version": "2.31"
+                    }
+                }
+            ]
+        }
+    }
+]

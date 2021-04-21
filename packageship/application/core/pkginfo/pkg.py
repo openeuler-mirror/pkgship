@@ -316,10 +316,6 @@ class SourcePackage(SinglePackage):
             DatabaseConfigException: dataBase config error
         """
         try:
-            default_db_list = db.get_db_priority()
-            if not database_list:
-                database_list = default_db_list
-
             src_package_info_res = {}
             query_package = QueryPackage()
             for database in database_list:
@@ -347,10 +343,6 @@ class SourcePackage(SinglePackage):
                     })
                 src_package_info_res[database] = database_src_info_list
             return src_package_info_res
-        except DatabaseConfigException:
-            raise DatabaseConfigException()
-        except ElasticSearchQueryException:
-            raise ElasticSearchQueryException()
         except (AttributeError, IndexError, TypeError) as e:
             LOGGER.error(e)
             return {}
@@ -433,10 +425,6 @@ class BinaryPackage(SinglePackage):
 
         """
         try:
-            default_db_list = db.get_db_priority()
-            if not database_list:
-                database_list = default_db_list
-
             query_package = QueryPackage()
             bin_package_info_res = {}
             for database in database_list:
@@ -470,10 +458,6 @@ class BinaryPackage(SinglePackage):
                     })
                 bin_package_info_res[database] = database_bin_info_list
             return bin_package_info_res
-        except DatabaseConfigException:
-            raise DatabaseConfigException()
-        except ElasticSearchQueryException:
-            raise ElasticSearchQueryException()
         except (AttributeError, IndexError, TypeError) as e:
             LOGGER.error(e)
             return {}
