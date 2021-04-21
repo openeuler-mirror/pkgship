@@ -1,0 +1,9 @@
+Source Name    :Judy
+Version        :1.0.5
+Url            :http://sourceforge.net/projects/judy/
+License        :LGPLv2+
+Summary        :C library array
+Description    :The package provides the most advanced core technology, the main advantages are
+               :scalability, high performance and memory efficiency.
+Build Depend   :coreutils,gawk,gcc,make,sed
+Subpacks       :
