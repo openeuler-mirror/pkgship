@@ -35,8 +35,8 @@ class TestInstallDownload(DownloadDeppendTestBase):
         result, error = self.validate_data(parameter)
         depend = DispatchDepend.execute(**result)
         folder_path = depend.download_depend_files()
-        scv_depend = "installdep_Judy_level_0"
-        csv_folder_path = self.get_csv_file_path(scv_depend)
+        csv_depend = "installdep_Judy_level_0"
+        csv_folder_path = self.get_csv_file_path(csv_depend)
         self.comparison_data(csv_folder_path, folder_path)
 
 
@@ -55,8 +55,8 @@ class TestInstallDownload(DownloadDeppendTestBase):
         result, error = self.validate_data(parameter)
         depend = DispatchDepend.execute(**result)
         folder_path = depend.download_depend_files()
-        scv_depend = "installdep_Judy_level_2"
-        csv_folder_path = self.get_csv_file_path(scv_depend)
+        csv_depend = "installdep_Judy_level_2"
+        csv_folder_path = self.get_csv_file_path(csv_depend)
         self.comparison_data(csv_folder_path, folder_path)
 
 
@@ -75,8 +75,8 @@ class TestInstallDownload(DownloadDeppendTestBase):
         result, error = self.validate_data(parameter)
         depend = DispatchDepend.execute(**result)
         folder_path = depend.download_depend_files()
-        scv_depend = "installdep_Judy_db_level_0"
-        csv_folder_path = self.get_csv_file_path(scv_depend)
+        csv_depend = "installdep_Judy_db_level_0"
+        csv_folder_path = self.get_csv_file_path(csv_depend)
         self.comparison_data(csv_folder_path, folder_path)
 
 
@@ -96,7 +96,7 @@ class TestInstallDownload(DownloadDeppendTestBase):
         result, error = self.validate_data(parameter)
         depend = DispatchDepend.execute(**result)
         folder_path = depend.download_depend_files()
-        scv_depend = "installdep_Judy_db_level_2"
-        csv_folder_path = self.get_csv_file_path(scv_depend)
+        csv_depend = "installdep_Judy_db_level_2"
+        csv_folder_path = self.get_csv_file_path(csv_depend)
         self.comparison_data(csv_folder_path, folder_path)
 

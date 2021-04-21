@@ -38,8 +38,8 @@ class TestBedepDownload(DownloadDeppendTestBase):
         result, error = self.validate_data(parameter)
         depend = DispatchDepend.execute(**result)
         folder_path = depend.download_depend_files()
-        scv_depend = "bedep_Judy_binary"
-        csv_folder_path = self.get_csv_file_path(scv_depend)
+        csv_depend = "bedep_Judy_binary"
+        csv_folder_path = self.get_csv_file_path(csv_depend)
         self.comparison_data(csv_folder_path, folder_path)
 
     def test_bedep_download_source(self):
@@ -56,8 +56,8 @@ class TestBedepDownload(DownloadDeppendTestBase):
         result, error = self.validate_data(parameter)
         depend = DispatchDepend.execute(**result)
         folder_path = depend.download_depend_files()
-        scv_depend = "bedep_Judy_source"
-        csv_folder_path = self.get_csv_file_path(scv_depend)
+        csv_depend = "bedep_Judy_source"
+        csv_folder_path = self.get_csv_file_path(csv_depend)
         self.comparison_data(csv_folder_path, folder_path)
 
     def test_bedep_download_source_install(self):
@@ -76,8 +76,8 @@ class TestBedepDownload(DownloadDeppendTestBase):
         result, error = self.validate_data(parameter)
         depend = DispatchDepend.execute(**result)
         folder_path = depend.download_depend_files()
-        scv_depend = "bedep_Judy_source_install"
-        csv_folder_path = self.get_csv_file_path(scv_depend)
+        csv_depend = "bedep_Judy_source_install"
+        csv_folder_path = self.get_csv_file_path(csv_depend)
         self.comparison_data(csv_folder_path, folder_path)
 
     def test_bedep_download_source_withsubpack(self):
@@ -97,6 +97,6 @@ class TestBedepDownload(DownloadDeppendTestBase):
         result, error = self.validate_data(parameter)
         depend = DispatchDepend.execute(**result)
         folder_path = depend.download_depend_files()
-        scv_depend = "bedep_Judy_source_install_with"
-        csv_folder_path = self.get_csv_file_path(scv_depend)
+        csv_depend = "bedep_Judy_source_install_with"
+        csv_folder_path = self.get_csv_file_path(csv_depend)
         self.comparison_data(csv_folder_path, folder_path)

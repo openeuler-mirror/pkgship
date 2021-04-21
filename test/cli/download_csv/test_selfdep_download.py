@@ -52,8 +52,8 @@ class TestSelfdepDownload(DownloadDeppendTestBase):
         result, error = self.validate_data(parameter)
         depend = DispatchDepend.execute(**result)
         folder_path = depend.download_depend_files()
-        scv_depend = "selfdep_Judy_package_db"
-        csv_folder_path = self.get_csv_file_path(scv_depend)
+        csv_depend = "selfdep_Judy_package_db"
+        csv_folder_path = self.get_csv_file_path(csv_depend)
         self.comparison_data(csv_folder_path, folder_path)
 
     def test_selfbuild_download_package_source_db(self):
@@ -71,8 +71,8 @@ class TestSelfdepDownload(DownloadDeppendTestBase):
         result, error = self.validate_data(parameter)
         depend = DispatchDepend.execute(**result)
         folder_path = depend.download_depend_files()
-        scv_depend = "selfdep_Judy_package_source_db"
-        csv_folder_path = self.get_csv_file_path(scv_depend)
+        csv_depend = "selfdep_Judy_package_source_db"
+        csv_folder_path = self.get_csv_file_path(csv_depend)
         self.comparison_data(csv_folder_path, folder_path)
 
     def test_selfbuild_download_package_source_db_self(self):
@@ -92,6 +92,6 @@ class TestSelfdepDownload(DownloadDeppendTestBase):
         result, error = self.validate_data(parameter)
         depend = DispatchDepend.execute(**result)
         folder_path = depend.download_depend_files()
-        scv_depend = "selfdep_Judy_package_source_db_self"
-        csv_folder_path = self.get_csv_file_path(scv_depend)
+        csv_depend = "selfdep_Judy_package_source_db_self"
+        csv_folder_path = self.get_csv_file_path(csv_depend)
         self.comparison_data(csv_folder_path, folder_path)

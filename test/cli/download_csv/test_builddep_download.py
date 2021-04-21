@@ -37,8 +37,8 @@ class TestBuilddepDownload(DownloadDeppendTestBase):
         result, error = self.validate_data(parameter)
         depend = DispatchDepend.execute(**result)
         folder_path = depend.download_depend_files()
-        scv_depend = "builddep_Judy_level_0"
-        csv_folder_path = self.get_csv_file_path(scv_depend)
+        csv_depend = "builddep_Judy_level_0"
+        csv_folder_path = self.get_csv_file_path(csv_depend)
         self.comparison_data(csv_folder_path, folder_path)
 
     def test_builddep_download_level_2(self):
@@ -56,8 +56,8 @@ class TestBuilddepDownload(DownloadDeppendTestBase):
         result, error = self.validate_data(parameter)
         depend = DispatchDepend.execute(**result)
         folder_path = depend.download_depend_files()
-        scv_depend = "builddep_Judy_level_2"
-        csv_folder_path = self.get_csv_file_path(scv_depend)
+        csv_depend = "builddep_Judy_level_2"
+        csv_folder_path = self.get_csv_file_path(csv_depend)
         self.comparison_data(csv_folder_path, folder_path)
 
     def test_builddep_download_db_level_0(self):
@@ -75,8 +75,8 @@ class TestBuilddepDownload(DownloadDeppendTestBase):
         result, error = self.validate_data(parameter)
         depend = DispatchDepend.execute(**result)
         folder_path = depend.download_depend_files()
-        scv_depend = "builddep_Judy_db_level_0"
-        csv_folder_path = self.get_csv_file_path(scv_depend)
+        csv_depend = "builddep_Judy_db_level_0"
+        csv_folder_path = self.get_csv_file_path(csv_depend)
         self.comparison_data(csv_folder_path, folder_path)
 
     def test_builddep_download_db_level_2(self):
@@ -95,6 +95,6 @@ class TestBuilddepDownload(DownloadDeppendTestBase):
         result, error = self.validate_data(parameter)
         depend = DispatchDepend.execute(**result)
         folder_path = depend.download_depend_files()
-        scv_depend = "builddep_Judy_db_level_2"
-        csv_folder_path = self.get_csv_file_path(scv_depend)
+        csv_depend = "builddep_Judy_db_level_2"
+        csv_folder_path = self.get_csv_file_path(csv_depend)
         self.comparison_data(csv_folder_path, folder_path)
