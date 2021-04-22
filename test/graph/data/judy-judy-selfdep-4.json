@@ -1,0 +1,51 @@
+{
+    "request": {
+        "packagename": [
+            "Judy"
+        ],
+        "depend_type": "selfdep",
+        "node_name": "Judy",
+        "node_type": "binary",
+        "parameter": {
+            "db_priority": [
+                "os-version"
+            ],
+            "with_subpack": true,
+            "packtype": "binary"
+        }
+    },
+    "edges": [
+        {
+            "sourceID": "Judy",
+            "targetID": "bash"
+        },
+        {
+            "sourceID": "Judy",
+            "targetID": "glibc"
+        },
+        {
+            "sourceID": "Judy-devel",
+            "targetID": "Judy"
+        },
+        {
+            "sourceID": "bash",
+            "targetID": "ncurses-libs"
+        },
+        {
+            "sourceID": "bash",
+            "targetID": "glibc"
+        },
+        {
+            "sourceID": "bash",
+            "targetID": "filesystem"
+        },
+        {
+            "sourceID": "glibc",
+            "targetID": "glibc-common"
+        },
+        {
+            "sourceID": "glibc",
+            "targetID": "basesystem"
+        }
+    ]
+}

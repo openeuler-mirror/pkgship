@@ -1,0 +1,249 @@
+{
+    "request": {
+        "packagename": [
+            "Judy"
+        ],
+        "depend_type": "builddep",
+        "node_name": "Judy",
+        "node_type": "source",
+        "parameter": {
+            "db_priority": [
+                "os-version"
+            ]
+        }
+    },
+    "edges": [
+        {
+            "sourceID": "Judy",
+            "targetID": "gawk"
+        },
+        {
+            "sourceID": "Judy",
+            "targetID": "gcc"
+        },
+        {
+            "sourceID": "Judy",
+            "targetID": "coreutils"
+        },
+        {
+            "sourceID": "Judy",
+            "targetID": "sed"
+        },
+        {
+            "sourceID": "Judy",
+            "targetID": "make"
+        },
+        {
+            "sourceID": "gawk",
+            "targetID": "libsigsegv"
+        },
+        {
+            "sourceID": "gawk",
+            "targetID": "mpfr"
+        },
+        {
+            "sourceID": "gawk",
+            "targetID": "gmp"
+        },
+        {
+            "sourceID": "gawk",
+            "targetID": "readline"
+        },
+        {
+            "sourceID": "gawk",
+            "targetID": "glibc"
+        },
+        {
+            "sourceID": "gawk",
+            "targetID": "filesystem"
+        },
+        {
+            "sourceID": "krb5-libs",
+            "targetID": "gawk"
+        },
+        {
+            "sourceID": "gcc",
+            "targetID": "glibc-devel"
+        },
+        {
+            "sourceID": "gcc",
+            "targetID": "binutils"
+        },
+        {
+            "sourceID": "gcc",
+            "targetID": "mpfr"
+        },
+        {
+            "sourceID": "gcc",
+            "targetID": "zlib"
+        },
+        {
+            "sourceID": "gcc",
+            "targetID": "gmp"
+        },
+        {
+            "sourceID": "gcc",
+            "targetID": "libgomp"
+        },
+        {
+            "sourceID": "gcc",
+            "targetID": "libstdc++"
+        },
+        {
+            "sourceID": "gcc",
+            "targetID": "glibc"
+        },
+        {
+            "sourceID": "gcc",
+            "targetID": "bash"
+        },
+        {
+            "sourceID": "gcc",
+            "targetID": "libgcc"
+        },
+        {
+            "sourceID": "gcc",
+            "targetID": "libmpc"
+        },
+        {
+            "sourceID": "gcc",
+            "targetID": "cpp"
+        },
+        {
+            "sourceID": "coreutils",
+            "targetID": "libacl"
+        },
+        {
+            "sourceID": "coreutils",
+            "targetID": "info"
+        },
+        {
+            "sourceID": "coreutils",
+            "targetID": "libcap"
+        },
+        {
+            "sourceID": "coreutils",
+            "targetID": "libselinux"
+        },
+        {
+            "sourceID": "coreutils",
+            "targetID": "gmp"
+        },
+        {
+            "sourceID": "coreutils",
+            "targetID": "glibc"
+        },
+        {
+            "sourceID": "coreutils",
+            "targetID": "attr"
+        },
+        {
+            "sourceID": "coreutils",
+            "targetID": "openssl-libs"
+        },
+        {
+            "sourceID": "coreutils",
+            "targetID": "ncurses"
+        },
+        {
+            "sourceID": "binutils",
+            "targetID": "coreutils"
+        },
+        {
+            "sourceID": "glibc-devel",
+            "targetID": "coreutils"
+        },
+        {
+            "sourceID": "guile",
+            "targetID": "coreutils"
+        },
+        {
+            "sourceID": "ca-certificates",
+            "targetID": "coreutils"
+        },
+        {
+            "sourceID": "crypto-policies",
+            "targetID": "coreutils"
+        },
+        {
+            "sourceID": "slang",
+            "targetID": "coreutils"
+        },
+        {
+            "sourceID": "systemd-libs",
+            "targetID": "coreutils"
+        },
+        {
+            "sourceID": "groff",
+            "targetID": "coreutils"
+        },
+        {
+            "sourceID": "krb5-libs",
+            "targetID": "coreutils"
+        },
+        {
+            "sourceID": "rpm",
+            "targetID": "coreutils"
+        },
+        {
+            "sourceID": "libblkid",
+            "targetID": "coreutils"
+        },
+        {
+            "sourceID": "logrotate",
+            "targetID": "coreutils"
+        },
+        {
+            "sourceID": "sed",
+            "targetID": "libacl"
+        },
+        {
+            "sourceID": "sed",
+            "targetID": "libselinux"
+        },
+        {
+            "sourceID": "sed",
+            "targetID": "glibc"
+        },
+        {
+            "sourceID": "ca-certificates",
+            "targetID": "sed"
+        },
+        {
+            "sourceID": "crypto-policies",
+            "targetID": "sed"
+        },
+        {
+            "sourceID": "openEuler-rpm-config",
+            "targetID": "sed"
+        },
+        {
+            "sourceID": "systemd-libs",
+            "targetID": "sed"
+        },
+        {
+            "sourceID": "krb5-libs",
+            "targetID": "sed"
+        },
+        {
+            "sourceID": "crontabs",
+            "targetID": "sed"
+        },
+        {
+            "sourceID": "make",
+            "targetID": "bash"
+        },
+        {
+            "sourceID": "make",
+            "targetID": "info"
+        },
+        {
+            "sourceID": "make",
+            "targetID": "guile"
+        },
+        {
+            "sourceID": "make",
+            "targetID": "glibc"
+        }
+    ]
+}
