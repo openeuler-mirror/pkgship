@@ -63,7 +63,7 @@ class DownloadTestBase(unittest.TestCase):
         csv_folder_path = os.path.join(self.local_csv_path, depend_path)
         return csv_folder_path
 
-    def _compare_the_data(self, column_actual, column_expected):
+    def _extract_data(self, column_actual, column_expected):
         """
         Compare data from a CSV file
         Args:
@@ -97,7 +97,7 @@ class DownloadTestBase(unittest.TestCase):
                       encoding="utf-8") as csv_content:
                 cvs_reader = csv.reader(csv_content)
                 column_expected = [row for row in cvs_reader]
-            result = self._compare_the_data(column_actual, column_expected)
+            result = self._extract_data(column_actual, column_expected)
             self.assertEqual(result, True)
 
     def validate_data(self, parameter):
