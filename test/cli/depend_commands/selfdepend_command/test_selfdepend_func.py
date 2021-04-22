@@ -132,7 +132,7 @@ class TestSelfDepend(DependTestBase):
         """
         self.command_params = ["Judy", "-f"]
         with self.assertRaises(SystemExit):
-            self._execute_command()
+            self.assert_exc_result()
 
     def test_es_has_exception(self):
         """
@@ -152,6 +152,7 @@ class TestSelfDepend(DependTestBase):
         """
         self.command_params = ['Judy', '-dbs', 'os-version']
         self.mock_requests_post(return_value=self.PostResponse(status_code=500, text=""))
+        self.excepted_str = "ERROR_CONTENT  :Server error\nHINT           :Please check the service and try again"
         self.assert_exc_result()
 
     @staticmethod
