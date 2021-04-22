@@ -27,7 +27,7 @@ export default {
     display: none !important;
 }
 .content {
-    min-height: calc(100vh - 110px - 176px);
+    min-height: calc(100vh - 60px - 226px);
     @media (max-width: 1000px) {
         min-height: calc(100vh - 70px - 280px);
     }
