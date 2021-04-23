@@ -76,5 +76,4 @@ class TestBinPackageDownload(DownloadPackageTestBase):
         }
         response = self.client.post(
             "/dependinfo/downloadfiles", data=json.dumps(parameter), content_type="application/json")
-        with self.assertRaises(zipfile.BadZipFile):
-            zipfile.ZipFile(BytesIO(response.content))
+        self.assertIsInstance(response.content, cls=bytes)
