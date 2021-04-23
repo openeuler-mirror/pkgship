@@ -46,8 +46,8 @@ if __name__ == "__main__":
     args = sys.argv
     cov.start()
     test_case_files = [
-        os.path.join(TEST_CASE_PATH, "cli/")
-    ]
+                       os.path.join(TEST_CASE_PATH, "cli/")
+                       ]
 
     errors = []
     failures = []
