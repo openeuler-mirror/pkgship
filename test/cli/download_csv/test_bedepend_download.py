@@ -14,6 +14,10 @@
 """
 Unit tests are downloaded by dependent CSV files
 """
+import json
+import zipfile
+from io import BytesIO
+
 from packageship.application.core.depend import DispatchDepend
 from test.cli.download_csv import DownloadDeppendTestBase
 
@@ -100,3 +104,19 @@ class TestBedepDownload(DownloadDeppendTestBase):
         csv_depend = "bedep_Judy_source_install_with"
         csv_folder_path = self.get_csv_file_path(csv_depend)
         self.comparison_data(csv_folder_path, folder_path)
+
+    def test_all_process_depend(self):
+        """
+        Test the overall process
+        """
+        parameter = {"packagename": ["Judy"],
+                     "depend_type": "bedep",
+                     "parameter": {
+                         "db_priority": ["os-version"]
+                     }
+                     }
+
+        response = self.client.post(
+            "/dependinfo/downloadfiles", data=json.dumps(parameter), content_type="application/json")
+        with self.assertRaises(zipfile.BadZipFile):
+            zipfile.ZipFile(BytesIO(response.content))

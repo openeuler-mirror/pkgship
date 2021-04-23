@@ -13,6 +13,9 @@
 """
 Package information CSV file download unit test
 """
+import json
+import zipfile
+from io import BytesIO
 from pathlib import Path
 from packageship.application.core.depend.down_load import Download
 from test.cli import DATA_BASE_INFO
@@ -60,3 +63,18 @@ class TestBinPackageDownload(DownloadPackageTestBase):
         bin_package = "src_package_csv"
         csv_folder_path = self.get_csv_file_path(bin_package)
         self.comparison_data(csv_folder_path, folder_path)
+
+    def test_all_process_package(self):
+        """
+        Test the overall process
+        """
+        parameter = {
+            "depend_type": "src",
+            "parameter": {
+                "db_priority": ["os-version"]
+            }
+        }
+        response = self.client.post(
+            "/dependinfo/downloadfiles", data=json.dumps(parameter), content_type="application/json")
+        with self.assertRaises(zipfile.BadZipFile):
+            zipfile.ZipFile(BytesIO(response.content))
