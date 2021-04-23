@@ -1,0 +1,213 @@
+{
+    "request": {
+        "packagename": [
+            "Judy"
+        ],
+        "depend_type": "builddep",
+        "node_name": "gcc",
+        "node_type": "binary",
+        "parameter": {
+            "db_priority": [
+                "os-version"
+            ]
+        }
+    },
+    "edges": [
+        {
+            "sourceID": "gcc",
+            "targetID": "glibc-devel"
+        },
+        {
+            "sourceID": "gcc",
+            "targetID": "binutils"
+        },
+        {
+            "sourceID": "gcc",
+            "targetID": "mpfr"
+        },
+        {
+            "sourceID": "gcc",
+            "targetID": "zlib"
+        },
+        {
+            "sourceID": "gcc",
+            "targetID": "gmp"
+        },
+        {
+            "sourceID": "gcc",
+            "targetID": "libgomp"
+        },
+        {
+            "sourceID": "gcc",
+            "targetID": "libstdc++"
+        },
+        {
+            "sourceID": "gcc",
+            "targetID": "glibc"
+        },
+        {
+            "sourceID": "gcc",
+            "targetID": "bash"
+        },
+        {
+            "sourceID": "gcc",
+            "targetID": "libgcc"
+        },
+        {
+            "sourceID": "gcc",
+            "targetID": "libmpc"
+        },
+        {
+            "sourceID": "gcc",
+            "targetID": "cpp"
+        },
+        {
+            "sourceID": "glibc-devel",
+            "targetID": "libxcrypt-devel"
+        },
+        {
+            "sourceID": "glibc-devel",
+            "targetID": "info"
+        },
+        {
+            "sourceID": "glibc-devel",
+            "targetID": "kernel-devel"
+        },
+        {
+            "sourceID": "glibc-devel",
+            "targetID": "glibc"
+        },
+        {
+            "sourceID": "glibc-devel",
+            "targetID": "libgcc"
+        },
+        {
+            "sourceID": "glibc-devel",
+            "targetID": "coreutils"
+        },
+        {
+            "sourceID": "binutils",
+            "targetID": "info"
+        },
+        {
+            "sourceID": "binutils",
+            "targetID": "zlib"
+        },
+        {
+            "sourceID": "binutils",
+            "targetID": "libstdc++"
+        },
+        {
+            "sourceID": "binutils",
+            "targetID": "glibc"
+        },
+        {
+            "sourceID": "binutils",
+            "targetID": "chkconfig"
+        },
+        {
+            "sourceID": "binutils",
+            "targetID": "libgcc"
+        },
+        {
+            "sourceID": "binutils",
+            "targetID": "coreutils"
+        },
+        {
+            "sourceID": "mpfr",
+            "targetID": "glibc"
+        },
+        {
+            "sourceID": "mpfr",
+            "targetID": "gmp"
+        },
+        {
+            "sourceID": "zlib",
+            "targetID": "glibc"
+        },
+        {
+            "sourceID": "gmp",
+            "targetID": "pkgconf"
+        },
+        {
+            "sourceID": "gmp",
+            "targetID": "glibc"
+        },
+        {
+            "sourceID": "libgomp",
+            "targetID": "glibc"
+        },
+        {
+            "sourceID": "libstdc++",
+            "targetID": "libgcc"
+        },
+        {
+            "sourceID": "libstdc++",
+            "targetID": "glibc"
+        },
+        {
+            "sourceID": "glibc",
+            "targetID": "glibc-common"
+        },
+        {
+            "sourceID": "glibc",
+            "targetID": "basesystem"
+        },
+        {
+            "sourceID": "bash",
+            "targetID": "ncurses-libs"
+        },
+        {
+            "sourceID": "bash",
+            "targetID": "glibc"
+        },
+        {
+            "sourceID": "bash",
+            "targetID": "filesystem"
+        },
+        {
+            "sourceID": "libmpc",
+            "targetID": "mpfr"
+        },
+        {
+            "sourceID": "libmpc",
+            "targetID": "glibc"
+        },
+        {
+            "sourceID": "libmpc",
+            "targetID": "gmp"
+        },
+        {
+            "sourceID": "cpp",
+            "targetID": "mpfr"
+        },
+        {
+            "sourceID": "cpp",
+            "targetID": "zlib"
+        },
+        {
+            "sourceID": "cpp",
+            "targetID": "gmp"
+        },
+        {
+            "sourceID": "cpp",
+            "targetID": "libstdc++"
+        },
+        {
+            "sourceID": "cpp",
+            "targetID": "glibc"
+        },
+        {
+            "sourceID": "cpp",
+            "targetID": "libgcc"
+        },
+        {
+            "sourceID": "cpp",
+            "targetID": "libmpc"
+        },
+        {
+            "sourceID": "cpp",
+            "targetID": "filesystem"
+        }
+    ]
+}
