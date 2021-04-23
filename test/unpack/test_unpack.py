@@ -15,6 +15,7 @@ import os
 from unittest import mock, TestCase
 from packageship.application.common.compress import Unpack
 from packageship.application.common.exc import UnpackError
+from packageship.libs.conf import configuration
 
 
 class TestUnpack(TestCase):
@@ -22,6 +23,7 @@ class TestUnpack(TestCase):
 
     def setUp(self):
         self.path = os.path.join(os.path.dirname(__file__), "compress_files")
+        configuration.TEMPORARY_DIRECTORY = self.path
 
     def test_bz2_unpack(self):
         """unpack bz2 file"""
