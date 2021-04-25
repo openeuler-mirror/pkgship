@@ -17,6 +17,7 @@ test_pkgship_cmd
 import argparse
 import os
 import sys
+from io import StringIO
 import unittest
 import json
 import pathlib
@@ -34,34 +35,6 @@ ES_COUNT_DATA = {
     "count": 100,
     "_shards": {"total": 100, "successful": 1, "skipped": 0, "failed": 0},
 }
-
-
-class Redirect:
-    """
-    Class for redirect print to class Attr :_content
-    """
-
-    _content = ""
-
-    def write(self, s):
-        """add stdout result string to _content
-
-        Args:
-            s (str): [description]
-        """
-        self._content += s
-
-    def flush(self):
-        """flush _content"""
-        self._content = ""
-
-    def getvalue(self):
-        """get content value
-
-        Returns:
-            str: _content string value
-        """
-        return self._content
 
 
 class TestMixin:
@@ -306,10 +279,10 @@ class BaseTest(unittest.TestCase, TestMixin):
         setUp Test Environment
         """
         self._to_clean_mock_patchers = []
-        self.r = Redirect()
+        self.stdout_io = StringIO()
         self.excepted_str = ""
         self.command_params = []
-        sys.stdout = self.r
+        sys.stdout = sys.stderr = self.stdout_io
 
     def _execute_command(self):
         """
@@ -336,7 +309,7 @@ class BaseTest(unittest.TestCase, TestMixin):
             print redirect result
         """
         self._execute_command()
-        return self.r.getvalue().strip()
+        return self.stdout_io.getvalue().strip()
 
     def assert_result(self):
         """
@@ -347,15 +320,6 @@ class BaseTest(unittest.TestCase, TestMixin):
         self.assertEqual(
             self.excepted_str.strip().strip("\r\n").strip("\n"), self.print_result
         )
-
-    @classmethod
-    def tearDownClass(cls) -> None:
-        """
-        tearDown to restore stdout redirect
-        Returns:
-            None
-        """
-        sys.stdout = sys.__stdout__
 
     def _to_add_cleanup(self):
         """_to_add_cleanup"""
@@ -384,6 +348,8 @@ class BaseTest(unittest.TestCase, TestMixin):
         BaseCommand.subparsers = BaseCommand.parser.add_subparsers(
             help="package related dependency management"
         )
+        sys.stdout = sys.__stdout__
+        sys.stderr = sys.__stderr__
         self._to_add_cleanup()
         return super().tearDown()
 
