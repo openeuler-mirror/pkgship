@@ -118,11 +118,11 @@ HINT           :Use the correct package name and try again
 
         self.command_params = ["Judy", "-dbs=os-version"]
         self.excepted_str = """
-ERROR_CONTENT  :Server error
-HINT           :Please check the service and try again
+ERROR_CONTENT  :Request parameter error
+HINT           :Please check the parameter is valid and query again
     """
-        self.mock_es_search(side_effect=[DATA_BASE_INFO, ElasticSearchQueryException])
-        self._execute_command()
+        self.mock_es_search(side_effect=[ElasticSearchQueryException])
+        self.assert_exc_result()
 
     def test_request_raise_connecterror(self):
         """test_request_raise_connecterror"""
