@@ -131,8 +131,11 @@ class TestSelfDepend(DependTestBase):
         Returns: None
         """
         self.command_params = ["Judy", "-f"]
-        with self.assertRaises(SystemExit):
-            self.assert_exc_result()
+        self.excepted_str = "error: unrecognized arguments: -f"
+        try:
+            self._execute_command()
+        except SystemExit:
+            self.assertIn(self.excepted_str,self.stdout_io.getvalue())
 
     def test_es_has_exception(self):
         """
