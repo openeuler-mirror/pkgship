@@ -14,12 +14,15 @@
 """
 test_build_dep_cmd
 """
+from pathlib import Path
 from test.cli import DATA_BASE_INFO
 from unittest.mock import PropertyMock
-from test.cli.depend_command import DependTestBase
+from test.cli.depend_commands import DependTestBase
 from packageship.application.common.exc import ElasticSearchQueryException
 from requests.exceptions import ConnectionError, RequestException
 from packageship.application.cli.commands.builddep import BuildDepCommand
+
+BUILDDEP_EXPECTED_DATA_FOLDER = Path(Path(__file__).parent, "expected_data")
 
 
 class TestBuildDep(DependTestBase):
@@ -36,7 +39,8 @@ class TestBuildDep(DependTestBase):
         test true params
         """
         self.command_params = ["Judy"]
-        self.excepted_str = self.read_file_content("build_depend_data/builddep_Judy_level0.txt", is_json=False)
+        self.excepted_str = self.read_file_content("builddep_Judy_level0.txt",
+                                                   folder=BUILDDEP_EXPECTED_DATA_FOLDER, is_json=False)
         self.assert_result()
 
     def test_true_params_level1(self):
@@ -44,7 +48,8 @@ class TestBuildDep(DependTestBase):
         test true params
         """
         self.command_params = ["Judy", "-level=1"]
-        self.excepted_str = self.read_file_content("build_depend_data/builddep_Judy_level1.txt", is_json=False)
+        self.excepted_str = self.read_file_content("builddep_Judy_level1.txt",
+                                                   folder=BUILDDEP_EXPECTED_DATA_FOLDER, is_json=False)
         self.assert_result()
 
     def test_true_params_dbs_level0(self):
@@ -52,7 +57,8 @@ class TestBuildDep(DependTestBase):
         test true params
         """
         self.command_params = ["Judy", "-dbs=os-version"]
-        self.excepted_str = self.read_file_content("build_depend_data/builddep_Judy_dbs_level0.txt", is_json=False)
+        self.excepted_str = self.read_file_content("builddep_Judy_dbs_level0.txt",
+                                                   folder=BUILDDEP_EXPECTED_DATA_FOLDER, is_json=False)
         self.assert_result()
 
     def test_true_params_dbs_level1(self):
@@ -60,7 +66,8 @@ class TestBuildDep(DependTestBase):
         test true params
         """
         self.command_params = ["Judy", "-dbs=os-version", "-level=1"]
-        self.excepted_str = self.read_file_content("build_depend_data/builddep_Judy_dbs_level1.txt", is_json=False)
+        self.excepted_str = self.read_file_content("builddep_Judy_dbs_level1.txt",
+                                                   folder=BUILDDEP_EXPECTED_DATA_FOLDER, is_json=False)
         self.assert_result()
 
     def test_wrong_level(self):
@@ -111,11 +118,11 @@ HINT           :Use the correct package name and try again
 
         self.command_params = ["Judy", "-dbs=os-version"]
         self.excepted_str = """
-ERROR_CONTENT  :Server error
-HINT           :Please check the service and try again
+ERROR_CONTENT  :Request parameter error
+HINT           :Please check the parameter is valid and query again
     """
-        self.mock_es_search(side_effect=[DATA_BASE_INFO, ElasticSearchQueryException])
-        self._execute_command()
+        self.mock_es_search(side_effect=[ElasticSearchQueryException])
+        self.assert_exc_result()
 
     def test_request_raise_connecterror(self):
         """test_request_raise_connecterror"""
