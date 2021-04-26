@@ -1,0 +1,16 @@
+Judy,Judy,1.0.5,os-version,glibc,glibc,2.31,os-version,glibc-common,glibc,2.31,os-version,bash,bash,5.0,os-version,glibc,glibc,2.31,os-version,1
+Judy,Judy,1.0.5,os-version,glibc,glibc,2.31,os-version,glibc-common,glibc,2.31,os-version,bash,bash,5.0,os-version,filesystem,filesystem,3.14,os-version,bash,bash,5.0,os-version,1
+Judy,Judy,1.0.5,os-version,glibc,glibc,2.31,os-version,glibc-common,glibc,2.31,os-version,bash,bash,5.0,os-version,filesystem,filesystem,3.14,os-version,setup,setup,2.13.7,os-version,openEuler-release,openEuler-release,20.09,os-version,openEuler-repos,openEuler-repos,1.0,os-version,openEuler-gpg-keys,openEuler-repos,1.0,os-version
+Judy,Judy,1.0.5,os-version,glibc,glibc,2.31,os-version,glibc-common,glibc,2.31,os-version,bash,bash,5.0,os-version,ncurses-libs,ncurses,6.2,os-version,glibc,glibc,2.31,os-version,1
+Judy,Judy,1.0.5,os-version,glibc,glibc,2.31,os-version,glibc-common,glibc,2.31,os-version,bash,bash,5.0,os-version,ncurses-libs,ncurses,6.2,os-version,ncurses-base,ncurses,6.2,os-version
+Judy,Judy,1.0.5,os-version,glibc,glibc,2.31,os-version,glibc-common,glibc,2.31,os-version,glibc,glibc,2.31,os-version,1
+Judy,Judy,1.0.5,os-version,glibc,glibc,2.31,os-version,glibc-common,glibc,2.31,os-version,libselinux,libselinux,3.1,os-version,glibc,glibc,2.31,os-version,1
+Judy,Judy,1.0.5,os-version,glibc,glibc,2.31,os-version,glibc-common,glibc,2.31,os-version,libselinux,libselinux,3.1,os-version,pcre2,pcre2,10.35,os-version,glibc,glibc,2.31,os-version,1
+Judy,Judy,1.0.5,os-version,glibc,glibc,2.31,os-version,glibc-common,glibc,2.31,os-version,libselinux,libselinux,3.1,os-version,pcre2,pcre2,10.35,os-version,readline,readline,8.0,os-version,glibc,glibc,2.31,os-version,1
+Judy,Judy,1.0.5,os-version,glibc,glibc,2.31,os-version,glibc-common,glibc,2.31,os-version,libselinux,libselinux,3.1,os-version,pcre2,pcre2,10.35,os-version,readline,readline,8.0,os-version,ncurses-libs,ncurses,6.2,os-version
+Judy,Judy,1.0.5,os-version,glibc,glibc,2.31,os-version,glibc-common,glibc,2.31,os-version,libselinux,libselinux,3.1,os-version,libsepol,libsepol,3.1,os-version,glibc,glibc,2.31,os-version,1
+Judy,Judy,1.0.5,os-version,glibc,glibc,2.31,os-version,glibc-common,glibc,2.31,os-version,libselinux,libselinux,3.1,os-version,libsepol,libsepol,3.1,os-version,bash,bash,5.0,os-version
+Judy,Judy,1.0.5,os-version,glibc,glibc,2.31,os-version,glibc-common,glibc,2.31,os-version,tzdata,tzdata,2020a,os-version
+Judy,Judy,1.0.5,os-version,glibc,glibc,2.31,os-version,basesystem,basesystem,12,os-version,filesystem,filesystem,3.14,os-version
+Judy,Judy,1.0.5,os-version,glibc,glibc,2.31,os-version,basesystem,basesystem,12,os-version,setup,setup,2.13.7,os-version
+Judy,Judy,1.0.5,os-version,bash,bash,5.0,os-version

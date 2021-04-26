@@ -1,0 +1,17 @@
+Judy,Judy,1.0.5,os-version
+glibc,glibc,2.31,os-version,install__bash,install__glibc-common,install__ncurses-libs,install__libselinux,install__libsepol,install__pcre2,install__readline
+bash,bash,5.0,os-version,install__glibc-common,install__filesystem,install__libsepol
+basesystem,basesystem,12,os-version
+glibc-common,glibc,2.31,os-version
+filesystem,filesystem,3.14,os-version
+ncurses-libs,ncurses,6.2,os-version,install__readline
+setup,setup,2.13.7,os-version
+libselinux,libselinux,3.1,os-version
+tzdata,tzdata,2020a,os-version
+ncurses-base,ncurses,6.2,os-version
+libsepol,libsepol,3.1,os-version
+pcre2,pcre2,10.35,os-version
+openEuler-release,openEuler-release,20.09,os-version
+openEuler-repos,openEuler-repos,1.0,os-version
+readline,readline,8.0,os-version
+openEuler-gpg-keys,openEuler-repos,1.0,os-version

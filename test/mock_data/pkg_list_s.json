@@ -1,0 +1,1001 @@
+[
+  {
+    "_index": "openeuler-source",
+    "_type": "_doc",
+    "_id": "-_5-kXgB16N4XbeNBPUw",
+    "_score": null,
+    "_source": {
+      "pkgKey": 1,
+      "pkgId": "9ce1dd15b5bc5276538d98aa1cda7a38bc0554e055f6508bcf0d5ebc392c2b85",
+      "name": "389-ds-base",
+      "arch": "src",
+      "version": "1.4.0.31",
+      "epoch": "0",
+      "release": "2.oe1",
+      "summary": "Base 389 Directory Server",
+      "description": "389-ds-base is an LDAPv3 compliant server which includes\\nthe LDAP server and command line utilities for server administration.",
+      "url": "https://www.port389.org",
+      "time_file": 1601222039,
+      "time_build": 1601221743,
+      "rpm_license": "GPLv3+",
+      "rpm_vendor": "http://openeuler.org",
+      "rpm_group": "Unspecified",
+      "rpm_buildhost": "obs-worker-003",
+      "rpm_sourcerpm": "",
+      "rpm_header_start": 5096,
+      "rpm_header_end": 8324,
+      "rpm_packager": "http://openeuler.org",
+      "size_package": 10296591,
+      "size_installed": 10344563,
+      "size_archive": 10345368,
+      "location_href": "Packages/389-ds-base-1.4.0.31-2.oe1.src.rpm",
+      "location_base": null,
+      "checksum_type": "sha256",
+      "requires": [
+        {
+          "name": "autoconf",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "autoconf",
+              "src_name": "autoconf"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "automake",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "automake",
+              "src_name": "automake"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "bzip2-devel",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "bzip2-devel",
+              "src_name": "bzip2"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "cracklib-devel",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "cracklib-devel",
+              "src_name": "cracklib"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "cyrus-sasl-devel",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "cyrus-sasl-devel",
+              "src_name": "cyrus-sasl"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "doxygen",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "doxygen",
+              "src_name": "doxygen"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "gcc-c++",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "gcc-c++",
+              "src_name": "gcc"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "icu",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "icu",
+              "src_name": "icu"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "libcmocka-devel",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "libcmocka-devel",
+              "src_name": "cmocka"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "libdb-devel",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "libdb-devel",
+              "src_name": "libdb"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "libevent-devel",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "libevent-devel",
+              "src_name": "libevent"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "libicu-devel",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "libicu-devel",
+              "src_name": "icu"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "libtalloc-devel",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "libtalloc-devel",
+              "src_name": "libtalloc"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "libtevent-devel",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "libtevent-devel",
+              "src_name": "libtevent"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "libtool",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "libtool",
+              "src_name": "libtool"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "lm_sensors-devel",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "lm_sensors-devel",
+              "src_name": "lm_sensors"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "net-snmp-devel",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "net-snmp-devel",
+              "src_name": "net-snmp"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "nodejs",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "nodejs",
+              "src_name": "nodejs"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "npm",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "npm",
+              "src_name": null
+            },
+            {
+              "bin_name": "npm",
+              "src_name": null
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "nspr-devel",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "nspr-devel",
+              "src_name": "nspr"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "nss-devel",
+          "flags": "GE",
+          "epoch": "0",
+          "version": "3.34",
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "nss-devel",
+              "src_name": "nss"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "openldap-devel",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "openldap-devel",
+              "src_name": "openldap"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "openssl-devel",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "openssl-devel",
+              "src_name": "openssl"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "pam-devel",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "pam-devel",
+              "src_name": "pam"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "pcre-devel",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "pcre-devel",
+              "src_name": "pcre"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "perl-generators",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "perl-generators",
+              "src_name": "perl-generators"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "pkgconfig",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "pkgconf",
+              "src_name": "pkgconf"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "pkgconfig(krb5)",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "krb5-devel",
+              "src_name": "krb5"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "pkgconfig(systemd)",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "systemd",
+              "src_name": "systemd"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "python3",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "python3",
+              "src_name": "python3"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "python3-argcomplete",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "python3-argcomplete",
+              "src_name": "python-argcomplete"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "python3-argparse-manpage",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "python3-argparse-manpage",
+              "src_name": "python-argparse-manpage"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "python3-dateutil",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "python3-dateutil",
+              "src_name": "python-dateutil"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "python3-devel",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "python3-devel",
+              "src_name": "python3"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "python3-ldap",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "python3-ldap",
+              "src_name": "python-ldap"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "python3-libselinux",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "python3-libselinux",
+              "src_name": "libselinux"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "python3-packaging",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "python3-packaging",
+              "src_name": "python-packaging"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "python3-policycoreutils",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "python3-policycoreutils",
+              "src_name": "policycoreutils"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "python3-pyasn1",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "python3-pyasn1",
+              "src_name": "python-pyasn1"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "python3-pyasn1-modules",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "python3-pyasn1",
+              "src_name": "python-pyasn1"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "python3-setuptools",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "python3-setuptools",
+              "src_name": "python-setuptools"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "python3-six",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "python3-six",
+              "src_name": "python-six"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "rsync",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "rsync",
+              "src_name": "rsync"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "systemd-devel",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "systemd-devel",
+              "src_name": "systemd"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "systemd-units",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "systemd",
+              "src_name": "systemd"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "zlib-devel",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 1,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "zlib-devel",
+              "src_name": "zlib"
+            }
+          ],
+          "requires_type": "build"
+        }
+      ],
+      "subpacks": [
+        {
+          "name": "389-ds-base",
+          "version": "1.4.0.31"
+        },
+        {
+          "name": "389-ds-base-devel",
+          "version": "1.4.0.31"
+        },
+        {
+          "name": "389-ds-base-help",
+          "version": "1.4.0.31"
+        },
+        {
+          "name": "389-ds-base-legacy-tools",
+          "version": "1.4.0.31"
+        },
+        {
+          "name": "389-ds-base-snmp",
+          "version": "1.4.0.31"
+        },
+        {
+          "name": "cockpit-389-ds",
+          "version": "1.4.0.31"
+        },
+        {
+          "name": "python3-lib389",
+          "version": "1.4.0.31"
+        }
+      ]
+    },
+    "sort": [
+      0
+    ]
+  },
+  {
+    "_index": "openeuler-source",
+    "_type": "_doc",
+    "_id": "_P5-kXgB16N4XbeNBPUx",
+    "_score": null,
+    "_source": {
+      "pkgKey": 2,
+      "pkgId": "daa1c57c14d0f8d2ac4345b173fde508fc5c7aff491f0938b458384392643577",
+      "name": "BareBonesBrowser",
+      "arch": "src",
+      "version": "3.1",
+      "epoch": "0",
+      "release": "1.oe1",
+      "summary": "Simple library to launch a browser window from Java",
+      "description": "Utility class to open a web page from a Swing application in the user",
+      "url": "http://www.centerkey.com/java",
+      "time_file": 1601236461,
+      "time_build": 1601236489,
+      "rpm_license": "Public Domain",
+      "rpm_vendor": "http://openeuler.org",
+      "rpm_group": "Unspecified",
+      "rpm_buildhost": "obs-worker-0025",
+      "rpm_sourcerpm": "",
+      "rpm_header_start": 5096,
+      "rpm_header_end": 7124,
+      "rpm_packager": "http://openeuler.org",
+      "size_package": 26967,
+      "size_installed": 22650,
+      "size_archive": 23060,
+      "location_href": "Packages/BareBonesBrowserLaunch-3.1-1.oe1.src.rpm",
+      "location_base": null,
+      "checksum_type": "sha256",
+      "requires": [
+        {
+          "name": "java-devel",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 2,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "java-1.8.0-openjdk-devel",
+              "src_name": "java-1.8.0-openjdk"
+            },
+            {
+              "bin_name": "java-11-openjdk-devel",
+              "src_name": "java-11-openjdk"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "javapackages-local",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 2,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "javapackages-local",
+              "src_name": "javapackages-tools"
+            }
+          ],
+          "requires_type": "build"
+        }
+      ],
+      "subpacks": [
+        {
+          "name": "BareBonesBrowserLaunch",
+          "version": "3.1"
+        },
+        {
+          "name": "BareBonesBrowserLaunch-javadoc",
+          "version": "3.1"
+        }
+      ]
+    },
+    "sort": [
+      1
+    ]
+  },
+  {
+    "_index": "openeuler-source",
+    "_type": "_doc",
+    "_id": "_f5-kXgB16N4XbeNBPUx",
+    "_score": null,
+    "_source": {
+      "pkgKey": 3,
+      "pkgId": "a2c8963c6d5bdea8d3c9dc1bfa609db643c5a17077eff4eca21aa6e33ff9d4e5",
+      "name": "CUnit",
+      "arch": "src",
+      "version": "2.1.3",
+      "epoch": "0",
+      "release": "21.oe1",
+      "summary": "A Unit Testing Framework for C",
+      "description": "CUnit is a lightweight system for writing, administering, and running unit tests in C\\nIt provides C programmers a basic testing functionality with a flexible variety of user\\ninterfaces.\\n\\nCUnit is built as a static library which is linked with the user",
+      "url": "http://cunit.sourceforge.net/",
+      "time_file": 1601215538,
+      "time_build": 1601215498,
+      "rpm_license": "LGPLv2+",
+      "rpm_vendor": "http://openeuler.org",
+      "rpm_group": "Unspecified",
+      "rpm_buildhost": "obs-worker-009",
+      "rpm_sourcerpm": "",
+      "rpm_header_start": 5096,
+      "rpm_header_end": 7552,
+      "rpm_packager": "http://openeuler.org",
+      "size_package": 523353,
+      "size_installed": 516791,
+      "size_archive": 517172,
+      "location_href": "Packages/CUnit-2.1.3-21.oe1.src.rpm",
+      "location_base": null,
+      "checksum_type": "sha256",
+      "requires": [
+        {
+          "name": "automake",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 3,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "automake",
+              "src_name": "automake"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "git",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 3,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "git",
+              "src_name": "git"
+            },
+            {
+              "bin_name": "git",
+              "src_name": "git"
+            }
+          ],
+          "requires_type": "build"
+        },
+        {
+          "name": "libtool",
+          "flags": null,
+          "epoch": null,
+          "version": null,
+          "release": null,
+          "pkgKey": 3,
+          "pre": "FALSE",
+          "relation": [
+            {
+              "bin_name": "libtool",
+              "src_name": "libtool"
+            }
+          ],
+          "requires_type": "build"
+        }
+      ],
+      "subpacks": [
+        {
+          "name": "CUnit",
+          "version": "2.1.3"
+        },
+        {
+          "name": "CUnit-devel",
+          "version": "2.1.3"
+        },
+        {
+          "name": "CUnit-help",
+          "version": "2.1.3"
+        }
+      ]
+    },
+    "sort": [
+      2
+    ]
+  }
+]

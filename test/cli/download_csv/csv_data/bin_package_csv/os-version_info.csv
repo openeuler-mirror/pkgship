@@ -1,0 +1,4 @@
+pkg_name,license,version,url,database
+389-ds-base,GPLv3+,1.4.0.31,https://www.port389.org,os-version
+389-ds-base-devel,GPLv3+,1.4.0.31,https://www.port389.org,os-version
+389-ds-base-help,GPLv3+,1.4.0.31,https://www.port389.org,os-version

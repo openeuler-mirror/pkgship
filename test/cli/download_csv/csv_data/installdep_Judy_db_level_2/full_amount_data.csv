@@ -1,0 +1,7 @@
+Judy,Judy,1.0.5,os-version
+glibc,glibc,2.31,os-version,install__bash
+bash,bash,5.0,os-version
+basesystem,basesystem,12,os-version,install__glibc
+glibc-common,glibc,2.31,os-version,install__glibc
+filesystem,filesystem,3.14,os-version,install__bash
+ncurses-libs,ncurses,6.2,os-version,install__bash
