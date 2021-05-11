@@ -10,7 +10,7 @@ RUN npm install -g vue && \
     npm install && \
     npm run build
 
-FROM nginx:1.19.2
+FROM nginx:1.20.0
 
 COPY --from=Builder /home/openeuler/pkgwebui/dist /usr/share/nginx/html/
 RUN chmod -R 755 /usr/share/nginx/html
