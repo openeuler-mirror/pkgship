@@ -9,6 +9,6 @@
 #See the Mulan PSL v1 for more details.
 [SP1]
 name=SP1
-baseurl=http://119.3.219.20:82/openEuler:/20.03:/LTS:/SP1/standard_aarch64
+baseurl=https://repo.openeuler.org/openEuler-20.03-LTS-SP1/everything/aarch64/
 enabled=1
 gpgcheck=0
