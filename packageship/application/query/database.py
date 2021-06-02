@@ -31,7 +31,7 @@ def get_db_priority():
     """
     db_infos = {}
     try:
-        result = db_client.query(index=DB_INFO_INDEX, body=QueryBody.QUERY_ALL)
+        result = db_client.query(index=DB_INFO_INDEX, body=QueryBody.QUERY_ALL_NO_PAGING)
         for _db in result["hits"]["hits"]:
             db_info = _db.get("_source")
             db_infos[db_info.get("database_name")] = db_info.get("priority")

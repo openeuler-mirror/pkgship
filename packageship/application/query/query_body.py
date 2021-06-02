@@ -38,6 +38,14 @@ class QueryBody(object):
         "from": 0,
         "size": 20
     }
+    # Query all data no auto paging
+    QUERY_ALL_NO_PAGING = {
+        "query": {
+            "match_all": {}
+        },
+        "from": 0,
+        "size": 1000
+    }
 
     @property
     def query_terms(self):
