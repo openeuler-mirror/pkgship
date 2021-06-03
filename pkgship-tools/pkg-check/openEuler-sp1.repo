@@ -7,8 +7,20 @@
 #IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
 #PURPOSE.
 #See the Mulan PSL v1 for more details.
-[SP1]
-name=SP1
+[SP1-OS]
+name=SP1-OS
+baseurl=https://repo.openeuler.org/openEuler-20.03-LTS-SP1/OS/aarch64/
+enabled=1
+gpgcheck=0
+
+[SP1-everything]
+name=SP1-everything
 baseurl=https://repo.openeuler.org/openEuler-20.03-LTS-SP1/everything/aarch64/
+enabled=1
+gpgcheck=0
+
+[SP1-epol]
+name=SP1-epol
+baseurl=https://repo.openeuler.org/openEuler-20.03-LTS-SP1/EPOL/aarch64/
 enabled=1
 gpgcheck=0
