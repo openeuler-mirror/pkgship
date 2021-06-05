@@ -22,6 +22,7 @@ import redis
 from elasticsearch import helpers
 from elasticsearch.exceptions import ElasticsearchException
 from packageship.application.common.exc import InitializeError, ResourceCompetitionError
+from packageship.application.common.constant import MAX_INIT_DATABASE
 from packageship.libs.log import LOGGER
 from packageship.libs.conf import configuration
 from packageship.application.query import database as db
@@ -751,6 +752,9 @@ class RepoConfig:
             raise ValueError("format of the initial database configuration file is incorrect."
                              " When multiple databases need to be initialized,"
                              " it needs to be configured in the form of multiple .")
+        if len(self._repo) > MAX_INIT_DATABASE:
+            raise ValueError(
+                "The initial database supports up to 500, please control the number.")
         self._validate_database()
         for repo in self._repo:
             try:

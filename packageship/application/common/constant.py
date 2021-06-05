@@ -72,6 +72,9 @@ MAX_MINUTES_NUMBER = 20
 # uwsig path
 UWSIG_PATH = "/opt/pkgship/uwsgi/pkgship.ini"
 
+# Maximum number of database to init
+MAX_INIT_DATABASE = 500
+
 
 class ListNode():
     """
