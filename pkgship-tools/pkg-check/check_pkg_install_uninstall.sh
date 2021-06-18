@@ -117,15 +117,22 @@ function create_env(){
 # start check
 function main(){
 	docker exec -it test_install /bin/bash -c "cd /root/ && bash check_pkg_install_uninstall_indocker.sh need_check_list"
-	# get result from docker, then clear temporary files and docker env
-	docker cp test_install:/root/check_result ./
-	rm -rf ${init_path}/need_check_list
-	mv ${init_path}/get_binary_failed ${init_path}/check_result/ &>/dev/null
-	mv ${init_path}/all_binary ${init_path}/check_result/
-	docker stop test_install &>/dev/null
-	docker rm test_install &>/dev/null
-	echo "Clear docker env complete !!!"
-	echo "Checking install and uninstall is complete, you can see log file in directory: ${init_path}/check_result, please backup check_result dir !!!"
+	if [ $? -eq 0 ];then
+		# get result from docker, then clear temporary files and docker env
+		docker cp test_install:/root/check_result ./
+		mv ${init_path}/get_binary_failed ${init_path}/check_result/ &>/dev/null
+		mv ${init_path}/all_binary ${init_path}/check_result/
+		rm -rf ${init_path}/need_check_list
+		docker stop test_install &>/dev/null
+		docker rm test_install &>/dev/null
+		echo "Clear docker env complete !!!"
+		echo "Checking install and uninstall is complete, you can see log file in directory: ${init_path}/check_result, please backup check_result dir !!!"
+	else
+		rm -f ${init_path}/get_binary_failed
+		rm -rf ${init_path}/all_binary
+		rm -rf ${init_path}/need_check_list
+		echo "Checking install and uninstall is failed! Please check the docker env!"
+	fi
 }
 
 echo "=============================================Begin============================================="
