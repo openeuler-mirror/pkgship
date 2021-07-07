@@ -75,6 +75,9 @@ UWSIG_PATH = "/opt/pkgship/uwsgi/pkgship.ini"
 # Maximum number of database to init
 MAX_INIT_DATABASE = 500
 
+# Maximum number of ES queries
+MAX_ES_QUERY_NUM = 1000000
+
 
 class ListNode():
     """
