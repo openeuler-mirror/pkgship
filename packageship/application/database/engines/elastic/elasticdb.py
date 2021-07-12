@@ -20,6 +20,7 @@ from elasticsearch import helpers
 from elasticsearch.exceptions import ElasticsearchException, TransportError
 from urllib3.exceptions import LocationValueError
 
+from packageship.application.common.constant import MAX_ES_QUERY_NUM
 from packageship.application.common.exc import DatabaseConfigException, ElasticSearchQueryException
 from packageship.application.common.singleton import singleton
 from packageship.libs.log import LOGGER
@@ -174,3 +175,14 @@ class ElasticSearch(object):
         except TransportError:
             fails = index
         return fails
+
+    def update_setting(self):
+        """
+        Update the ES configuration, currently the maximum number of modified queries
+        :return: None
+        """
+        try:
+            self.client.indices.put_settings(index='_all', body={'index': {
+                'max_result_window': MAX_ES_QUERY_NUM}})
+        except ElasticsearchException:
+            LOGGER.error('Set max_result_window of all indies failed')

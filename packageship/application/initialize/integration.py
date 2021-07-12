@@ -184,6 +184,7 @@ class InitializeService:
                     self._fail.append(self._repo["dbname"])
                     continue
                 self._save()
+                self._session.update_setting()
             except (FileNotFoundError, ValueError, ElasticsearchException) as error:
                 self._fail.append(self._repo["dbname"])
                 LOGGER.error(error)
