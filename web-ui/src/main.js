@@ -9,6 +9,7 @@ import ElementUI from 'element-ui';
 import locale from 'element-ui/lib/locale/lang/en';
 import '@/assets/style/base.css';
 import  echarts from 'echarts';
+import analytcsConfig from './libs/analytics';
 
 if (!localStorage.getItem('locale') || localStorage.getItem('locale') === 'zh-en') {
     import('@/assets/style/font-en.css');
@@ -19,6 +20,7 @@ if (!localStorage.getItem('locale') || localStorage.getItem('locale') === 'zh-en
 Vue.use(ElementUI, {locale});
 Vue.use(echarts);
 Vue.prototype.$echarts = echarts;
+Vue.prototype.$analytcsConfig = analytcsConfig;
 Vue.config.productionTip = false;
 
 new Vue({
