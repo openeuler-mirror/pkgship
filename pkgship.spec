@@ -88,6 +88,7 @@ chown -R $user:$group $1
 }
 
 create_dir_file /opt/pkgship/ 750 d
+create_dir_file /opt/pkgship/compare 755 d
 create_dir_file /var/log/pkgship 755 d
 create_dir_file /var/log/pkgship-operation 700 d
 

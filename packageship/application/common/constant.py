@@ -78,6 +78,9 @@ MAX_INIT_DATABASE = 500
 # Maximum number of ES queries
 MAX_ES_QUERY_NUM = 1000000
 
+# Supported query types
+SUPPORT_QUERY_TYPE = ['build', 'install']
+
 
 class ListNode():
     """

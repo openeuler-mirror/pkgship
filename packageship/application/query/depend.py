@@ -13,12 +13,10 @@
 """
 Module of query require relation
 """
-import gevent
-from gevent import monkey
-
-monkey.patch_all(ssl=False)
-
 from collections import Counter
+
+import gevent
+
 from packageship.application.common.constant import PROVIDES_NAME, FILES_NAME
 from packageship.application.query import Query
 from packageship.application.query.query_body import QueryBody

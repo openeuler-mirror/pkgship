@@ -14,8 +14,14 @@
 Description: Entry for project initialization and service startupc
 """
 import os
+
 try:
+    from gevent import monkey
+
+    monkey.patch_all(ssl=False)
+
     from packageship.application import init_app
+
     if not os.path.exists(os.environ.get('SETTINGS_FILE_PATH')):
         raise RuntimeError(
             'System configuration file:%s' % os.environ.get(

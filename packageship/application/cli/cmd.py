@@ -37,6 +37,7 @@ else:
     from packageship.application.cli.commands.installdep import InstallDepCommand
     from packageship.application.cli.commands.singlepkg import SingleCommand
     from packageship.application.cli.commands.version import VersionCommand
+    from packageship.application.cli.commands.comparedep import CompareCommand
 
 
 def main():
@@ -89,6 +90,7 @@ class PkgshipCommand(BaseCommand):
         cls.register_command(SingleCommand())
         cls.register_command(DbPriorityCommand())
         cls.register_command(VersionCommand())
+        cls.register_command(CompareCommand())
         try:
             args = cls.parser.parse_args()
             args.func(args)
