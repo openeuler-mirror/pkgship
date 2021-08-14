@@ -20,6 +20,9 @@ from requests import RequestException
 from packageship.application.cli.commands.comparedep import CompareCommand
 from test.cli.compare_command import CompareBase
 
+SINGLE_CSV_FILE_COUNT = 1
+CSV_FILE_COUNT = 4
+
 
 class CompareTest(CompareBase):
     """
@@ -40,7 +43,6 @@ class CompareTest(CompareBase):
         """
         Test input parameters have null values
         """
-        self.mock_get_version_success()
         self.command_params = ['-t', 'build']
         self.excepted_str = "[ERROR] Parameter error, please check the parameter and query again."
         self.assert_exception_output()
@@ -49,7 +51,6 @@ class CompareTest(CompareBase):
         """
         Dependency type for which test input is not available
         """
-        self.mock_get_version_success()
         self.command_params = ['-t', 'test', '-dbs', 'openEuler21.03', '-o', str(self.out_path)]
         self.excepted_str = "[ERROR] Dependent type (test) is not supported, please enter again."
         self.assert_exception_output()
@@ -58,7 +59,6 @@ class CompareTest(CompareBase):
         """
         Test input the same database
         """
-        self.mock_get_version_success()
         self.command_params = ['-t', 'build', '-dbs', 'openEuler21.03', 'openEuler21.03', '-o', str(self.out_path)]
         self.excepted_str = "[ERROR] Duplicate database entered."
         self.assert_exception_output()
@@ -67,7 +67,6 @@ class CompareTest(CompareBase):
         """
         Test input more than 4 databases
         """
-        self.mock_get_version_success()
         self.command_params = ['-t', 'build', '-dbs', 'fedora30', 'fedora31', 'fedora32', 'fedora33', 'fedora34', '-o',
                                str(self.out_path)]
         self.excepted_str = "[ERROR] Supports up to four databases."
@@ -77,8 +76,6 @@ class CompareTest(CompareBase):
         """
         Unsupported database for test input
         """
-        self.mock_get_version_success()
-        self.mock_query_all_database()
         self.command_params = ['-t', 'build', '-dbs', 'openEuler20.09', '-o', str(self.out_path)]
         self.excepted_str = "[ERROR] Database (openEuler20.09) is not supported, please enter again."
         self.assert_exception_output()
@@ -87,8 +84,6 @@ class CompareTest(CompareBase):
         """
         Test output path is empty
         """
-        self.mock_get_version_success()
-        self.mock_query_all_database()
         test_path = os.path.join(self.out_path, "test")
         self.command_params = ['-t', 'build', '-dbs', 'openEuler21.03', '-o', str(test_path)]
         self.excepted_str = f"[ERROR] Output path ({str(test_path)}) " \
@@ -99,10 +94,35 @@ class CompareTest(CompareBase):
         """
         Test No access to  output path
         """
-        self.mock_get_version_success()
-        self.mock_query_all_database()
         os.chmod(self.out_path, 0o644)
         self.command_params = ['-t', 'build', '-dbs', 'openEuler21.03', '-o', str(self.out_path)]
         self.excepted_str = f"[ERROR] Output path ({str(self.out_path)}) " \
                             f"not exist or does not support user pkgshipuser writing."
         self.assert_exception_output()
+
+    def test_one_database_input(self):
+        """
+        Test input into a database
+        """
+        self.command_params = ['-t', 'build', '-dbs', 'openEuler21.03', '-o', str(self.out_path)]
+        self.excepted_str = '[INFO] The data comparison is successful'
+        self.assertIn(self.excepted_str, self.print_result)
+        self._assert_csv_count(SINGLE_CSV_FILE_COUNT)
+
+    def test_normal_input(self):
+        """
+        Test input into a database
+        """
+        self.command_params = ['-t', 'install', '-dbs', 'openEuler21.03', 'fedora32', 'centos7', '-o', str(self.out_path)]
+        self.excepted_str = '[INFO] The data comparison is successful'
+        self.assertIn(self.excepted_str, self.print_result)
+        self._assert_csv_count(CSV_FILE_COUNT)
+
+    def _assert_csv_count(self, csv_num):
+        """
+        Determine the number of csv generated
+        """
+        csv_files = list()
+        for _, _, file in os.walk(self.out_path):
+            csv_files = [file_name for file_name in file if file_name.endswith('.csv')]
+        self.assertEqual(len(csv_files), csv_num)
