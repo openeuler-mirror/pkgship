@@ -1,0 +1,219 @@
+{
+  "took": 0,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 2,
+      "relation": "eq"
+    },
+    "max_score": 0.0,
+    "hits": [
+      {
+        "_index": "centos7-binary",
+        "_type": "_doc",
+        "_id": "y8qJp3oB9GN0it81aZwL",
+        "_score": 0.0,
+        "_source": {
+          "pkgKey": 8,
+          "pkgId": "568a9edb6cbf7fd96d838fd138e82538ce84dc437625ae2a48215c654c6ccaa7",
+          "name": "CUnit",
+          "arch": "aarch64",
+          "version": "2.1.3",
+          "epoch": "0",
+          "release": "21.oe1",
+          "summary": "A Unit Testing Framework for C",
+          "description": "In addition, several different interfaces are provided for running tests and reporting results.",
+          "url": "http://cunit.sourceforge.net/",
+          "time_file": 1601215538,
+          "time_build": 1601215498,
+          "rpm_license": "LGPLv2+",
+          "rpm_vendor": "http://centos.org",
+          "rpm_group": "Unspecified",
+          "rpm_buildhost": "obs-worker-009",
+          "rpm_sourcerpm": "CUnit-2.1.3-21.oe1.src.rpm",
+          "rpm_header_start": 5096,
+          "rpm_header_end": 11020,
+          "rpm_packager": "http://centos.org",
+          "size_package": 49888,
+          "size_installed": 131253,
+          "size_archive": 134176,
+          "location_href": "Packages/CUnit-2.1.3-21.oe1.aarch64.rpm",
+          "location_base": null,
+          "checksum_type": "sha256",
+          "src_name": "CUnit",
+          "provides": [
+            {
+              "name": "CUnit",
+              "flags": "EQ",
+              "epoch": "0",
+              "version": "2.1.3",
+              "release": "21.oe1",
+              "pkgKey": 8
+            },
+            {
+              "name": "CUnit(aarch-64)",
+              "flags": "EQ",
+              "epoch": "0",
+              "version": "2.1.3",
+              "release": "21.oe1",
+              "pkgKey": 8
+            },
+            {
+              "name": "libcunit.so.1()(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null,
+              "release": null,
+              "pkgKey": 8
+            }
+          ],
+          "files": [
+            {
+              "name": "/etc/ima/digest_lists/0-metadata_list-compact-CUnit-2.1.3-21.oe1.aarch64",
+              "type": "file",
+              "pkgKey": 8
+            },
+            {
+              "name": "/etc/ima/digest_lists.tlv/0-metadata_list-compact_tlv-CUnit-2.1.3-21.oe1.aarch64",
+              "type": "file",
+              "pkgKey": 8
+            }
+          ],
+          "filelists": [
+            {
+              "pkgKey": 8,
+              "dirname": "/usr/share",
+              "filenames": "CUnit",
+              "filetypes": "d"
+            },
+            {
+              "pkgKey": 8,
+              "dirname": "/usr/share/doc",
+              "filenames": "CUnit",
+              "filetypes": "d"
+            },
+            {
+              "pkgKey": 8,
+              "dirname": "/etc/ima/digest_lists.tlv",
+              "filenames": "0-metadata_list-compact_tlv-CUnit-2.1.3-21.oe1.aarch64",
+              "filetypes": "f"
+            },
+            {
+              "pkgKey": 8,
+              "dirname": "/usr/lib64",
+              "filenames": "libcunit.so.1/libcunit.so.1.0.1",
+              "filetypes": "ff"
+            },
+            {
+              "pkgKey": 8,
+              "dirname": "/usr/share/CUnit",
+              "filenames": "CUnit-List.dtd/CUnit-List.xsl/CUnit-Run.dtd/CUnit-Run.xsl/Memory-Dump.dtd/Memory-Dump.xsl",
+              "filetypes": "ffffff"
+            },
+            {
+              "pkgKey": 8,
+              "dirname": "/usr/share/doc/CUnit",
+              "filenames": "AUTHORS/COPYING/ChangeLog/NEWS/README/TODO/VERSION",
+              "filetypes": "fffffff"
+            },
+            {
+              "pkgKey": 8,
+              "dirname": "/etc/ima/digest_lists",
+              "filenames": "0-metadata_list-compact-CUnit-2.1.3-21.oe1.aarch64",
+              "filetypes": "f"
+            }
+          ],
+          "requires": [
+            {
+              "name": "automake",
+              "flags": null,
+              "epoch": null,
+              "version": null,
+              "release": null,
+              "pkgKey": 3,
+              "pre": "FALSE",
+              "relation": [
+                {
+                  "bin_name": "automake",
+                  "src_name": "automake"
+                }
+              ],
+              "requires_type": "build"
+            },
+            {
+              "name": "libtool",
+              "flags": null,
+              "epoch": null,
+              "version": null,
+              "release": null,
+              "pkgKey": 3,
+              "pre": "FALSE",
+              "relation": [
+                {
+                  "bin_name": "libtool",
+                  "src_name": "libtool"
+                }
+              ],
+              "requires_type": "build"
+            },
+            {
+              "name": "ld-linux-aarch64.so.1()(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null,
+              "release": null,
+              "pkgKey": 8,
+              "pre": "FALSE",
+              "relation": [
+                {
+                  "bin_name": "glibc",
+                  "src_name": "glibc"
+                }
+              ],
+              "requires_type": "install"
+            },
+            {
+              "name": "ld-linux-aarch64.so.1(GLIBC_2.17)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null,
+              "release": null,
+              "pkgKey": 8,
+              "pre": "FALSE",
+              "relation": [
+                {
+                  "bin_name": "glibc",
+                  "src_name": "glibc"
+                }
+              ],
+              "requires_type": "install"
+            },
+            {
+              "name": "libc.so.6(GLIBC_2.17)(64bit)",
+              "flags": null,
+              "epoch": null,
+              "version": null,
+              "release": null,
+              "pkgKey": 8,
+              "pre": "FALSE",
+              "relation": [
+                {
+                  "bin_name": "glibc",
+                  "src_name": "glibc"
+                }
+              ],
+              "requires_type": "install"
+            }
+          ],
+          "src_version": "2.1.3"
+        }
+      }
+    ]
+  }
+}

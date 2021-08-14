@@ -37,7 +37,11 @@ class CompareBase(ClientTest):
         super(CompareBase, self).setUp()
         if not os.path.isdir(self.out_path):
             os.mkdir(self.out_path)
-        os.chmod(self.out_path, 0o755)
+        os.chmod(self.out_path, 0o777)
+        self.mock_es_scan()
+        self.mock_es_search()
+        self.mock_es_count()
+        self.mock_get_version_success()
 
     def mock_get_version_success(self):
         """
@@ -47,12 +51,32 @@ class CompareBase(ClientTest):
         response.status_code = 200
         self.mock_requests_get(return_value=response)
 
-    def mock_query_all_database(self):
+    def _es_scan_result(self, client, index, query, scroll="3m", timeout="1m"):
         """
-        Simulate query all initialization database operations
+        Rewrite the scan method method of es
         """
-        database_mock_file = os.path.join(self.mock_data_file, 'database_info.json')
-        self.mock_es_search(return_value=self.read_file_content(database_mock_file))
+        _mock_file = os.path.join(self.mock_data_file, f'{index}.json')
+        if not os.path.isfile(_mock_file):
+            print(f'mock file is {_mock_file},and not found')
+            return {}
+        mock_data = self.read_file_content(_mock_file)
+        return mock_data['hits']['hits']
+
+    def _es_search_result(self, index, body):
+        """
+        Rewrite the search method method of es
+        """
+        _mock_file = os.path.join(self.mock_data_file, f'{index}.json')
+        if not os.path.isfile(_mock_file):
+            print(f'mock file is {_mock_file},and not found')
+            return {}
+        return self.read_file_content(_mock_file)
+
+    def _es_count_result(self, index, body):
+        """
+        Rewrite the count method method of es
+        """
+        return {"count": 2}
 
     def assert_exception_output(self):
         """

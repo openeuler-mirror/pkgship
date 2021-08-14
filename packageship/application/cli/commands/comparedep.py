@@ -10,8 +10,12 @@
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
+import os
+from datetime import datetime
 
 from packageship.application.cli.base import BaseCommand
+from packageship.application.core.compare.compare_repo import CompareRepo
+from packageship.application.core.compare.query_depend import QueryDepend
 from packageship.application.core.compare.validate import validate_args
 from packageship.libs.conf import configuration
 
@@ -57,3 +61,29 @@ class CompareCommand(BaseCommand):
         dbs = args.dbs
         output_path = args.o
         validate_args(depend_type, dbs, output_path)
+        print('[INFO] Start to compare the software package dependencies in different databases, '
+              'please wait a few minutes...')
+        # Query dependency information of all packages in each database
+        query_dependency_engine = QueryDepend()
+        all_db_dependency_info = query_dependency_engine.all_depend_info(depend_type=depend_type, dbs=dbs)
+        # Path append date
+        new_out_path = self._path_append(output_path)
+        # Write the generated dependency information to a csv file
+        compare_dependency_engine = CompareRepo(out_path=new_out_path, dbs=dbs)
+        is_success = compare_dependency_engine.dbs_compare(all_db_dependency_info)
+        if is_success:
+            print(
+                f'[INFO] The data comparison is successful, and the generated file is in the ({new_out_path}) path.')
+
+    @staticmethod
+    def _path_append(old_path):
+        """
+        In order to prevent the file from being overwritten, append the time to the input path
+        :param old_path: input path
+        :return: new path
+        """
+        current_time = datetime.now().strftime("%H%M%S")
+        new_path = os.path.join(old_path, current_time)
+        if not os.path.exists(new_path):
+            os.makedirs(new_path, mode=0o755)
+        return new_path
