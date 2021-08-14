@@ -22,6 +22,7 @@ try:
     from packageship.libs.conf import configuration
     from packageship.application.common.exc import Error
     from requests.exceptions import ConnectionError as ConnErr
+    from requests import RequestException
     from packageship.application.common.remote import RemoteService
 except ImportError as import_error:
     print("Error importing related dependencies,"
@@ -54,11 +55,13 @@ class BaseCommand():
         # Calculate the total width of the current terminal
         self.columns = 100
         self.params = []
+        self.collection_params = []
         self.write_host = None
         self.read_host = None
         self.__http = 'http://'
         self.headers = {"Content-Type": "application/json",
                         "Accept-Language": "zh-CN,zh;q=0.9"}
+        self._success_code = 200
 
         self.load_read_host()
         self.request = RemoteService()
@@ -226,7 +229,17 @@ class BaseCommand():
                 # type=eval(command_params[1]),  # pylint: disable=W0123
                 help=command_params[2],
                 default=command_params[3],
-                action=command_params[4])
+                action=command_params[4]
+            )
+
+        for command_param in self.collection_params:
+            if isinstance(command_param, dict):
+                self.parse.add_argument(
+                    command_param.get('name'),
+                    nargs=command_param.get('nargs'),
+                    default=command_param.get('default'),
+                    help=command_param.get('help')
+                )
 
     def parse_depend_package(self, response_data):
         """
@@ -260,3 +273,16 @@ class BaseCommand():
                     self.statistics_table.add_row([statistic['database'],
                                                    statistic['binary_sum'],
                                                    statistic['source_sum']])
+
+    def is_service_start(self):
+        """
+        Determine whether the service is started by querying the pkgship version
+        :return: True/False
+        """
+        try:
+            _query_version_response = self.request.get("{}/version".format(self.read_host))
+            if not _query_version_response or _query_version_response.status_code != self._success_code:
+                return False
+            return True
+        except RequestException:
+            return False

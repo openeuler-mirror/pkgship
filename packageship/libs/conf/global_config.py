@@ -73,3 +73,6 @@ QUEUE_MAXSIZE = 1000
 
 # A temporary directory for files downloaded from the network that are cleaned periodically
 TEMPORARY_DIRECTORY = '/opt/pkgship/tmp/'
+
+# The default storage location of the comparison result file
+COMPARE_OUTPUT_FILE = '/opt/pkgship/compare'

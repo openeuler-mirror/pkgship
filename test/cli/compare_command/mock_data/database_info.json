@@ -1,0 +1,49 @@
+{
+  "took": 3,
+  "timed_out": false,
+  "_shards": {
+    "total": 1,
+    "successful": 1,
+    "skipped": 0,
+    "failed": 0
+  },
+  "hits": {
+    "total": {
+      "value": 3,
+      "relation": "eq"
+    },
+    "max_score": 1.0,
+    "hits": [
+      {
+        "_index": "databaseinfo",
+        "_type": "_doc",
+        "_id": "D9KoP3gBlCdfqXjg-gwY",
+        "_score": 1.0,
+        "_source": {
+          "database_name": "openEuler21.03",
+          "priority": 1
+        }
+      },
+      {
+        "_index": "databaseinfo",
+        "_type": "_doc",
+        "_id": "D9KoP3gBlCdfqXjg-gwY",
+        "_score": 1.0,
+        "_source": {
+          "database_name": "fedora32",
+          "priority": 2
+        }
+      },
+      {
+        "_index": "databaseinfo",
+        "_type": "_doc",
+        "_id": "D9KoP3gBlCdfqXjg-gwY",
+        "_score": 1.0,
+        "_source": {
+          "database_name": "centos7",
+          "priority": 3
+        }
+      }
+    ]
+  }
+}
