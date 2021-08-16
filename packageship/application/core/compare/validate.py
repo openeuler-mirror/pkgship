@@ -66,7 +66,7 @@ def _validate_dbs(dbs):
 
 def _is_writable(path):
     """
-    Verify whether user pkgshipuser has write permission to the output path
+    Verify whether run user has write permission to the output path
     :param path: cvs save path
     :return: True False
     """
