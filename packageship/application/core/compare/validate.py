@@ -14,8 +14,7 @@
 Validate args of compare command
 """
 import os
-import stat
-import pwd
+import shutil
 
 from packageship.application.common.constant import SUPPORT_QUERY_TYPE
 from packageship.application.query import database
@@ -65,20 +64,18 @@ def _validate_dbs(dbs):
               'and only dependent information files will be generated without data comparison.')
 
 
-def _is_writable(path, user='pkgshipuser'):
+def _is_writable(path):
     """
-    Verify whether user A has write permission to the output path
+    Verify whether run user has write permission to the output path
     :param path: cvs save path
-    :param user: current only pkgshipuser
     :return: True False
     """
-    user_info = pwd.getpwnam(user)
-    uid = user_info.pw_uid
-    gid = user_info.pw_gid
-    path_info = os.stat(path)
-    mode = path_info[stat.ST_MODE]
-    return (
-            ((path_info[stat.ST_UID] == uid) and (mode & stat.S_IWUSR > 0)) or
-            ((path_info[stat.ST_GID] == gid) and (mode & stat.S_IWGRP > 0)) or
-            (mode & stat.S_IWOTH > 0)
-    )
+    tmp_path = os.path.join(path, 'tmp_compare')
+    try:
+        os.mkdir(tmp_path)
+    except PermissionError:
+        return False
+    finally:
+        if os.path.isdir(tmp_path):
+            shutil.rmtree(tmp_path)
+    return True

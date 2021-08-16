@@ -23,7 +23,6 @@ EOF
 
 function prepare_rpmbuild_dir()
 {
-  sudo useradd pkgshipuser
   mkdir -p /home/jenkins/rpmbuild
   cd /home/jenkins/rpmbuild
   mkdir -p BUILD BUILDROOT RPM RPMS SOURCES SPECS SRPMS
