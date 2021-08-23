@@ -37,7 +37,7 @@ class CompareCommand(BaseCommand):
             ('-o', 'str', 'the storage location of the generated csv file', configuration.COMPARE_OUTPUT_FILE, 'store')
         ]
         self.collection_params = [
-            dict(name='-dbs', help='database to be compared,The first database is the benchmark database, '
+            dict(name='-dbs', help='database to be compared,the first database is the benchmark database, '
                                    'and the first database software package is used as a reference '
                                    'when comparing dependent information', nargs='*', default=None)
         ]
