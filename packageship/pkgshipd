@@ -357,7 +357,7 @@ try:
     response = redis.Redis(host='$redis_ip',
                            port="$redis_port")
     print(response.ping())
-except redis.ConnectionError:
+except Exception:
     print(False)"
   python3_version=$(python3 --version)
   if [[ "${python3_version}" =~ "command not found" ]]; then
