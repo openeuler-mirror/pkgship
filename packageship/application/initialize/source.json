@@ -26,18 +26,6 @@
                         "type": "keyword",
                         "ignore_above": 256
                     },
-                    "relation": {
-                        "properties": {
-                            "bin_name": {
-                                "type": "keyword",
-                                "ignore_above": 256
-                            },
-                            "src_name": {
-                                "type": "keyword",
-                                "ignore_above": 256
-                            }
-                        }
-                    },
                     "release": {
                         "type": "keyword",
                         "ignore_above": 256
