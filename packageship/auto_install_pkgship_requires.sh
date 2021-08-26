@@ -128,7 +128,7 @@ function main() {
   elif [ "${INSTALL_SOFTWARE}" = "redis" ]; then
     download_install_redis
   else
-    echo "Failed to parse parameters, please use 'bash auto_install_es.sh elasticsearch/redis' "
+    echo "Failed to parse parameters, please use '/bin/bash auto_install_pkgship_requires.sh elasticsearch/redis' "
     exit 1
   fi
 }
