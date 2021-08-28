@@ -130,6 +130,7 @@ class DependTestBase(ClientTest):
             if not pkg_info:
                 continue
             ret_dict_p["hits"]["hits"].append(pkg_info)
+        ret_dict_p['hits']['total']['value'] = len(pkg_lst)
 
     @staticmethod
     def make_newline_split_res(ln, lines, idx):
@@ -244,12 +245,12 @@ class DependTestBase(ClientTest):
                 if handle_tolong_name_in_newline(ln, source_lines, idx):
                     continue
                 source_lines.append(split_ln)
-        
+
         if not all(normal_query_judgment_lst):
             raise ValueError(
                 "check Your expected str please, must be a normal query result"
             )
-            
+
         return binary_lines, source_lines
 
     def assert_result(self):
@@ -264,12 +265,12 @@ class DependTestBase(ClientTest):
         current_bin, current_src = self._process_depend_command_value(self.print_result)
         self.assertListEqual(sorted(excepted_bin), sorted(current_bin))
         self.assertListEqual(sorted(excepted_src), sorted(current_src))
-    
+
     def assert_exc_result(self):
         """assert_exc_result
         """
-        super(DependTestBase,self).assert_result()
-    
+        super(DependTestBase, self).assert_result()
+
     def _es_search_result(self, index: str, body: dict):
         """
         Get different return values through different call parameters
@@ -281,7 +282,7 @@ class DependTestBase(ClientTest):
             ret_dict(dict):Parsable es-like data for the project
         """
 
-        ret_dict = {"hits": {"hits": []}}
+        ret_dict = {"hits": {"hits": [], "total": {"value": 0}}}
         if index == "databaseinfo":
             return DATA_BASE_INFO
         elif "binary" in index:

@@ -108,14 +108,16 @@ class SourcePackages(ParsePackageMethod):
         page_num = result.get("page_num")
         page_size = result.get("page_size")
         query_pkg_name = [result.get("query_pkg_name")] if result.get(
-            "query_pkg_name") else []
+            "query_pkg_name") else None
         find_package = Package()
         try:
             result_all = find_package.all_src_packages(
                 result.get("database_name"), page_num=page_num, page_size=page_size, package_list=query_pkg_name,
                 command_line=result.get("command_line"))
-        except (ElasticSearchQueryException, DatabaseConfigException, PackageInfoGettingError) as e:
+        except (ElasticSearchQueryException, DatabaseConfigException):
             return jsonify(self.rspmsg.body('connect_db_error'))
+        except PackageInfoGettingError:
+            return jsonify(self.rspmsg.body('pack_name_not_found'))
         if result_all:
             return jsonify(self.parse_package(result_all, page_size))
         return jsonify(self.rspmsg.body("table_name_not_exist"))
@@ -167,14 +169,16 @@ class BinaryPackages(ParsePackageMethod):
         page_num = result.get("page_num")
         page_size = result.get("page_size")
         query_pkg_name = [result.get("query_pkg_name")] if result.get(
-            "query_pkg_name") else []
+            "query_pkg_name") else None
         find_package = Package()
         try:
             result_all = find_package.all_bin_packages(
                 result.get("database_name"), page_num=page_num, page_size=page_size, package_list=query_pkg_name,
                 command_line=result.get("command_line"))
-        except (ElasticSearchQueryException, DatabaseConfigException, PackageInfoGettingError) as e:
+        except (ElasticSearchQueryException, DatabaseConfigException):
             return jsonify(self.rspmsg.body('connect_db_error'))
+        except PackageInfoGettingError:
+            return jsonify(self.rspmsg.body('pack_name_not_found'))
         if result_all:
             return jsonify(self.parse_package(result_all, page_size))
         return jsonify(self.rspmsg.body("table_name_not_exist"))

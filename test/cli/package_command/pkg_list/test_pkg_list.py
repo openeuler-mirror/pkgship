@@ -77,8 +77,8 @@ HINT           :Make sure the table is valid"""
         test pkgInfoGetingError for all bin packages
         """
         self.excepted_str = """
-ERROR_CONTENT  :Failed to Connect the database
-HINT           :Check the connection"""
+ERROR_CONTENT  :The querying package does not exist in the databases
+HINT           :Use the correct package name and try again"""
         self.command_params = ["os-version"]
         self.mock_es_search(return_value=DATA_BASE_INFO)
         self.mock_es_scan(return_value=[])
