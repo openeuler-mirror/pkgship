@@ -180,13 +180,15 @@ class SinglePackage:
                 install_require_info = component_info.get("install_require")
                 required_by_bin = []
                 for req_info in install_require_info:
-                    required_by_bin.append(req_info.get("req_bin_name"))
+                    if req_info.get("req_bin_name"):
+                        required_by_bin.append(req_info.get("req_bin_name"))
 
                 # getting required_by_src
                 build_require_info = component_info.get("build_require")
                 required_by_src = []
                 for req_info in build_require_info:
-                    required_by_src.append(req_info.get("req_src_name"))
+                    if req_info.get("req_src_name"):
+                        required_by_src.append(req_info.get("req_src_name"))
 
                 component_dict = {"component": component_info.get("component"),
                                   "required_by_bin": required_by_bin,
