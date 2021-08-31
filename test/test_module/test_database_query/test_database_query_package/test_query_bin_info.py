@@ -41,7 +41,7 @@ class TestQueryBinaryPkgInfo(TestCase):
         """
         self.session.scan = MagicMock(return_value=self.ALL_BINARY_RPM_INFO)
         self.session.count = MagicMock(return_value={"count": 5})
-        query_result = self.query_package.get_bin_info(binary_list=[], database='os_version_1', page_num=1, page_size=20,
+        query_result = self.query_package.get_bin_info(binary_list=None, database='os_version_1', page_num=1, page_size=20,
                                                        command_line=True)
         self.assertIsNotNone(query_result['data'])
 
@@ -52,7 +52,7 @@ class TestQueryBinaryPkgInfo(TestCase):
         """
         self.session.query = MagicMock(return_value=self.ALL_BINARY_INFO_PAGING)
         self.session.count = MagicMock(return_value={"count": 5})
-        query_result = self.query_package.get_bin_info(binary_list=[], database='os_version_1', page_num=1, page_size=5,
+        query_result = self.query_package.get_bin_info(binary_list=None, database='os_version_1', page_num=1, page_size=5,
                                                        command_line=False)
         self.assertEqual(len(query_result['data']), 5)
 

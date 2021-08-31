@@ -82,7 +82,7 @@ class QueryPackage(object):
         Raises: DatabaseConfigException ElasticSearchQueryException
         """
         self.rpm_type = SOURCE_DB_TYPE
-        response = self._get_rpm_info(src_list, database, page_num, page_size, command_line)
+        response = self._get_rpm_info(database, page_num, page_size, command_line, rpm_list=src_list)
         return response
 
     def get_bin_info(self, binary_list, database, page_num, page_size, command_line=False):
@@ -98,7 +98,7 @@ class QueryPackage(object):
         Raises: DatabaseConfigException ElasticSearchQueryException
         """
         self.rpm_type = BINARY_DB_TYPE
-        response = self._get_rpm_info(binary_list, database, page_num, page_size, command_line)
+        response = self._get_rpm_info(database, page_num, page_size, command_line, rpm_list=binary_list)
         return response
 
     def _query_src_bin_rpm(self, rpm_list, query_db_type, specify_db):
@@ -150,7 +150,7 @@ class QueryPackage(object):
 
         return rpm_info
 
-    def _get_rpm_info(self, rpm_list, database, page_num, page_size, command_line):
+    def _get_rpm_info(self, database, page_num, page_size, command_line, rpm_list=None):
         """
         General method for obtaining package details
         Args:
@@ -162,10 +162,16 @@ class QueryPackage(object):
 
         Returns: result of query package details
         """
-        self.index = UNDERLINE.join((database, self.rpm_type))
         response = dict(total=0, data=[])
+        # If the query list is empty, return directly; if the query list is None, it means query all packages.
+        if isinstance(rpm_list, list):
+            rpm_list = [rpm for rpm in rpm_list if rpm]
+            if not rpm_list:
+                return response
+
+        self.index = UNDERLINE.join((database, self.rpm_type))
         # Used for Command Line,query all data and no Pagination
-        if command_line and not rpm_list:
+        if command_line and rpm_list is None:
             query_result = self._db_session.scan(index=self.index, body=QueryBody.QUERY_ALL)
             total_num = self._db_session.count(index=self.index, body=QueryBody.QUERY_ALL)
             response['total'] = total_num.get('count')
@@ -190,6 +196,7 @@ class QueryPackage(object):
                     if query_all else query_result['hits']['total']['value']
                 response['total'] = total_num
             except KeyError:
+                response = dict(total=0, data=[])
                 return response
         return response
 
@@ -211,7 +218,7 @@ class QueryPackage(object):
             # Query specify rpm_list of Command line mode
             query_body = self._process_query_terms(DEFAULT_PAGE_NUM, MAX_PAGE_SIZE, rpm_list)
         else:
-            if not rpm_list:
+            if rpm_list is None:
                 # Query all data and Pagination of UI mode
                 query_body = self._format_paging_query_all(page_num, page_size)
                 query_all = True
