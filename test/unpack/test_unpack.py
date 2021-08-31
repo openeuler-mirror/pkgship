@@ -34,13 +34,13 @@ class TestUnpack(TestCase):
     def test_gz_unpack(self):
         """unpack gz file"""
         with self.assertRaises(UnpackError):
-            Unpack.dispatch(".gz", file_path=os.path.join(self.path, "bz2_error.txt"),
+            Unpack.dispatch(".gz", file_path=os.path.join(self.path, "gz_error.txt"),
                             save_file=os.path.join(self.path, "bz2_unpack.sqlite"))
 
     def test_error_tar(self):
         """error tar file"""
         with self.assertRaises(IOError):
-            Unpack.dispatch(".tar", file_path=os.path.join(self.path, "bz2_error.txt"),
+            Unpack.dispatch(".tar", file_path=os.path.join(self.path, "tar_error.txt"),
                             save_file=os.path.join(self.path, "bz2_unpack.sqlite"))
 
     def test_tar_unpack(self):
@@ -50,9 +50,14 @@ class TestUnpack(TestCase):
 
     def test_error_zip_unpack(self):
         """unpack error zip file"""
+        file = os.path.join(self.path, "zip_error.txt")
+        with open(file, "w", encoding="utf-8") as f:
+            f.write("error zip file")
         with self.assertRaises(IOError):
-            Unpack.dispatch(".zip", file_path=os.path.join(self.path, "bz2_error.txt"),
+            Unpack.dispatch(".zip", file_path=file,
                             save_file=os.path.join(self.path, "zip_file.sqlite"))
+        if os.path.exists(file):
+            os.remove(file)
 
     def test_zip_unpack(self):
         """unpack zip file"""
@@ -64,7 +69,7 @@ class TestUnpack(TestCase):
     def test_xz_unpack(self):
         """unpack xz file"""
         with self.assertRaises(UnpackError):
-            Unpack.dispatch(".xz", file_path=os.path.join(self.path, "bz2_error.txt"),
+            Unpack.dispatch(".xz", file_path=os.path.join(self.path, "xz_error.txt"),
                             save_file=os.path.join(self.path, "xz.sqlite"))
 
     def test_file_path_none(self):

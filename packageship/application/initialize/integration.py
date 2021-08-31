@@ -201,20 +201,21 @@ class InitializeService:
 
         """
         sources = []
-        for src_pack_name, src_pack in self._src_pack.items():
+        for _, src_pack in self._src_pack.items():
             es_json = ESJson()
             es_json.update(src_pack)
             es_json["requires"] = self._build_requires(
                 src_pack['pkgKey'])
             try:
-                for bin_pack in self._bin_pack['sources'].pop(src_pack_name):
+                location_href = src_pack["location_href"].split('/')[-1]
+                for bin_pack in self._bin_pack['sources'].get(location_href):
                     _subpacks = dict(
                         name=bin_pack["name"], version=bin_pack["version"])
                     try:
                         es_json["subpacks"].append(_subpacks)
                     except TypeError:
                         es_json["subpacks"] = [_subpacks]
-            except KeyError:
+            except TypeError:
                 es_json["subpacks"] = None
             sources.append(self._es_json("-source", es_json))
         helpers.bulk(self._session.client, sources)
@@ -227,6 +228,10 @@ class InitializeService:
         binarys = []
         be_depends = []
         for _, bin_pack in self._bin_pack["packages"].items():
+            bin_pack["src_name"] = self._src_location[bin_pack["src_name"]]["name"]
+            if isinstance(bin_pack["src_name"], ESJson):
+                bin_pack["src_name"] = None
+
             be_depends.append(self._be_depend(bin_pack))
             es_json = ESJson()
             es_json.update(bin_pack)
@@ -275,7 +280,9 @@ class InitializeService:
             try:
                 for require in self._bin_requires.get(provide["name"]):
                     _bin_pack = self._bin_pack["pkg_key"][require["pkgKey"]]
-                    _src_pack = self._src_pack[_bin_pack["src_name"]]
+                    _src_pack = self._src_location[_bin_pack["src_name"]]
+                    if not _src_pack:
+                        _src_pack = self._src_pack[_bin_pack["src_name"]]
                     component_json["install_require"].append({
                         "req_bin_name": _bin_pack["name"],
                         "req_bin_version": _bin_pack["version"],
@@ -373,7 +380,7 @@ class InitializeService:
         return {
             "_index": str(self._repo["dbname"] + index).lower(),
             "_type": _type,
-            "_source": source
+            "_source": dict(source)
         }
 
     def _relation(self, key):
@@ -407,7 +414,6 @@ class InitializeService:
         except (KeyError, TypeError):
             return build_requires
         for src_require in requires:
-            src_require["relation"] = self._relation(src_require['name'])
             src_require["requires_type"] = "build"
             build_requires.append(src_require)
         return build_requires
@@ -422,7 +428,6 @@ class InitializeService:
         install_requires = list()
         try:
             for bin_require in self._bin_requires.get(bin_pack['pkgKey']):
-                bin_require["relation"] = self._relation(bin_require['name'])
                 bin_require["requires_type"] = "install"
                 install_requires.append(bin_require)
 
@@ -464,6 +469,14 @@ class InitializeService:
             for _, src_pack in self._src_pack.items():
                 self._data.src_pkgkeys[src_pack["pkgKey"]] = src_pack
         return self._data.src_pkgkeys
+
+    @property
+    def _src_location(self):
+        if not self._data.src_location:
+            for _, package in self._src_pack.items():
+                key = package["location_href"].split('/')[-1]
+                self._data["src_location"][key] = package
+        return self._data.src_location
 
     @property
     def _src_requires(self):
@@ -549,22 +562,16 @@ class InitializeService:
         """
 
         def combination_binary(row_data):
-            try:
-                src_package_name = None
-                _pkgs = row_data.get('rpm_sourcerpm').split(
-                    '-' + row_data.get('version'))
-                if len(_pkgs) != 1:
-                    src_package_name = ''.join(_pkgs[0:-1])
-            except AttributeError:
-                src_package_name = None
-            row_data["src_name"] = src_package_name
+
+            rpm_sourcerpm = row_data.get('rpm_sourcerpm')
+            row_data["src_name"] = rpm_sourcerpm
             self._data[table]['packages'][row_data[key]] = row_data
             self._data[table]["pkg_key"][row_data["pkgKey"]] = row_data
-            if src_package_name:
-                if isinstance(self._data[table]["sources"][src_package_name], ESJson):
-                    self._data[table]["sources"][src_package_name] = [row_data]
+            if rpm_sourcerpm:
+                if isinstance(self._data[table]["sources"][rpm_sourcerpm], ESJson):
+                    self._data[table]["sources"][rpm_sourcerpm] = [row_data]
                 else:
-                    self._data[table]["sources"][src_package_name].append(
+                    self._data[table]["sources"][rpm_sourcerpm].append(
                         row_data)
 
         def others(row_data, dict_key):
