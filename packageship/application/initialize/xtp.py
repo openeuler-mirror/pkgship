@@ -128,14 +128,7 @@ class XmlPackage:
             else:
                 package[field] = self._xpath(xpath)
         if binary:
-            try:
-                src_package_name = None
-                _pkgs = package.get("rpm_sourcerpm").split("-" + package.get("version"))
-                if len(_pkgs) != 1:
-                    src_package_name = "".join(_pkgs[0:-1])
-            except AttributeError:
-                src_package_name = None
-            package["src_name"] = src_package_name
+            package["src_name"] = package.get("rpm_sourcerpm")
             self._binary_pkg(package)
         else:
             self._source_pkg(package)
@@ -157,7 +150,8 @@ class XmlPackage:
             self._brequires[require["name"]] = require
 
             self.xml_data["bin_requires"][str(self._spkg_key)] = self._fill_value(
-                self.xml_data["bin_requires"][str(self._spkg_key)], require["name"]
+                self.xml_data["bin_requires"][str(
+                    self._spkg_key)], require["name"]
             )
             self.xml_data["bin_requires"][require["name"]] = self._fill_value(
                 self.xml_data["bin_requires"][require["name"]], require["name"]
@@ -176,7 +170,8 @@ class XmlPackage:
         for require in self._requires(self._spkg_key):
             self._srequires[require["name"]] = require
             self.xml_data["src_requires"][str(self._spkg_key)] = self._fill_value(
-                self.xml_data["src_requires"][str(self._spkg_key)], require["name"]
+                self.xml_data["src_requires"][str(
+                    self._spkg_key)], require["name"]
             )
 
             self.xml_data["src_requires"][require["name"]] = self._fill_value(
@@ -220,11 +215,13 @@ class XmlPackage:
             )
 
             self.xml_data["bin_provides"][str(self._bpkg_key)] = self._fill_value(
-                self.xml_data["bin_provides"][str(self._bpkg_key)], provide["name"]
+                self.xml_data["bin_provides"][str(
+                    self._bpkg_key)], provide["name"]
             )
 
     def _files(self):
-        files = self._xpath(xpath=".//default:format/default:file", first=False)
+        files = self._xpath(
+            xpath=".//default:format/default:file", first=False)
         if files is None:
             return
         for file_element in files:
@@ -257,3 +254,46 @@ class XmlPackage:
             else:
                 self._element = element
                 self._extract_info(files)
+
+    def _merge_files(self):
+        for pkg_name, package in self.xml_data["bin_pack"]["packages"].items():
+            self.xml_data["files"][str(package["pkgKey"])] = (
+                self._filelist[pkg_name] or []
+            )
+            del self._filelist[pkg_name]
+
+    def parse(self, xml_data=None, package="package"):
+        """
+        Parse the contents of the XML
+        """
+
+        if xml_data:
+            self.xml_data = xml_data
+
+        for xml, files in self._xml:
+            if not os.path.exists(xml):
+                self.xml_data = None
+                raise FileNotFoundError(
+                    "The specified file does not exist : %s" % xml)
+
+            namespaces = "{http://linux.duke.edu/metadata/common}"
+            if files:
+                namespaces = "{http://linux.duke.edu/metadata/filelists}"
+            self._parse(xml, package, files, namespaces)
+
+        # Remove duplicate dependencies and components
+        _map_relation = [
+            (self.xml_data["bin_requires"], self._brequires),
+            (self.xml_data["bin_provides"], self._bprovides),
+            (self.xml_data["bin_files"], self._bfiles),
+            (self.xml_data["src_requires"], self._srequires),
+        ]
+
+        for xml_data, data_source in _map_relation:
+            for key, val in xml_data.items():
+                xml_data[key] = [data_source[data] for data in set(val)]
+            del data_source
+
+        # fusing filelist mappings
+        self._merge_files()
+        return self.xml_data
