@@ -24,7 +24,7 @@ class Error(Exception):
         message:Exception information
     """
 
-    def __init__(self, msg=''):
+    def __init__(self, msg=""):
         self.message = msg
         Exception.__init__(self, msg)
 
@@ -41,7 +41,7 @@ class ContentNoneException(Error):
     """
 
     def __init__(self, message):
-        Error.__init__(self, 'No content: %r' % (message,))
+        Error.__init__(self, "No content: %r" % (message,))
 
 
 class DbnameNoneException(ContentNoneException):
@@ -51,7 +51,7 @@ class DbnameNoneException(ContentNoneException):
     """
 
     def __init__(self, message):
-        ContentNoneException.__init__(self, '%r' % (message,))
+        ContentNoneException.__init__(self, "%r" % (message,))
 
 
 class DatabaseRepeatException(Error):
@@ -61,7 +61,7 @@ class DatabaseRepeatException(Error):
     """
 
     def __init__(self, message):
-        Error.__init__(self, 'Database repeat: %r' % (message,))
+        Error.__init__(self, "Database repeat: %r" % (message,))
 
 
 class DataMergeException(Error):
@@ -71,7 +71,7 @@ class DataMergeException(Error):
     """
 
     def __init__(self, message):
-        Error.__init__(self, 'DataMerge exception: %r' % (message,))
+        Error.__init__(self, "DataMerge exception: %r" % (message,))
 
 
 class ConfigurationException(Error):
@@ -80,7 +80,7 @@ class ConfigurationException(Error):
     """
 
     def __init__(self, message):
-        Error.__init__(self, 'Configuration exception : %r' % (message,))
+        Error.__init__(self, "Configuration exception : %r" % (message,))
 
 
 class UnpackError(Error):
@@ -90,7 +90,7 @@ class UnpackError(Error):
     """
 
     def __init__(self, message):
-        Error.__init__(self, 'Unpack file failed: %r' % (message,))
+        Error.__init__(self, "Unpack file failed: %r" % (message,))
 
 
 class DatabaseConfigException(Error):
@@ -100,7 +100,7 @@ class DatabaseConfigException(Error):
     """
 
     def __init__(self):
-        Error.__init__(self, 'Database config error,please check package.ini')
+        Error.__init__(self, "Database config error,please check package.ini")
 
 
 class ElasticSearchQueryException(Error):
@@ -110,7 +110,10 @@ class ElasticSearchQueryException(Error):
     """
 
     def __init__(self):
-        Error.__init__(self, 'Database query failed, please check database configuration and connection status')
+        Error.__init__(
+            self,
+            "Database query failed, please check database configuration and connection status",
+        )
 
 
 class InitializeError(Error):
@@ -134,6 +137,15 @@ class ResourceCompetitionError(Error):
 class PackageInfoGettingError(Error):
     """
     An error occurred when getting package info
+    """
+
+    def __init__(self, message):
+        Error.__init__(self, message)
+
+
+class RepoError(Error):
+    """
+    Repo source data error
     """
 
     def __init__(self, message):
