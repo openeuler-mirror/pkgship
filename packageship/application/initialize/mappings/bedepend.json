@@ -1,0 +1,69 @@
+{
+    "mappings": {
+        "properties": {
+            "bin_version": {
+                "type": "keyword",
+                "ignore_above": 256
+            },
+            "binary_name": {
+                "type": "keyword",
+                "ignore_above": 256
+            },
+            "provides": {
+                "properties": {
+                    "build_require": {
+                        "properties": {
+                            "req_src_name": {
+                                "type": "keyword",
+                                "ignore_above": 256
+                            },
+                            "req_src_version": {
+                                "type": "keyword",
+                                "ignore_above": 256
+                            }
+                        }
+                    },
+                    "component": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    },
+                    "install_require": {
+                        "properties": {
+                            "req_bin_name": {
+                                "type": "keyword",
+                                "ignore_above": 256
+                            },
+                            "req_bin_version": {
+                                "type": "keyword",
+                                "ignore_above": 256
+                            },
+                            "req_src_name": {
+                                "type": "keyword",
+                                "ignore_above": 256
+                            },
+                            "req_src_version": {
+                                "type": "keyword",
+                                "ignore_above": 256
+                            }
+                        }
+                    }
+                }
+            },
+            "src_name": {
+                "type": "keyword",
+                "ignore_above": 256
+            },
+            "src_version": {
+                "type": "keyword",
+                "ignore_above": 256
+            }
+        }
+    },
+    "settings": {
+        "index": {
+            "blocks": {
+                "read_only_allow_delete": "false"
+            }
+        }
+    }
+}

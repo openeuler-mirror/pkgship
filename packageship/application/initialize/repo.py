@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # ******************************************************************************
-# Copyright (c) Huawei Technologies Co., Ltd. 2020-2020. All rights reserved.
+# Copyright (c) Huawei Technologies Co., Ltd. 2020-2021. All rights reserved.
 # licensed under the Mulan PSL v2.
 # You can use this software according to the terms and conditions of the Mulan PSL v2.
 # You may obtain a copy of Mulan PSL v2 at:
@@ -33,13 +33,16 @@ class RepoFile:
     """
 
     def __init__(self, temporary_directory=None):
-        self._temporary_directory = temporary_directory or configuration.TEMPORARY_DIRECTORY
+        self._temporary_directory = (
+            temporary_directory or configuration.TEMPORARY_DIRECTORY
+        )
         try:
             if not os.path.exists(self._temporary_directory):
                 os.makedirs(self._temporary_directory)
         except IOError as error:
-            raise IOError("Failed to create temporary folder %s ." %
-                          self._temporary_directory) from error
+            raise IOError(
+                "Failed to create temporary folder %s ." % self._temporary_directory
+            ) from error
 
     def _url(self, path):
         """
@@ -48,9 +51,9 @@ class RepoFile:
         Args:
             path: repo path
         """
-        if not path.endswith('/'):
-            path += '/'
-        return path + 'repodata/'
+        if not path.endswith("/"):
+            path += "/"
+        return path + "repodata/"
 
     @classmethod
     def files(cls, **kwargs):
@@ -62,10 +65,12 @@ class RepoFile:
                 If it is a local REPO source, the value is location
                 If it is a remote REPO source, the value is remote
         """
+
         def repofile(path):
             if re.match(r"^(ht|f)tp(s?)", path):
                 return "remote"
             return "location"
+
         if "path" not in kwargs:
             raise KeyError("The required path parameter is missing")
         if not kwargs["path"]:
@@ -95,7 +100,8 @@ class RepoFile:
             raise FileNotFoundError("File download failed : %s ." % remote_url)
         try:
             _file_path = os.path.join(
-                self._temporary_directory, remote_url.split('/')[-1])
+                self._temporary_directory, remote_url.split("/")[-1]
+            )
             with open(_file_path, "wb") as file:
                 file.write(request.content)
             return self._unzip_file(_file_path)
@@ -121,16 +127,21 @@ class RepoFile:
         right_files = []
         for file in list_dir:
             if os.path.isfile(os.path.join(url, file)) and re.match(regex, file):
-                right_files.append(file)
+                right_files.append([file, re.findall(regex, file)[-1]])
 
-        if len(right_files) > 1 or not right_files:
+        if not right_files:
             raise ValueError(
                 "More than one file in the specified directory conforms to"
-                " the rule or the correct file was not found .")
-
-        file_path = os.path.join(self._temporary_directory, right_files[0])
-        shutil.copyfile(os.path.join(url, right_files[0]), file_path)
-        return file_path
+                " the rule or the correct file was not found ."
+            )
+        right_files = dict([(extend, path) for path, extend in right_files])
+        try:
+            file_path = right_files["sqlite"]
+        except KeyError:
+            file_path = right_files["xml"]
+        path = os.path.join(self._temporary_directory, file_path)
+        shutil.copyfile(os.path.join(url, file_path), path)
+        return path
 
     def location_file(self, path, file_type="primary"):
         """
@@ -145,8 +156,8 @@ class RepoFile:
         # A file that matches the end of a particular character
         if not path:
             raise ValueError("The value of path cannot be null .")
-        regex = r'.*?%s.sqlite.{3,4}' % file_type
-        path = path.split('file://')[-1]
+        regex = r".*?%s.(sqlite|xml).{2,4}" % file_type
+        path = path.split("file://")[-1]
         try:
             file_path = self._location(self._url(path), regex)
             if not file_path:
@@ -169,10 +180,13 @@ class RepoFile:
             raise FileNotFoundError("The unzip file does not exist：%s" % path)
 
         sqlite_file = os.path.join(
-            os.path.dirname(path), name + ".sqlite")
+            os.path.dirname(path), name + "." + path.split(".")[-2]
+        )
         try:
-            Unpack.dispatch(os.path.splitext(path)[-1], file_path=path,
-                            save_file=sqlite_file)
+            Unpack.dispatch(
+                os.path.splitext(
+                    path)[-1], file_path=path, save_file=sqlite_file
+            )
             return sqlite_file
         except (UnpackError, IOError, ValueError) as error:
             raise IOError("An error occurred extracting the file .") from error
@@ -189,16 +203,20 @@ class RepoFile:
         Returns:
             the actual path to download the file
         """
-        file_regex = r'href=\"([^\"]*%s.sqlite.{3,4})\".?' % file_type
+        file_regex = r"href=\"([^\"]*%s.(sqlite|xml).{2,4})\".?" % file_type
         request = RemoteService()
         request.request(url, "get")
         if request.status_code != requests.codes["ok"]:
             return None
         results = re.findall(file_regex, request.text)
+
         if not results:
             return None
-        if len(results) > 1:
-            raise ValueError(
-                "More than one file in the specified directory conforms to the rule .")
-        remote_url = url + results[0]
+        results = dict([(extend, path) for path, extend in results])
+
+        try:
+            remote_url = url + results["sqlite"]
+        except KeyError:
+            remote_url = url + results["xml"]
+
         return remote_url
