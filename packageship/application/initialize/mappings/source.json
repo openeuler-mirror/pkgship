@@ -1,0 +1,164 @@
+{
+    "mappings": {
+        "properties": {
+            "arch": {
+                "type": "keyword",
+                "ignore_above": 256
+            },
+            "requires": {
+                "properties": {
+                    "epoch": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    },
+                    "flags": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    },
+                    "name": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    },
+                    "pkgKey": {
+                        "type": "long"
+                    },
+                    "pre": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    },
+                    "relation": {
+                        "properties": {
+                            "bin_name": {
+                                "type": "keyword",
+                                "ignore_above": 256
+                            },
+                            "src_name": {
+                                "type": "keyword",
+                                "ignore_above": 256
+                            }
+                        }
+                    },
+                    "release": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    },
+                    "version": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                }
+            },
+            "checksum_type": {
+                "type": "keyword",
+                "ignore_above": 256
+            },
+            "description": {
+                "type": "keyword",
+                "ignore_above": 256
+            },
+            "epoch": {
+                "type": "keyword",
+                "ignore_above": 256
+            },
+            "location_href": {
+                "type": "keyword",
+                "ignore_above": 256
+            },
+            "name": {
+                "type": "keyword",
+                "ignore_above": 256
+            },
+            "pkgId": {
+                "type": "keyword",
+                "ignore_above": 256
+            },
+            "pkgKey": {
+                "type": "long"
+            },
+            "release": {
+                "type": "keyword",
+                "ignore_above": 256
+            },
+            "rpm_buildhost": {
+                "type": "keyword",
+                "ignore_above": 256
+            },
+            "rpm_group": {
+                "type": "keyword",
+                "ignore_above": 256
+            },
+            "rpm_header_end": {
+                "type": "long"
+            },
+            "rpm_header_start": {
+                "type": "long"
+            },
+            "rpm_license": {
+                "type": "keyword",
+                "ignore_above": 256
+            },
+            "rpm_packager": {
+                "type": "keyword",
+                "ignore_above": 256
+            },
+            "rpm_sourcerpm": {
+                "type": "keyword",
+                "ignore_above": 256
+            },
+            "rpm_vendor": {
+                "type": "keyword",
+                "ignore_above": 256
+            },
+            "size_archive": {
+                "type": "long"
+            },
+            "size_installed": {
+                "type": "long"
+            },
+            "size_package": {
+                "type": "long"
+            },
+            "src_name": {
+                "type": "keyword",
+                "ignore_above": 256
+            },
+            "subpacks": {
+                "properties": {
+                    "name": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    },
+                    "version": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                    }
+                }
+            },
+            "summary": {
+                "type": "keyword",
+                "ignore_above": 256
+            },
+            "time_build": {
+                "type": "long"
+            },
+            "time_file": {
+                "type": "long"
+            },
+            "url": {
+                "type": "keyword",
+                "ignore_above": 256
+            },
+            "version": {
+                "type": "keyword",
+                "ignore_above": 256
+            }
+        }
+    },
+    "settings": {
+        "index": {
+            "blocks": {
+                "read_only_allow_delete": "false"
+            }
+        }
+    }
+}
