@@ -11,37 +11,39 @@
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
 import os
-import re
-from lxml import etree
+from xml.etree import ElementTree as et
 from packageship.application.initialize.base import ESJson
 
+
+DEFAULT_NSMAP = "http://linux.duke.edu/metadata/common"
+RPM_NSMAP = "http://linux.duke.edu/metadata/rpm"
 MAP = {
     "pkgKey": None,
-    "pkgId": ".//default:checksum[@pkgid='YES']/text()",
-    "name": ".//default:name/text()",
-    "arch": ".//default:arch/text()",
-    "version": ".//default:version/@ver",
-    "epoch": ".//default:version/@epoch",
-    "release": ".//default:version/@rel",
-    "summary": ".//default:summary/text()",
-    "description": ".//default:description/text()",
-    "url": ".//default:url/text()",
-    "time_file": ".//default:time/@file",
-    "time_build": ".//default:time/@build",
-    "rpm_license": ".//default:format/rpm:license/text()",
-    "rpm_vendor": ".//default:format/rpm:vendor/text()",
-    "rpm_group": ".//default:format/rpm:group/text()",
-    "rpm_buildhost": ".//default:format/rpm:buildhost/text()",
-    "rpm_sourcerpm": ".//default:format/rpm:sourcerpm/text()",
-    "rpm_header_start": ".//default:format/rpm:header-range/@start",
-    "rpm_header_end": ".//default:format/rpm:header-range/@end",
-    "rpm_packager": ".//default:packager/text()",
-    "size_package": ".//default:size/@package",
-    "size_installed": ".//default:size/@installed",
-    "size_archive": ".//default:size/@archive",
-    "location_href": ".//default:location/@href",
-    "location_base": ".//default:location/@base",
-    "checksum_type": ".//default:checksum/@type",
+    "pkgId": ".//{%s}checksum:text" % DEFAULT_NSMAP,
+    "name": ".//{%s}name:text" % DEFAULT_NSMAP,
+    "arch": ".//{%s}arch:text" % DEFAULT_NSMAP,
+    "version": ".//{%s}version:@ver" % DEFAULT_NSMAP,
+    "epoch": ".//{%s}version:@epoch" % DEFAULT_NSMAP,
+    "release": ".//{%s}version:@rel" % DEFAULT_NSMAP,
+    "summary": ".//{%s}summary:text" % DEFAULT_NSMAP,
+    "description": ".//{%s}description:text" % DEFAULT_NSMAP,
+    "url": ".//{%s}url:text" % DEFAULT_NSMAP,
+    "time_file": ".//{%s}time:@file" % DEFAULT_NSMAP,
+    "time_build": ".//{%s}time:@build" % DEFAULT_NSMAP,
+    "rpm_license": ".//{%s}license:text" % RPM_NSMAP,
+    "rpm_vendor": ".//{%s}vendor:text" % RPM_NSMAP,
+    "rpm_group": ".//{%s}group:text" % RPM_NSMAP,
+    "rpm_buildhost": ".//{%s}buildhost:text" % RPM_NSMAP,
+    "rpm_sourcerpm": ".//{%s}sourcerpm:text" % RPM_NSMAP,
+    "rpm_header_start": ".//{%s}header-range:@start" % RPM_NSMAP,
+    "rpm_header_end": ".//{%s}header-range:@end" % RPM_NSMAP,
+    "rpm_packager": ".//{%s}packager:text" % DEFAULT_NSMAP,
+    "size_package": ".//{%s}size:@package" % DEFAULT_NSMAP,
+    "size_installed": ".//{%s}size:@installed" % DEFAULT_NSMAP,
+    "size_archive": ".//{%s}size:@archive" % DEFAULT_NSMAP,
+    "location_href": ".//{%s}location:@href" % DEFAULT_NSMAP,
+    "location_base": ".//{%s}location:@base" % DEFAULT_NSMAP,
+    "checksum_type": ".//{%s}checksum:@type" % DEFAULT_NSMAP,
 }
 
 
@@ -50,6 +52,7 @@ class XmlPackage:
     When the Repo source in Mainline is in XML format, the data
     is initialized by parsing the contents of the XML
     """
+    file_nsmp = "http://linux.duke.edu/metadata/filelists"
 
     def __init__(self, xml, filelist) -> None:
         if not xml or not filelist:
@@ -62,7 +65,6 @@ class XmlPackage:
         self._xml.append((filelist, True))
 
         self._element = None
-        self._default_xmlns = "default"
         self._spkg_key = 0
         self._bpkg_key = 0
         self.xml_data = ESJson()
@@ -72,41 +74,36 @@ class XmlPackage:
         self._srequires = ESJson()
         self._filelist = ESJson()
 
-    @property
-    def _nsmap(self):
-        if self._element is None:
-            return {}
-        nsmap = self._element.nsmap
-        nsmap[self._default_xmlns] = nsmap[None]
-        nsmap.pop(None)
-        return nsmap
-
     def _xpath(self, xpath, element=None, first=True):
         if element is None:
             element = self._element
-        try:
-            node = element.xpath(xpath, namespaces=self._nsmap)
-            if first:
-                node = node[0]
-            return node
-        except (IndexError, TypeError):
-            return None
+        if not first:
+            return element.findall(xpath)
+
+        xpath, attr = xpath.rsplit(":", maxsplit=1)
+        select_element = element.find(xpath)
+        if attr.startswith("@"):
+            value = select_element.attrib.get(
+                attr[1:], None)
+        else:
+            value = getattr(select_element, attr)
+        return value
 
     def _extract_info(self, filelist=False):
 
         if filelist:
-            binary_pkg_name = self._xpath("./@name")
+            binary_pkg_name = self._element.attrib.get("name")
             self._filelist[binary_pkg_name] = list()
-            for file in self._xpath(".//default:file", first=False):
-                pkg_file = dict(file=self._xpath("./text()", element=file))
-                if self._xpath("./@type", element=file):
+            for file in self._xpath(".//{%s}file" % self.file_nsmp, first=False):
+                pkg_file = dict(file=getattr(file, "text"))
+                if file.attrib.get("type") == "dir":
                     pkg_file["filetype"] = "dir"
                 else:
                     pkg_file["filetype"] = "file"
 
                 self._filelist[binary_pkg_name].append(pkg_file)
 
-        elif self._xpath(".//default:arch/text()") == "src":
+        elif self._xpath(".//{%s}arch:text" % DEFAULT_NSMAP) == "src":
             self._spkg_key += 1
             self._package(pkg_key=self._spkg_key)
         else:
@@ -180,18 +177,18 @@ class XmlPackage:
 
     def _match_entry(self, element, pkg_key):
         entry = dict()
-        entry["name"] = self._xpath(".//@name", element)
-        entry["flags"] = self._xpath(".//@flags", element)
-        entry["version"] = self._xpath(".//@ver", element)
-        entry["release"] = self._xpath(".//@rel", element)
-        entry["epoch"] = self._xpath(".//@epoch", element)
-        entry["pre"] = self._xpath(".//@pre", element)
+        entry["name"] = element.attrib.get("name")
+        entry["flags"] = element.attrib.get("flags")
+        entry["version"] = element.attrib.get("ver")
+        entry["release"] = element.attrib.get("rel")
+        entry["epoch"] = element.attrib.get("epoch")
+        entry["pre"] = element.attrib.get("pre")
         entry["pkgKey"] = str(pkg_key)
         return entry
 
     def _requires(self, pkg_key):
         requires = self._xpath(
-            xpath=".//default:format/rpm:requires/rpm:entry", first=False
+            xpath=".//{%s}requires/{%s}entry" % (RPM_NSMAP, RPM_NSMAP), first=False
         )
         requires_list = []
         if requires:
@@ -202,7 +199,7 @@ class XmlPackage:
 
     def _provides(self):
         provides = self._xpath(
-            xpath=".//default:format/rpm:provides/rpm:entry", first=False
+            xpath=".//{%s}provides/{%s}entry" % (RPM_NSMAP, RPM_NSMAP), first=False
         )
         if provides is None:
             return
@@ -221,39 +218,25 @@ class XmlPackage:
 
     def _files(self):
         files = self._xpath(
-            xpath=".//default:format/default:file", first=False)
+            xpath=".//{%s}format/{%s}file", first=False)
         if files is None:
             return
         for file_element in files:
             file = dict()
-            file["name"] = self._xpath(".//text()", file_element)
-            file["type"] = self._xpath(".//@type", file_element)
+            file["name"] = getattr(file_element, "text")
+            file["type"] = file_element.attrib.get("type")
             file["pkgKey"] = str(self._bpkg_key)
             self._bfiles[file["name"]] = file
             self.xml_data["bin_files"][str(self._bpkg_key)] = self._fill_value(
                 self.xml_data["bin_files"][str(self._bpkg_key)], file["name"]
             )
 
-    def _parse(
-        self,
-        xml,
-        package,
-        files=False,
-        namespaces="{http://linux.duke.edu/metadata/common}",
-    ):
-        for event, element in etree.iterparse(
-            xml,
-            events=["start", "end"],
-            tag="%spackage" % namespaces,
-        ):
-            if not re.match(".*%s$" % package, element.tag):
-                continue
-            if event == "end":
-                element.clear()
-                self._element = None
-            else:
-                self._element = element
-                self._extract_info(files)
+    def _parse(self, xml, files=False):
+        tree = et.ElementTree(file=xml)
+        nsmap = self.file_nsmp if files else DEFAULT_NSMAP
+        for element in tree.findall("{%s}package" % nsmap):
+            self._element = element
+            self._extract_info(filelist=files)
 
     def _merge_files(self):
         for pkg_name, package in self.xml_data["bin_pack"]["packages"].items():
@@ -262,11 +245,10 @@ class XmlPackage:
             )
             del self._filelist[pkg_name]
 
-    def parse(self, xml_data=None, package="package"):
+    def parse(self, xml_data=None):
         """
         Parse the contents of the XML
         """
-
         if xml_data:
             self.xml_data = xml_data
 
@@ -275,11 +257,7 @@ class XmlPackage:
                 self.xml_data = None
                 raise FileNotFoundError(
                     "The specified file does not exist : %s" % xml)
-
-            namespaces = "{http://linux.duke.edu/metadata/common}"
-            if files:
-                namespaces = "{http://linux.duke.edu/metadata/filelists}"
-            self._parse(xml, package, files, namespaces)
+            self._parse(xml, files)
 
         # Remove duplicate dependencies and components
         _map_relation = [
@@ -288,7 +266,6 @@ class XmlPackage:
             (self.xml_data["bin_files"], self._bfiles),
             (self.xml_data["src_requires"], self._srequires),
         ]
-
         for xml_data, data_source in _map_relation:
             for key, val in xml_data.items():
                 xml_data[key] = [data_source[data] for data in set(val)]
