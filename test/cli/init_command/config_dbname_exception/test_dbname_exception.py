@@ -14,7 +14,8 @@
 import os
 import shutil
 from test.cli.init_command import InitTestBase
-from packageship.application.initialize.integration import InitializeService, InitializeError, del_temporary_file
+from packageship.application.initialize.integration import InitializeService, InitializeError
+from packageship.application.initialize.base import del_temporary_file
 
 
 DBNAME_NONE = """

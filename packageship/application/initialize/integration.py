@@ -16,67 +16,23 @@ System data initialization service
 import os
 import re
 import sqlite3
-import shutil
 import yaml
 import redis
 from elasticsearch import helpers
 from elasticsearch.exceptions import ElasticsearchException
-from packageship.application.common.exc import InitializeError, ResourceCompetitionError
-from packageship.application.common.constant import MAX_INIT_DATABASE
+from packageship.application.common.exc import (
+    InitializeError,
+    ResourceCompetitionError,
+    RepoError,
+)
+from packageship.application.common.constant import MAX_INIT_DATABASE, REDIS_CONN
 from packageship.libs.log import LOGGER
 from packageship.libs.conf import configuration
-from packageship.application.query import database as db
-from packageship.application.database.session import DatabaseSession
-from packageship.application.common import constant
-from .repo import RepoFile
+from .base import ESJson, BaseInitialize, del_temporary_file
+from .xtp import XmlPackage
 
 
-def del_temporary_file(path, folder=False):
-    """
-    Description: Delete temporary files or folders
-
-    Args:
-        path: temporary files or folders
-        folder: file or folder, fsiles are deleted by default
-    """
-    try:
-        if folder:
-            for file in os.listdir(path):
-                file_path = os.path.join(path, file)
-                if os.path.isfile(file_path):
-                    os.remove(file_path)
-                elif os.path.isdir(file_path):
-                    shutil.rmtree(file_path)
-        else:
-            os.remove(path)
-    except IOError as error:
-        LOGGER.error(error)
-
-
-class ESJson(dict):
-    """
-    Encapsulation of a dictionary
-    """
-
-    def __setitem__(self, key, value):
-        dict.__setitem__(self, key, value)
-
-    def __getitem__(self, key):
-        try:
-            value = dict.__getitem__(self, key)
-        except KeyError:
-            value = ESJson()
-            self.__setitem__(key, value)
-        return value
-
-    def __setattr__(self, key, value):
-        self.__setitem__(key, value)
-
-    def __getattr__(self, key):
-        return self.__getitem__(key)
-
-
-class InitializeService:
+class InitializeService(BaseInitialize):
     """
     Data initialization service
 
@@ -86,7 +42,6 @@ class InitializeService:
         _data: Sqlite data
         _fail: Failed to initialize the database
         _success: The result of the initialization
-        _session: es databases
     """
 
     def __init__(self):
@@ -95,7 +50,6 @@ class InitializeService:
         self._data = None
         self._fail = []
         self._success = False
-        self._session = DatabaseSession().connection()
 
     @property
     def success(self):
@@ -115,32 +69,45 @@ class InitializeService:
         """
         return self._fail
 
-    def _sqlite_file(self):
-        """
-        Description: sqlite file
+    @staticmethod
+    def _redis():
+        try:
+            if REDIS_CONN.keys("pkgship_*"):
+                REDIS_CONN.delete(
+                    *REDIS_CONN.keys("pkgship_*"))
+        except redis.RedisError:
+            LOGGER.error(
+                "There is an exception in Redis service. Please check it later."
+                " After restart , please check the key value with pkgship_ prefix"
+            )
 
-        """
-        self._repo["src_db_file"] = RepoFile.files(
-            path=self._repo["src_db_file"])
-        _files = self._repo["bin_db_file"]
-        self._repo["bin_db_file"] = RepoFile.files(path=_files)
-        self._repo["file_list"] = RepoFile.files(
-            path=_files, file_type="filelists")
+    @staticmethod
+    def _process():
+        _ps = os.popen(
+            "ps -ef | grep -v grep | grep 'pkgship init'").readlines()
+        if len(_ps) > 1:
+            raise ResourceCompetitionError(
+                "Multiple processes are initializing at the same time, Resource contention error ."
+            )
 
-    def _clear_all_index(self):
-        """
-        Description: Clears all indexes associated with initialization
-
-        """
-        databases = db.get_db_priority()
-        del_databases = []
-        if databases:
-            for database_name in databases:
-                del_databases.append(database_name + '-binary')
-                del_databases.append(database_name + '-source')
-                del_databases.append(database_name + '-bedepend')
-        del_databases.append("databaseinfo")
-        self._session.delete_index(del_databases)
+    def _xml_parse(self, xml, filelist):
+        self._data = XmlPackage(xml, filelist).parse()
+        if not all(
+            [
+                key in self._data
+                for key in (
+                    "src_pack",
+                    "src_requires",
+                    "bin_pack",
+                    "bin_requires",
+                    "bin_provides",
+                )
+            ]
+        ):
+            raise RepoError(
+                "The information in the REPo source is incomplete and partial dependent data is missing:%s"
+                % self.elastic_index
+            )
 
     def import_depend(self, path=None):
         """
@@ -149,11 +116,9 @@ class InitializeService:
         Args:
             path: repo source file
         """
-        _ps = os.popen(
-            "ps -ef | grep -v grep | grep 'pkgship init'").readlines()
-        if len(_ps) > 1:
-            raise ResourceCompetitionError(
-                "Multiple processes are initializing at the same time, Resource contention error .")
+        # Initialize the judgment of the process
+        self._process()
+
         if not path:
             path = configuration.INIT_CONF_PATH
         try:
@@ -165,35 +130,31 @@ class InitializeService:
 
         self._clear_all_index()
         # Clear the cached value for a particular key
-        try:
-            if constant.REDIS_CONN.keys('pkgship_*'):
-                constant.REDIS_CONN.delete(
-                    *constant.REDIS_CONN.keys('pkgship_*'))
-        except redis.RedisError:
-            LOGGER.error("There is an exception in Redis service. Please check it later."
-                         " After restart , please check the key value with pkgship_ prefix")
+        self._redis()
 
         for repo in self._config:
             self._data = ESJson()
             self._repo = repo
             try:
-                self._sqlite_file()
-                if not all((self._repo["src_db_file"],
-                            self._repo["bin_db_file"],
-                            self._repo["file_list"])):
-                    self._fail.append(self._repo["dbname"])
-                    continue
+                if not self._repo_files():
+                    raise RepoError("Repo source data error: %s" %
+                                    self.elastic_index)
+                xml_files = self._xml()
+                if xml_files["xml"] and xml_files["filelist"]:
+                    self._xml_parse(**xml_files)
+
                 self._save()
                 self._session.update_setting()
-            except (FileNotFoundError, ValueError, ElasticsearchException) as error:
-                self._fail.append(self._repo["dbname"])
+            except (RepoError, ElasticsearchException) as error:
                 LOGGER.error(error)
+                self._fail.append(self.elastic_index)
                 if isinstance(error, ElasticsearchException):
-                    self._delete_depend_index()
+                    self._delete_index()
             finally:
                 # delete temporary directory
                 del_temporary_file(
                     configuration.TEMPORARY_DIRECTORY, folder=True)
+                self._repo = None
 
     def _source_depend(self):
         """
@@ -204,18 +165,17 @@ class InitializeService:
         for _, src_pack in self._src_pack.items():
             es_json = ESJson()
             es_json.update(src_pack)
-            es_json["requires"] = self._build_requires(
-                src_pack['pkgKey'])
+            es_json["requires"] = self._build_requires(src_pack["pkgKey"])
             try:
                 location_href = src_pack["location_href"].split('/')[-1]
-                for bin_pack in self._bin_pack['sources'].get(location_href):
+                for bin_pack in self._bin_pack["sources"].get(location_href, []):
                     _subpacks = dict(
                         name=bin_pack["name"], version=bin_pack["version"])
                     try:
                         es_json["subpacks"].append(_subpacks)
                     except TypeError:
                         es_json["subpacks"] = [_subpacks]
-            except TypeError:
+            except KeyError:
                 es_json["subpacks"] = None
             sources.append(self._es_json("-source", es_json))
         helpers.bulk(self._session.client, sources)
@@ -237,15 +197,16 @@ class InitializeService:
             es_json.update(bin_pack)
 
             es_json["provides"] = self._provides(bin_pack["pkgKey"])
-            es_json["files"] = self._binpack_files(bin_pack['pkgKey'])
-            es_json['filelists'] = self._files.get(bin_pack['pkgKey'], [])
+            es_json["files"] = self._binpack_files(bin_pack["pkgKey"])
+            es_json["filelists"] = self._files.get(bin_pack["pkgKey"], [])
             es_json["requires"] = []
             src_pack = self._src_pack.get(bin_pack["src_name"])
             if src_pack:
-                es_json["src_version"] = src_pack.get(
-                    "version") if src_pack.get("version") else None
-                es_json["requires"] = self._build_requires(
-                    src_pack["pkgKey"])
+                es_json["src_version"] = (
+                    src_pack.get("version") if src_pack.get(
+                        "version") else None
+                )
+                es_json["requires"] = self._build_requires(src_pack["pkgKey"])
 
             es_json["requires"] = es_json["requires"] + \
                 self._install_requires(bin_pack)
@@ -267,10 +228,12 @@ class InitializeService:
             try:
                 for require in self._src_requires.get(provide["name"]):
                     _src_pack = self._src_pkgkey[require["pkgKey"]]
-                    component_json["build_require"].append({
-                        "req_src_name": _src_pack["name"] or None,
-                        "req_src_version": _src_pack["version"] or None
-                    })
+                    component_json["build_require"].append(
+                        {
+                            "req_src_name": _src_pack["name"] or None,
+                            "req_src_version": _src_pack["version"] or None,
+                        }
+                    )
 
             except (TypeError, AttributeError):
                 pass
@@ -283,12 +246,14 @@ class InitializeService:
                     _src_pack = self._src_location[_bin_pack["src_name"]]
                     if not _src_pack:
                         _src_pack = self._src_pack[_bin_pack["src_name"]]
-                    component_json["install_require"].append({
-                        "req_bin_name": _bin_pack["name"],
-                        "req_bin_version": _bin_pack["version"],
-                        "req_src_name": _src_pack["name"] or None,
-                        "req_src_version": _src_pack["version"] or None
-                    })
+                    component_json["install_require"].append(
+                        {
+                            "req_bin_name": _bin_pack["name"],
+                            "req_bin_version": _bin_pack["version"],
+                            "req_src_name": _src_pack["name"] or None,
+                            "req_src_version": _src_pack["version"] or None,
+                        }
+                    )
             except (TypeError, AttributeError):
                 pass
 
@@ -303,50 +268,22 @@ class InitializeService:
 
         es_json["provides"] = list()
 
-        for provide in self._bin_provides.get(bin_pack["pkgKey"]):
+        for provide in self._bin_provides.get(bin_pack["pkgKey"], []):
             component_json = ESJson()
-            component_json['component'] = provide["name"]
+            component_json["component"] = provide["name"]
             _build(component_json, provide)
             _install(component_json, provide)
             es_json["provides"].append(component_json)
 
         return self._es_json("-bedepend", es_json)
 
-    def _create_index(self, indexs):
-        """
-        Description: Initializes the relevant index
-
-        """
-        _path = os.path.dirname(__file__)
-        _indexs = [
-            {
-                "file": os.path.join(_path, _index + ".json"),
-                "name": self._repo["dbname"] + "-" + _index
-            }
-            for _index in indexs
-        ]
-
-        fails = self._session.create_index(_indexs)
+    def _import_error(self, error, record=True):
+        if record:
+            LOGGER.error(error)
+        self._fail.append(self.elastic_index)
+        fails = self._delete_index()
         if fails:
-            LOGGER.warning("Failed to create the %s index when initializing the %s database ." % (
-                ','.join(fails), self._repo["dbname"]))
-            del_index = set([self._repo["dbname"] + "-" +
-                             index for index in indexs]).difference(set(fails))
-            self._session.delete_index(list(del_index))
-        return fails
-
-    def _delete_depend_index(self):
-        """
-        Description: Delete dependencies related indexes
-
-        """
-        fails = self._session.delete_index([self._repo["dbname"] + "-" +
-                                            index for index in
-                                            ("source",
-                                             "binary",
-                                             "bedepend")
-                                            ])
-        return fails
+            LOGGER.warning("Delete the failed ES database:%s ." % fails)
 
     def _save(self):
         """
@@ -355,22 +292,27 @@ class InitializeService:
         """
         fails = self._create_index(("source", "binary", "bedepend"))
         if fails:
-            self._fail.append(self._repo["dbname"])
+            self._fail.append(self.elastic_index)
             return
 
         try:
             self._source_depend()
             self._binary_depend()
-        except (TypeError, AttributeError, ElasticsearchException, sqlite3.DatabaseError) as error:
-            LOGGER.error(error)
-            self._fail.append(self._repo["dbname"])
-            fails = self._delete_depend_index()
-            if fails:
-                LOGGER.warning("Delete the failed ES database:%s ." % fails)
+        except (
+            TypeError,
+            AttributeError,
+            ElasticsearchException,
+            sqlite3.DatabaseError,
+        ) as error:
+            self._import_error(error=error)
         else:
-            self._session.insert(index="databaseinfo",
-                                 body={"database_name": self._repo["dbname"],
-                                       "priority": self._repo["priority"]})
+            self._session.insert(
+                index="databaseinfo",
+                body={
+                    "database_name": self.elastic_index,
+                    "priority": self._repo["priority"],
+                },
+            )
 
     def _es_json(self, index, source, _type="_doc"):
         """
@@ -380,26 +322,8 @@ class InitializeService:
         return {
             "_index": str(self._repo["dbname"] + index).lower(),
             "_type": _type,
-            "_source": dict(source)
+            "_source": source,
         }
-
-    def _relation(self, key):
-        """
-        Description: Dependencies components
-
-        Args:
-            key: The key of the dependency dictionary
-        """
-        try:
-            relation = []
-            for provide in self._bin_provides.get(key):
-                bin_pack = self._bin_pack['pkg_key'][provide['pkgKey']]
-                relation.append(dict(
-                    bin_name=bin_pack['name'],
-                    src_name=bin_pack['src_name'] or None))
-        except TypeError:
-            relation = None
-        return relation
 
     def _build_requires(self, pkg_key):
         """
@@ -427,7 +351,7 @@ class InitializeService:
         """
         install_requires = list()
         try:
-            for bin_require in self._bin_requires.get(bin_pack['pkgKey']):
+            for bin_require in self._bin_requires.get(bin_pack["pkgKey"]):
                 bin_require["requires_type"] = "install"
                 install_requires.append(bin_require)
 
@@ -437,8 +361,7 @@ class InitializeService:
 
     def _provides(self, key):
         try:
-            _provides = [
-                provide for provide in self._bin_provides.get(key)]
+            _provides = [provide for provide in self._bin_provides.get(key)]
         except TypeError:
             _provides = []
 
@@ -460,7 +383,11 @@ class InitializeService:
         sql = "select * from packages"
         if not self._data.src_pack:
             self._query(
-                table="src_pack", database=self._repo["src_db_file"], sql=sql, key="name")
+                table="src_pack",
+                database=self._repo["src_db_file"],
+                sql=sql,
+                key="name",
+            )
         return self._data.src_pack
 
     @property
@@ -486,8 +413,12 @@ class InitializeService:
         """
         sql = "select * from requires"
         if not self._data.src_requires:
-            self._query(table="src_requires",
-                        database=self._repo["src_db_file"], sql=sql, key=("pkgKey", "name"))
+            self._query(
+                table="src_requires",
+                database=self._repo["src_db_file"],
+                sql=sql,
+                key=("pkgKey", "name"),
+            )
         return self._data.src_requires
 
     @property
@@ -498,8 +429,12 @@ class InitializeService:
         """
         sql = "select * from packages"
         if not self._data.bin_pack:
-            self._query(table="bin_pack",
-                        database=self._repo["bin_db_file"], sql=sql, key="name")
+            self._query(
+                table="bin_pack",
+                database=self._repo["bin_db_file"],
+                sql=sql,
+                key="name",
+            )
         return self._data.bin_pack
 
     @property
@@ -510,8 +445,12 @@ class InitializeService:
         """
         sql = "select * from requires"
         if not self._data.bin_requires:
-            self._query(table="bin_requires",
-                        database=self._repo["bin_db_file"], sql=sql, key=("pkgKey", "name"))
+            self._query(
+                table="bin_requires",
+                database=self._repo["bin_db_file"],
+                sql=sql,
+                key=("pkgKey", "name"),
+            )
         return self._data.bin_requires
 
     @property
@@ -522,8 +461,12 @@ class InitializeService:
         """
         sql = "select * from provides"
         if not self._data.bin_provides:
-            self._query(table="bin_provides", database=self._repo["bin_db_file"], sql=sql, key=(
-                "name", "pkgKey"))
+            self._query(
+                table="bin_provides",
+                database=self._repo["bin_db_file"],
+                sql=sql,
+                key=("name", "pkgKey"),
+            )
         return self._data.bin_provides
 
     @property
@@ -535,7 +478,11 @@ class InitializeService:
         sql = "select * from files"
         if not self._data.bin_files:
             self._query(
-                table="bin_files", database=self._repo["bin_db_file"], sql=sql, key=("pkgKey",))
+                table="bin_files",
+                database=self._repo["bin_db_file"],
+                sql=sql,
+                key=("pkgKey",),
+            )
         return self._data.bin_files
 
     @property
@@ -547,7 +494,11 @@ class InitializeService:
         sql = "select * from filelist"
         if not self._data.files:
             self._query(
-                table="files", database=self._repo["file_list"], sql=sql, key=("pkgKey",))
+                table="files",
+                database=self._repo["file_list"],
+                sql=sql,
+                key=("pkgKey",),
+            )
         return self._data.files
 
     def _query(self, table, database, sql, key):
@@ -562,7 +513,6 @@ class InitializeService:
         """
 
         def combination_binary(row_data):
-
             rpm_sourcerpm = row_data.get('rpm_sourcerpm')
             row_data["src_name"] = rpm_sourcerpm
             self._data[table]['packages'][row_data[key]] = row_data
@@ -573,6 +523,22 @@ class InitializeService:
                 else:
                     self._data[table]["sources"][rpm_sourcerpm].append(
                         row_data)
+
+        def join_files(row_data, table):
+
+            if isinstance(self._data[table][row_data["pkgKey"]], ESJson):
+                self._data[table][row_data["pkgKey"]] = []
+
+            file_names = row_data["filenames"].split("/")
+            for index, file_type in enumerate(row_data["filetypes"]):
+                file = dict(
+                    file=row_data["dirname"] + "/" + file_names[index],
+                )
+                if file_type == "f":
+                    file["filetype"] = "file"
+                if file_type == "d":
+                    file["filetype"] = "dir"
+                self._data[table][row_data["pkgKey"]].append(file)
 
         def others(row_data, dict_key):
             if isinstance(dict_key, (tuple, list)):
@@ -590,13 +556,16 @@ class InitializeService:
             columns = [col[0] for col in cursor.description]
         except sqlite3.DatabaseError as error:
             raise sqlite3.DatabaseError(
-                "file is encrypted or is not a database:%s" % database) from error
+                "file is encrypted or is not a database:%s" % database
+            ) from error
 
         for row in data.fetchall():
             row_data = dict(zip(columns, row))
             # Whether the combined data needs to be iterable
             if table == "bin_pack":
                 combination_binary(row_data)
+            elif table == "files":
+                join_files(row_data=row_data, table=table)
             else:
                 others(row_data, key)
 
@@ -612,6 +581,12 @@ class RepoConfig:
 
     def __init__(self):
         self._repo = None
+
+        # A url that matches whether the file is HTTPS or this file is a local file
+        self._url_or_path = (
+            r"^((ht|f)tp(s?)|file)\:\/\/(\/?)[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])"
+            r"*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%$#_]*)?"
+        )
         self._message = []
 
     @property
@@ -658,14 +633,15 @@ class RepoConfig:
         """
         if not path:
             raise ValueError(
-                "The configuration source for the data dependency initialization is not specified")
+                "The configuration source for the data dependency initialization is not specified"
+            )
 
         if not os.path.exists(path):
             raise FileNotFoundError(
-                "system initialization configuration file "
-                "does not exist: %s" % path)
+                "system initialization configuration file " "does not exist: %s" % path
+            )
         # load yaml configuration file
-        with open(path, 'r', encoding='utf-8') as file_context:
+        with open(path, "r", encoding="utf-8") as file_context:
             try:
                 self._repo = yaml.load(
                     file_context.read(), Loader=yaml.FullLoader)
@@ -673,30 +649,31 @@ class RepoConfig:
                 LOGGER.error(yaml_error)
                 raise ValueError(
                     "The format of the yaml configuration "
-                    "file is wrong please check and try again:{0}".format(yaml_error)) \
-                    from yaml_error
+                    "file is wrong please check and try again:{0}".format(
+                        yaml_error)
+                ) from yaml_error
 
     def _validate_priority(self, repo):
         """
         Description: Priority validation in the REPO source
 
         """
-        if not isinstance(repo, dict):
-            raise TypeError(
-                "The database %s configuration item is not formatted correctly ."
-                % repo.get("dbname", ""))
-
-        _priority = repo.get('priority')
+        _priority = repo.get("priority")
         if not _priority:
             raise TypeError(
-                "The database priority of %s does not exist ." % repo.get("dbname", ""))
+                "The database priority of %s does not exist ." % repo.get(
+                    "dbname", "")
+            )
 
         if not isinstance(_priority, int):
             raise TypeError(
-                "priority of database %s must be a integer number ." % repo.get("dbname", ""))
+                "priority of database %s must be a integer number ."
+                % repo.get("dbname", "")
+            )
         if _priority < 1 or _priority > 100:
             raise ValueError(
-                "priority range of the database can only be between 1 and 100 .")
+                "priority range of the database can only be between 1 and 100 ."
+            )
 
     def _validate_filepath(self, repo):
         """
@@ -705,22 +682,25 @@ class RepoConfig:
         Args:
             repo: content of the repo
         """
-        # A url that matches whether the file is HTTPS or this file is a local file
-        regex = r"^((ht|f)tp(s?)|file)\:\/\/(\/?)[0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])"\
-            r"*(:(0-9)*)*(\/?)([a-zA-Z0-9\-\.\?\,\'\/\\\+&amp;%$#_]*)?"
-        if not isinstance(repo, dict):
-            raise TypeError(
-                "The database %s configuration item is not formatted correctly ."
-                % repo.get("dbname", ""))
 
-        if not re.match(regex, repo.get("src_db_file", "")):
+        if not re.match(self._url_or_path, repo.get("src_db_file", "")):
             raise ValueError(
                 "The 'src_db_file' configuration item in the %s database "
-                "has an incorrect value ." % repo.get("dbname", ""))
-        if not re.match(regex, repo.get("bin_db_file", "")):
+                "has an incorrect value ." % repo.get("dbname", "")
+            )
+        if not re.match(self._url_or_path, repo.get("bin_db_file", "")):
             raise ValueError(
                 "The 'bin_db_file' configuration item in the %s database "
-                "has an incorrect value ." % repo.get("dbname", ""))
+                "has an incorrect value ." % repo.get("dbname", "")
+            )
+
+    def _validate_xml(self, repo):
+
+        if not re.match(self._url_or_path, repo.get("db_file", "")):
+            raise ValueError(
+                "The 'xml' configuration item in the %s database "
+                "has an incorrect value ." % repo.get("dbname", "")
+            )
 
     def _validate_database(self):
         """
@@ -728,24 +708,28 @@ class RepoConfig:
 
         """
         try:
-            databases = [database['dbname'] for database in self._repo]
+            databases = [database["dbname"] for database in self._repo]
         except (KeyError, TypeError) as error:
             raise ValueError(
                 "The initialized configuration file is incorrectly"
-                " formatted and lacks the necessary dbname field .") from error
+                " formatted and lacks the necessary dbname field ."
+            ) from error
 
         if databases.count(None) != 0:
             raise ValueError(
                 "The name of the database that the configuration item did "
-                "not specify in the initialized configuration file .")
+                "not specify in the initialized configuration file ."
+            )
 
         databases = set([db for db in databases if db])
         if len(databases) != len(self._repo):
             raise ValueError(
-                "There is a duplicate initialization configuration database name .")
-        if not ''.join(databases).islower():
+                "There is a duplicate initialization configuration database name ."
+            )
+        if not "".join(databases).islower():
             raise ValueError(
-                "The initialized database name cannot contain uppercase characters .")
+                "The initialized database name cannot contain uppercase characters ."
+            )
 
     def _validation_content(self):
         """
@@ -755,18 +739,31 @@ class RepoConfig:
         """
         if not self._repo:
             raise ValueError(
-                "content of the database initialization configuration file cannot be empty .")
+                "content of the database initialization configuration file cannot be empty ."
+            )
         if not isinstance(self._repo, list):
-            raise ValueError("format of the initial database configuration file is incorrect."
-                             " When multiple databases need to be initialized,"
-                             " it needs to be configured in the form of multiple .")
+            raise ValueError(
+                "format of the initial database configuration file is incorrect."
+                " When multiple databases need to be initialized,"
+                " it needs to be configured in the form of multiple ."
+            )
         if len(self._repo) > MAX_INIT_DATABASE:
             raise ValueError(
-                "The initial database supports up to 500, please control the number.")
+                "The initial database supports up to 500, please control the number."
+            )
         self._validate_database()
         for repo in self._repo:
             try:
+                if not isinstance(repo, dict):
+                    raise TypeError(
+                        "The database %s configuration item is not formatted correctly ."
+                        % repo.get("dbname", "")
+                    )
                 self._validate_priority(repo)
-                self._validate_filepath(repo)
+                if "db_file" in repo:
+                    self._validate_xml(repo)
+                else:
+                    self._validate_filepath(repo)
+
             except (ValueError, TypeError) as error:
                 self._message.append(str(error))

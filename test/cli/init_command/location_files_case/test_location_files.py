@@ -13,7 +13,7 @@
 # -*- coding:utf-8 -*-
 import os
 from test.cli.init_command import InitTestBase
-from packageship.application.initialize.integration import del_temporary_file
+from packageship.application.initialize.base import del_temporary_file
 from packageship.application.initialize.repo import RepoFile
 
 

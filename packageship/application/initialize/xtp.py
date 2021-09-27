@@ -218,7 +218,7 @@ class XmlPackage:
 
     def _files(self):
         files = self._xpath(
-            xpath=".//{%s}format/{%s}file", first=False)
+            xpath=".//{%s}format/{%s}file" % (DEFAULT_NSMAP, DEFAULT_NSMAP), first=False)
         if files is None:
             return
         for file_element in files:

@@ -127,18 +127,6 @@
                         "ignore_above": 256,
                         "index": false
                     },
-                    "relation": {
-                        "properties": {
-                            "bin_name": {
-                                "type": "keyword",
-                                "ignore_above": 256
-                            },
-                            "src_name": {
-                                "type": "keyword",
-                                "ignore_above": 256
-                            }
-                        }
-                    },
                     "release": {
                         "type": "keyword",
                         "ignore_above": 256
@@ -223,13 +211,6 @@
                 "type": "keyword",
                 "ignore_above": 256,
                 "index": false
-            }
-        }
-    },
-    "settings": {
-        "index": {
-            "blocks": {
-                "read_only_allow_delete": "false"
             }
         }
     }
