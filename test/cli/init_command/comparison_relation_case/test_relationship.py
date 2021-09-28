@@ -109,6 +109,7 @@ class ComparisonRelationShip(InitTestBase, ClientTest):
 
     def tearDown(self) -> None:
         super().tearDown()
-        shutil.rmtree(os.path.join(
-            self._dirname, "tmp"))
+        if os.path.exists(os.path.join(self._dirname, "tmp")):
+            shutil.rmtree(os.path.join(
+                self._dirname, "tmp"))
         configuration.TEMPORARY_DIRECTORY = "/opt/pkgship/tmp/"

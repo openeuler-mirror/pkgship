@@ -66,34 +66,28 @@
   ],
   "filelists": [
     {
-      "pkgKey": 35,
-      "dirname": "/usr/share/licenses",
-      "filenames": "Judy",
-      "filetypes": "d"
+      "file": "/usr/share/licenses/Judy",
+      "filetype": "dir"
     },
     {
-      "pkgKey": 35,
-      "dirname": "/usr/share/licenses/Judy",
-      "filenames": "COPYING",
-      "filetypes": "f"
+      "file": "/usr/share/licenses/Judy/COPYING",
+      "filetype": "file"
     },
     {
-      "pkgKey": 35,
-      "dirname": "/etc/ima/digest_lists.tlv",
-      "filenames": "0-metadata_list-compact_tlv-Judy-1.0.5-19.oe1.aarch64",
-      "filetypes": "f"
+      "file": "/etc/ima/digest_lists.tlv/0-metadata_list-compact_tlv-Judy-1.0.5-19.oe1.aarch64",
+      "filetype": "file"
     },
     {
-      "pkgKey": 35,
-      "dirname": "/usr/lib64",
-      "filenames": "libJudy.so.1/libJudy.so.1.0.3",
-      "filetypes": "ff"
+      "file": "/usr/lib64/libJudy.so.1",
+      "filetype": "file"
     },
     {
-      "pkgKey": 35,
-      "dirname": "/etc/ima/digest_lists",
-      "filenames": "0-metadata_list-compact-Judy-1.0.5-19.oe1.aarch64",
-      "filetypes": "f"
+      "file": "/usr/lib64/libJudy.so.1.0.3",
+      "filetype": "file"
+    },
+    {
+      "file": "/etc/ima/digest_lists/0-metadata_list-compact-Judy-1.0.5-19.oe1.aarch64",
+      "filetype": "file"
     }
   ],
   "src_version": "1.0.5",

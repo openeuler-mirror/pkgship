@@ -83,6 +83,7 @@ class TestImportRelation(InitTestBase):
     #     self.assertEqual(True, init_service.success)
 
     def tearDown(self) -> None:
-        shutil.rmtree(os.path.join(
-            self._dirname, "tmp"))
+        if os.path.exists(os.path.join(
+                self._dirname, "tmp")):
+            shutil.rmtree(os.path.join(self._dirname, "tmp"))
         configuration.TEMPORARY_DIRECTORY = "/opt/pkgship/tmp/"

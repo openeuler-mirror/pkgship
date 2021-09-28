@@ -56,9 +56,9 @@ setup(
         ('/lib/systemd/system/', ['packageship/pkgship.service']),
         (MAPPING_PATH, ['packageship/application/common/rsp/mapping.xml']),
         (PACKAGESHIP_PATH, ['packageship/version.yaml']),
-        (INITIALIZE_PATH, ['packageship/application/initialize/bedepend.json',
-                           'packageship/application/initialize/binary.json',
-                           'packageship/application/initialize/source.json'])
+        (INITIALIZE_PATH, ['packageship/application/initialize/mappings/bedepend.json',
+                           'packageship/application/initialize/mappings/binary.json',
+                           'packageship/application/initialize/mappings/source.json'])
     ],
     zip_safe=False
 )
