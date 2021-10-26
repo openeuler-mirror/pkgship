@@ -1,4 +1,15 @@
 #!/bin/bash
+# ******************************************************************************
+# Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+# licensed under the Mulan PSL v2.
+# You can use this software according to the terms and conditions of the Mulan PSL v2.
+# You may obtain a copy of Mulan PSL v2 at:
+#     http://license.coscl.org.cn/MulanPSL2
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
+# PURPOSE.
+# See the Mulan PSL v2 for more details.
+
 ENABLE_INSTALL=0
 ENABLE_UNINSTALL=0
 ENABLE_SERVICE=0
@@ -108,15 +119,22 @@ function check_function(){
 		echo "verifying ${pkg} function..."
 		cd ${pre_path}/all_binary/${pkg}/
 		rpmlist=$(cat rpmlist)
-		function_list=$(rpm -ql ${rpmlist} | grep -E '/usr/s?bin')
+		function_list=$(rpm -ql ${rpmlist} | grep -E '^/usr/s?bin')
 		for function in ${function_list}
 		do
 			timeout 5 ${function} --help &> /dev/null || timeout 5 ${function} -h &> /dev/null || timeout 5 ${function} help &> /dev/null
 			if [ $? -eq 0 ];then
-				echo "verifying ${function} succeed!"
+				echo "verifying ${function} help cmd succeed!"
 			else
-				echo "verifying ${function} failed!"
+				echo "verifying ${function} help cmd failed!"
 				echo "${pkg} [${function}]" >> failed_function_list
+			fi
+			timeout 5 ${function} --version &> /dev/null || timeout 5 ${function} -v &> /dev/null || timeout 5 ${function} -V &> /dev/null
+			if [ $? -eq 0 ];then
+				echo "verifying ${function} version cmd succeed!"
+			else
+				echo "verifying ${function} version cmd failed!"
+				grep -q "${pkg} [${function}]" failed_function_list || echo "${pkg} [${function}]" >> failed_function_list
 			fi
 		done
 		
@@ -217,3 +235,4 @@ elif [[ "${WITH_DOCKER}" -eq 0 ]]; then
 fi
 
 check_pkg
+
