@@ -1,5 +1,16 @@
 #!/bin/bash
-source /etc/pkgship-tools/check.config
+# ******************************************************************************
+# Copyright (c) Huawei Technologies Co., Ltd. 2021-2021. All rights reserved.
+# licensed under the Mulan PSL v2.
+# You can use this software according to the terms and conditions of the Mulan PSL v2.
+# You may obtain a copy of Mulan PSL v2 at:
+#     http://license.coscl.org.cn/MulanPSL2
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FIT FOR A PARTICULAR
+# PURPOSE.
+# See the Mulan PSL v2 for more details.
+
+source ./check.config
 init_path=$(pwd)
 
 readonly NAME=$(basename $0)
@@ -128,11 +139,11 @@ function get_binary(){
 				rpm=${rpm%\-*}
 				rpmlist="${rpmlist} ${rpm}"
 			done
-		if [ -z ${rpmlist} ];then
+		if [ -z "${rpmlist}" ];then
 			echo "Get ${pkg} binary packages list failed on obs server !!!"
 			echo "Get ${pkg} binary packages list failed on obs server !!!" >> get_binary_failed
 		else
-			echo ${rpmlist} > rpmlist
+			echo "${rpmlist}" > rpmlist
 			mkdir -p ${init_path}/all_binary/${pkg}
 			mv rpmlist ${init_path}/all_binary/${pkg}
 			echo "Get ${pkg} binary packages list succeed !!!"
@@ -213,3 +224,4 @@ if [[ "${WITH_DOCKER}" -eq 1 ]]; then
 fi
 main
 echo "=============================================End==============================================="
+
