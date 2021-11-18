@@ -269,7 +269,7 @@ class InitializeService(BaseInitialize):
         es_json["provides"] = list()
 
         for provide in self._bin_provides.get(bin_pack["pkgKey"], []):
-            component_json = ESJson()
+            component_json = dict()
             component_json["component"] = provide["name"]
             _build(component_json, provide)
             _install(component_json, provide)
