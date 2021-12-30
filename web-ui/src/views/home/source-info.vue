@@ -5,6 +5,9 @@
             class="form">
             <div class="form-inputs">
                 <el-form-item label="Product Version">
+                    <el-tooltip class="tool-tips" content="Repository to be searched" placement="bottom" effect="light">
+                        <img src="@/assets/images/question.svg" alt="">
+                    </el-tooltip>
                     <el-select class="pc-select" v-model="formData.tableName" @change="initData(1)">
                         <el-option v-for="(item, index) in productV" :key="index"
                                    :label="item"
@@ -19,6 +22,9 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="Search">
+                    <el-tooltip class="tool-tips" content="Name of the source code package to be queried.Currently,only exact match is supported" placement="bottom" effect="light">
+                        <img src="@/assets/images/question.svg" alt="">
+                    </el-tooltip>
                     <el-input
                         v-model="formData.queryPkgName"
                         class="pc-search"
@@ -43,6 +49,9 @@
                         Export Excel
                     </a>
                 </el-form>
+                <el-tooltip class="export-default-explain" content="Export the query result" placement="bottom" effect="light">
+                             <img src="@/assets/images/question.svg" alt="">
+                </el-tooltip>
             </div>
         </el-form>
         <template>
@@ -316,6 +325,20 @@ h1 {
     font-size: 36px;
     font-family: HuaweiSans-Medium;
     margin: 60px 0;
+}
+.export-default-explain{
+    position: relative;
+    left: 1px;
+    top: -29px;
+}
+.tool-tips {
+    position: absolute;
+    left: -9px;
+    top: 12px;
+}
+.pc-search, .pc-select {
+    left: 19px;
+    display: block;
 }
 .form-btns {
     display: inline-block;

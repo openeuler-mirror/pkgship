@@ -3,36 +3,70 @@
         <div class="depend-type">
             <span class="h5-type">Type</span>
             <div class="type-btns">
-                <button :class="{'active': currentButton === 'Install'}" @click="clickButton($event)">Install Depend</button>
-                <button :class="{'active': currentButton === 'Build'}" @click="clickButton($event)">Build Depend</button>
-                <button :class="{'active': currentButton === 'Self'}" @click="clickButton($event)">Self Depend</button>
-                <button :class="{'active': currentButton === 'Bedepend'}" @click="clickButton($event)">Bedepend</button>
+                <el-tooltip content="Query the installation dependencies of the binary package" placement="top" effect="light">
+                   <button :class="{'active': currentButton === 'Install'}" @click="clickButton($event)">Install Depend</button>
+                </el-tooltip>
+                <el-tooltip content="Query the build dependencies of the source code package" placement="top" effect="light">
+                   <button :class="{'active': currentButton === 'Build'}" @click="clickButton($event)">Build Depend</button>
+                </el-tooltip>
+                <el-tooltip content="Query all dependencies of the binary package or source code package,including the installation and build dependencies" placement="top" effect="light">
+                   <button :class="{'active': currentButton === 'Self'}" @click="clickButton($event)">Self Depend</button>
+                </el-tooltip>
+                <el-tooltip content="Query dependents of the binary package or source code package" placement="top" effect="light">
+                   <button :class="{'active': currentButton === 'Bedepend'}" @click="clickButton($event)">Bedepend</button>
+                </el-tooltip>
             </div>
             <div class="self-checkBox" :class="{'show': currentButton === 'Self'}">
                 <template>
                     <el-checkbox-group v-model="checkList">
-                        <el-checkbox label="source"></el-checkbox>
-                        <el-checkbox label="Self-build"></el-checkbox>
-                        <el-checkbox label="with-subpack"></el-checkbox>
+                        <el-checkbox label="source" @change="sourceChange"></el-checkbox>
+                        <el-tooltip class="checked-explain" effect="light" :content="sourceMsg" placement="top">
+                           <img src="@/assets/images/question.svg" alt="">
+                        </el-tooltip>
+                        <el-checkbox label="Self-build" @change="selfChange"></el-checkbox>
+                        <el-tooltip class="checked-explain" effect="light" 
+                        :content="selfMsg" 
+                        placement="top">
+                           <img src="@/assets/images/question.svg" alt="">
+                        </el-tooltip>
+                        <el-checkbox label="with-subpack" @change="withChange"></el-checkbox>
+                        <el-tooltip style="position: relative;top: 2px;left: 3px;" effect="light" 
+                        :content="withMsg" 
+                        placement="top">
+                           <img src="@/assets/images/question.svg" alt="">
+                        </el-tooltip>
                     </el-checkbox-group>
                 </template>
             </div>
             <div class="be-select" :class="{'show': currentButton === 'Bedepend'}">
                 <template>
-                    <el-select class="type-select" v-model="typeName">
+                    <el-select class="type-select" v-model="typeName" clearable>
                         <el-option v-for="(item, index) in productV" :key="index"
                                    :label="item"
                                    :value="item">
                         </el-option>
                     </el-select>
+                    <el-tooltip style="position: relative;top: 3px;left: 3px;" effect="light" 
+                        content="Repository to be searched.Only one repository can be selected" 
+                        placement="top">
+                           <img src="@/assets/images/question.svg" alt="">
+                    </el-tooltip>
                     <el-checkbox-group v-model="typeList" class="type-radio">
-                        <el-checkbox label="with-subpack"></el-checkbox>
+                        <el-checkbox label="with-subpack" @change="subChange"></el-checkbox>
+                        <el-tooltip style="position: relative;top: 3px;left: 3px;" effect="light" 
+                        :content="subMsg" 
+                        placement="top">
+                           <img src="@/assets/images/question.svg" alt="">
+                        </el-tooltip>
                     </el-checkbox-group>
                 </template>
             </div>
             <div class="be-select" :class="{'show': currentButton === 'Install' || currentButton === 'Build'}">
                 <template>
                     <span>Level: </span>
+                    <el-tooltip class="item" effect="light" content="Depth of the dependencies to be searched.All indicates that all dependencies are queried" placement="top">
+                        <img src="@/assets/images/question.svg" alt="">
+                    </el-tooltip>
                     <el-select class="type-select" v-model="typeLevel">
                         <el-option v-for="(item, index) in levelList" :key="index"
                                    :label="item"
@@ -69,14 +103,24 @@
             </el-form>
             <div class="be-select source" :class="{'show': currentButton === 'Bedepend'}">
                 <template>
-                    <el-select class="type-select" v-model="searchType">
+                    <el-select class="type-select" v-model="searchType" clearable>
                         <el-option v-for="(item, index) in searchBe" :key="index"
                                    :label="item"
                                    :value="item">
                         </el-option>
                     </el-select>
+                    <el-tooltip style="position: relative;top: 3px;left: 3px;" effect="light" 
+                        content="install indicates that the installation dependents of the binary package are queried,and build indicates that the build dependents of the source code package are quired" 
+                        placement="top">
+                           <img src="@/assets/images/question.svg" alt="">
+                    </el-tooltip>
                     <el-checkbox-group v-model="searchSource" class="type-radio">
-                        <el-checkbox label="source"></el-checkbox>
+                        <el-checkbox label="source" @change="sourceChange2"></el-checkbox>
+                        <el-tooltip style="position: relative;top: 3px;left: 3px;" effect="light" 
+                        :content="sourceMsg2" 
+                        placement="top">
+                           <img src="@/assets/images/question.svg" alt="">
+                        </el-tooltip>
                     </el-checkbox-group>
                 </template>
             </div>
@@ -89,12 +133,16 @@
                 <el-button class="click-btn" type="text" @click="dialogVisible = true">click here</el-button>
                 to change.
             </p>
+            <el-tooltip class="bottom-explain" effect="light" content="Repository to be searched" placement="top">
+                        <img src="@/assets/images/question.svg" alt="">
+            </el-tooltip>
             <el-dialog
                 title="Set Search Priority"
                 :visible.sync="dialogVisible"
                 width="60%"
                 center>
                 <template>
+                  <el-scrollbar>
                     <el-transfer
                         :data="washTableData(transData)"
                         :props="{key: 'id',label: 'fileName'}"
@@ -104,6 +152,7 @@
                         v-model="selectedData"
                         :right-default-checked="defaultVersion"
                     ></el-transfer>
+                  </el-scrollbar>
                 </template>
                 <span slot="footer" class="dialog-footer">
                     <el-button type="primary" @click="transSelect">OK</el-button>
@@ -286,6 +335,13 @@ export default {
                 level: 'ALL',
                 search_type: ''
             },
+            msgFlag: true,
+            subFlag: false,
+            sourceMsg: 'If this option is selected,the dependencies of the source code package are queried',
+            selfMsg: 'For the source code package:Query all build dependencies and the first level installation dependencies of each dependency package',
+            withMsg: 'If this option is not selected,the dependencies of the binary package are queried',
+            sourceMsg2: 'If this option is not selected,the dependents of the binary package are queried',
+            subMsg: 'For the binary package:Query the dependents of the binary package,the associated source code package,and other binary packages generated by the source code package',
             searchName: "",
             searchTitle: 'Please enter a binary package name',
             currentButton: 'Install',
@@ -325,6 +381,83 @@ export default {
         this.getDbPriority();
     },
     methods: {
+        sourceChange(val){
+            console.log(this.checkList);
+            console.log(this.checkList.length);
+            if(val){
+               this.msgFlag = true
+               if(this.checkList.includes('Self-build')){
+                  this.selfMsg = 'For the source code package:Query all build dependencies and the installation dependencies of each dependency package'
+               }else{
+                  this.selfMsg = 'For the source code package:Query all build dependencies and the first level installation dependencies of each dependency package'
+               }
+               this.sourceMsg = 'If this option is selected,the dependencies of the source code package are queried'
+            }else{
+               this.msgFlag = false
+               if(this.checkList.includes('Self-build')){
+                  this.selfMsg = 'For the binary package:Query all installation dependencies and the build dependencies of each dependency package'
+               }else{
+                  this.selfMsg = 'For the binary package:Query all installation dependencies and the first level build dependencies of each dependency package'
+               }
+               this.sourceMsg = 'If this option is not selected,the dependencies of the binary package are queried'
+            }
+        },
+        selfChange(val){
+            if(val){
+                if(this.msgFlag){
+                   this.selfMsg = 'For the source code package:Query all build dependencies and the installation dependencies of each dependency package'
+                }else{
+                   this.selfMsg = 'For the binary package:Query all installation dependencies and the build dependencies of each dependency package'
+                }
+            }else{
+                if(this.msgFlag){
+                   this.selfMsg = 'For the source code package:Query all build dependencies and the first level installation dependencies of each dependency package' 
+                }else{
+                   this.selfMsg = 'For the binary package:Query all installation dependencies and the first level build dependencies of each dependency package'
+                }
+            }
+        },
+        withChange(val){
+            if(val){
+                this.withMsg = 'Selected:Query the dependencies of the binary package,the associated source code package,and other binary packages generated by the source code package'
+            }else{
+                this.withMsg = 'Deselected:Query only the dependencies of the binary package and the associated source code package'
+            }
+        },
+        sourceChange2(val){
+            if(val){
+                this.sourceMsg2 = 'If this option is selected,the dependents of the source code package are queried'
+                if(this.searchSource){
+                    this.subMsg = 'For the source code package:Query only the dependents of the source code package and the binary packages generated by the source code package'
+                }else{
+                    this.subMsg = 'For the source code package:Query only the dependents of the source code package'
+                }
+                this.subFlag = true
+            }else{
+                this.sourceMsg2 = 'If this option is not selected,the dependents of the binary package are queried'
+                if(this.searchSource){
+                    this.subMsg = 'For the binary package:Query the dependents of the binary package,and other binary packages generated by the source code package'
+                }else{
+                    this.subMsg = 'For the binary package:Query only the dependents of the binary package and the associated source code package'
+                }
+                this.subFlag = false
+            }
+        },
+        subChange(val){
+            if(val){
+                if(this.subFlag){
+                    this.subMsg = 'For the source code package:Query only the dependents of the source code package and the binary packages generated by the source code package'
+                }else{
+                    this.subMsg = 'For the binary package:Query the dependents of the binary package,and other binary packages generated by the source code package'
+                }
+            }else{
+                if(this.subFlag){
+                    this.subMsg = 'For the source code package:Query only the dependents of the source code package'
+                }else{
+                    this.subMsg = 'For the binary package:Query only the dependents of the binary package and the associated source code package'
+                }
+            }
+        },
         changePkgQueryName(name) {
             let n = [];
             n.push(name);
@@ -807,6 +940,29 @@ export default {
 }
 </style>
 <style scoped>
+/deep/.el-transfer-panel{
+    display:inline-block;
+    width: 270px!important;
+    height:100%;
+}
+.checked-explain{
+    position: relative;
+    top: 2px;
+    left: -26px;
+}
+.bottom-explain{
+    position: relative;
+    top: 4px;
+    left: 4px;
+}
+.item{
+    position: relative;
+    left: -31px;
+    top: 2px;
+}
+.click-transfer>p{
+    display: inline-block;
+}
 h4 {
     font-size: 20px;
     font-family: Roboto-Bold, Roboto;
