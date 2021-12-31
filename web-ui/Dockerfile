@@ -1,4 +1,4 @@
-FROM node:alpine as Builder
+FROM node:16.13.1-alpine as Builder
 
 MAINTAINER zhangxiaopan<zhangxiaopan2@huawei.com>
 
