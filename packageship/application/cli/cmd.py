@@ -26,7 +26,6 @@ else:
     from packageship.application.common.constant import ResponseCode
     from packageship.application.common.constant import ListNode
     from packageship.application.common.constant import UWSIG_PATH
-    from packageship.libs.terminal_table import TerminalTable
     from packageship.application.common.constant import ERROR_CON
     from packageship.application.cli.commands.allpkg import AllPackageCommand
     from packageship.application.cli.commands.bedepend import BeDependCommand
