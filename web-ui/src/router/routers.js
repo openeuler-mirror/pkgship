@@ -5,12 +5,14 @@
 export const constantRouterMap = [
     {
         path: '/',
-        redirect: '/Home',
-    },{
-        path: '/Home',
-        name: 'Home',
         component: () => import('@/views/home/home.vue')
+        // redirect: '/Home',
     },
+    // {
+    //     path: '/Home',
+    //     name: 'Home',
+    //     component: () => import('@/views/home/home.vue')
+    // },
     {
         path: '/Packagemanagement',
         name: 'Packagemanagement',
