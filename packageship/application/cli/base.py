@@ -30,7 +30,6 @@ except ImportError as import_error:
 else:
     from packageship.application.common.constant import ResponseCode
     from packageship.application.common.constant import ERROR_CON
-    from packageship.libs.terminal_table import TerminalTable
 
 
 class BaseCommand():
@@ -130,8 +129,7 @@ class BaseCommand():
         Raises:
 
         """
-        table = TerminalTable(title)
-        # table.set_style(prettytable.PLAIN_COLUMNS)
+        table = prettytable.PrettyTable(title)
         table.align = 'l'
         table.horizontal_char = '='
         table.junction_char = '='
