@@ -113,7 +113,7 @@ module.exports = {
         footer: {
             leftLogo: 'openEuler',
             mail: 'contact@openeuler.org',
-            copyright: '版权所有 © 2020 openeuler 保留一切权利',
+            copyright: '版权所有 © 2022 openeuler 保留一切权利',
             rightList: ['品牌', '法律声明', '隐私政策']
         }
     },
@@ -226,7 +226,7 @@ module.exports = {
         gitee: 'gitee',
         footer: {
             mail: 'contact@openeuler.org',
-            copyright: 'Copyright © 2020 openEuler. All rights reserved.',
+            copyright: 'Copyright © 2022 openEuler. All rights reserved.',
             rightList: ['TradeMark', 'Legal', 'Privacy']
         }
     }
