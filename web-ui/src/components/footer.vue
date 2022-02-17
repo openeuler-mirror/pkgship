@@ -32,15 +32,15 @@ export default {
                 rightList: [
                     {
                         name: 'Trademark',
-                        link: 'https://openeuler.org/en/other/brand/'
+                        link: 'https://www.openeuler.org/en/other/brand/'
                     },
                     {
                         name: 'Legal Notice',
-                        link: 'https://openeuler.org/en/other/legal/'
+                        link: 'https://www.openeuler.org/en/other/legal/'
                     },
                     {
                         name: 'Privacy Policy',
-                        link: 'https://openeuler.org/en/other/privacy/'
+                        link: 'https://www.openeuler.org/en/other/privacy/'
                     }]
             }
         };
