@@ -15,13 +15,17 @@ Provide Elasticsearch database instance initialization and operation
 """
 import json
 
-from elasticsearch import Elasticsearch
+from elasticsearch import Elasticsearch, AsyncElasticsearch
 from elasticsearch import helpers
 from elasticsearch.exceptions import ElasticsearchException, TransportError
 from urllib3.exceptions import LocationValueError
 
 from packageship.application.common.constant import MAX_ES_QUERY_NUM
-from packageship.application.common.exc import DatabaseConfigException, ElasticSearchQueryException
+from packageship.application.common.exc import (
+    DatabaseConfigException,
+    ElasticSearchQueryException,
+    ElasticSearchInsertException,
+)
 from packageship.application.common.singleton import singleton
 from packageship.libs.log import LOGGER
 
@@ -37,7 +41,11 @@ class ElasticSearch(object):
         self._port = port
         try:
             self.client = Elasticsearch(
-                [{"host": self._host, "port": self._port}], timeout=60)
+                [{"host": self._host, "port": self._port}], timeout=60
+            )
+            self.async_client = AsyncElasticsearch(
+                [{"host": self._host, "port": self._port}], timeout=60
+            )
         except LocationValueError:
             LOGGER.error("The host of database in package.ini is empty")
             raise DatabaseConfigException()
@@ -50,14 +58,15 @@ class ElasticSearch(object):
             body: query body of elasticsearch
 
         Returns: elasticsearch data
-        Raises: ElasticSearchQueryException,including connection timeout, server unreachable, index does not exist, etc.
+        Raises: ElasticSearchQueryException,including connection timeout,
+                server unreachable, index does not exist, etc.
         """
         try:
             result = self.client.search(index=index, body=body)
             return result
-        except ElasticsearchException as e:
-            LOGGER.error(str(e))
-            raise ElasticSearchQueryException()
+        except ElasticsearchException as elastic_err:
+            LOGGER.error(str(elastic_err))
+            raise ElasticSearchQueryException(index=index)
 
     def scan(self, index, body):
         """
@@ -67,15 +76,17 @@ class ElasticSearch(object):
             body: query body of elasticsearch
 
         Returns: elasticsearch all data
-        Raises: ElasticSearchQueryException,including connection timeout, server unreachable, index does not exist, etc.
+        Raises: ElasticSearchQueryException,including connection timeout,
+                server unreachable, index does not exist, etc.
         """
         try:
             result = helpers.scan(
-                client=self.client, index=index, query=body, scroll='3m', timeout='1m')
+                client=self.client, index=index, query=body, scroll="3m", timeout="1m"
+            )
             result_list = [res for res in result]
             return result_list
-        except ElasticsearchException as e:
-            LOGGER.error(str(e))
+        except ElasticsearchException as elastic_err:
+            LOGGER.error(str(elastic_err))
             raise ElasticSearchQueryException()
 
     def count(self, index, body):
@@ -86,19 +97,20 @@ class ElasticSearch(object):
             body: query body of elasticsearch
 
         Returns: data volume
-        Raises: ElasticSearchQueryException,including connection timeout, server unreachable, index does not exist, etc.
+        Raises: ElasticSearchQueryException,including connection timeout,
+                server unreachable, index does not exist, etc.
         """
         try:
             data_count = self.client.count(index=index, body=body)
             return data_count
-        except ElasticsearchException as e:
-            LOGGER.error(str(e))
+        except ElasticsearchException as elastic_err:
+            LOGGER.error(str(elastic_err))
             raise ElasticSearchQueryException()
 
     @staticmethod
     def _load_mappings(mappings_file):
         try:
-            with open(mappings_file, 'r') as file:
+            with open(mappings_file, "r") as file:
                 mappings = json.load(file)
         except IOError:
             mappings = None
@@ -113,13 +125,14 @@ class ElasticSearch(object):
             doc_type: document type
 
         Returns:
-        Raises: ElasticSearchQueryException,including connection timeout, server unreachable, index does not exist, etc.
+        Raises: ElasticSearchQueryException,including connection timeout,
+                server unreachable, index does not exist, etc.
         """
         try:
             self.client.index(index=index, body=body, doc_type=doc_type)
-        except ElasticsearchException as e:
-            LOGGER.error(str(e))
-            raise ElasticSearchQueryException()
+        except ElasticsearchException as elastic_err:
+            LOGGER.error(str(elastic_err))
+            raise ElasticSearchInsertException()
 
     def create_index(self, indexs):
         """
@@ -169,7 +182,7 @@ class ElasticSearch(object):
         if not index:
             return fails
         if isinstance(index, (tuple, list)):
-            index = ','.join(index)
+            index = ",".join(index)
         try:
             self.client.indices.delete(index)
         except TransportError:
@@ -182,7 +195,49 @@ class ElasticSearch(object):
         :return: None
         """
         try:
-            self.client.indices.put_settings(index='_all', body={'index': {
-                'max_result_window': MAX_ES_QUERY_NUM}})
+            self.client.indices.put_settings(
+                index="_all", body={"index": {"max_result_window": MAX_ES_QUERY_NUM}}
+            )
         except ElasticsearchException:
-            LOGGER.error('Set max_result_window of all indies failed')
+            LOGGER.error("Set max_result_window of all indies failed")
+
+    async def async_insert(self, index, body):
+        """
+        Insert a single piece of data asynchronously
+        :param index: es index
+        :param body: insert data
+        :return: insert response
+        """
+        try:
+            await self.async_client.index(index=index, body=body)
+        except ElasticsearchException as elastic_err:
+            LOGGER.error(
+                "Insert to %s failed,data is %s, message is %s",index, body, elastic_err
+            )
+
+    async def async_bulk(self, body: list):
+        """
+        Asynchronous batch insert method
+        :param body: insert content
+        :return: None
+        :exception: ElasticSearchInsertException
+        """
+        try:
+            _, filed_count = await helpers.async_bulk(self.async_client, body)
+            if filed_count:
+                LOGGER.warning(f"The bulk insert part fails: {filed_count}")
+        except ElasticsearchException as elastic_err:
+            LOGGER.error(f"The bulk insert failed: {elastic_err}")
+            raise ElasticSearchInsertException()
+
+    @staticmethod
+    def es_insert_struct(index, source, _type="_doc"):
+        """
+        Description: A JSON document for the ES database
+
+        """
+        return {
+            "_index": index,
+            "_type": _type,
+            "_source": source,
+        }

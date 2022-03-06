@@ -49,3 +49,33 @@ class Query(object):
     def set_index(self, index):
         """Sets the ES index to be queried"""
         self._index = index
+
+    @staticmethod
+    def search_result_format(search_result):
+        """
+        Parse the result of an ES query
+        :param search_result: old result of an ES query
+        :return: source data
+        """
+        if search_result is None:
+            return []
+        try:
+            format_result = search_result['hits']['hits']
+            return format_result
+        except KeyError:
+            return []
+
+    @staticmethod
+    def count_result_format(count_result):
+        """
+        Parse the data of the number of es queries
+        :param count_result: query result
+        :return: count
+        """
+        if count_result is None:
+            return 0
+        try:
+            count = count_result['count']
+            return count
+        except KeyError:
+            return 0
