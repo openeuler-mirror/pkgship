@@ -109,10 +109,23 @@ class ElasticSearchQueryException(Error):
     Attributes:
     """
 
+    def __init__(self, index=None):
+        Error.__init__(
+            self,
+            f"Database query form {index} failed, please check database configuration and connection status"
+        )
+
+
+class ElasticSearchInsertException(Error):
+    """
+    Description: An exception occurred when using the Elasticsearch insert data
+    Attributes:
+    """
+
     def __init__(self):
         Error.__init__(
             self,
-            "Database query failed, please check database configuration and connection status",
+            "Elasticsearch insert failed, please check database configuration and connection status",
         )
 
 

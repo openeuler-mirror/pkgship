@@ -81,6 +81,24 @@ MAX_ES_QUERY_NUM = 1000000
 # Supported query types
 SUPPORT_QUERY_TYPE = ['build', 'install']
 
+# The longest waiting time default
+MAX_DELAY = 180
+
+# The longest waiting time for url calls
+CALL_MAX_DELAY = 60
+
+# Maximum number of retries for failed URL calls
+MAX_RETRY = 3
+
+# Package build state
+BUILD_STATES = ["succeeded", "failed", "unresolvable", "broken", "blocked", "building", "excluded"]
+
+# Package build time
+BUILD_TIMES = [0, 10, 20, 30]
+
+# Package build time level
+BUILD_TIME_LEVEL = ["less_ten", "ten_to_twenty", "twenty_to_thirty", "more_thirty"]
+
 
 class ListNode():
     """
