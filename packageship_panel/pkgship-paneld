@@ -1,0 +1,325 @@
+#!/bin/bash
+SYS_PATH=/etc/pkgship
+OUT_PATH=/opt/pkgship/uwsgi
+OPERATION=$1
+PKGSHIP_CONSTANT="pkgship_panel"
+
+
+
+
+function check_sub_cmd() {
+  if [ -z ${OPERATION} ] || [ ${OPERATION} != "start" -a ${OPERATION} != "stop" ]; then
+    echo "[ERROR] input parameter error, usages: pkgship-paneld start|stop [panel]"
+    exit 1
+  fi
+}
+
+
+function check_config_file() {
+  echo "[INFO] start to check config file"
+  # validate package.ini is exist
+  if [ ! -f "$SYS_PATH/package.ini" ]; then
+    echo "[ERROR] $SYS_PATH/package.ini dose not exist!!!"
+    exit 1
+  fi
+
+  # check and create uwsgi out path
+  if [ ! -d "$OUT_PATH" ]; then
+    mkdir -p $OUT_PATH
+    chown pkgshipuser: -R $OUT_PATH
+  fi
+  echo "[INFO] check config file ok"
+}
+
+function check_config_param() {
+  echo "[INFO] start to check validation of config parameter."
+  check_null
+  # check query port and ip
+  echo "[INFO] Check the IP and port of the service query"
+  panel_port=$(get_config "panel_port")
+  query_ip_addr=$(get_config "query_ip_addr")
+  if [ -z "${panel_port}" ] || [ -z "${query_ip_addr}" ]; then
+    echo "[ERROR] CAN NOT find config name 'panel_port' or 'query_ip_addr' in: $SYS_PATH/package.ini,
+    Please check the file."
+    exit 1
+  fi
+  check_addr $query_ip_addr $panel_port
+  echo "[INFO] IP addresses are all valid."
+
+  echo "[INFO] Check validation of numbers."
+  num_vars=(buffer-size http-timeout harakiri)
+  for var in "${num_vars[@]}"; do
+    value=$(get_config $var)
+    if [[ -z "$value" ]]; then
+      echo "[ERROR] CAN NOT find config name $var in: $SYS_PATH/package.ini, Please check the file."
+      exit 1
+    fi
+    check_num ${value} ${var}
+  done
+  echo "[INFO] All numbers are valid."
+
+  echo "[INFO] Check validation of words."
+  log_level=$(get_config "log_level")
+  check_word "log_level" "INFO|DEBUG|WARNING|ERROR|CRITICAL" $log_level
+  echo "[INFO] All words are valid."
+
+  check_config_path "temporary_directory" "d"
+  check_config_path "log_path" "d"
+  check_config_path "daemonize" "f"
+
+  echo "[INFO] check config parameter ok."
+}
+
+function check_addr() {
+  ip=$1
+  port=$2
+  ret=1
+  # check ip
+  if [[ $ip =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+    ip=(${ip//\./ })
+    [[ ${ip[0]} -le 255 && ${ip[1]} -le 255 && ${ip[2]} -le 255 && ${ip[3]} -le 255 ]]
+    ret=$?
+  fi
+  if [ $ret -ne 0 ]; then
+    echo "[ERROR] Invalid ip of $ip"
+    exit 1
+  fi
+  # check port
+  check_num ${port-"port"} "port"
+  if [[ $port -gt 65534 || $port -lt 1025 ]]; then
+    echo "[ERROR] Invalid port of $port"
+    exit 1
+  fi
+}
+
+function check_logrotate_config() {
+  max_size=$(get_config "max_bytes")
+  max_count=$(get_config "backup_count")
+  if [ -z "${max_size}" ] || [ -z "${max_count}" ]; then
+    echo "[ERROR] Configuration parameters 'max_bytes' or 'backup_count' do not exist. Please confirm that these two parameters exist in configuration file 'package.ini'."
+    exit 1
+  fi
+  check_num "${max_size}" "max_bytes"
+  check_num "${max_count}" "backup_count"
+  if [ ${max_size} -le 0 ] || [ ${max_count} -le 0 ]; then
+    echo "[ERROR] The values of configuration parameters 'max_bytes' or 'backup_count' are less than or equal to 0, please make sure they are greater than 0"
+    exit 1
+  fi
+}
+
+function check_null() {
+  list=$(cat $SYS_PATH/package.ini | grep -E ^[a-z_-]+= | awk -F '=' '{if($2 == "")print $1}')
+  num=0
+  for val in $list; do
+    num=$(($num + 1))
+  done
+  if [ $num -gt 0 ]; then
+    echo "[ERROR] The value of below config names is None in: $SYS_PATH/package.ini, Please check these parameters:"
+    for val in $list; do
+      echo $val
+    done
+    exit 1
+  fi
+}
+
+function check_num() {
+  result=$(echo $1 | grep '^[[:digit:]]*$')
+  if [ -z "${result}" ]; then
+    echo "[ERROR] $2 should be a number,please check this parameter "
+    exit 1
+  fi
+}
+
+function check_word() {
+  if [ -z $3 ]; then
+    echo "[ERROR] The value of below config names is None in: $SYS_PATH/package.ini, Please check these parameters: $1"
+    exit 1
+  fi
+
+  result=$(echo $3 | grep -wE "$2")
+  if [ -z "${result}" ]; then
+    echo "[ERROR] $1 should be $2."
+    exit 1
+  fi
+}
+
+function check_config_path() {
+  path_name=$1
+  path_value=$(get_config "${path_name}")
+  type=$2
+  # value is none
+  if [ -z "${path_value}" ]; then
+    echo "[ERROR] The parameter '${path_name}' does not exist or has no value in the configuration file '$SYS_PATH/package.ini'"
+    exit 1
+  fi
+  # file path is not exist,try create it
+  if [ ! -e "${path_value}" ]; then
+    if [ "${type}" = "d" ]; then
+      creat_result=$(mkdir "${path_value}" 2>&1)
+    fi
+    if [ "${type}" = "f" ]; then
+      creat_result=$(touch "${path_value}" 2>&1)
+    fi
+    if [[ "${creat_result}" =~ "Permission denied" ]]; then
+      echo "[ERROR] The file path corresponding to the parameter '${path_name}' does not exist and cannot create, please modify the configuration file '$SYS_PATH/package.ini'"
+      exit 1
+    fi
+    chown pkgshipuser: -R "${path_value}" >/dev/null 2>&1
+  fi
+  # value is a path
+  if [ "${type}" = "d" ]; then
+    create_try_result=$(touch ${path_value}/pkgship_create_test 2>&1)
+    if [[ "${create_try_result}" =~ "Permission denied" ]]; then
+      echo "[ERROR] parameter '${path_name}' corresponding path authority is too high,please ensure that 'pkgshipuser' users can read and write"
+      exit 1
+    fi
+    rm -rf ${path_value}/pkgship_create_test
+  else
+    # value is a file
+    if [ ! -w "${path_value}" ]; then
+      echo "[ERROR] the file of the parameter '${path_name}' is not exist or permission is too high"
+      echo "[ERROR] please ensure that exists and 'pkgshipuser' users can read and write"
+      exit 1
+    fi
+  fi
+
+}
+
+function get_config() {
+  cat $SYS_PATH/package.ini | grep -E ^$1 | sed 's/[[:space:]]//g' | awk 'BEGIN{FS="="}{print $2}'
+}
+
+function create_config_file() {
+  echo "[INFO] start to create uwsgi file"
+  panel_port=$(get_config "panel_port")
+  query_ip_addr=$(get_config "query_ip_addr")
+  daemonize=$(get_config "daemonize")
+  buffer_size=$(get_config "buffer-size")
+  http_timeout=$(get_config "http-timeout")
+  harakiri=$(get_config "harakiri")
+  uwsgi_file_path=$(find /usr/lib/ -name "packageship_panel" | head -n 1)
+  echo "[INFO] run packageship_panel under path: $uwsgi_file_path"
+
+  if [[ -z "$daemonize" ]] || [[ -z "$buffer_size" ]] || [[ -z "$http_timeout" ]] || [[ -z "$harakiri" ]]; then
+    echo "[ERROR] CAN NOT find  all config name in: $SYS_PATH/package.ini, Please check the file."
+    echo "[ERROR] The following config name is needed: daemonize, buffer_size, harakiri and http-timeout."
+    exit 1
+  fi
+  if [ -z "$uwsgi_file_path" ]; then
+    echo "[ERROR] CAN NOT find the uwsgi file path under: /usr/lib/"
+    exit 1
+  fi
+
+  echo "[INFO] ${PKGSHIP_CONSTANT}.ini is saved to: $OUT_PATH/${PKGSHIP_CONSTANT}.ini"
+  echo "[uwsgi]
+http=$query_ip_addr:$panel_port
+module=packageship_panel.panel
+uwsgi-file=$uwsgi_file_path/panel.py
+callable=app
+buffer-size=$buffer_size
+pidfile=$OUT_PATH/${PKGSHIP_CONSTANT}.pid
+http-timeout=$http_timeout
+harakiri=$harakiri
+enable-threads=true
+touch-logreopen=/opt/pkgship/uwsgi/.touch_for_logrotate
+log-format = [remote url: %(uri)  %(method)]---{%(user_ip)} --->[%(user)]-->[%(addr)] -->[%(proto)] -->[%(host)] {%(vars) vars in %(pktsize) bytes} [%(ctime)]=> %(status)))
+daemonize=$daemonize" >$OUT_PATH/${PKGSHIP_CONSTANT}.ini
+  chown pkgshipuser: $OUT_PATH/${PKGSHIP_CONSTANT}.ini
+  chmod 750 $OUT_PATH/${PKGSHIP_CONSTANT}.ini
+  echo "[INFO] create uwsgi file ok"
+
+  # create log_info file
+  echo "[INFO] start to create log_info file"
+  log_file_path=$(get_config "log_path")
+  log_file=${log_file_path}/"log_info.log"
+  if [ ! -e "${log_file}" ]; then
+    touch "${log_file}"
+    chmod 644 "${log_file}"
+  else
+    log_info=$(ls -al "${log_file}")
+    if [[ ! "${log_info}" =~ "pkgshipuser" ]]; then
+      echo "[ERROR] The owner of the ${log_file} is incorrect,please make sure the owner is pkgshipuser"
+      exit 1
+    fi
+  fi
+  echo "[INFO] create log_info file success"
+}
+
+
+function is_started() {
+  target_flag=$OUT_PATH/${PKGSHIP_CONSTANT}.ini
+  panel_process=$(ps -eo cmd | grep pkgship_panel |grep -v grep | awk '{print$4}' | head -n1)
+
+  if [ "$target_flag" = "$panel_process" ]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+function start_service() {
+  if is_started; then
+    echo "[ERROR] ${PKGSHIP_CONSTANT} service is running, please stop it first."
+    exit 1
+  else
+    uwsgi -d --ini $OUT_PATH/${PKGSHIP_CONSTANT}.ini
+    echo "[INFO] START uwsgi service: ${PKGSHIP_CONSTANT}.ini"
+
+    for i in {1..5}; do
+      if is_started; then
+        echo "[INFO] Start pkgship-panel service success!!!"
+        exit 0
+      fi
+      sleep 1s
+    done
+
+    echo "[ERROR] Service failed to start, please check log $(get_config "daemonize")"
+    exit 1
+  fi
+}
+
+function stop_service() {
+  if [ ! -f "$OUT_PATH/${PKGSHIP_CONSTANT}.pid" ]; then
+    echo "[ERROR] STOP service FAILED, $OUT_PATH/${PKGSHIP_CONSTANT}.pid dose not exist."
+    echo "[ERROR] Please stop it manually by using [ps -aux] and [uwsgi --stop #PID]"
+    exit 1
+  fi
+
+  if is_started; then
+    uwsgi --stop $OUT_PATH/${PKGSHIP_CONSTANT}.pid
+    echo "[INFO] STOP uwsgi service: $OUT_PATH/${PKGSHIP_CONSTANT}.ini"
+    echo "[INFO] The run log is saved into: $(get_config "daemonize")"
+    exit 0
+  else
+    echo "[ERROR] STOP service failed, Please start the service first."
+    exit 1
+  fi
+}
+
+function start_or_stop_service() {
+  if [ "${OPERATION}" = "start" ]; then
+    start_service
+  elif [ "${OPERATION}" = "stop" ]; then
+    stop_service
+  fi
+}
+
+
+function main() {
+  # check input
+  check_sub_cmd
+  # check uwsgi and package.ini
+  check_config_file
+  if [ "${OPERATION}" = "start" ]; then
+    # check config parameter
+    check_config_param
+    # check logrotate config
+    check_logrotate_config
+    # create uwsgi files
+    create_config_file
+  fi
+  #star or stop service
+  start_or_stop_service
+}
+
+main

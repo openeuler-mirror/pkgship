@@ -1,10 +1,10 @@
 Name:           pkgship
-Version:        2.1.0
-Release:        8
+Version:        3.0.0
+Release:        1
 Summary:        Pkgship implements rpm package dependence ,maintainer, patch query and so on.
 License:        Mulan 2.0
 URL:            https://gitee.com/openeuler/pkgship
-Source0:        https://gitee.com/openeuler/pkgship-%{version}.tar.gz
+Source0:        https://gitee.com/src-openeuler/pkgship-%{version}.tar.gz
 
 BuildArch:      noarch
 
@@ -23,13 +23,33 @@ Requires: python3-elasticsearch python3-concurrent-log-handler
 %description
 Pkgship implements rpm package dependence ,maintainer, patch query and so no.
 
+%package -n pkgship-tools
+Summary: Package Validation Tool
+Requires: pkgship
+
+%description -n pkgship-tools
+Packages automatically analyze dependencies, create containers,
+perform compilation and installation operations, and perform simple functional verification
+
+%package -n pkgship-panel
+Summary: openEuler Data panel
+# BuildRequires: pkgship python3-aiohttp python3-APScheduler python3-lxml
+# Requires: pkgship python3-aiohttp python3-APScheduler python3-lxml
+BuildRequires: pkgship
+Requires: pkgship
+
+%description -n pkgship-panel
+A Kanban board that can view package compilation status,
+package maintenance information, and sig group information
+
 %prep
 %autosetup -n pkgship-%{version} -p1
 
 %build
+# pkgship build
+pushd packageship
 %py3_build
-current_path=`pwd`
-cd $current_path'/packageship'
+## create version file
 version_=%{version}
 release_=%{release}
 version_file=version.yaml
@@ -40,66 +60,55 @@ touch $version_file
 echo "create version.yaml successfully."
 echo "Version: $version_" >> $version_file
 echo "Release: $release_" >> $version_file
+popd
+
+# pkgship-panel build
+pushd packageship_panel
+%py3_build
+popd
 
 %install
+# pkgship install
+pushd packageship
 %py3_install
+popd
 
+# pkgship-panel install
+pushd  packageship_panel
+%py3_install
+popd
+
+# install pkgship-tools
+mkdir -p %{buildroot}/opt/pkgship/tools/
+cp -r pkgship-tools/* %{buildroot}/opt/pkgship/tools/
 
 %check
-current_path=`pwd`
-log_path=${current_path}/packageship/tmp/
-sed -i '/^LOG_PATH/d' ./packageship/libs/conf/global_config.py
-echo "LOG_PATH=r\"${log_path}\"" >> ./packageship/libs/conf/global_config.py
-%{__python3} test/coverage_count.py
+#TODO 区分pkgship和pkghsip-panel的测试用例入口
+# pkgship check
+#current_path=`pwd`
+#log_path=${current_path}/packageship/tmp/
+#sed -i '/^LOG_PATH/d' ./packageship/libs/conf/global_config.py
+#echo "LOG_PATH=r\"${log_path}\"" >> ./packageship/libs/conf/global_config.py
+#%{__python3} test/coverage_count.py
 
 %pre
+# add user and group
 user=pkgshipuser
 group=pkgshipuser
 
-# create group if not exists
-egrep -w "^$group" /etc/group >& /dev/null
-if [ $? -ne 0 ]
-then
-            groupadd $group
-fi
+groupadd $group 2>/dev/null
+useradd -g $group $user 2>/dev/null
 
-# create user if not exists
-egrep -w "^$user" /etc/passwd >& /dev/null
-if [ $? -ne 0 ]
-then
-            useradd -g $group $user
-fi
-
-
-# create dir or file if not exists
-function create_dir_file(){
-if [ $3 = "d" ];then
-        if [ ! -d "$1" ];then
-                mkdir -p -m $2 $1
-        fi
-elif [ $3 = "f" ];then
-        if [ -f $1 ];then
-                        rm -rf $1
-        fi
-        touch $1
-        chmod $2 $1
-fi
-chown -R $user:$group $1
-}
-
-create_dir_file /opt/pkgship/ 750 d
-create_dir_file /opt/pkgship/compare 755 d
-create_dir_file /var/log/pkgship 755 d
-create_dir_file /var/log/pkgship-operation 700 d
-
-%post
-
-%postun
-
+mkdir -p /opt/pkgship/ 750
+mkdir -p /opt/pkgship/compare 755
+mkdir -p /opt/pkgship/tools 755
+mkdir -p /var/log/pkgship 755
+mkdir -p /var/log/pkgship-operation 700
 
 %files
 %doc README.md
-%attr(0755,pkgshipuser,pkgshipuser) %{python3_sitelib}/*
+%attr(0755,pkgshipuser,pkgshipuser) %{python3_sitelib}/packageship-*egg-info
+%attr(0755,pkgshipuser,pkgshipuser) %{python3_sitelib}/packageship/*
 %attr(0755,pkgshipuser,pkgshipuser) %config %{_sysconfdir}/pkgship/*
 %attr(0755,pkgshipuser,pkgshipuser) %{_bindir}/pkgshipd
 %attr(0755,pkgshipuser,pkgshipuser) %{_bindir}/pkgship
@@ -108,6 +117,18 @@ create_dir_file /var/log/pkgship-operation 700 d
 %attr(0640,pkgshipuser,pkgshipuser) /etc/pkgship/package.ini
 %attr(0644,pkgshipuser,pkgshipuser) /etc/pkgship/conf.yaml
 %attr(0640,pkgshipuser,pkgshipuser) /lib/systemd/system/pkgship.service
+# The file list of the package pkgship-tools
+%files -n pkgship-tools
+%attr(0755,root,root) /opt/pkgship/tools/*
+# The file list of the package pkgship-panel
+%files -n pkgship-panel
+%attr(0755,pkgshipuser,pkgshipuser) %{python3_sitelib}/packageship_panel-*.egg-info
+%attr(0755,pkgshipuser,pkgshipuser) %{python3_sitelib}/packageship_panel/*
+%attr(0755,pkgshipuser,pkgshipuser) %{_bindir}/pkgship-paneld
+%attr(0755,pkgshipuser,pkgshipuser) %{_bindir}/pkgship-panel
+%attr(0755,pkgshipuser,pkgshipuser) /lib/systemd/system/pkgship-panel.service
+%attr(0755,pkgshipuser,pkgshipuser) /etc/pkgship/timed_task.yaml
+%attr(0755,pkgshipuser,pkgshipuser) /etc/pkgship/sig_mentor.yaml
 
 %changelog
 * Sat Mar 20 2021 Haiwei Li  <lihaiwei8@huawei.com> - 2.1.0-8
