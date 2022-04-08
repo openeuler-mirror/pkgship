@@ -15,8 +15,9 @@ Package management program installation configuration
 file for software packaging
 """
 import os
-from setuptools import setup, find_packages
 from distutils.sysconfig import get_python_lib
+from setuptools import setup, find_packages
+
 
 PACKAGESHIP_PANEL_TEMPLATE_PATH = os.path.join(
     get_python_lib(), "packageship_panel", "obs_info_template.csv"

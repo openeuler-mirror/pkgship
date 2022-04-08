@@ -15,8 +15,8 @@ Package management program installation configuration
 file for software packaging
 """
 import os
-
 from distutils.sysconfig import get_python_lib
+
 from setuptools import setup, find_packages
 
 _CONFIG_PATH = "/etc/pkgship/"
@@ -28,7 +28,7 @@ INITIALIZE_PATH = os.path.join(PACKAGE_PATH, "packageship", "application", "init
 
 setup(
     name="packageship",
-    version="2.1.0",
+    version="3.0.0",
     packages=find_packages(),
     requires=[
         "prettytable (==0.7.2)",
@@ -44,6 +44,9 @@ setup(
         "elasticsearch(==7.10.1)",
         "redis(==3.5.3)",
         "retrying(==1.3.3)",
+        "aiohttp(==3.8.1)",
+        "APScheduler(==3.8.1)",
+        "lxml(==4.6.3)",
     ],
     license="Dependency package management",
     author="wangyiru",
@@ -51,16 +54,16 @@ setup(
         (
             _CONFIG_PATH,
             [
-                "packageship/package.ini",
+                "package.ini",
                 "conf.yaml",
-                "packageship/auto_install_pkgship_requires.sh",
-                "packageship/uwsgi_logrotate.sh",
+                "auto_install_pkgship_requires.sh",
+                "uwsgi_logrotate.sh",
             ],
         ),
-        ("/usr/bin", ["packageship/pkgshipd", "packageship/pkgship"]),
-        ("/lib/systemd/system/", ["packageship/pkgship.service"]),
+        ("/usr/bin", ["pkgshipd", "pkgship"]),
+        ("/lib/systemd/system/", ["pkgship.service"]),
         (MAPPING_PATH, ["packageship/application/common/rsp/mapping.xml"]),
-        (PACKAGESHIP_PATH, ["packageship/version.yaml"]),
+        (PACKAGESHIP_PATH, ["version.yaml"]),
         (
             INITIALIZE_PATH,
             [

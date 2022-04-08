@@ -41,6 +41,12 @@ function install_require()
   fi
 }
 
+function add_tmp_requires() {
+  echo "[INFO] add python requires"
+  sudo dnf install python3-devel -y
+  pip install aiohttp==3.8.1 lxml==4.6.3 apscheduler --trusted-host https://repo.huaweicloud.com -i https://repo.huaweicloud.com/repository/pypi/simple
+}
+
 function build_install_rpm()
 {
   if [ ! -f ${pkgship_spec_path} ]; then
@@ -76,6 +82,8 @@ echo "update repo            ... done"
 
 install_require
 echo "install required rpms  ... done"
+
+add_tmp_requires
 
 prepare_rpmbuild_dir
 echo "prepare rpmbuild dir   ... done"
