@@ -78,6 +78,9 @@ MAX_INIT_DATABASE = 500
 # Maximum number of ES queries
 MAX_ES_QUERY_NUM = 1000000
 
+# Maximum number of query result
+MAX_NUM_OF_RESULT = 10000
+
 # Supported query types
 SUPPORT_QUERY_TYPE = ['build', 'install']
 
@@ -91,7 +94,8 @@ CALL_MAX_DELAY = 60
 MAX_RETRY = 3
 
 # Package build state
-BUILD_STATES = ["succeeded", "failed", "unresolvable", "broken", "blocked", "building", "excluded"]
+BUILD_STATES = ["succeeded", "failed", "unresolvable", "broken", "blocked", "building", "excluded", "disabled",
+                "locked"]
 
 # Package build time
 BUILD_TIMES = [0, 10, 20, 30]

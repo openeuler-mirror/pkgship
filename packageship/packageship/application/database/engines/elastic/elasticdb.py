@@ -44,7 +44,10 @@ class ElasticSearch(object):
                 [{"host": self._host, "port": self._port}], timeout=60
             )
             self.async_client = AsyncElasticsearch(
-                [{"host": self._host, "port": self._port}], timeout=60
+                [{"host": self._host, "port": self._port}],
+                timeout=600,
+                max_retries=3,
+                retry_on_timeout=True,
             )
         except LocationValueError:
             LOGGER.error("The host of database in package.ini is empty")
@@ -58,8 +61,7 @@ class ElasticSearch(object):
             body: query body of elasticsearch
 
         Returns: elasticsearch data
-        Raises: ElasticSearchQueryException,including connection timeout,
-                server unreachable, index does not exist, etc.
+        Raises: ElasticSearchQueryException,including connection timeout, server unreachable, index does not exist, etc.
         """
         try:
             result = self.client.search(index=index, body=body)
@@ -76,8 +78,7 @@ class ElasticSearch(object):
             body: query body of elasticsearch
 
         Returns: elasticsearch all data
-        Raises: ElasticSearchQueryException,including connection timeout,
-                server unreachable, index does not exist, etc.
+        Raises: ElasticSearchQueryException,including connection timeout, server unreachable, index does not exist, etc.
         """
         try:
             result = helpers.scan(
@@ -97,8 +98,7 @@ class ElasticSearch(object):
             body: query body of elasticsearch
 
         Returns: data volume
-        Raises: ElasticSearchQueryException,including connection timeout,
-                server unreachable, index does not exist, etc.
+        Raises: ElasticSearchQueryException,including connection timeout, server unreachable, index does not exist, etc.
         """
         try:
             data_count = self.client.count(index=index, body=body)
@@ -125,8 +125,7 @@ class ElasticSearch(object):
             doc_type: document type
 
         Returns:
-        Raises: ElasticSearchQueryException,including connection timeout,
-                server unreachable, index does not exist, etc.
+        Raises: ElasticSearchQueryException,including connection timeout, server unreachable, index does not exist, etc.
         """
         try:
             self.client.index(index=index, body=body, doc_type=doc_type)
@@ -212,7 +211,7 @@ class ElasticSearch(object):
             await self.async_client.index(index=index, body=body)
         except ElasticsearchException as elastic_err:
             LOGGER.error(
-                "Insert to %s failed,data is %s, message is %s",index, body, elastic_err
+                "Insert to %s failed,data is %s, message is %s" % (index, body, elastic_err)
             )
 
     async def async_bulk(self, body: list):
@@ -241,3 +240,15 @@ class ElasticSearch(object):
             "_type": _type,
             "_source": source,
         }
+
+    def delete(self, index, body):
+        """Delete the data that meets the requirements
+        :param index: es index
+        :param body: Query conditions
+        """
+        try:
+            self.client.delete_by_query(index=index, body=body)
+        except ElasticsearchException as elastic_err:
+            LOGGER.error(
+                "Delete to %s failed,query is %s,message is %s" % (index, body, elastic_err)
+            )

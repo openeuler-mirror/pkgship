@@ -267,7 +267,7 @@ class QueryPackage(object):
 
         """
         query_body = QueryBody()
-        query_body.query_terms = (dict(name=dict(name=[rpm_info for rpm_info in rpm_list]),
+        query_body.query_terms = (dict(fields=dict(name=[rpm_info for rpm_info in rpm_list]),
                                        page_num=(page_num - 1) * page_size,
                                        page_size=page_size
                                        ))
@@ -386,7 +386,7 @@ class QueryPackage(object):
         """
         query_body = QueryBody()
         source = ['name', 'version', 'src_name', 'src_version', 'subpacks']
-        query_body.query_term = dict(name=dict(name=rpm_name), _source=source)
+        query_body.query_term = dict(fields=dict(name=rpm_name), _source=source)
         return query_body.query_term
 
     @staticmethod
