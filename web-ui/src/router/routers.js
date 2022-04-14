@@ -18,21 +18,18 @@ export const constantRouterMap = [
         name: 'Packagemanagement',
         component: () => import('@/views/home/Packagemanagement.vue')
     },
-    // {
-    //     path: '/source-info',
-    //     name: 'package-info',
-    //     component: () => import('@/views/home/source-info.vue')
-    // },
-    // {
-    //     path: '/binary-info',
-    //     name: 'issue-list',
-    //     component: () => import('@/views/home/binary-info.vue')
-    // },
-    // {
-    //     path: '/depend-info',
-    //     name: 'depend-info',
-    //     component: () => import('@/views/home/depend-info.vue')
-    // },
+    {
+        path: '/Infomanagement',
+        name: 'Infomanagement',
+        meta: {
+            keepAlive: true
+        },
+        component: () => import('@/views/home/Infomanagement.vue')
+    },
+    {
+        path: '/sig-detail',
+        component: () => import('@/views/package/sig-detail.vue')
+    },
     {
         path: '/source-detail',
         component: () => import('@/views/package/source-detail.vue')
