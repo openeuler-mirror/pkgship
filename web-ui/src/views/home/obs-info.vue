@@ -90,16 +90,6 @@
                     width="250">
                 </el-table-column>
                 <el-table-column
-                    prop="gitee_branch"
-                    label="软件包所在gitee分支"
-                    width="250">
-                </el-table-column>
-                <el-table-column
-                    prop="architecture"
-                    label="软件包架构"
-                    width="180">
-                </el-table-column>
-                <el-table-column
                     prop="build_status"
                     label="编译状态"
                     width="180">

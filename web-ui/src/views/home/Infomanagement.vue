@@ -7,10 +7,10 @@
                 <el-tooltip class="item" effect="light" content="Query binary package information" placement="top">
                         <img src="@/assets/images/question.svg" alt="">
                 </el-tooltip>
-                <a :class="{'active': isPrShow }" @click="showPr">PR信息</a>
+                <!-- <a :class="{'active': isPrShow }" @click="showPr">PR信息</a>
                 <el-tooltip class="item" effect="light" content="Query source code package information" placement="top">
                         <img src="@/assets/images/question.svg" alt="">
-                </el-tooltip>
+                </el-tooltip> -->
                 <a :class="{'active': isSigShow }" @click="showSig">SIG组</a>
                 <el-tooltip class="item" effect="light" content="Query source code package information" placement="top">
                         <img src="@/assets/images/question.svg" alt="">
