@@ -51,16 +51,20 @@ class Query(object):
         self._index = index
 
     @staticmethod
-    def search_result_format(search_result):
+    def search_result_format(search_result, is_scan=False):
         """
         Parse the result of an ES query
         :param search_result: old result of an ES query
+        :param is_scan: Whether it is the result of the scan method
         :return: source data
         """
         if search_result is None:
             return []
         try:
-            format_result = search_result['hits']['hits']
+            if is_scan:
+                format_result = search_result
+            else:
+                format_result = search_result['hits']['hits']
             return format_result
         except KeyError:
             return []

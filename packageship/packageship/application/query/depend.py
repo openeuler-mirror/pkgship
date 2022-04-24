@@ -307,7 +307,7 @@ class RequireBase(Query):
         """
         self.set_index(index=database)
         query_body = QueryBody()
-        query_body.query_terms = dict(name=query_content,
+        query_body.query_terms = dict(fields=query_content,
                                       _source=source,
                                       page_num=0,
                                       page_size=300)
@@ -541,7 +541,7 @@ class BeDependRequires(Query):
         def job(binarys):
             query_body = QueryBody()
             query_body.query_terms = dict(
-                name=dict(binary_name=binarys), page_num=0, page_size=1000)
+                fields=dict(binary_name=binarys), page_num=0, page_size=1000)
             result = self.session.query(
                 index=self.bedepend_index, body=query_body.query_terms)
             try:
