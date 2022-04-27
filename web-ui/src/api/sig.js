@@ -27,3 +27,30 @@
  
      });
  };
+
+ export const getSigDown = ({
+                               sig_name
+                           }) => {
+    return new Promise((resolve, reject) => {
+        appAjax.postJson({
+            url: '/infoBoard/sig/export',
+            type: 'post',
+            responseType: 'blob',
+            data: {
+                sig_name
+            },
+            success(result) {
+                if (result) {
+                    resolve(result);
+                    return;
+                }
+                reject(result);
+            },
+            error(msg) {
+                reject(msg);
+            }
+
+        });
+
+    });
+};

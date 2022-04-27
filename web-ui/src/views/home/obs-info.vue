@@ -199,10 +199,7 @@
 import { getObsInfo } from '../../api/obs'
 import { getObsSuggests } from '../../api/obs'
 import { getBranchSuggests } from '../../api/obs'
-import {
-    packageSrc,
-} from "../../api/repo";
-import { dependDown } from '../../api/depend';
+import { getObsDown } from '../../api/obs'
 import PieChart from '@/components/PieChart.vue'
 import LineChart from '@/components/LineChart.vue'
 
@@ -370,18 +367,17 @@ export default {
         },
         excelDownload() {
             this.loading = true;
-            let priority = [];
-            priority.push(this.formData.gitee_branch);
             let listRes = {
-                dependType: 'src',
-                parameter: {
-                    db_priority: priority
-                }
+                pkg_name: this.formData.pkg_name,
+                gitee_branch: this.formData.gitee_branch,
+                architecture: this.formData.architecture,
+                build_state: this.formData.build_state,
+                sig_name: this.formData.sig_name
             };
-            this.getdependDown(listRes);
+            this.getObsInfoDown(listRes);
         },
-        getdependDown(require) {
-            dependDown (require)
+        getObsInfoDown(require) {
+            getObsDown (require)
                 .then(response => {
                     this.loading = false;
                     let blob = response;
@@ -393,30 +389,13 @@ export default {
                     this.$message.error(response.message + '\n' + response.tip);
                 });
         },
-        getPkgSrc(require) {
-            packageSrc(require)
-                .then(response => {
-                    if(response.code === '200') {
-                        this.tableData = response.resp;
-                        this.total = response.total_count;
-                    } else {
-                        this.$message.error(response.message + '\n' + response.tip);
-                    }
-                })
-                .catch(response => {
-                    this.$message.error(response.message + '\n' + response.tip);
-                });
-        },
     }
 }
 </script>
 
 <style lang="less">
 .package-info .el-form-item:nth-child(2) {
-    margin-left: 50px;
-}
-.package-info .el-form-item:nth-child(3) {
-    margin-left: 50px;
+    margin-left: 8px!important;
 }
 .package-info .el-button+.el-button {
     margin-left: 20px;
@@ -584,6 +563,8 @@ white-space:nowrap;
     height: 500px;
 } 
 .form-inputs{
+    display: flex!important;
+    justify-content: space-between!important;
     width: 1033px;
 }
 h1 {

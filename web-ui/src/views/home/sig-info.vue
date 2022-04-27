@@ -85,7 +85,7 @@
                         <img
                         src="../../../public/gather.png"
                         class="software-logo"
-                        @click="jump(scope.row.name, scope.row.repositories)"
+                        @click="jump(scope.row.name)"
                         />
                     </template>
                 </el-table-column>
@@ -133,8 +133,8 @@
 </template>
 
 <script>
-import { dependDown } from '../../api/depend';
 import { getSigInfo } from '../../api/sig'
+import { getSigDown } from '../../api/sig'
 
 //测试数据
 // import { sig_infos } from '@/mock/testData'
@@ -200,26 +200,21 @@ export default {
                 query: {pkg_name, database_name}
             })
         },
-        jump(sig_name, repositories){
+        jump(sig_name){
             this.$router.push({
                 path: '/sig-detail',
-                query: {sig_name, repositories}
+                query: {sig_name}
             })
         },
         excelDownload() {
             this.loading = true;
-            let priority = [];
-            priority.push(this.formData.tableName);
             let listRes = {
-                dependType: 'src',
-                parameter: {
-                    db_priority: priority
-                }
+                sig_name: this.formData.sig_name
             };
-            this.getdependDown(listRes);
+            this.getSigInfoDown(listRes);
         },
-        getdependDown(require) {
-            dependDown (require)
+        getSigInfoDown(require) {
+            getSigDown (require)
                 .then(response => {
                     this.loading = false;
                     let blob = response;

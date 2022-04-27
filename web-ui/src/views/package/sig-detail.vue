@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import { getSigInfo } from '../../api/sig'
 export default {
     name: 'SigDetail',
     mounted(){
@@ -40,9 +41,6 @@ export default {
     },
     created(){
         this.sig_name = this.$route.query.sig_name
-        this.propData = this.$route.query.repositories
-        console.log(this.sig_name);
-        console.log(this.propData);
     },
     data() {
         return {
@@ -60,19 +58,39 @@ export default {
     },
     methods: {
         initData() {
-            this.getTablePage()
+            this.getPropData()
         },
-        getTablePage() {
-            var dataLength = this.propData.length
-            this.total = dataLength
-            var PageMax = Math.ceil(dataLength/this.pageSize)
-            if ( this.pageNum != PageMax ) {
-              this.tableData = this.propData.slice(((this.pageNum - 1) * this.pageSize), ((this.pageNum - 1) * this.pageSize) + this.pageSize)
-              this.numSize = (this.pageNum - 1) * this.pageSize
-            } else {
-              this.tableData = this.propData.slice(this.pageSize * (PageMax - 1), dataLength)
-              this.numSize = (PageMax - 1) * this.pageSize
-            }
+        getPropData(){
+            this.tableLoading = true
+            getSigInfo(this.sig_name)
+                .then(response => {
+                    if(response.code === '200') {
+                        // this.tableData = response.resp;
+                        this.tableLoading = false
+                        this.propData = response.resp[0].repositories
+                        var dataLength = this.propData.length
+                        this.total = dataLength
+                        var PageMax = Math.ceil(dataLength/this.pageSize)
+                        if ( this.pageNum != PageMax ) {
+                          this.tableData = this.propData.slice(((this.pageNum - 1) * this.pageSize), ((this.pageNum - 1) * this.pageSize) + this.pageSize)
+                          this.numSize = (this.pageNum - 1) * this.pageSize
+                        } else {
+                          this.tableData = this.propData.slice(this.pageSize * (PageMax - 1), dataLength)
+                          this.numSize = (PageMax - 1) * this.pageSize
+                        }
+                    } else {
+                        this.tableLoading = false
+                        this.$message.error(response.message + '\n' + response.tip);
+                    }
+                })
+                .catch(response => {
+                    this.tableLoading = false
+                    this.$message.error(response.message + '\n' + response.tip);
+                })
+                .finally(function () {
+                //   this.tableLoading = false;
+                })
+                console.log(this.tableData);
         },
         queryData() {
             if (this.querySigName.length === 0 || this.querySigName.split(" ").join("").length === 0) {
