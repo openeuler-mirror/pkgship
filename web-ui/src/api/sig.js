@@ -54,3 +54,25 @@
 
     });
 };
+
+export const getSigSuggests = (querySigName) => {
+    return new Promise((resolve, reject) => {
+        appAjax.postJson({
+            url: '/infoBoard/obs/sig/suggest',
+            type: 'get',
+            params: {
+                query: querySigName
+            },
+            success(result) {
+                if (result) {
+                    resolve(result);
+                    return;
+                }
+                reject(result);
+            },
+            error(msg) {
+                reject(msg);
+            }
+        });
+    });
+};

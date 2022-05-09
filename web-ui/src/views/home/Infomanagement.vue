@@ -17,9 +17,9 @@
                 </el-tooltip>
             </div>
             <div class="package-container">
-                <obs-info v-if="isObsShow" />
+                <obs-info @goToSig='changeSig' v-if="isObsShow" />
                 <pr-info v-if="isPrShow" />
-                <sig-info v-if="isSigShow" />
+                <sig-info :sigName="sigName" v-if="isSigShow" />
             </div>
         </div>
     </div>
@@ -50,6 +50,7 @@ export default {
             isObsShow: false,
             isSigShow: false,
             isPrShow: false,
+            sigName: ''
         }
     },
     methods: {
@@ -57,6 +58,7 @@ export default {
             this.isObsShow = true;
             this.isSigShow = false;
             this.isPrShow = false;
+            this.sigName = undefined
         },
         showSig() {
             this.isObsShow = false;
@@ -68,7 +70,11 @@ export default {
             this.isSigShow = false;
             this.isPrShow = true;
         },
-    }
+        changeSig(val) {
+            this.sigName = val
+            this.showSig()
+        }
+    },
 }
 </script>
 

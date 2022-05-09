@@ -1,32 +1,33 @@
 <template>
     <div>
       <div class="home">
-            <h1>{{ sig_name }}</h1>
+            <div style="display:flex;">
+               <h1>{{ sig_name }}</h1>
+               <i class="el-icon-back backBtn" @click="goBack"></i>
+               <span class="backMsg" @click="goBack">Go back</span>
+            </div>
             <el-input
-                v-model="querySigName"
+                v-model="queryPackageName"
                 class="pc-search"
-                placeholder="Search SigName"
+                placeholder="Search PackageName"
                 @keyup.enter.native="queryData()">
                 <i slot="suffix" class="icon-search" @click="queryData()"></i>
             </el-input>
             <div class="package-container">
-                <div class="pc-pkg-table" v-for="(item, index) in tableData" :key="index">
-                    <ul class="repositories-line" v-if="visMsg">
-                        <li class="detail-title"><span>{{index + 1 + numSize}}</span><span style="margin-left:30px;">{{item}}</span></li>
+                <div class="pc-pkg-table" v-if="visMsg">
+                    <ul class="repositories-line" v-for="(item, index) in tableData.slice(0,10)" :key="'infoA' + index">
+                        <li class="detail-title"><span>{{index + 1}}</span><span style="margin-left:30px;">{{item}}</span></li>
+                    </ul>
+                    <ul class="repositories-line" v-if="tableData.length > 10 && !moreMsg">
+                        <li @click="showMore" style="color:#2b4490;cursor: pointer;font-weight: bold;">Show More</li>
+                    </ul>
+                    <ul class="repositories-line" v-for="(item, index) in tableData.slice(10)" :key="'infoB' + index">
+                        <li class="detail-title" v-if="moreMsg"><span>{{index + 11}}</span><span style="margin-left:30px;">{{item}}</span></li>
                     </ul>
                 </div>
                 <ul class="repositories-line" v-if="!visMsg">
-                        <li class="detail-title"><span>No data</span></li>
+                        <li class="detail-title" style="font-weight: bold;"><span>No Result</span></li>
                 </ul>
-                <el-pagination
-                    class="safety-bulletin-pagination"
-                    :current-page.sync="pageNum"
-                    :page-size="pageSize"
-                    layout="total, prev, pager, next, jumper"
-                    @current-change="initData"
-                    :total="total"
-                    v-if="visMsg">
-                </el-pagination>
             </div>
         </div>
     </div>
@@ -45,15 +46,12 @@ export default {
     data() {
         return {
             visMsg: true,
-            querySigName: '',
+            moreMsg: false,
+            queryPackageName: '',
             sig_name: '',
             tableData: [],
             propData: [],
             tableLoading: false,
-            total: 0,
-            pageNum: 1,
-            pageSize: 10,
-            numSize: 0
         }
     },
     methods: {
@@ -68,16 +66,7 @@ export default {
                         // this.tableData = response.resp;
                         this.tableLoading = false
                         this.propData = response.resp[0].repositories
-                        var dataLength = this.propData.length
-                        this.total = dataLength
-                        var PageMax = Math.ceil(dataLength/this.pageSize)
-                        if ( this.pageNum != PageMax ) {
-                          this.tableData = this.propData.slice(((this.pageNum - 1) * this.pageSize), ((this.pageNum - 1) * this.pageSize) + this.pageSize)
-                          this.numSize = (this.pageNum - 1) * this.pageSize
-                        } else {
-                          this.tableData = this.propData.slice(this.pageSize * (PageMax - 1), dataLength)
-                          this.numSize = (PageMax - 1) * this.pageSize
-                        }
+                        this.tableData = this.propData
                     } else {
                         this.tableLoading = false
                         this.$message.error(response.message + '\n' + response.tip);
@@ -90,21 +79,32 @@ export default {
                 .finally(function () {
                 //   this.tableLoading = false;
                 })
-                console.log(this.tableData);
+        },
+        goBack() {
+            this.$router.go(-1)
+        },
+        showMore() {
+            this.moreMsg = true
         },
         queryData() {
-            if (this.querySigName.length === 0 || this.querySigName.split(" ").join("").length === 0) {
+            this.tableData = []
+            this.moreMsg = false //重置默认属性
+            if (this.queryPackageName.length === 0 || this.queryPackageName.split(" ").join("").length === 0) {
                 this.visMsg = true
                 this.initData()
             } else {
-               if (this.propData.indexOf(this.querySigName) === -1) {
-                  this.visMsg = false
-               } else {
-                  this.visMsg = true
-                  this.tableData = [this.querySigName]
-                  this.total = 1
-                  this.pageNum = 1
-               }
+                let reg = new RegExp(this.queryPackageName)
+                for(let i = 0; i < this.propData.length; i++) {
+                        if(this.propData[i].match(reg)) {
+                           this.tableData.push(this.propData[i])
+                        }
+                }
+                var dataLength = this.tableData.length
+                if (dataLength === 0) {
+                   this.visMsg = false
+                } else {
+                   this.visMsg = true
+                }
             }  
         }
     }
@@ -118,9 +118,21 @@ export default {
     50% { opacity: 0; }
     100% { opacity: 1;}
 }
-.safety-bulletin-pagination {
-    display: block;
-    margin: 30px 0 200px 0!important;
+.backBtn {
+    position: absolute;
+    right: 250px;
+    margin-top: 70px;
+    font-size: 29px;
+    color: #002FA7;
+    cursor: pointer;
+}
+.backMsg{
+    position: absolute;
+    right: 168px;
+    margin-top: 71px;
+    font-size: 18px;
+    color: #002FA7;
+    cursor: pointer;
 }
 .icon-search {
     position: absolute;

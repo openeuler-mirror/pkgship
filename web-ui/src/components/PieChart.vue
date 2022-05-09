@@ -24,12 +24,22 @@ export default {
           ]
       }
     },
+    watch: {
+       title(newVal, oldVal){
+          this.drawPie(this.pieData, newVal)
+          console.log(oldVal);
+       },
+       pieData(newVal, oldVal){
+          this.drawPie(newVal, this.title)
+          console.log(oldVal);
+       }
+    },
     methods: {
-       drawPie() {
+       drawPie(a,b) {
          this.charts = this.$echarts.init(document.getElementById(this.echarts));
-         this.charts.setOption({
+         var option = {
            title: {
-             text: this.title,
+             text: b,
              left: "center",
              top: "bottom"
            },
@@ -40,6 +50,26 @@ export default {
            legend: {
              orient: 'vertical',
              left: "left",
+             formatter: function(name) {
+                  // 获取legend显示内容
+                  let data = option.series[0].data;
+                  let total = 0;
+                  let tarValue = 0;
+                  for (let i = 0, l = data.length; i < l; i++) {
+                      total += data[i].value;
+                      if (data[i].name == name) {
+                          tarValue = data[i].value;
+                      }
+                  }
+                  if(total != 0){
+                    let p = (tarValue / total * 100).toFixed(2);
+                    return name + ' ' + ' ' + p + '%';
+                  } else {
+                    let p = 0
+                    return name + ' ' + ' ' + p + '%';
+                  }
+                  
+             },
            },
            series: [
              {
@@ -56,14 +86,20 @@ export default {
                   },
                   color: function(params) {
                     //自定义颜色
-                    var colorList = ["#1ab394","#ed1941","#ffd400","#426ab3","#afb4db","#f391a9","#8552a1","#C0FF3E","#E0FFFF"];
-                    return colorList[params.dataIndex];
+                    console.log(params);
+                    if(params.data.name === "无数据"){
+                      return "#999d9c"
+                    }else {
+                      var colorList = ["#1ab394","#ed1941","#ffd400","#426ab3","#afb4db","#f391a9","#8552a1","#C0FF3E","#E0FFFF"];
+                      return colorList[params.dataIndex];
+                    }
                   }
                 },
-                data: this.pieData
+                data: a
              }
            ]
-         });
+         }
+         this.charts.setOption(option, true);
        },
     },
     computed: {
@@ -73,10 +109,11 @@ export default {
     },
     mounted () {
       this.$nextTick(function() {
-        this.drawPie();
+        this.drawPie(this.pieData,this.title);
       });
     },
     created () {
+      console.log(this.pieData);
     }
 }
 </script>

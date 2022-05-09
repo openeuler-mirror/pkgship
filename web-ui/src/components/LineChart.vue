@@ -22,17 +22,31 @@ export default {
         default:() => []
       }
     },
+    watch: {
+       title(newVal, oldVal){
+          this.drawPie(newVal, this.xAxisData, this.linedata)
+          console.log(oldVal);
+       },
+       xAxisData(newVal, oldVal){
+          this.drawPie(this.title, newVal, this.linedata)
+          console.log(oldVal);
+       },
+       linedata(newVal, oldVal){
+          this.drawPie(this.title, this.xAxisData, newVal)
+          console.log(oldVal);
+       }
+    },
     data (){
       return {
         timer: null
       }
     },
     methods: {
-        drawPie(){
+        drawPie(a,b,c){
           this.charts = this.$echarts.init(document.getElementById(this.linecharts))
           this.charts.setOption({
               title: {
-               text: this.title,
+               text: a,
                left: "center",
                top: "bottom"
               },
@@ -48,14 +62,11 @@ export default {
               //  }
               },
               toolbox: {
-               feature: {
-                 saveAsImage: {}
-               }
               },
               xAxis: {
                 name: '天数',
                 type: 'category',
-                data: this.xAxisData
+                data: b
               },
               yAxis: {
                 name: '时间',
@@ -81,7 +92,7 @@ export default {
                                     }  
                                 }  
                               }, 
-                  data: this.linedata,
+                  data: c,
                   type: 'line'
                 }
               ]
@@ -95,7 +106,7 @@ export default {
     },
     mounted () {
         this.$nextTick(function() {
-            this.drawPie();
+            this.drawPie(this.title,this.xAxisData,this.linedata);
         });
     },
     created () {

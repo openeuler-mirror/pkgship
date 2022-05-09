@@ -8,13 +8,15 @@
                     <el-tooltip class="tool-tips" content="Name of the source code package to be queried.Currently,only exact match is supported" placement="bottom" effect="light">
                         <img src="@/assets/images/question.svg" alt="">
                     </el-tooltip>
-                    <el-input
+                    <el-autocomplete
                         v-model="formData.sig_name"
                         class="pc-search"
                         placeholder="请输入sig组名称"
-                        @keyup.enter.native="initData()">
+                        :fetch-suggestions="querySearchSig"
+                        @keyup.enter.native="initData()"
+                        @select="initData()">
                         <i slot="suffix" class="icon-search" @click="initData()"></i>
-                    </el-input>
+                    </el-autocomplete>
                     <el-input
                         v-model="formData.sig_name"
                         class="mobile-search"
@@ -48,33 +50,49 @@
                     prop="name"
                     label="sig名称"
                     width="250">
+                    <template slot-scope="scope">
+                        <a :href="'https://gitee.com/openeuler/community/tree/master/sig/' + scope.row.name">{{ scope.row.name }}</a>
+                    </template>
                 </el-table-column>
                 <el-table-column
                     prop="description"
                     label="描述"
-                    width="600"
+                    width="1000"
                     :show-overflow-tooltip='true'>
                 </el-table-column>
-                <el-table-column
+                <!-- <el-table-column
                     prop="mentors"
-                    label="mentors"
-                    width="400">
-                    <template slot-scope="scope"
+                    label="维护者"
+                    width="400"
                     :show-overflow-tooltip='true'>
-                        <span v-for="(item, index) in scope.row.mentors" :key="index">
-                            姓名:{{item.id}} | 邮箱:{{item.email}}
-                        </span>
+                    <template slot-scope="scope">
+                        <span v-if="scope.row.mentors === undefined || scope.row.mentors.length <= 0 || scope.row.mentors[0].email === null || scope.row.mentors[0].id === null">暂无信息</span>
+                        <div v-if="scope.row.mentors != undefined && scope.row.mentors.length > 0 && scope.row.mentors[0].email != null && scope.row.mentors[0].id != null">
+                            <span v-for="(item, index) in scope.row.mentors" :key="index">id:{{item.id}} | 邮箱:<a @click="goEmail">{{item.email}}</a></span>
+                        </div>
                     </template>
-                </el-table-column>
+                </el-table-column> -->
                 <el-table-column
                     prop="maintainer"
-                    label="Maintainer"
-                    :show-overflow-tooltip='true'
-                    width="400">
+                    label="维护人"
+                    width="400"
+                    :show-overflow-tooltip="true">
                     <template slot-scope="scope">
+                        <span v-if="scope.row.maintainer === undefined || scope.row.maintainer.length <= 0 || scope.row.maintainer[0].email === null || scope.row.maintainer[0].id === null">暂无信息</span>
                         <span v-for="(item, index) in scope.row.maintainer" :key="index">
-                            姓名:{{item.id}} | 邮箱:{{item.email}}
+                            <span v-if="scope.row.maintainer != undefined && scope.row.maintainer.length > 0 && scope.row.maintainer[0].email != null && scope.row.maintainer[0].id != null && index === 0">
+                                id:{{item.id}} | 邮箱:<a @click="goEmail(item.email)">{{item.email}}</a>
+                            </span>
                         </span>
+                        <el-popover
+                                  placement="right"
+                                  width="400"
+                                  trigger="hover">
+                                  <ul v-for="(item, index) in scope.row.maintainer" :key="index">
+                                      <li>id:{{item.id}} | 邮箱:<a @mouseover="putIn(index)" @mouseleave="putOut" :class="popActive === index? 'blue underline' : ''" @click="goEmail(item.email)" style="cursor: pointer;">{{item.email}}</a></li>
+                                  </ul>
+                                  <i slot="reference" @mouseover="mouseIn(scope.$index)" @mouseleave="mouseOut" :class="active === scope.$index? 'el-icon-more-outline blue' : 'el-icon-more-outline'" style="margin-left: 20px;cursor: pointer;"></i>
+                        </el-popover>
                     </template>
                 </el-table-column>
                 <el-table-column
@@ -135,14 +153,23 @@
 <script>
 import { getSigInfo } from '../../api/sig'
 import { getSigDown } from '../../api/sig'
+import { getSigSuggests } from '../../api/sig'
 
 //测试数据
 // import { sig_infos } from '@/mock/testData'
 
 export default {
     name: "sig-info",
+    props:{
+        sigName: {
+         type: String,
+         default: undefined
+       },
+    },
     data() {
         return {
+            popActive: false,
+            active: false,
             formData: {
                 sig_name: "",
                 pageNum: 1,
@@ -155,6 +182,9 @@ export default {
             excelUrl: "",
             tableLoading: false,
         }
+    },
+    created() {
+        this.formData.sig_name = this.sigName
     },
     mounted() {
         this.initData();
@@ -190,6 +220,29 @@ export default {
                 console.log(this.tableData);
             // this.tableData = sig_infos
         },
+        querySearchSig(queryString, cb) {
+          if(queryString.length === 0 || queryString.split(" ").join("").length === 0) {
+               let results = []
+               cb(results)
+            } else {
+               getSigSuggests(queryString)
+              .then(response => {
+                    if(response.code === '200') {
+                        let dataList = []
+                        for(let i = 0; i < response.resp.length; i++) {
+                            dataList.push({ value: response.resp[i] })
+                        }
+                        let results = queryString ? dataList : [];
+                        cb(results)
+                    } else {
+                        this.$message.error(response.message + '\n' + response.tip);
+                    }
+                })
+                .catch(response => {
+                    this.$message.error(response.message + '\n' + response.tip);
+                });
+            }
+        },
         initData() {
             this.getTablePage()
             // this.excelDownload();
@@ -206,6 +259,22 @@ export default {
                 query: {sig_name}
             })
         },
+        goEmail(msg) {
+            // window.open("mailto:huangtainhua@huawei.com?subject=lala&body=hahah");
+            window.open("mailto:" + msg + "?subject=测试邮件&body=内容");
+        },
+        mouseIn(index){
+            this.active = index
+        },
+        mouseOut(){
+            this.active = false
+        },
+        putIn(index){
+            this.popActive = index
+        },
+        putOut(){
+            this.popActive = false
+        },
         excelDownload() {
             this.loading = true;
             let listRes = {
@@ -219,13 +288,18 @@ export default {
                     this.loading = false;
                     let blob = response;
                     let objectUrl = URL.createObjectURL(blob);
-                    this.$refs.srcDown.href = objectUrl;
+                    this.$nextTick(() => {
+                      this.$refs.srcDown.href = objectUrl;
+                    })
                 })
                 .catch(response => {
                     this.loading = false;
                     this.$message.error(response.message + '\n' + response.tip);
                 });
         }
+    },
+    beforeDestroy() {
+        this.sigName = ''
     }
 }
 </script>
@@ -329,11 +403,17 @@ h1 {
     font-family: HuaweiSans-Medium;
     margin: 60px 0;
 }
+.blue{
+    color:#002FA7;
+}
+.underline{
+    text-decoration:underline;
+}
 .software-logo {
     cursor: pointer;
     width: 15px;
     height: 15px;
-    margin-left: 28px;
+    margin-left: 33px;
 }
 .export-default-explain{
     position: relative;

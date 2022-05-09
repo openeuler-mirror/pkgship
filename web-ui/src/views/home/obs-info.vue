@@ -16,18 +16,20 @@
                     </el-autocomplete>
                 </el-form-item>
                 <el-form-item label="gitee分支版本:">
-                    <el-autocomplete
+                    <el-select 
+                        class="pc-select" 
                         v-model="formData.gitee_branch"
-                        class="pc-search"
+                        @change="branchSelect()"
                         placeholder="请输入分支版本"
-                        :fetch-suggestions="querySearchBrh"
-                        @keyup.enter.native="initData()"
-                        @select="initData()">
-                        <i slot="suffix" class="icon-search" @click="initData()"></i>
-                    </el-autocomplete>
+                        filterable>
+                        <el-option v-for="(item, index) in branchList" :key="index"
+                                   :label="item"
+                                   :value="item">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item label="架构:">
-                    <el-select class="pc-select" v-model="formData.architecture" @change="initData()" placeholder="请输入分支版本">
+                    <el-select class="pc-select" v-model="formData.architecture" @change="architectureSelect()" placeholder="请输入分支版本">
                         <el-option v-for="(item, index) in productV" :key="index"
                                    :label="item"
                                    :value="item">
@@ -42,13 +44,10 @@
                 </div>
                 <el-dropdown-menu slot="dropdown">
                   <el-dropdown-item>
-                      <el-checkbox label="依赖信息" v-model="checked1"></el-checkbox>
-                  </el-dropdown-item>
+                      <el-checkbox label="编译耗时" v-model="checked1"></el-checkbox>
+                  </el-dropdown-item> 
                   <el-dropdown-item>
-                      <el-checkbox label="gitee版本" v-model="checked2"></el-checkbox>
-                  </el-dropdown-item>
-                  <el-dropdown-item>
-                      <el-checkbox label="源码包" v-model="checked3"></el-checkbox>
+                      <el-checkbox label="依赖缺失" v-model="checked2"></el-checkbox>
                   </el-dropdown-item>
                   <!-- <div class="el-dropdown-buttom"> -->
                       <!-- <el-button class="dropdownbutton" type="primary" @click="dropListChange"><span>确定</span></el-button> -->
@@ -78,11 +77,13 @@
                 class="pc-pkg-table"
                 stripe
                 style="width: 100%"
-                v-loading.fullscreen="loading">
+                v-loading="loading"
+                @filter-change="filterChange">
                 <el-table-column
                     prop="repo_name"
                     label="仓库名称"
-                    width="180">
+                    width="180"
+                    :show-overflow-tooltip="true">
                 </el-table-column>
                 <el-table-column
                     prop="obs_branch"
@@ -90,17 +91,18 @@
                     width="250">
                 </el-table-column>
                 <el-table-column
-                    prop="build_status"
+                    prop="build_state"
                     label="编译状态"
-                    width="180">
+                    width="180"
+                    style="cursor: pointer;"
+                    :filters="buildStateArray"
+                    :filter-multiple="false">
+                    <template slot-scope="scope">
+                        <a @click="getBuildDetailLink(scope.row)">{{ scope.row.build_state }}</a>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                    prop="build_detail_link"
-                    label="编译详情"
-                    width="350"
-                    :show-overflow-tooltip="true">
-                </el-table-column>
-                <el-table-column
+                    v-if="checked1"
                     prop="build_time"
                     label="编译耗时(min)"
                     width="180">
@@ -110,46 +112,62 @@
                     label="SIG组"
                     width="180"
                     :show-overflow-tooltip="true">
+                    <template slot-scope="scope">
+                        <a @click="goSig(scope.row.sig_name)">{{ scope.row.sig_name }}</a>
+                    </template>
                 </el-table-column>
                 <el-table-column
                     prop="maintainer"
-                    label="maintainer"
-                    width="350"
+                    label="维护人"
+                    width="450"
                     :show-overflow-tooltip="true">
                     <template slot-scope="scope">
+                        <span v-if="scope.row.maintainer === undefined || scope.row.maintainer.length <= 0 || scope.row.maintainer[0].email === null || scope.row.maintainer[0].id === null">暂无信息</span>
                         <span v-for="(item, index) in scope.row.maintainer" :key="index">
-                            姓名:{{item.id}} | 邮箱:{{item.email}}
+                            <span v-if="scope.row.maintainer != undefined && scope.row.maintainer.length > 0 && scope.row.maintainer[0].email != null && scope.row.maintainer[0].id != null && index === 0">
+                                id:{{item.id}} | 邮箱:<a @click="goEmail(item.email)">{{item.email}}</a>
+                            </span>
                         </span>
+                        <el-popover
+                                  placement="right"
+                                  width="400"
+                                  trigger="hover">
+                                  <ul v-for="(item, index) in scope.row.maintainer" :key="index">
+                                      <li>id:{{item.id}} | 邮箱:<a @mouseover="putIn(index)" @mouseleave="putOut" :class="popActive === index? 'blue underline' : ''" @click="goEmail(item.email)" style="cursor: pointer;">{{item.email}}</a></li>
+                                  </ul>
+                                  <i slot="reference" @mouseover="mouseIn(scope.$index)" @mouseleave="mouseOut" :class="active === scope.$index? 'el-icon-more-outline blue' : 'el-icon-more-outline'" style="margin-left: 20px;cursor: pointer;"></i>
+                        </el-popover>
                     </template>
                 </el-table-column>
                 <el-table-column
-                    prop="mentors"
-                    label="维护者"
-                    width="350"
+                    prop="contributors"
+                    label="贡献者"
+                    width="450"
                     :show-overflow-tooltip="true">
                     <template slot-scope="scope">
-                        <span v-for="(item, index) in scope.row.mentors" :key="index">
-                           姓名:{{item.id}} | 邮箱:{{item.email}}
-                        </span>
+                        <span v-if="scope.row.contributors === undefined || scope.row.contributors.length <= 0 || scope.row.contributors[0].email === null || scope.row.contributors[0].id === null">暂无信息</span>
+                        <div v-if="scope.row.contributors != undefined && scope.row.contributors.length > 0 && scope.row.contributors[0].email != null && scope.row.contributors[0].id != null">
+                            <span v-for="(item, index) in scope.row.contributors" :key="index">id:{{item.id}} | 邮箱:<a @click="goEmail(item.email)">{{item.email}}</a></span>
+                        </div>
                     </template>
-                </el-table-column>
-                <el-table-column
-                    v-if="checked1"
-                    prop="build_requires"
-                    label="依赖信息"
-                    width="200">
                 </el-table-column>
                 <el-table-column
                     v-if="checked2"
+                    prop="build_requires"
+                    label="依赖缺失"
+                    width="200"
+                    :show-overflow-tooltip="true">
+                </el-table-column>
+                <el-table-column
                     prop="gitee_version"
                     label="gitee版本"
                     width="180">
                 </el-table-column>
                 <el-table-column
-                    v-if="checked3"
                     prop="source_name"
                     label="源码包"
-                    width="180">
+                    width="180"
+                    :show-overflow-tooltip="true">
                 </el-table-column>
             </el-table>
         </template>
@@ -174,7 +192,7 @@
                 <pie-chart :title="title1" :pieData="pieData1"></pie-chart>
             </div>
             <div class="map-right" v-if="pieVisible">
-                <span class="isomsg">iso构建成功率:{{ msg }}</span>
+                <span class="isomsg">近三十天iso构建成功率:{{ msg }}</span>
                 <line-chart 
                 :title="title2"
                 :xAxisData="xAxisData1"
@@ -214,9 +232,10 @@ export default {
     },
     data() {
         return {
+            popActive: false,
+            active: false,
             checked1:false,
             checked2:false,
-            checked3:false,
             showFlag:false,
             search: '',
             tableName: '',
@@ -238,6 +257,7 @@ export default {
             productV: ["standard_x86_64","standard_aarch64"],
             tableTitle: ['Name', 'Version', 'Release', 'URL', 'License'],
             tableData: [],
+            branchList: [],
             excelUrl: "",
             giteevalue: "",
             title1: '软件包编译状态分布图',
@@ -252,11 +272,21 @@ export default {
             data2: [],
             pieData: [],
             roseData: [],
+            buildStateArray: [],
             timeout:  null
         }
     },
+    created() {
+        if (localStorage.getItem("BranchName") != null) {
+            this.formData.gitee_branch = localStorage.getItem('BranchName')
+        }
+        if (localStorage.getItem("architectureName") != null) {
+            this.formData.architecture = localStorage.getItem('architectureName')
+        }
+    },
     mounted() {
-        this.initData();
+        this.initData(); //初始化数据
+        this.getBranchData()
     },
     methods: {
         getTablePage () {
@@ -271,6 +301,7 @@ export default {
                         this.total = response.resp.total_count;
                         // 真实接口返回的数据处理
                         this.pieData1 = Object.keys(response.resp.pkg_build_states).map(key => ({ name:key,value:response.resp.pkg_build_states[key] }))
+                        this.buildStateArray = Object.keys(response.resp.pkg_build_states).map(key => ({ text:key,value:key }))
                         this.pieData2 = Object.keys(response.resp.pkg_build_times).map(key => ({ name:key,value:response.resp.pkg_build_times[key] }))
                         this.msg = response.resp.iso_success_rate
                         this.data1 = response.resp.iso_info.map(item => (item["build_time"]))
@@ -304,6 +335,39 @@ export default {
             //     }
             // }).map((item) => (item['date'])).slice(-5)
         },
+        branchSelect(){
+          localStorage.setItem('BranchName', this.formData.gitee_branch)
+          this.initData()
+        },
+        architectureSelect(){
+          localStorage.setItem('architectureName', this.formData.architecture)
+          this.initData()
+        },
+        filterChange(val){
+          this.formData.build_state=val[Object.keys(val)][0]
+          this.initData()
+        },
+        goSig(val){
+            this.$emit('goToSig', val)
+        },
+        goEmail(msg) {
+            window.open("mailto:" + msg + "?subject=测试邮件&body=内容");
+        },
+        mouseIn(index){
+            this.active = index
+        },
+        mouseOut(){
+            this.active = false
+        },
+        putIn(index){
+            this.popActive = index
+        },
+        putOut(){
+            this.popActive = false
+        },
+        getBuildDetailLink(target){
+            window.open(target.build_detail_link)
+        },
         querySearchPkg(queryString, cb) {
           if(queryString.length === 0 || queryString.split(" ").join("").length === 0) {
                let results = []
@@ -327,20 +391,14 @@ export default {
                 });
             }
         },
-        querySearchBrh(queryString, cb){
-            if(queryString.length === 0 || queryString.split(" ").join("").length === 0) {
-               let results = []
-               cb(results)
-            } else {
-               getBranchSuggests(queryString)
-              .then(response => {
+        initData() {
+            this.getTablePage()
+        },
+        getBranchData(){
+            getBranchSuggests()
+               .then(response => {
                     if(response.code === '200') {
-                        let dataList = []
-                        for(let i = 0; i < response.resp.length; i++) {
-                            dataList.push({ value: response.resp[i] })
-                        }
-                        let results = queryString ? dataList : [];
-                        cb(results)
+                        this.branchList = response.resp
                     } else {
                         this.$message.error(response.message + '\n' + response.tip);
                     }
@@ -348,10 +406,6 @@ export default {
                 .catch(response => {
                     this.$message.error(response.message + '\n' + response.tip);
                 });
-            }
-        },
-        initData() {
-            this.getTablePage()
         },
         closelineChart() {
             this.data2 = []
@@ -366,7 +420,7 @@ export default {
             } 
         },
         excelDownload() {
-            this.loading = true;
+            // this.loading = true;
             let listRes = {
                 pkg_name: this.formData.pkg_name,
                 gitee_branch: this.formData.gitee_branch,
@@ -379,13 +433,13 @@ export default {
         getObsInfoDown(require) {
             getObsDown (require)
                 .then(response => {
-                    this.loading = false;
+                    // this.loading = false;
                     let blob = response;
                     let objectUrl = URL.createObjectURL(blob);
                     this.$refs.srcDown.href = objectUrl;
                 })
                 .catch(response => {
-                    this.loading = false;
+                    // this.loading = false;
                     this.$message.error(response.message + '\n' + response.tip);
                 });
         },
@@ -494,6 +548,12 @@ text-overflow:ellipsis;
 
 white-space:nowrap;
 
+}
+.blue{
+    color:#002FA7;
+}
+.underline{
+    text-decoration:underline;
 }
 .isomsg{
     float: left;
