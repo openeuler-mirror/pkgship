@@ -288,9 +288,14 @@ export default {
                     this.loading = false;
                     let blob = response;
                     let objectUrl = URL.createObjectURL(blob);
-                    this.$nextTick(() => {
-                      this.$refs.srcDown.href = objectUrl;
-                    })
+                    // this.$refs.srcDown.href = objectUrl;
+                    var oA = document.createElement("a");
+                    oA.href = objectUrl;
+                    oA.click();
+                    this.$message({
+                      message: '导出成功!',
+                      type: 'success'
+                    });
                 })
                 .catch(response => {
                     this.loading = false;

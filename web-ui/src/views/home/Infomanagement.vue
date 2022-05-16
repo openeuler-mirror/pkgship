@@ -4,7 +4,7 @@
             <h1>Info Management</h1>
             <div class="switcher">
                 <a :class="{'active': isObsShow }" @click="showObs">OBS构建</a>
-                <el-tooltip class="item" effect="light" content="Query binary package information" placement="top">
+                <el-tooltip class="item" effect="light" content="Query OBS information" placement="top">
                         <img src="@/assets/images/question.svg" alt="">
                 </el-tooltip>
                 <!-- <a :class="{'active': isPrShow }" @click="showPr">PR信息</a>
@@ -12,7 +12,7 @@
                         <img src="@/assets/images/question.svg" alt="">
                 </el-tooltip> -->
                 <a :class="{'active': isSigShow }" @click="showSig">SIG组</a>
-                <el-tooltip class="item" effect="light" content="Query source code package information" placement="top">
+                <el-tooltip class="item" effect="light" content="Query SIG group information" placement="top">
                         <img src="@/assets/images/question.svg" alt="">
                 </el-tooltip>
             </div>

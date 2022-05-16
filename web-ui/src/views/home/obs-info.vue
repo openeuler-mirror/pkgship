@@ -420,7 +420,7 @@ export default {
             } 
         },
         excelDownload() {
-            // this.loading = true;
+            this.loading = true;
             let listRes = {
                 pkg_name: this.formData.pkg_name,
                 gitee_branch: this.formData.gitee_branch,
@@ -433,13 +433,20 @@ export default {
         getObsInfoDown(require) {
             getObsDown (require)
                 .then(response => {
-                    // this.loading = false;
+                    this.loading = false;
                     let blob = response;
                     let objectUrl = URL.createObjectURL(blob);
-                    this.$refs.srcDown.href = objectUrl;
+                    // this.$refs.srcDown.href = objectUrl;
+                    var oA = document.createElement("a");
+                    oA.href = objectUrl;
+                    oA.click();
+                    this.$message({
+                      message: '导出成功!',
+                      type: 'success'
+                    });
                 })
                 .catch(response => {
-                    // this.loading = false;
+                    this.loading = false;
                     this.$message.error(response.message + '\n' + response.tip);
                 });
         },

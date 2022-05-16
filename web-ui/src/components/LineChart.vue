@@ -72,7 +72,7 @@ export default {
                 name: '时间',
                 type: 'value',
                 axisLabel:{
-                  formatter: '{value}s'
+                  formatter: '{value}min'
                 }
               },
               series: [
