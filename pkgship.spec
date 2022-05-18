@@ -12,13 +12,15 @@ BuildRequires: shadow python3-mock
 BuildRequires: python3-flask-restful python3-flask python3 python3-pyyaml python3-redis
 BuildRequires: python3-prettytable python3-requests python3-retrying python3-coverage
 BuildRequires: python3-marshmallow python3-uWSGI python3-gevent python3-Flask-Limiter
-BuildRequires: python3-elasticsearch python3-concurrent-log-handler
+BuildRequires: python3-elasticsearch python3-concurrent-log-handler python3-pyrpm
+BuildRequires: python3-lxml python3-APScheduler python3-aiohttp
 
 Requires: shadow python3-mock
 Requires: python3-flask-restful python3-flask python3 python3-pyyaml python3-redis
 Requires: python3-prettytable python3-requests python3-retrying python3-coverage
 Requires: python3-marshmallow python3-uWSGI python3-gevent python3-Flask-Limiter
-Requires: python3-elasticsearch python3-concurrent-log-handler
+Requires: python3-elasticsearch python3-concurrent-log-handler python3-pyrpm
+Requires: python3-lxml python3-APScheduler python3-aiohttp
 
 %description
 Pkgship implements rpm package dependence ,maintainer, patch query and so no.
