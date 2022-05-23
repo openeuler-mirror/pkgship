@@ -13,10 +13,17 @@
 """
 Description: query package information
 """
-from packageship.application.common.exc import PackageInfoGettingError, \
-    DatabaseConfigException, ElasticSearchQueryException
+from packageship.application.common.exc import (
+    PackageInfoGettingError,
+    DatabaseConfigException,
+    ElasticSearchQueryException,
+)
 from packageship.application.query import database as db
-from packageship.application.query.depend import BeDependRequires, InstallRequires, BuildRequires
+from packageship.application.query.depend import (
+    BeDependRequires,
+    InstallRequires,
+    BuildRequires,
+)
 from packageship.application.query.pkg import QueryPackage
 from packageship.libs.log import LOGGER
 
@@ -42,12 +49,13 @@ class Package:
             "license": package_info_dict.get("license"),
             "version": package_info_dict.get("version"),
             "url": package_info_dict.get("url"),
-            "database": database
+            "database": database,
         }
         return pkg_info
 
-    def all_src_packages(self, database, page_num=1, page_size=20,
-                           package_list=None, command_line=False):
+    def all_src_packages(
+        self, database, page_num=1, page_size=20, package_list=None, command_line=False
+    ):
         """
         get all source rpm packages base info
         Args:
@@ -77,7 +85,8 @@ class Package:
             # query all source package info from database
             query_package = QueryPackage()
             all_src_info = query_package.get_src_info(
-                package_list, database, page_num, page_size, command_line)
+                package_list, database, page_num, page_size, command_line
+            )
 
             if not all_src_info["data"]:
                 _msg = "An error occurred when querying source package info."
@@ -86,16 +95,19 @@ class Package:
             parsed_all_src_info = []
             total_num = all_src_info.get("total")
             for pkg_info in all_src_info.get("data"):
-                parsed_all_src_info.extend(self.__parse_pkg_info(info_values, pkgname, database)
-                                           for pkgname, info_values in pkg_info.items())
+                parsed_all_src_info.extend(
+                    self.__parse_pkg_info(info_values, pkgname, database)
+                    for pkgname, info_values in pkg_info.items()
+                )
             all_src_dict = {"total": total_num, "data": parsed_all_src_info}
             return all_src_dict
         except (AttributeError, KeyError, TypeError) as e:
             LOGGER.error(e)
             return {}
 
-    def all_bin_packages(self, database, page_num=1, page_size=20,
-                         package_list=None, command_line=False):
+    def all_bin_packages(
+        self, database, page_num=1, page_size=20, package_list=None, command_line=False
+    ):
         """
         get all binary package info
         Args:
@@ -124,7 +136,8 @@ class Package:
             # query all binary package info from database
             query_package = QueryPackage()
             all_bin_info = query_package.get_bin_info(
-                package_list, database, page_num, page_size, command_line)
+                package_list, database, page_num, page_size, command_line
+            )
 
             if not all_bin_info["data"]:
                 _msg = "An error occurred when getting bianry package info."
@@ -135,8 +148,7 @@ class Package:
             for pkg_info in all_bin_info.get("data"):
                 single_pkg = []
                 for pkgname, info_values in pkg_info.items():
-                    single_pkg = self.__parse_pkg_info(
-                        info_values, pkgname, database)
+                    single_pkg = self.__parse_pkg_info(info_values, pkgname, database)
                     single_pkg["source_name"] = info_values["src_name"]
                 parsed_all_bin_info.append(single_pkg)
             all_bin_dict = {"total": total_num, "data": parsed_all_bin_info}
@@ -190,9 +202,11 @@ class SinglePackage:
                     if req_info.get("req_src_name"):
                         required_by_src.append(req_info.get("req_src_name"))
 
-                component_dict = {"component": component_info.get("component"),
-                                  "required_by_bin": required_by_bin,
-                                  "required_by_src": required_by_src}
+                component_dict = {
+                    "component": component_info.get("component"),
+                    "required_by_bin": required_by_bin,
+                    "required_by_src": required_by_src,
+                }
                 provides_info_res.append(component_dict)
             return provides_info_res
         except (TypeError, IndexError) as e:
@@ -220,7 +234,8 @@ class SinglePackage:
         try:
             install_depend_obj = InstallRequires([database])
             install_depend_info = install_depend_obj.get_install_req(
-                [pkgname], database)
+                [pkgname], database
+            )
 
             if not install_depend_info:
                 return []
@@ -228,8 +243,10 @@ class SinglePackage:
             depend_info = install_depend_info[0].get("requires")
             required_by_bin = []
             for component_info in depend_info:
-                component_dict = {'component': component_info.get("component"),
-                                  'provided_by': [component_info.get("com_bin_name", "")]}
+                component_dict = {
+                    "component": component_info.get("component"),
+                    "provided_by": [component_info.get("com_bin_name", "")],
+                }
                 if component_dict not in required_by_bin:
                     required_by_bin.append(component_dict)
             return required_by_bin
@@ -245,17 +262,17 @@ class SourcePackage(SinglePackage):
 
     def get_subpack_info(self, pkgname, database, pkgname_info):
         """
-            get subpacks info for source package
-            Args:
-                pkgname: package name
-                database: database
-                pkgname_info: package info which include subpacks
+        get subpacks info for source package
+        Args:
+            pkgname: package name
+            database: database
+            pkgname_info: package info which include subpacks
 
-            Returns:
-                subpacks: subpack list
+        Returns:
+            subpacks: subpack list
 
         """
-        subpacks_bin_list = pkgname_info[pkgname].get('subpacks')
+        subpacks_bin_list = pkgname_info[pkgname].get("subpacks")
         if not subpacks_bin_list:
             _msg = "Error in getting subpack info."
             LOGGER.error(_msg)
@@ -263,9 +280,11 @@ class SourcePackage(SinglePackage):
 
         subpacks = []
         for subpack_name in subpacks_bin_list:
-            subpack_dict = {"bin_name": subpack_name,
-                            "provides": self.get_provides(subpack_name, database),
-                            "requires": self.get_requires(subpack_name, database)}
+            subpack_dict = {
+                "bin_name": subpack_name,
+                "provides": self.get_provides(subpack_name, database),
+                "requires": self.get_requires(subpack_name, database),
+            }
             subpacks.append(subpack_dict)
         return subpacks
 
@@ -322,7 +341,8 @@ class SourcePackage(SinglePackage):
             query_package = QueryPackage()
             for database in database_list:
                 single_db_src_info = query_package.get_src_info(
-                    src_name_list, database, 1, 20).get("data")
+                    src_name_list, database, 1, 20
+                ).get("data")
                 if not single_db_src_info:
                     return {}
 
@@ -330,19 +350,20 @@ class SourcePackage(SinglePackage):
                 for pkg_info in single_db_src_info:
                     pkgname = list(pkg_info.keys())[0]
                     build_package_info = self.get_build_info(pkgname, database)
-                    subpacks = self.get_subpack_info(
-                        pkgname, database, pkg_info)
+                    subpacks = self.get_subpack_info(pkgname, database, pkg_info)
 
-                    database_src_info_list.append({
-                        "src_name": pkgname,
-                        "license": pkg_info[pkgname].get("license"),
-                        "version": pkg_info[pkgname].get("version"),
-                        "url": pkg_info[pkgname].get("url"),
-                        "summary": pkg_info[pkgname].get("summary"),
-                        "description": pkg_info[pkgname].get("description"),
-                        "build_dep": build_package_info,
-                        "subpacks": subpacks
-                    })
+                    database_src_info_list.append(
+                        {
+                            "src_name": pkgname,
+                            "license": pkg_info[pkgname].get("license"),
+                            "version": pkg_info[pkgname].get("version"),
+                            "url": pkg_info[pkgname].get("url"),
+                            "summary": pkg_info[pkgname].get("summary"),
+                            "description": pkg_info[pkgname].get("description"),
+                            "build_dep": build_package_info,
+                            "subpacks": subpacks,
+                        }
+                    )
                 src_package_info_res[database] = database_src_info_list
             return src_package_info_res
         except (AttributeError, IndexError, TypeError) as e:
@@ -357,19 +378,19 @@ class BinaryPackage(SinglePackage):
 
     def parse_filelist_info(self, filelists):
         """
-            Get filelist info include dir, file, ghost for package
-            Args:
-                filelists:
+        Get filelist info include dir, file, ghost for package
+        Args:
+            filelists:
 
-            Returns:
-                filelist_dict
-                for example:
-                {'dir': ['/usr/share/ext', '/usr/share/int'],
-                'file': ['/usr/lib64/libJudy.so'],
-                'ghost': []}
-            Raises:
-                KeyError: key that doesn't exist in the dictionary
-                IndexError: index is out of range
+        Returns:
+            filelist_dict
+            for example:
+            {'dir': ['/usr/share/ext', '/usr/share/int'],
+            'file': ['/usr/lib64/libJudy.so'],
+            'ghost': []}
+        Raises:
+            KeyError: key that doesn't exist in the dictionary
+            IndexError: index is out of range
         """
         if not filelists:
             _msg = "Error in getting filelist info."
@@ -381,31 +402,20 @@ class BinaryPackage(SinglePackage):
                 lst.append(data)
             return lst
 
-        filelist_dict = {
-            "dir": [],
-            "file": [],
-            "ghost": []
-        }
+        filelist_dict = {"dir": [], "file": [], "ghost": []}
         try:
             for info in filelists:
-                all_list = list(
-                    map(lambda x: info["dirname"] + '/' + x, info["filenames"].split("/")))
-
-                for index, type_ in enumerate(info["filetypes"]):
-                    if type_ == "d":
-                        is_append(filelist_dict["dir"], all_list[index])
-                    elif type_ == "f":
-                        is_append(filelist_dict["file"], all_list[index])
-                    elif type_ == "g":
-                        is_append(filelist_dict["ghost"], all_list[index])
-                    else:
-                        _msg = "The filetype of filelist is not in ['d', 'f', 'g']"
-                        LOGGER.error(_msg)
-                        return {}
+                if info["filetypes"] == "dir":
+                    is_append(filelist_dict["dir"], info["filenames"])
+                elif info["filetypes"] == "file":
+                    is_append(filelist_dict["file"], info["filenames"])
+                else:
+                    _msg = "The filetype of filelist is not in ['dir', 'file']"
+                    raise ValueError(_msg)
             return filelist_dict
-        except (KeyError, IndexError) as e:
-            LOGGER.error(e)
-            return {}
+        except (KeyError, IndexError, ValueError) as error:
+            LOGGER.error(error)
+            return dict()
 
     def bin_package_info(self, bin_name_list, database_list=None):
         """
@@ -432,7 +442,8 @@ class BinaryPackage(SinglePackage):
             for database in database_list:
 
                 single_db_bin_info = query_package.get_bin_info(
-                    bin_name_list, database, 1, 20).get("data")
+                    bin_name_list, database, 1, 20
+                ).get("data")
                 if not single_db_bin_info:
                     return {}
 
@@ -445,22 +456,25 @@ class BinaryPackage(SinglePackage):
                     # get requires from install info
                     requires_info = self.get_requires(pkgname, database)
 
-                    database_bin_info_list.append({
-                        "bin_name": pkgname,
-                        "version": pkg_info[pkgname].get("version"),
-                        "url": pkg_info[pkgname].get("url"),
-                        "license": pkg_info[pkgname].get("license"),
-                        "release": pkg_info[pkgname].get("release"),
-                        "summary": pkg_info[pkgname].get("summary"),
-                        "description": pkg_info[pkgname].get("description"),
-                        "src_name": pkg_info[pkgname].get("src_name"),
-                        "provides": provides_info,
-                        "requires": requires_info,
-                        "filelist": self.parse_filelist_info(pkg_info[pkgname].get("file_list"))
-                    })
+                    database_bin_info_list.append(
+                        {
+                            "bin_name": pkgname,
+                            "version": pkg_info[pkgname].get("version"),
+                            "url": pkg_info[pkgname].get("url"),
+                            "license": pkg_info[pkgname].get("license"),
+                            "release": pkg_info[pkgname].get("release"),
+                            "summary": pkg_info[pkgname].get("summary"),
+                            "description": pkg_info[pkgname].get("description"),
+                            "src_name": pkg_info[pkgname].get("src_name"),
+                            "provides": provides_info,
+                            "requires": requires_info,
+                            "filelist": self.parse_filelist_info(
+                                pkg_info[pkgname].get("file_list")
+                            ),
+                        }
+                    )
                 bin_package_info_res[database] = database_bin_info_list
             return bin_package_info_res
-        except (AttributeError, IndexError, TypeError) as e:
-            LOGGER.error(e)
-            return {}
-
+        except (AttributeError, IndexError, TypeError) as error:
+            LOGGER.error(error)
+            return dict()
