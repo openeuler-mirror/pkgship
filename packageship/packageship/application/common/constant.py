@@ -97,11 +97,21 @@ MAX_RETRY = 3
 BUILD_STATES = ["succeeded", "failed", "unresolvable", "broken", "blocked", "building", "excluded", "disabled",
                 "locked"]
 
-# Package build time
-BUILD_TIMES = [0, 10, 20, 30]
+# Package build time(second)
+BUILD_TIMES = [0, 600, 1200, 1800]
 
 # Package build time level
 BUILD_TIME_LEVEL = ["less_ten", "ten_to_twenty", "twenty_to_thirty", "more_thirty"]
+
+# OBS X86 ARCHITECTURE
+OBS_X_ARCHITECTURE = "standard_x86_64"
+
+# OBS X86 ARCHITECTURE
+OBS_A_ARCHITECTURE = "standard_aarch64"
+
+# Default gitee branch
+
+DEFAULT_GIT_BRANCH = "openEuler-22.03-LTS"
 
 
 class ListNode():

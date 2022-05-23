@@ -19,13 +19,26 @@ import coverage
 from coverage import CoverageException
 
 suite = unittest.TestSuite()
-BASE_PATH = os.path.join(os.path.dirname(os.path.abspath(
-    os.path.dirname(__file__))), "packageship")
+BASE_PATH = os.path.join(
+    os.path.dirname(os.path.abspath(os.path.dirname(__file__))), "packageship"
+)
 TEST_CASE_PATH = os.path.join(os.path.dirname(BASE_PATH), "test")
-sys.path.insert(0, os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
-
-cov = coverage.coverage(data_suffix='init', include=[BASE_PATH + '/application/*'],
-                        omit=["*__init__.py"], data_file='./.coverage')
+_pkgship_test = os.path.join(
+    os.path.dirname(os.path.abspath(os.path.dirname(__file__))), "packageship"
+)
+packageship_panel_path = os.path.join(
+    os.path.dirname(os.path.abspath(os.path.dirname(__file__))), "packageship_panel"
+)
+sys.path.insert(0, _pkgship_test)
+sys.path.insert(1, os.path.dirname(TEST_CASE_PATH))
+sys.path.insert(2, packageship_panel_path)
+pkg_path = os.path.join(BASE_PATH, "packageship", "application", "*")
+pkg_panel_path = os.path.join(os.path.dirname(BASE_PATH), "packageship_panel", "packageship_panel", "*")
+cov = coverage.coverage(
+    data_suffix="init",
+    include=[pkg_path, pkg_panel_path],
+    data_file="./.coverage",
+)
 
 
 def specify_case(file_path):
@@ -37,7 +50,8 @@ def specify_case(file_path):
     Returns: discover result
     """
     discover = unittest.defaultTestLoader.discover(
-        file_path, pattern="test*.py", top_level_dir=file_path)
+        file_path, pattern="test*.py", top_level_dir=file_path
+    )
     return discover
 
 
@@ -48,7 +62,7 @@ if __name__ == "__main__":
     test_case_files = [
         os.path.join(TEST_CASE_PATH, "cli/"),
         os.path.join(TEST_CASE_PATH, "graph/"),
-        os.path.join(TEST_CASE_PATH, "unpack/")
+        os.path.join(TEST_CASE_PATH, "unpack/"),
     ]
 
     errors = []

@@ -10,3 +10,43 @@
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
+"""
+Depends and downloads the interface's parameter validator
+"""
+from marshmallow import Schema
+from marshmallow import fields
+from marshmallow import validate
+
+from packageship.application.common.constant import OBS_X_ARCHITECTURE
+from packageship.application.common.constant import OBS_A_ARCHITECTURE
+
+from packageship.application.common.constant import DEFAULT_GIT_BRANCH
+
+
+class _PublicQueryBase(Schema):
+    """
+    Basic parameter validator
+    """
+    pkg_name = fields.String(required=False, default=None)
+    sig_name = fields.String(required=False, default=None)
+
+
+class ExportObsinfoSchema(_PublicQueryBase):
+    """
+    obs csv file export validator
+    """
+    gitee_branch = fields.String(required=True, default=DEFAULT_GIT_BRANCH)
+    architecture = fields.String(
+        required=True,
+        validate=validate.OneOf([OBS_A_ARCHITECTURE, OBS_X_ARCHITECTURE]),
+        default=OBS_A_ARCHITECTURE,
+    )
+    build_state = fields.String(required=False)
+
+
+class ObsInfoListSchema(ExportObsinfoSchema):
+    """
+    obs info parameter validator
+    """
+    page_index = fields.Integer(default=-1, validate=lambda x: x >= -1)
+    page_size = fields.Integer(default=100, validate=lambda x: x >= 1)

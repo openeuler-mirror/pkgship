@@ -18,11 +18,6 @@ import os
 from distutils.sysconfig import get_python_lib
 from setuptools import setup, find_packages
 
-
-PACKAGESHIP_PANEL_TEMPLATE_PATH = os.path.join(
-    get_python_lib(), "packageship_panel", "obs_info_template.csv"
-)
-
 setup(
     name="packageship-panel",
     version="1.0",
@@ -42,7 +37,8 @@ setup(
             "/etc/pkgship/",
             ["timed_task.yaml", "sig_mentor.yaml"],
         ),
-        (PACKAGESHIP_PANEL_TEMPLATE_PATH, ["obs_info_template.csv"]),
+        (os.path.join(get_python_lib(), "packageship_panel", "application", "core"),
+         ["packageship_panel/application/core/obs_info_template.csv"])
     ],
     zip_safe=False,
 )
