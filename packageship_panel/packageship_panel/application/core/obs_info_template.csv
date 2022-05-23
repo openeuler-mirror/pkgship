@@ -1,0 +1,11 @@
+,,,,,,,,,
+软件包构建状态总览,unresolvable,,软件包构建时间总览,<10min,,,,,
+,broken,,,10min-20min,,,,,
+,blocked,,,20min-30min,,,,,
+,building,,,>30min,,,,,
+,succeeded,,,,,,,,
+,failed,,,,,,,,
+,excluded,,,,,,,,
+,disabled,,,,,,,,
+,locked,,iso构建成功率,,,,,,
+仓库名称,obs工程分支,编译状态,编译详情,编译耗时(min),sig组,maintainer,contributors,源码包名称,版本
