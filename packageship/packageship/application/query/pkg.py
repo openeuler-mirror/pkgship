@@ -15,8 +15,13 @@ Module of query packages' info
 """
 import gevent
 
-from packageship.application.common.constant import UNDERLINE, BINARY_DB_TYPE, SOURCE_DB_TYPE, MAX_PAGE_SIZE, \
-    DEFAULT_PAGE_NUM
+from packageship.application.common.constant import (
+    UNDERLINE,
+    BINARY_DB_TYPE,
+    SOURCE_DB_TYPE,
+    MAX_PAGE_SIZE,
+    DEFAULT_PAGE_NUM,
+)
 from packageship.application.database.session import DatabaseSession
 from packageship.application.query.query_body import QueryBody
 
@@ -29,6 +34,7 @@ class QueryPackage(object):
     query binary packages' source package
     query source packages' binary packages
     """
+
     # database connection
     _db_session = DatabaseSession().connection()
 
@@ -82,10 +88,14 @@ class QueryPackage(object):
         Raises: DatabaseConfigException ElasticSearchQueryException
         """
         self.rpm_type = SOURCE_DB_TYPE
-        response = self._get_rpm_info(database, page_num, page_size, command_line, rpm_list=src_list)
+        response = self._get_rpm_info(
+            database, page_num, page_size, command_line, rpm_list=src_list
+        )
         return response
 
-    def get_bin_info(self, binary_list, database, page_num, page_size, command_line=False):
+    def get_bin_info(
+        self, binary_list, database, page_num, page_size, command_line=False
+    ):
         """
         Query binary packages' details
         Args:
@@ -98,7 +108,9 @@ class QueryPackage(object):
         Raises: DatabaseConfigException ElasticSearchQueryException
         """
         self.rpm_type = BINARY_DB_TYPE
-        response = self._get_rpm_info(database, page_num, page_size, command_line, rpm_list=binary_list)
+        response = self._get_rpm_info(
+            database, page_num, page_size, command_line, rpm_list=binary_list
+        )
         return response
 
     def _query_src_bin_rpm(self, rpm_list, query_db_type, specify_db):
@@ -140,13 +152,15 @@ class QueryPackage(object):
         query_body = self._format_term_query(rpm)
         query_result = self._db_session.query(index=self.index, body=query_body)
 
-        if not query_result or not query_result['hits']['hits']:
+        if not query_result or not query_result["hits"]["hits"]:
             return None
 
-        hits_data = query_result['hits']['hits']
-        rpm_info = self._process_bin_response(database, hits_data) \
-            if query_db_type == BINARY_DB_TYPE \
+        hits_data = query_result["hits"]["hits"]
+        rpm_info = (
+            self._process_bin_response(database, hits_data)
+            if query_db_type == BINARY_DB_TYPE
             else self._process_src_response(database, hits_data)
+        )
 
         return rpm_info
 
@@ -172,9 +186,13 @@ class QueryPackage(object):
         self.index = UNDERLINE.join((database, self.rpm_type))
         # Used for Command Line,query all data and no Pagination
         if command_line and rpm_list is None:
-            query_result = self._db_session.scan(index=self.index, body=QueryBody.QUERY_ALL)
-            total_num = self._db_session.count(index=self.index, body=QueryBody.QUERY_ALL)
-            response['total'] = total_num.get('count')
+            query_result = self._db_session.scan(
+                index=self.index, body=QueryBody.QUERY_ALL
+            )
+            total_num = self._db_session.count(
+                index=self.index, body=QueryBody.QUERY_ALL
+            )
+            response["total"] = total_num.get("count")
             if self.rpm_type == SOURCE_DB_TYPE:
                 self._process_query_src_response(response, query_result)
             elif self.rpm_type == BINARY_DB_TYPE:
@@ -182,19 +200,26 @@ class QueryPackage(object):
 
             return response
         # Distinguish query body and query scope according to usage scenarios
-        query_body, query_all = self._process_query_body(command_line, page_num, page_size, rpm_list)
+        query_body, query_all = self._process_query_body(
+            command_line, page_num, page_size, rpm_list
+        )
         query_result = self._db_session.query(index=self.index, body=query_body)
         if query_result:
             try:
-                rpm_info_list = query_result['hits']['hits']
+                rpm_info_list = query_result["hits"]["hits"]
                 if self.rpm_type == SOURCE_DB_TYPE:
                     self._process_query_src_response(response, rpm_info_list)
                 elif self.rpm_type == BINARY_DB_TYPE:
                     self._process_query_bin_response(response, rpm_info_list)
                 # Distinguish the total quantity query method according to the usage scenario
-                total_num = self._db_session.count(index=self.index, body=QueryBody.QUERY_ALL)['count'] \
-                    if query_all else query_result['hits']['total']['value']
-                response['total'] = total_num
+                total_num = (
+                    self._db_session.count(index=self.index, body=QueryBody.QUERY_ALL)[
+                        "count"
+                    ]
+                    if query_all
+                    else query_result["hits"]["total"]["value"]
+                )
+                response["total"] = total_num
             except KeyError:
                 response = dict(total=0, data=[])
                 return response
@@ -216,7 +241,9 @@ class QueryPackage(object):
         query_all = False
         if command_line and rpm_list:
             # Query specify rpm_list of Command line mode
-            query_body = self._process_query_terms(DEFAULT_PAGE_NUM, MAX_PAGE_SIZE, rpm_list)
+            query_body = self._process_query_terms(
+                DEFAULT_PAGE_NUM, MAX_PAGE_SIZE, rpm_list
+            )
         else:
             if rpm_list is None:
                 # Query all data and Pagination of UI mode
@@ -240,17 +267,22 @@ class QueryPackage(object):
 
         """
         src_info = dict()
-        source = data[0]['_source']
-        src_info['source_name'] = source.get('name')
-        src_info['src_version'] = source.get('version')
-        src_info['database'] = database
-        src_info['binary_infos'] = []
-        subpackage_list = source.get('subpacks')
+        source = data[0]["_source"]
+        src_info["source_name"] = source.get("name")
+        src_info["src_version"] = source.get("version")
+        src_info["database"] = database
+        src_info["binary_infos"] = []
+        subpackage_list = source.get("subpacks")
         if subpackage_list:
-            src_info['binary_infos'].extend([{
-                "bin_name": binary_rpm.get('name'),
-                "bin_version": binary_rpm.get('version'),
-            } for binary_rpm in subpackage_list])
+            src_info["binary_infos"].extend(
+                [
+                    {
+                        "bin_name": binary_rpm.get("name"),
+                        "bin_version": binary_rpm.get("version"),
+                    }
+                    for binary_rpm in subpackage_list
+                ]
+            )
 
         return src_info
 
@@ -267,10 +299,11 @@ class QueryPackage(object):
 
         """
         query_body = QueryBody()
-        query_body.query_terms = (dict(fields=dict(name=[rpm_info for rpm_info in rpm_list]),
-                                       page_num=(page_num - 1) * page_size,
-                                       page_size=page_size
-                                       ))
+        query_body.query_terms = dict(
+            fields=dict(name=[rpm_info for rpm_info in rpm_list]),
+            page_num=(page_num - 1) * page_size,
+            page_size=page_size,
+        )
         return query_body.query_terms
 
     @staticmethod
@@ -285,8 +318,8 @@ class QueryPackage(object):
 
         """
         query_body = QueryBody.PAGING_QUERY_ALL
-        query_body['from'] = (page_num - 1) * page_size
-        query_body['size'] = page_size
+        query_body["from"] = (page_num - 1) * page_size
+        query_body["size"] = page_size
         return query_body
 
     @staticmethod
@@ -303,22 +336,25 @@ class QueryPackage(object):
         src_info_list = []
         for source in source_list:
             src = dict()
-            source_info = source['_source']
-            src['src_name'] = source_info.get('name')
-            src['version'] = source_info.get('version')
-            src['release'] = source_info.get('release')
-            src['url'] = source_info.get('url')
-            src['license'] = source_info.get('rpm_license')
-            src['summary'] = source_info.get('summary')
-            src['description'] = source_info.get('description')
-            src['vendor'] = source_info.get('rpm_vendor')
-            src['href'] = source_info.get('location_href')
-            src['subpacks'] = [subpackage.get('name') for subpackage in source_info.get('subpacks')] \
-                if source_info.get('subpacks') else []
-            src_info = {source_info.get('name'): src}
+            source_info = source["_source"]
+            src["src_name"] = source_info.get("name")
+            src["version"] = source_info.get("version")
+            src["release"] = source_info.get("release")
+            src["url"] = source_info.get("url")
+            src["license"] = source_info.get("rpm_license")
+            src["summary"] = source_info.get("summary")
+            src["description"] = source_info.get("description")
+            src["vendor"] = source_info.get("rpm_vendor")
+            src["href"] = source_info.get("location_href")
+            src["subpacks"] = (
+                [subpackage.get("name") for subpackage in source_info.get("subpacks")]
+                if source_info.get("subpacks")
+                else []
+            )
+            src_info = {source_info.get("name"): src}
             src_info_list.append(src_info)
 
-        response['data'] = src_info_list
+        response["data"] = src_info_list
         return response
 
     @staticmethod
@@ -335,23 +371,25 @@ class QueryPackage(object):
         bin_info_list = []
         for binary in binary_list:
             bin_dict = dict()
-            binary_info = binary['_source']
-            bin_dict['bin_name'] = binary_info.get('name')
-            bin_dict['version'] = binary_info.get('version')
-            bin_dict['release'] = binary_info.get('release')
-            bin_dict['url'] = binary_info.get('url')
-            bin_dict['license'] = binary_info.get('rpm_license')
-            bin_dict['summary'] = binary_info.get('summary')
-            bin_dict['description'] = binary_info.get('description')
-            bin_dict['vendor'] = binary_info.get('rpm_vendor')
-            bin_dict['sourcerpm'] = binary_info.get('rpm_sourcerpm')
-            bin_dict['src_name'] = binary_info.get('src_name')
-            bin_dict['href'] = binary_info.get('location_href')
-            bin_dict['file_list'] = QueryPackage._process_file_lists(binary_info.get('filelists'))
-            bin_info = {binary_info.get('name'): bin_dict}
+            binary_info = binary["_source"]
+            bin_dict["bin_name"] = binary_info.get("name")
+            bin_dict["version"] = binary_info.get("version")
+            bin_dict["release"] = binary_info.get("release")
+            bin_dict["url"] = binary_info.get("url")
+            bin_dict["license"] = binary_info.get("rpm_license")
+            bin_dict["summary"] = binary_info.get("summary")
+            bin_dict["description"] = binary_info.get("description")
+            bin_dict["vendor"] = binary_info.get("rpm_vendor")
+            bin_dict["sourcerpm"] = binary_info.get("rpm_sourcerpm")
+            bin_dict["src_name"] = binary_info.get("src_name")
+            bin_dict["href"] = binary_info.get("location_href")
+            bin_dict["file_list"] = QueryPackage._process_file_lists(
+                binary_info.get("filelists")
+            )
+            bin_info = {binary_info.get("name"): bin_dict}
             bin_info_list.append(bin_info)
 
-        response['data'] = bin_info_list
+        response["data"] = bin_info_list
         return response
 
     @staticmethod
@@ -366,12 +404,15 @@ class QueryPackage(object):
         """
         file_list = []
         if file_lists:
-            file_list.extend([{
-                "filenames": file.get('filenames'),
-                "dirname": file.get('dirname'),
-                "filetypes": file.get('filetypes')
-            } for file in file_lists
-            ])
+            file_list.extend(
+                [
+                    {
+                        "filenames": file.get("file"),
+                        "filetypes": file.get("filetype"),
+                    }
+                    for file in file_lists
+                ]
+            )
         return file_list
 
     @staticmethod
@@ -385,7 +426,7 @@ class QueryPackage(object):
 
         """
         query_body = QueryBody()
-        source = ['name', 'version', 'src_name', 'src_version', 'subpacks']
+        source = ["name", "version", "src_name", "src_version", "subpacks"]
         query_body.query_term = dict(fields=dict(name=rpm_name), _source=source)
         return query_body.query_term
 
@@ -400,13 +441,13 @@ class QueryPackage(object):
         Returns: format result
 
         """
-        binary = data[0]['_source']
+        binary = data[0]["_source"]
         binary_info = {
-            "binary_name": binary.get('name'),
-            "bin_version": binary.get('version'),
+            "binary_name": binary.get("name"),
+            "bin_version": binary.get("version"),
             "database": database,
-            "src_name": binary.get('src_name'),
-            "src_version": binary.get('src_version')
+            "src_name": binary.get("src_name"),
+            "src_version": binary.get("src_version"),
         }
 
         return binary_info
