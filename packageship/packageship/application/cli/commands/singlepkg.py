@@ -42,16 +42,32 @@ class SingleCommand(BaseCommand):
         super(SingleCommand, self).__init__()
 
         self.parse = BaseCommand.subparsers.add_parser(
-            'pkginfo', help='query the information of a single package')
+            "pkginfo", help="query the information of a single package"
+        )
         self.params = [
-            ('packagename', 'str', 'source package name', '', 'store'),
-            ('database', 'str', 'name of the database operated', '', 'store'),
-            ('-s', 'str', 'Specify -s to query the src source package information, If not specified, query bin binary '
-                          'package information by default', None, 'store_true'),
-            ('-remote', 'str', 'The address of the remote service', False, 'store_true')]
-        self.provides_table = self.create_table(['Symbol', 'Required by'])
-        self.requires_table = self.create_table(['Symbol', 'Provides by'])
-        self.file_list_table = self.create_table(['Symbol', 'File List'])
+            ("packagename", "str", "source package name", "", "store"),
+            ("database", "str", "name of the database operated", "", "store"),
+            (
+                "-s",
+                "str",
+                "Specify -s to query the src source package information, If not specified, query bin binary "
+                "package information by default",
+                None,
+                "store_true",
+            ),
+            (
+                "-remote",
+                "str",
+                "The address of the remote service",
+                False,
+                "store_true",
+            ),
+        ]
+        self.provides_table = self.create_table(
+            ["Symbol", "Install Required by", "Build Required by"]
+        )
+        self.requires_table = self.create_table(["Symbol", "Provides by"])
+        self.file_list_table = self.create_table(["Symbol", "File List"])
 
     def register(self):
         """
@@ -77,12 +93,26 @@ class SingleCommand(BaseCommand):
         Raises:
 
         """
-        _src_show_field_name = {'src_name': "Source Name", 'version': "Version",
-                                'url': "Url", 'license': "License", 'summary': "Summary",
-                                'description': "Description", 'build_dep': "Build Depend", 'subpacks': "Subpacks"}
-        _bin_show_field_name = {'bin_name': "Binary Name", 'src_name': "Source Name", 'version': "Version",
-                                'url': "Url", 'license': "License", 'release': "Release", 'summary': "Summary",
-                                'description': "Description"}
+        _src_show_field_name = {
+            "src_name": "Source Name",
+            "version": "Version",
+            "url": "Url",
+            "license": "License",
+            "summary": "Summary",
+            "description": "Description",
+            "build_dep": "Build Depend",
+            "subpacks": "Subpacks",
+        }
+        _bin_show_field_name = {
+            "bin_name": "Binary Name",
+            "src_name": "Source Name",
+            "version": "Version",
+            "url": "Url",
+            "license": "License",
+            "release": "Release",
+            "summary": "Summary",
+            "description": "Description",
+        }
         if src_or_bin:
             _show_field_name = _src_show_field_name
         else:
@@ -92,16 +122,15 @@ class SingleCommand(BaseCommand):
         subpacks = []
         if not _package_detail_info:
             return
-        for subpack_item in _package_detail_info.get('subpacks', []):
-            subpacks.append(subpack_item['bin_name'])
-        _package_detail_info['subpacks'] = subpacks
+        for subpack_item in _package_detail_info.get("subpacks", []):
+            subpacks.append(subpack_item["bin_name"])
+        _package_detail_info["subpacks"] = subpacks
         for key, name_value in _show_field_name.items():
             value = _package_detail_info.get(key, "")
             if isinstance(value, list):
                 if not value:
                     _line_content.append("%-15s:%s" % (name_value, ""))
-                value_s = self.show_separation(
-                    value, LIST_LEN, separation_str=',')
+                value_s = self.show_separation(value, LIST_LEN, separation_str=",")
                 for idx, con in enumerate(value_s):
                     if idx != ZERO:
                         name_value = " "
@@ -114,7 +143,7 @@ class SingleCommand(BaseCommand):
                         name_value = " "
                     _line_content.append("%-15s:%s" % (name_value, con))
             if not isinstance(value, list) and key != "description":
-                _line_content.append('%-15s:%s' % (name_value, value))
+                _line_content.append("%-15s:%s" % (name_value, value))
         for content in _line_content:
             self.print_(content=content)
 
@@ -130,14 +159,13 @@ class SingleCommand(BaseCommand):
         """
         if provides and isinstance(provides, list):
             for _provide in provides:
-                _provide_list = _provide.get('required_by_bin', '') + \
-                                _provide.get('required_by_src', '')
-                _required_by = '\n'.join(
-                    _provide_list) if _provide_list else ''
+                install_required = "\n".join(_provide.get("required_by_bin", []))
+                build_required = "\n".join(_provide.get("required_by_src", []))
                 self.provides_table.add_row(
-                    [_provide['component'], _required_by])
-        if getattr(self.provides_table, 'rowcount'):
-            self.print_('Provides')
+                    [_provide["component"], install_required, build_required]
+                )
+        if getattr(self.provides_table, "rowcount"):
+            self.print_("Provides")
             print(self.provides_table)
         self.provides_table.clear_rows()
 
@@ -152,12 +180,12 @@ class SingleCommand(BaseCommand):
         """
         if requires and isinstance(requires, list):
             for _require in requires:
-                _provide_by = '\n'.join(
-                    _require.get('provided_by', ''))
+                _provide_by = "\n".join(_require.get("provided_by", ""))
                 self.requires_table.add_row(
-                    [_require.get('component', ''), _provide_by])
-        if getattr(self.requires_table, 'rowcount'):
-            self.print_('Requires')
+                    [_require.get("component", ""), _provide_by]
+                )
+        if getattr(self.requires_table, "rowcount"):
+            self.print_("Requires")
             print(self.requires_table)
         self.requires_table.clear_rows()
 
@@ -171,11 +199,11 @@ class SingleCommand(BaseCommand):
         Raises:
         """
         for subpack_item in subpacks:
-            print('-' * 50)
-            self.print_(subpack_item.get('bin_name', ''))
+            print("-" * 50)
+            self.print_(subpack_item.get("bin_name", ""))
 
-            self.__parse_provides(subpack_item.get('provides', ''))
-            self.__parse_requires(subpack_item.get('requires', ''))
+            self.__parse_provides(subpack_item.get("provides", ""))
+            self.__parse_requires(subpack_item.get("requires", ""))
 
     def __parse_filelist(self, filelist):
         """
@@ -187,11 +215,11 @@ class SingleCommand(BaseCommand):
         Raises:
         """
         for key, value in filelist.items():
-            _filelist = '\n'.join(value) if value else ''
+            _filelist = "\n".join(value) if value else ""
             self.file_list_table.add_row([key, _filelist])
 
-        if getattr(self.file_list_table, 'rowcount'):
-            self.print_('File List')
+        if getattr(self.file_list_table, "rowcount"):
+            self.print_("File List")
             print(self.file_list_table)
         self.file_list_table.clear_rows()
 
@@ -205,8 +233,8 @@ class SingleCommand(BaseCommand):
         Raises:
 
         """
-        parse_data = response_data['resp'].get(database)[ZERO]
-        _subpacks = parse_data.get('subpacks') if parse_data.get('subpacks') else []
+        parse_data = response_data["resp"].get(database)[ZERO]
+        _subpacks = parse_data.get("subpacks") if parse_data.get("subpacks") else []
         self.__parse_package_detail(parse_data, src_or_bin)
         self.__parse_subpack(_subpacks)
 
@@ -220,13 +248,13 @@ class SingleCommand(BaseCommand):
         Raises:
 
         """
-        parse_data = response_data['resp'].get(database)[ZERO]
+        parse_data = response_data["resp"].get(database)[ZERO]
         self.__parse_package_detail(parse_data, src_or_bin)
-        _provides = parse_data.get('provides') if parse_data.get('provides') else []
+        _provides = parse_data.get("provides") if parse_data.get("provides") else []
         self.__parse_provides(_provides)
-        _requires = parse_data.get('requires') if parse_data.get('requires') else []
+        _requires = parse_data.get("requires") if parse_data.get("requires") else []
         self.__parse_requires(_requires)
-        _filelist = parse_data.get('filelist') if parse_data.get('filelist') else {}
+        _filelist = parse_data.get("filelist") if parse_data.get("filelist") else {}
         self.__parse_filelist(_filelist)
 
     def do_command(self, params):
@@ -240,15 +268,18 @@ class SingleCommand(BaseCommand):
             ConnectionError: self.request connection error
         """
         if params.s:
-            src_or_bin = 'src'
+            src_or_bin = "src"
         else:
-            src_or_bin = 'bin'
+            src_or_bin = "bin"
         self._set_read_host(params.remote)
 
-        _url = self.read_host + \
-               '/packages/{src_or_bin}/{packagename}?database_name={database}&pkg_name={pkg_name}' \
-                   .format(src_or_bin=src_or_bin, packagename=params.packagename, database=params.database,
-                           pkg_name=params.packagename)
+        _url = self.read_host + "/packages/{src_or_bin}/{packagename}?database_name={database}&\
+            pkg_name={pkg_name}".format(
+            src_or_bin=src_or_bin,
+            packagename=params.packagename,
+            database=params.database,
+            pkg_name=params.packagename,
+        )
         try:
             response = self.request.get(_url)
         except ConnErr as conn_error:
@@ -259,18 +290,20 @@ class SingleCommand(BaseCommand):
             if response.status_code == 200:
                 try:
                     response_data = json.loads(response.text)
-                    if response_data.get('code') == ResponseCode.SUCCESS:
+                    if response_data.get("code") == ResponseCode.SUCCESS:
                         if params.s:
                             self.__parse_src_package(
-                                response_data, params.database, params.s)
+                                response_data, params.database, params.s
+                            )
                         else:
                             self.__parse_bin_package(
-                                response_data, params.database, params.s)
+                                response_data, params.database, params.s
+                            )
                     else:
-                        self.output_error_formatted(response_data.get('message'),
-                                                    response_data.get('code'))
+                        self.output_error_formatted(
+                            response_data.get("message"), response_data.get("code")
+                        )
                 except JSONDecodeError as json_error:
-                    self.output_error_formatted(
-                        response.text, "JSON_DECODE_ERROR")
+                    self.output_error_formatted(response.text, "JSON_DECODE_ERROR")
             else:
                 self.http_error(response)
