@@ -8,13 +8,13 @@ Summary        :C library array
 Description    :The package provides the most advanced core technology, the main advantages are
                :scalability, high performance and memory efficiency.
 Provides
-====================================================================================================
-  Symbol                                          Required by
-====================================================================================================
-  Judy                                            Judy-devel
-  Judy(aarch-64)
-  libJudy.so.1()(64bit)                           mariadb-oqgraph-engine
-====================================================================================================
+======================================================================
+  Symbol                  Install Required by      Build Required by  
+======================================================================
+  Judy                    Judy-devel                                  
+  Judy(aarch-64)                                                      
+  libJudy.so.1()(64bit)   mariadb-oqgraph-engine                      
+======================================================================
 Requires
 ====================================================================================================
   Symbol                                                                       Provides by

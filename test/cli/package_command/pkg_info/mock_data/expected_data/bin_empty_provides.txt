@@ -26,5 +26,5 @@ File List
           /etc/ima/digest_lists.tlv/0-metadata_list-compact_tlv-Judy-1.0.5-19.oe1.aarch64
           /usr/lib64/libJudy.so.1.0.3
           /etc/ima/digest_lists/0-metadata_list-compact-Judy-1.0.5-19.oe1.aarch64
-  ghost   /usr/lib64/libJudy.so.1
+  ghost
 ====================================================================================================
