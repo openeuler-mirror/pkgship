@@ -94,8 +94,8 @@ CALL_MAX_DELAY = 60
 MAX_RETRY = 3
 
 # Package build state
-BUILD_STATES = ["succeeded", "failed", "unresolvable", "broken", "blocked", "building", "excluded", "disabled",
-                "locked"]
+BUILD_STATES = ["unresolvable", "broken", "blocked", "building",  "succeeded", "failed", "excluded",
+                "disabled", "locked"]
 
 # Package build time(second)
 BUILD_TIMES = [0, 600, 1200, 1800]
@@ -110,8 +110,25 @@ OBS_X_ARCHITECTURE = "standard_x86_64"
 OBS_A_ARCHITECTURE = "standard_aarch64"
 
 # Default gitee branch
-
 DEFAULT_GIT_BRANCH = "openEuler-22.03-LTS"
+
+# EXPORT ISO ROW
+EXPORT_ISO_ROW = 10
+
+# EXPORT ISO COLUMN
+EXPORT_ISO_COLUMN = 5
+
+# EXPORT BUILD STATE COLUMN
+EXPORT_BUILD_STATE_COLUMN = 3
+
+# EXPORT BUILD TIME COLUMN
+EXPORT_BUILD_TIME_COLUMN = 6
+
+# OBS PACKAGE INFO
+OBS_PACKAGE_INFO_COLUMN = 12
+
+# DEFAULT_PAGE_SISE
+DEFAULT_PAGE_SIZE = 100
 
 
 class ListNode():
