@@ -78,9 +78,9 @@
                     width="400"
                     :show-overflow-tooltip="true">
                     <template slot-scope="scope">
-                        <span v-if="scope.row.maintainer === undefined || scope.row.maintainer.length <= 0 || scope.row.maintainer[0].email === null || scope.row.maintainer[0].id === null">暂无信息</span>
+                        <span v-if="scope.row.maintainer === undefined || scope.row.maintainer.length <= 0 || scope.row.maintainer[0].id === null">暂无信息</span>
                         <span v-for="(item, index) in scope.row.maintainer" :key="index">
-                            <span v-if="scope.row.maintainer != undefined && scope.row.maintainer.length > 0 && scope.row.maintainer[0].email != null && scope.row.maintainer[0].id != null && index === 0">
+                            <span v-if="scope.row.maintainer != undefined && scope.row.maintainer.length > 0 && scope.row.maintainer[0].id != null && index === 0">
                                 id:{{item.id}} | 邮箱:<a @click="goEmail(item.email)">{{item.email}}</a>
                             </span>
                         </span>

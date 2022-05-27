@@ -122,9 +122,9 @@
                     width="450"
                     :show-overflow-tooltip="true">
                     <template slot-scope="scope">
-                        <span v-if="scope.row.maintainer === undefined || scope.row.maintainer.length <= 0 || scope.row.maintainer[0].email === null || scope.row.maintainer[0].id === null">暂无信息</span>
+                        <span v-if="scope.row.maintainer === undefined || scope.row.maintainer.length <= 0 || scope.row.maintainer[0].id === null">暂无信息</span>
                         <span v-for="(item, index) in scope.row.maintainer" :key="index">
-                            <span v-if="scope.row.maintainer != undefined && scope.row.maintainer.length > 0 && scope.row.maintainer[0].email != null && scope.row.maintainer[0].id != null && index === 0">
+                            <span v-if="scope.row.maintainer != undefined && scope.row.maintainer.length > 0 && scope.row.maintainer[0].id != null && index === 0">
                                 id:{{item.id}} | 邮箱:<a @click="goEmail(item.email)">{{item.email}}</a>
                             </span>
                         </span>
@@ -145,10 +145,21 @@
                     width="450"
                     :show-overflow-tooltip="true">
                     <template slot-scope="scope">
-                        <span v-if="scope.row.contributors === undefined || scope.row.contributors.length <= 0 || scope.row.contributors[0].email === null || scope.row.contributors[0].id === null">暂无信息</span>
-                        <div v-if="scope.row.contributors != undefined && scope.row.contributors.length > 0 && scope.row.contributors[0].email != null && scope.row.contributors[0].id != null">
-                            <span v-for="(item, index) in scope.row.contributors" :key="index">id:{{item.id}} | 邮箱:<a @click="goEmail(item.email)">{{item.email}}</a></span>
-                        </div>
+                        <span v-if="scope.row.contributors === undefined || scope.row.contributors.length <= 0 || scope.row.contributors[0].id === null">暂无信息</span>
+                        <span v-for="(item, index) in scope.row.contributors" :key="index">
+                            <span v-if="scope.row.contributors != undefined && scope.row.contributors.length > 0 && scope.row.contributors[0].id != null && index === 0">
+                                id:{{item.id}} | 邮箱:<a @click="goEmail(item.email)">{{item.email}}</a>
+                            </span>
+                        </span>
+                        <el-popover
+                                  placement="right"
+                                  width="400"
+                                  trigger="hover">
+                                  <ul v-for="(item, index) in scope.row.contributors" :key="index">
+                                      <li>id:{{item.id}} | 邮箱:<a @mouseover="putIn(index)" @mouseleave="putOut" :class="popActive === index? 'blue underline' : ''" @click="goEmail(item.email)" style="cursor: pointer;">{{item.email}}</a></li>
+                                  </ul>
+                                  <i slot="reference" @mouseover="mouseIn(scope.$index)" @mouseleave="mouseOut" :class="active === scope.$index? 'el-icon-more-outline blue' : 'el-icon-more-outline'" style="margin-left: 20px;cursor: pointer;"></i>
+                        </el-popover>
                     </template>
                 </el-table-column>
                 <el-table-column
