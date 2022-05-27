@@ -73,7 +73,7 @@ HINT           :Use the correct package name and try again"""
         def modify_filelist_data():
             """generate wrong type filelist"""
             wrong_type_filelist = self.read_file_content("pkg_info.json", folder=MOCK_DATA_FOLDER)
-            wrong_type_filelist[1]["hits"]["hits"][0]["_source"]["filelists"][0]["filetypes"] = "h"
+            wrong_type_filelist[1]["hits"]["hits"][0]["_source"]["filelists"][0]["filetype"] = "h"
             return wrong_type_filelist
 
         self.excepted_str = self.read_file_content(
