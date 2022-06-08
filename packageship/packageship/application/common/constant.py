@@ -94,7 +94,7 @@ CALL_MAX_DELAY = 60
 MAX_RETRY = 3
 
 # Package build state
-BUILD_STATES = ["unresolvable", "broken", "blocked", "building",  "succeeded", "failed", "excluded",
+BUILD_STATES = ["unresolvable", "broken", "blocked", "building", "succeeded", "failed", "excluded",
                 "disabled", "locked"]
 
 # Package build time(second)
@@ -110,7 +110,7 @@ OBS_X_ARCHITECTURE = "standard_x86_64"
 OBS_A_ARCHITECTURE = "standard_aarch64"
 
 # Default gitee branch
-DEFAULT_GIT_BRANCH = "openEuler-22.03-LTS"
+DEFAULT_GIT_BRANCH = "master"
 
 # EXPORT ISO ROW
 EXPORT_ISO_ROW = 10
@@ -129,6 +129,9 @@ OBS_PACKAGE_INFO_COLUMN = 12
 
 # DEFAULT_PAGE_SISE
 DEFAULT_PAGE_SIZE = 100
+
+# OPENEULER URL
+OPENEULER_URL_TEST = "https://pkgmanagedebug.openeuler.org/"
 
 
 class ListNode():
