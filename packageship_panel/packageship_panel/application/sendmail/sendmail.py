@@ -47,9 +47,6 @@ class Mail:
                              "mail_content.html")
     unstable_items = []
     cc_receiver = []
-
-    obs_auth = HTTPBasicAuth('muyuying', 'myy15651995918')
-    obs_api_base = "https://build.openeuler.org/"
     repo_keys = {
         "en": [
             "repo_name", "gitee_version", "obs_branch", "architecture",
