@@ -18,6 +18,9 @@ import json
 import aiohttp
 from lxml import etree
 from lxml.etree import ParseError
+from requests import RequestException
+from requests.auth import HTTPBasicAuth
+import requests
 from packageship.libs.log import LOGGER
 from packageship.libs.conf import configuration
 from packageship.application.common.remote import AsyncRequest
@@ -55,6 +58,11 @@ class ObsApi:
         """
         return aiohttp.BasicAuth(login=self._account, password=self._password, encoding="utf-8")
 
+    @property
+    def _auth_basic(self):
+        obs_auth = HTTPBasicAuth(self._account, self._password)
+        return obs_auth
+    
     @staticmethod
     def _xpath(xpath, node, choice=False):
         """
@@ -137,6 +145,18 @@ class ObsApi:
             return []
 
         return self._parse_main_project(response.text)
+
+    def get_project_state(self, project):
+        url = self._url(url="build/{project}/_result", project=project)
+        try:
+            response = requests.get(url=url, auth=self._auth_basic)
+            if response.status_code != 200 or not response.text:
+                LOGGER.error("failed to get project compilation status")
+                return []
+            self._parse_all_projects(response.text, project)
+        except (RequestException, AttributeError) as e:
+            LOGGER.error(f"failed to get project compilation status,{e}")
+            return []
 
     async def get_complete_packages(self, project, limit=5, community="openeuler"):
         """

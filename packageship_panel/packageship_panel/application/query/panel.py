@@ -10,6 +10,7 @@
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
+import copy
 from packageship.application.common.constant import (
     BUILD_STATES,
     BUILD_TIMES,
@@ -139,6 +140,33 @@ class PanelInfo(Query):
         )
         return [query_result.get("_source") for query_result in query_result_list]
 
+    def query_sig_package_state(self, branch):
+        """
+        Query the compilation status of software packages in the sig group
+        :param branch: gitee branch
+        """
+        body = dict(gitee_branch=branch)
+        sig_group_collect = dict()
+        pkg_state = dict(failed=0, unresolved=0)
+        for obs_info in self.query_obs_info(body):
+            if obs_info["build_status"] not in ("failed", "unresolved"):
+                continue
+            try:
+                sig_name = obs_info.pop("name")
+            except KeyError:
+                continue
+            if sig_name not in sig_group_collect:
+                sig_group_collect[sig_name] = {
+                    "standard_x86_64": copy.deepcopy(pkg_state),
+                    "standard_aarch64": copy.deepcopy(pkg_state),
+                }
+
+            sig_group_collect[sig_name][obs_info["architecture"]][
+                obs_info["build_status"]
+            ] += 1
+
+        return sig_group_collect
+    
     def query_sig_info(self, sig_name, index="sig_info"):
         """
         Querying sig group information
