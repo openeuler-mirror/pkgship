@@ -421,11 +421,12 @@ class Mail:
         given obs branch name,send email
         param:gitee branch name,exp:master
         """
+        exp = None
         mail_content = self._get_info(gitee_branch)
         if not mail_content:
             LOGGER.info(
                 f'{gitee_branch} has no failed or unresolvable package')
-            return
+            return exp
         # mark the obs branch that will be sended
         send_obs_branch = set([
             mail_content_item["obs_branch"]
@@ -436,7 +437,7 @@ class Mail:
                 send_obs_branch.remove(send_items)
 
         if not send_obs_branch:
-            return
+            return exp
 
         branch_architecture = set([
             mail_content_item["architecture"]
@@ -473,7 +474,7 @@ class Mail:
              csvfile) = self._mail_content(mail_content_params)
         except ValueError as error:
             LOGGER.error(f'{error} in send_obs_info')
-            return
+            return exp
         email_params = (content, subject, receiver, bcc_receiver, csvfile)
         ret = self._send_email(email_params)
         # get the real length from self.gitee_obs_dict[gitee_branch]
@@ -501,6 +502,22 @@ class Mail:
 
         return send_obs_branch
 
+    def remove_from_unstable(self, gitee_branch):
+        '''
+        adjust self.mail_unstable,remove the published branch
+        '''
+        obs_branch = dict()
+        for items in self.obs_api_list:
+            if (items.get("gitee_branch") and items["gitee_branch"]
+                    == gitee_branch) and items.get("obs_branch"):
+                obs_branch = items["obs_branch"]
+        if self.mail_unstable.get(gitee_branch) and obs_branch:
+            for items in obs_branch:
+                if items["state"] == "published" and items["name"][
+                        "name"] in self.mail_unstable[gitee_branch]:
+                    self.mail_unstable[gitee_branch].remove(
+                        items["name"]["name"])
+                    
     def _get_mail_times_or_status(self, gitee_name, branch_architecture_items,
                                   mail, query_func):
         '''
@@ -513,19 +530,6 @@ class Mail:
                 mail[key] += value
             else:
                 mail[key] = value
-
-    def remove_from_unstable(self, gitee_branch):
-        obs_branch = dict()
-        for items in self.obs_api_list:
-            if (items.get("gitee_branch") and items["gitee_branch"]
-                    == gitee_branch) and items.get("obs_branch"):
-                obs_branch = items["obs_branch"]
-        if self.mail_unstable.get(gitee_branch) and obs_branch:
-            for items in obs_branch:
-                if items["state"] == "published" and items["name"][
-                        "name"] in self.mail_unstable[gitee_branch]:
-                    self.mail_unstable[gitee_branch].remove(
-                        items["name"]["name"])
 
     def get_unstable(self):
         self.mail_unstable = {
