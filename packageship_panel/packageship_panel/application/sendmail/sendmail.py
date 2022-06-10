@@ -17,7 +17,7 @@ import socket
 import time
 import sched
 import smtplib
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
@@ -39,7 +39,7 @@ class Mail:
     """
 
     mail_sched = sched.scheduler(time.time, time.sleep)
-    count = 2  # query times
+    count = 24  # query times
     file_path = os.path.join(os.path.abspath(os.path.dirname(__file__)),
                              "mail_content.html")
     unstable_items = []
@@ -55,14 +55,11 @@ class Mail:
         self,
         port=465,
     ):
-        # self.sender, self.password, self.mailhost = (
-        #     os.getenv("EMAIL_SENDER"),
-        #     os.getenv("EMAIL_PASSWORD"),
-        #     os.getenv("MAIL_HOST"),
-        # )
-        self.sender, self.password, self.mailhost = ("myym1003@163.com",
-                                                     "BOPMVILKLEARWXXT",
-                                                     "smtp.163.com")
+        self.sender, self.password, self.mailhost = (
+            os.getenv("EMAIL_SENDER"),
+            os.getenv("EMAIL_PASSWORD"),
+            os.getenv("MAIL_HOST"),
+        )
         if not all([self.sender, self.password, self.mailhost]):
             raise RuntimeError("please set environment first")
         self.port = port
@@ -93,15 +90,18 @@ class Mail:
         m_count = 0  # set the totall count of maintainer/contributors
         for res_maintainer in res_repo_dict.get(key, []):
             if res_maintainer.get("id"):
-                csv_maintainers = (f"{csv_maintainers}id:{str(res_maintainer['id'])}    \
-                                    email:{str(res_maintainer['email'])}\n")
-
+                csv_maintainers = (
+                    "{csv_maintainers}id: {id} | email: {email}\n".format(
+                        csv_maintainers=csv_maintainers,
+                        id=str(res_maintainer['id']),
+                        email=str(res_maintainer['email'])))
                 if m_count < 3:
                     m_count += 1
                     maintainers_ids = (
-                        f"{maintainers_ids}<b>id:</b>{str(res_maintainer['id'])}    \
-                                        <b>email:</b>{str(res_maintainer['email'])}<br>"
-                    )
+                        "{maintainers_ids}<b>id:</b>{id} | <b>email:</b>{email}<br>"
+                        .format(maintainers_ids=maintainers_ids,
+                                id=str(res_maintainer['id']),
+                                email=str(res_maintainer['email'])))
             if res_maintainer.get("email"):
                 email_receivers.append(res_maintainer["email"])
         return maintainers_ids, csv_maintainers
@@ -138,35 +138,13 @@ class Mail:
         '''
         Gets the HTML file content
         '''
+        template_content = None
         try:
             with open(self.file_path, "r", encoding="utf-8") as mf:
                 template_content = mf.read()
         except (IOError, ValueError) as error:
             LOGGER.error(error)
-            return
-
-        else:
-            return template_content
-
-    def _get_attachment(self, gitee_branch, csv_dict):
-        '''
-        Write details to the attachment
-        '''
-        header = [items[1] for items in self.repo_keys]
-        date_today = datetime.today().date()
-        file_path_csv = f'{configuration.TEMPORARY_DIRECTORY}/{str(date_today)}-{gitee_branch}.csv'
-        with os.fdopen(os.open(file_path_csv,
-                               os.O_CREAT | os.O_WRONLY | os.O_TRUNC, 0o640),
-                       'w',
-                       encoding='utf-8-sig') as f:
-            writer = csv.writer(f)
-            writer.writerow(header)
-            for i in range(0, len(csv_dict)):
-                csv_dict[i].pop("maintainer", None)
-                csv_dict[i].pop("contributors", None)
-                csv_list = [val for _, val in csv_dict[i].items()]
-                writer.writerow(csv_list)
-        return f'{date_today}-{gitee_branch}.csv'
+        return template_content
 
     def get_sig_package_state(self, gitee_branch):
         '''
@@ -190,14 +168,30 @@ class Mail:
             res_sig_temp["result"]["unresolved"] = unresolved_sum
             res_sig_temp["result"]["sum"] = failed_sum + unresolved_sum
             res_sig_list.append(res_sig_temp)
-        # for i in range(1, len(res_sig_list)):
-        #     for j in range(0, len(res_sig_list) - i):
-        #         if (res_sig_list[j]["result"]["sum"] <
-        #                 res_sig_list[j + 1]["result"]["sum"]):
-        #             res_sig_list[j], res_sig_list[j + 1] = res_sig_list[
-        #                 j + 1], res_sig_list[j]
-        res_sig_list.sort(key=lambda x: x.get("result").get("sum"), reverse=True)
+
+        res_sig_list.sort(key=lambda x: x.get("result").get("sum"),
+                          reverse=True)
         return res_sig_list
+
+    def _get_attachment(self, gitee_branch, csv_dict):
+        '''
+        Write details to the attachment
+        '''
+        header = [items[1] for items in self.repo_keys]
+        date_today = datetime.today().date()
+        file_path_csv = f'{configuration.TEMPORARY_DIRECTORY}/{str(date_today)}-{gitee_branch}.csv'
+        with os.fdopen(os.open(file_path_csv,
+                               os.O_CREAT | os.O_WRONLY | os.O_TRUNC, 0o640),
+                       'w',
+                       encoding='utf-8-sig') as f:
+            writer = csv.writer(f)
+            writer.writerow(header)
+            for i in range(0, len(csv_dict)):
+                csv_dict[i].pop("maintainer", None)
+                csv_dict[i].pop("contributors", None)
+                csv_list = [val for _, val in csv_dict[i].items()]
+                writer.writerow(csv_list)
+        return f'{date_today}-{gitee_branch}.csv'
 
     def _get_repo_table(self, res_repo):
         '''
@@ -230,7 +224,8 @@ class Mail:
         receiver = list(set(receiver))
         bcc_receiver = list(set(bcc_receiver))
 
-        return table_tr, csv_dict, receiver, bcc_receiver
+        repo_params = (table_tr, csv_dict, receiver, bcc_receiver)
+        return repo_params
 
     def _get_sig_table(self, gitee_branch):
         '''
@@ -271,7 +266,9 @@ class Mail:
                           obs_success_rate=obs_success_rate,
                           content_tr_repo=table_tr,
                           content_tr_sig=sig_table_tr))
-        time_now = str(datetime.now().astimezone().strftime("%Y-%m-%d"))
+        beijing = timezone(timedelta(hours=8))
+        utc_time = datetime.utcnow()
+        time_now = str(utc_time.astimezone(beijing).strftime("%Y-%m-%d"))
         subject = "{time_now} gitee分支【{branch}】 问题单缺陷统计报告，请及时注意问题及时解决！".format(
             time_now=time_now, branch=gitee_branch)
 
@@ -310,16 +307,15 @@ class Mail:
         mime_mail.attach(csvfile)
         mime_mail["Subject"] = subject
         mime_mail["form"] = self.sender
-        # mime_mail["to"] = ",".join(bcc_receiver)
-        # mime_mail["cc"] = ",".join(receiver)
+        mime_mail["to"] = ",".join(bcc_receiver)
+        mime_mail["cc"] = ",".join(receiver)
 
         # create link
         try:
             smtp = smtplib.SMTP_SSL(self.mailhost, self.port)
             smtp.login(self.sender, self.password)
-            # smtp.sendmail(self.sender, receiver + bcc_receiver,
-            #               mime_mail.as_string())
-            smtp.sendmail(self.sender, "2022464137@qq.com", mime_mail.as_string())
+            smtp.sendmail(self.sender, receiver +
+                          bcc_receiver, mime_mail.as_string())
             LOGGER.info("mail send success!")
             return True
         except (smtplib.SMTPException) as error:
@@ -526,9 +522,10 @@ class Mail:
                 obs_branch = items["obs_branch"]
         if self.mail_unstable.get(gitee_branch) and obs_branch:
             for items in obs_branch:
-                if items["state"] == "published" and items[
-                        "name"]["name"] in self.mail_unstable[gitee_branch]:
-                    self.mail_unstable[gitee_branch].remove(items["name"]["name"])
+                if items["state"] == "published" and items["name"][
+                        "name"] in self.mail_unstable[gitee_branch]:
+                    self.mail_unstable[gitee_branch].remove(
+                        items["name"]["name"])
 
     def get_unstable(self):
         self.mail_unstable = {
@@ -547,7 +544,8 @@ class Mail:
             for query_item in self.mail_unstable:
                 self.send_obs_info(query_item)
                 self.remove_from_unstable(query_item)
-            stime = 10  # call _sched_start every 60 seconds
+                break
+            stime = 600  # call _sched_start every 60 seconds
             self.mail_sched.enter(0, 0, self._sched_start, (stime, ))
             self.mail_sched.run()
         except (ElasticSearchQueryException, DatabaseConfigException) as error:

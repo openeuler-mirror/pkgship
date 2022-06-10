@@ -30,7 +30,6 @@ class ObsApi:
     """
     Class initialization and assigning properties
     """
-
     def __init__(self, account=None, password=None) -> None:
         """
         Class initialization and assigning properties
@@ -167,20 +166,6 @@ class ObsApi:
             LOGGER.error(f"failed to get project compilation status,{e}")
             return project_state
 
-    def _parse_project_state(self, xml_result):
-        project_state = "building"
-        try:
-            etree_element = self._etree_obj(xml_result)
-            if etree_element is None:
-                return project_state
-            state = self._xpath(xpath="//@state",
-                                node=etree_element,
-                                choice=True)
-            project_state = self._parse_arch_state(state[1:])
-        except IndexError as error:
-            LOGGER.error(error)
-        return project_state
-
     async def get_complete_packages(self,
                                     project,
                                     limit=5,
@@ -309,3 +294,17 @@ class ObsApi:
                         choice=True)
         ]
         return projects
+
+    def _parse_project_state(self, xml_result):
+        project_state = "building"
+        try:
+            etree_element = self._etree_obj(xml_result)
+            if etree_element is None:
+                return project_state
+            state = self._xpath(xpath="//@state",
+                                node=etree_element,
+                                choice=True)
+            project_state = self._parse_arch_state(state[1:])
+        except IndexError as error:
+            LOGGER.error(error)
+        return project_state
