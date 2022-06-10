@@ -10,20 +10,17 @@
 # PURPOSE.
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
-from builtins import len, range
 import copy
-from email.mime.application import MIMEApplication
-from email.mime.multipart import MIMEMultipart
+import csv
 import os
-from requests.auth import HTTPBasicAuth
 import socket
 import time
-import smtplib
-from email.mime.text import MIMEText
 import sched
+import smtplib
 from datetime import datetime
-import csv
-import builtins
+from email.mime.text import MIMEText
+from email.mime.application import MIMEApplication
+from email.mime.multipart import MIMEMultipart
 from packageship_panel.application.query.panel import PanelInfo
 from packageship_panel.application.core.obs import ObsInfo
 from packageship_panel.libs.api.obs import ObsApi
@@ -47,27 +44,25 @@ class Mail:
                              "mail_content.html")
     unstable_items = []
     cc_receiver = []
-    repo_keys = {
-        "en": [
-            "repo_name", "gitee_version", "obs_branch", "architecture",
-            "build_status", "build_detail_link", "build_time", "name",
-            "maintainer", "contributors"
-        ],
-        "cn": [
-            "repo仓名", "gitee版本", "obs分支", "架构", "编译状态", "详情链接", "编译耗时", "sig组",
-            "maintainer", "contributors"
-        ]
-    }
+    repo_keys = [("repo_name", "repo仓名"), ("gitee_version", "gitee版本"),
+                 ("obs_branch", "obs分支"), ("architecture", "架构"),
+                 ("build_status", "编译状态"), ("build_detail_link", "详情链接"),
+                 ("build_time", "编译耗时"), ("name", "sig组"),
+                 ("maintainer", "maintainer"),
+                 ("contributors", "contributors")]
 
     def __init__(
         self,
         port=465,
     ):
-        self.sender, self.password, self.mailhost = (
-            os.getenv("EMAIL_SENDER"),
-            os.getenv("EMAIL_PASSWORD"),
-            os.getenv("MAIL_HOST"),
-        )
+        # self.sender, self.password, self.mailhost = (
+        #     os.getenv("EMAIL_SENDER"),
+        #     os.getenv("EMAIL_PASSWORD"),
+        #     os.getenv("MAIL_HOST"),
+        # )
+        self.sender, self.password, self.mailhost = ("myym1003@163.com",
+                                                     "BOPMVILKLEARWXXT",
+                                                     "smtp.163.com")
         if not all([self.sender, self.password, self.mailhost]):
             raise RuntimeError("please set environment first")
         self.port = port
@@ -77,18 +72,46 @@ class Mail:
         # Store the branch name that is unstable
         self.gitee_obs_dict = dict()
         self.obstate = ""
-        self.obs_api_dict = list()
+        self.obs_api_list = list()
         # Store the branch name that is publish and need to be query
         self._pi = PanelInfo()
         self.obs_sync = ObsSynchronization()
         self.obs = ObsInfo()
+        self.obsapi = ObsApi()
+
+    @staticmethod
+    def _get_maintainers(res_repo_dict, key, email_receivers):
+        '''
+        Obtain maintainier mailbox information, including string data output to emails and CSV files
+        param:
+        res_repo_dict : repo info from es
+        key : "maintainer" or "contributors"
+        email_receivers : email address from res_repo_dict["maintainer"] or res_repo_dict["contributors"]
+        '''
+        maintainers_ids = ""
+        csv_maintainers = ""
+        m_count = 0  # set the totall count of maintainer/contributors
+        for res_maintainer in res_repo_dict.get(key, []):
+            if res_maintainer.get("id"):
+                csv_maintainers = (f"{csv_maintainers}id:{str(res_maintainer['id'])}    \
+                                    email:{str(res_maintainer['email'])}\n")
+
+                if m_count < 3:
+                    m_count += 1
+                    maintainers_ids = (
+                        f"{maintainers_ids}<b>id:</b>{str(res_maintainer['id'])}    \
+                                        <b>email:</b>{str(res_maintainer['email'])}<br>"
+                    )
+            if res_maintainer.get("email"):
+                email_receivers.append(res_maintainer["email"])
+        return maintainers_ids, csv_maintainers
 
     def repo_find_blank(self, res_repo_items, receiver, bcc_receiver):
         """
         Replace "" for nonexistent or equal to None
         param: data from es
         """
-        repo_keys = self.repo_keys["en"]
+        repo_keys = [items[0] for items in self.repo_keys]
         res_repo_dict = {}
         for repo_items in repo_keys:
             res_repo_dict[repo_items] = res_repo_items.get(repo_items, "")
@@ -96,30 +119,13 @@ class Mail:
         self.repo_id_info(res_repo_dict, receiver, bcc_receiver)
         return res_repo_dict
 
-    @staticmethod
-    def _get_maintainers(res_repo_dict, key, email_receivers):
-        '''
-        Obtain maintainier mailbox information, including string data output to emails and CSV files
-        '''
-        maintainers_ids = ""
-        csv_maintainers = ""
-        m_count = 0  # set the totall count of maintainer/contributors
-        for res_maintainer in res_repo_dict.get(key, []):
-            if res_maintainer.get("id") and m_count < 3:
-                m_count += 1
-                maintainers_ids = (
-                    f"{maintainers_ids}<b>id:</b>{str(res_maintainer['id'])}    <b>email:</b>{str(res_maintainer['email'])}<br>"
-                )
-            if res_maintainer.get("id"):
-                csv_maintainers = f"{csv_maintainers}id:{str(res_maintainer['id'])}    email:{str(res_maintainer['email'])}\n"
-            if res_maintainer.get("email"):
-                email_receivers.append(res_maintainer["email"])
-        return maintainers_ids, csv_maintainers
-
     def repo_id_info(self, res_repo_dict, receiver, bcc_receiver):
         """
         Concatenate HTML script and data into the content of the email
-        param:dictionary format,contains all the information needed for the email
+        param:
+        res_repo_dict : dictionary format,contains all the information needed for the email
+        receiver : mail receiver address list
+        bcc_receiver : mail bcc receiver address list
         """
         (res_repo_dict["maintainer"],
          res_repo_dict["csv_maintainer"]) = self._get_maintainers(
@@ -137,7 +143,7 @@ class Mail:
                 template_content = mf.read()
         except (IOError, ValueError) as error:
             LOGGER.error(error)
-            return None
+            return
 
         else:
             return template_content
@@ -146,7 +152,7 @@ class Mail:
         '''
         Write details to the attachment
         '''
-        header = self.repo_keys["cn"]
+        header = [items[1] for items in self.repo_keys]
         date_today = datetime.today().date()
         file_path_csv = f'{configuration.TEMPORARY_DIRECTORY}/{str(date_today)}-{gitee_branch}.csv'
         with os.fdopen(os.open(file_path_csv,
@@ -162,6 +168,37 @@ class Mail:
                 writer.writerow(csv_list)
         return f'{date_today}-{gitee_branch}.csv'
 
+    def get_sig_package_state(self, gitee_branch):
+        '''
+        Get sig group statistics and make sort
+        '''
+        res_sig_temp = dict()
+        res_sig_list = list()
+        res_sig = self._pi.query_sig_package_state(branch=gitee_branch)
+        for key, dicts in res_sig.items():
+            res_sig_temp = dict()
+            res_sig_temp["name"] = key
+            res_sig_temp["result"] = dict()
+            failed_sum = 0
+            unresolved_sum = 0
+            for _, value in dicts.items():
+                if ("failed" in value):
+                    failed_sum += value["failed"]
+                if ("unresolved" in value):
+                    unresolved_sum += value["unresolved"]
+            res_sig_temp["result"]["failed"] = failed_sum
+            res_sig_temp["result"]["unresolved"] = unresolved_sum
+            res_sig_temp["result"]["sum"] = failed_sum + unresolved_sum
+            res_sig_list.append(res_sig_temp)
+        # for i in range(1, len(res_sig_list)):
+        #     for j in range(0, len(res_sig_list) - i):
+        #         if (res_sig_list[j]["result"]["sum"] <
+        #                 res_sig_list[j + 1]["result"]["sum"]):
+        #             res_sig_list[j], res_sig_list[j + 1] = res_sig_list[
+        #                 j + 1], res_sig_list[j]
+        res_sig_list.sort(key=lambda x: x.get("result").get("sum"), reverse=True)
+        return res_sig_list
+
     def _get_repo_table(self, res_repo):
         '''
         get detail information in repo_table
@@ -173,7 +210,7 @@ class Mail:
             if key == "build_detail_link":
                 td += f'<td><a href="{val}">{res_repo_dict["build_status"]}</a></td> '
             else:
-                td += f"<td border=\"1px\" bordercolor=\"#ddd\">{str(val)}</td>"
+                td += f"<td>{str(val)}</td>"
             return td
 
         table_tr = ""
@@ -195,36 +232,6 @@ class Mail:
 
         return table_tr, csv_dict, receiver, bcc_receiver
 
-    def get_sig_package_state(self, gitee_branch):
-        '''
-        Get sig group statistics and make sort
-        '''
-        res_sig_temp = dict()
-        res_sig_list = list()
-        res_sig = self._pi.query_sig_package_state(branch=gitee_branch)
-        for key, dicts in res_sig.items():
-            res_sig_temp = dict()
-            res_sig_temp["name"] = key
-            res_sig_temp["result"] = dict()
-            failed_sum = 0
-            unresolved_sum = 0
-            for key, value in dicts.items():
-                if ("failed" in value):
-                    failed_sum += value["failed"]
-                if ("unresolved" in value):
-                    unresolved_sum += value["unresolved"]
-            res_sig_temp["result"]["failed"] = failed_sum
-            res_sig_temp["result"]["unresolved"] = unresolved_sum
-            res_sig_temp["result"]["sum"] = failed_sum + unresolved_sum
-            res_sig_list.append(res_sig_temp)
-        for i in range(1, len(res_sig_list)):
-            for j in range(0, len(res_sig_list) - i):
-                if (res_sig_list[j]["result"]["sum"] <
-                        res_sig_list[j + 1]["result"]["sum"]):
-                    res_sig_list[j], res_sig_list[j + 1] = res_sig_list[
-                        j + 1], res_sig_list[j]
-        return res_sig_list
-
     def _get_sig_table(self, gitee_branch):
         '''
         Collect sig group information and add it to td table
@@ -232,18 +239,17 @@ class Mail:
 
         def sig_table_td(val, tds, add_color):
             tds = tds + \
-                f"<td border=\"1px\" bordercolor=\"#ddd\">{add_color[0]}{str(val)}{add_color[1]}</td>"
+                f"<td {add_color}>{str(val)}</td>"
             return tds
 
         sig_table_tr = ""
         tds = ""
         res_sig_list = self.get_sig_package_state(gitee_branch=gitee_branch)
-        i = 0
-        add_color = ["", ""]
-        for items in res_sig_list:
-            add_color = ["", ""]
+        add_color = ""
+        for i, items in enumerate(res_sig_list):
+            add_color = ""
             if i < 3:
-                add_color = ["<font color=\"#FF0000\">", "</font>"]
+                add_color = "class = color_td"
             tds = ""
             tds = sig_table_td(items["name"], tds, add_color)
             tds = sig_table_td(items["result"]['failed'], tds, add_color)
@@ -253,11 +259,12 @@ class Mail:
 
         return sig_table_tr
 
-    def _mail_content(self, gitee_branch, res_status, res_times,
-                      obs_success_rate, table_tr, sig_table_tr, csv_dict):
+    def _mail_content(self, mail_content_params):
         """
         fill subject and content in mail
         """
+        gitee_branch, res_status, res_times, obs_success_rate, table_tr, \
+            sig_table_tr, csv_dict = mail_content_params
         merge_res = (dict(res_status,
                           **res_times,
                           obs_branch=gitee_branch,
@@ -288,7 +295,7 @@ class Mail:
 
         return content, subject, csvfile
 
-    def _send_email(self, content, subject, receiver, bcc_receiver, csvfile):
+    def _send_email(self, email_params):
         '''
         send mail from xxx@gitee.com
         param:
@@ -297,49 +304,49 @@ class Mail:
         subject:title
         content:mail content,html script
         '''
+        content, subject, receiver, bcc_receiver, csvfile = email_params
         mime_mail = MIMEMultipart()
         mime_mail.attach(MIMEText(content, _subtype="html", _charset="utf-8"))
         mime_mail.attach(csvfile)
         mime_mail["Subject"] = subject
         mime_mail["form"] = self.sender
-        mime_mail["to"] = ",".join(bcc_receiver)
-        mime_mail["cc"] = ",".join(receiver)
+        # mime_mail["to"] = ",".join(bcc_receiver)
+        # mime_mail["cc"] = ",".join(receiver)
 
         # create link
         try:
             smtp = smtplib.SMTP_SSL(self.mailhost, self.port)
             smtp.login(self.sender, self.password)
-            smtp.sendmail(self.sender, receiver +
-                          bcc_receiver, mime_mail.as_string())
+            # smtp.sendmail(self.sender, receiver + bcc_receiver,
+            #               mime_mail.as_string())
+            smtp.sendmail(self.sender, "2022464137@qq.com", mime_mail.as_string())
             LOGGER.info("mail send success!")
             return True
-        except (smtplib.SMTPException, socket.gaierror) as error:
+        except (smtplib.SMTPException) as error:
             LOGGER.error(f"Failed to send email,excetion info {str(error)}")
             return False
         finally:
             smtp.quit()
 
-    def _get_gitee_map_obs_form_api(self):
+    def _get_gitee_map_obs(self):
         '''
         Use API interface to obtain real-time OBS project status
         '''
         self.gitee_obs_dict = self._pi.query_suggest_info(index="branch_info",
                                                           body={})
-        # gitee_obs_dict=copy.deepcopy(self.gitee_obs_dict)
         gitee_obs_dict = list()
         for items in self.gitee_obs_dict:
             obs_branchs = items["obs_branch"]
-            obsapi = ObsApi()
             body = {"gitee_branch": items["gitee_branch"], "obs_branch": []}
             for obs_branch in obs_branchs:
-                obsapi.get_project_state(obs_branch["name"])
-            for obs_states in obsapi.obs_states:
+                project_state = self.obsapi.get_project_state(
+                    obs_branch["name"])
                 body["obs_branch"].append({
-                    "name": obs_states[0],
-                    "state": obs_states[1]
+                    "name": obs_branch,
+                    "state": project_state
                 })
             gitee_obs_dict.append(body)
-        self.obs_api_dict = gitee_obs_dict
+        self.obs_api_list = gitee_obs_dict
 
     def _query_fail_branch(self, unstable_branch):
         """
@@ -354,24 +361,12 @@ class Mail:
                     return True
         return False
 
-    def _query_branch(self):
-        """
-        The first query sends information about the branch that has stabilized and failed
-        """
-        if not self.gitee_obs_dict:
-            return
-        for item in self.gitee_obs_dict:
-            self.mail_unstable[item["gitee_branch"]] = []
-            for item_state in item["obs_branch"]:
-                self.mail_unstable[item["gitee_branch"]].append(
-                    item_state["name"])
-
-    def _get_info(self, query_item):
+    def _get_info(self, gitee_branch):
         """
         For branch that is stable after a query: send mail directly
         param query_item:obs_branch name
         """
-        query_dict = {"gitee_branch": query_item, "build_status": "failed"}
+        query_dict = {"gitee_branch": gitee_branch, "build_status": "failed"}
         faileds = self._pi.query_obs_info(query_dict)
         query_dict["build_status"] = "unresolvable"
         unresolvables = self._pi.query_obs_info(query_dict)
@@ -383,6 +378,7 @@ class Mail:
         send email and remove this item from self.mail_unstable
         '''
         send_obs_branch = self.send_obs_info(gitee_items)
+        self.remove_from_unstable(gitee_items)
         if not send_obs_branch:
             return
         for item in send_obs_branch:
@@ -398,13 +394,13 @@ class Mail:
             if (gitee_items in self.mail_sended
                     or self.mail_unstable[gitee_items] == []):
                 continue
-            self._get_gitee_map_obs_form_api()
-            for items in self.obs_api_dict:
+            self._get_gitee_map_obs()
+            for items in self.obs_api_list:
                 for obs_branch in items["obs_branch"]:
                     if (obs_branch["state"] != "published"):
-                        self.obs_api_dict.remove(items)
+                        self.obs_api_list.remove(items)
                         break
-            for items in self.obs_api_dict:
+            for items in self.obs_api_list:
                 if items["gitee_branch"] not in self.mail_sended:
                     self._send_remove_unstable(items["gitee_branch"])
 
@@ -415,27 +411,14 @@ class Mail:
         param inc:wait time
         """
         LOGGER.info("enter sched function in" +
-                    datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+                    datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S"))
 
         if (self.count > 0 and any(
             [True if va else False for _, va in self.mail_unstable.items()])
-                and len(self.mail_sended) < len(self.obs_api_dict)):
+                and len(self.mail_sended) < len(self.obs_api_list)):
             self.count -= 1
             self._sched_query_unstable()
             self.mail_sched.enter(inc, 0, self._sched_start, (inc, ))
-
-    def _get_mail_times_or_status(self, gitee_name, branch_architecture_items,
-                                  mail, query_func):
-        '''
-        Get obs project build time or status statistics from the database
-        '''
-        mail_temp = query_func(branch=gitee_name,
-                               architecture=branch_architecture_items)
-        for key, value in mail_temp.items():
-            if key in mail:
-                mail[key] += value
-            else:
-                mail[key] = value
 
     def send_obs_info(self, gitee_branch):
         """
@@ -444,6 +427,8 @@ class Mail:
         """
         mail_content = self._get_info(gitee_branch)
         if not mail_content:
+            LOGGER.info(
+                f'{gitee_branch} has no failed or unresolvable package')
             return
         # mark the obs branch that will be sended
         send_obs_branch = set([
@@ -453,10 +438,10 @@ class Mail:
         for send_items in copy.deepcopy(send_obs_branch):
             if send_items not in self.mail_unstable[gitee_branch]:
                 send_obs_branch.remove(send_items)
-                     
+
         if not send_obs_branch:
-            return None
-        
+            return
+
         branch_architecture = set([
             mail_content_item["architecture"]
             for mail_content_item in mail_content
@@ -483,29 +468,31 @@ class Mail:
         table_tr, csv_dict, receiver, bcc_receiver = self._get_repo_table(
             res_repo=mail_content)
         sig_table_tr = self._get_sig_table(gitee_branch=gitee_branch)
+
+        mail_content_params = (gitee_branch, mail_status, mail_times,
+                               iso_success_rate, table_tr, sig_table_tr,
+                               csv_dict)
         try:
             (content, subject,
-             csvfile) = self._mail_content(gitee_branch, mail_status,
-                                           mail_times, iso_success_rate,
-                                           table_tr, sig_table_tr, csv_dict)
-        except ValueError:
+             csvfile) = self._mail_content(mail_content_params)
+        except ValueError as error:
+            LOGGER.error(f'{error} in send_obs_info')
             return
-
-        ret = self._send_email(content, subject, receiver, bcc_receiver,
-                               csvfile)
+        email_params = (content, subject, receiver, bcc_receiver, csvfile)
+        ret = self._send_email(email_params)
         # get the real length from self.gitee_obs_dict[gitee_branch]
-        length = 0
+        sended_obs_length = 0
         for gitee_obs_dict_items in self.gitee_obs_dict:
             if (gitee_obs_dict_items["gitee_branch"] == gitee_branch):
-                length = len(gitee_obs_dict_items["obs_branch"])
+                sended_obs_length = len(gitee_obs_dict_items["obs_branch"])
                 break
-        if ret and len(send_obs_branch) == length:
+        if ret and len(send_obs_branch) == sended_obs_length:
             self.mail_sended.append(gitee_branch)
 
-        for item in send_obs_branch:
+        for item in copy.deepcopy(send_obs_branch):
             if item in self.mail_unstable[gitee_branch]:
                 self.mail_unstable[gitee_branch].remove(item)
-                
+
         # delete the file
         file_name = f'{configuration.TEMPORARY_DIRECTORY}/{str(datetime.today().date())}-{gitee_branch}.csv'
         if (os.path.isfile(file_name)):
@@ -518,17 +505,48 @@ class Mail:
 
         return send_obs_branch
 
+    def _get_mail_times_or_status(self, gitee_name, branch_architecture_items,
+                                  mail, query_func):
+        '''
+        Get obs project build time or status statistics from the database
+        '''
+        mail_temp = query_func(branch=gitee_name,
+                               architecture=branch_architecture_items)
+        for key, value in mail_temp.items():
+            if key in mail:
+                mail[key] += value
+            else:
+                mail[key] = value
+
+    def remove_from_unstable(self, gitee_branch):
+        obs_branch = dict()
+        for items in self.obs_api_list:
+            if (items.get("gitee_branch") and items["gitee_branch"]
+                    == gitee_branch) and items.get("obs_branch"):
+                obs_branch = items["obs_branch"]
+        if self.mail_unstable.get(gitee_branch) and obs_branch:
+            for items in obs_branch:
+                if items["state"] == "published" and items[
+                        "name"]["name"] in self.mail_unstable[gitee_branch]:
+                    self.mail_unstable[gitee_branch].remove(items["name"]["name"])
+
+    def get_unstable(self):
+        self.mail_unstable = {
+            i["gitee_branch"]: [n["name"] for n in i["obs_branch"]]
+            for i in self.gitee_obs_dict
+        }
+
     async def start(self):
         """
         The entry function queries the existing stable and failed OBS branches,
         and then circulates the unstable branches
         """
         try:
-            self._get_gitee_map_obs_form_api()
-            self._query_branch()
+            self._get_gitee_map_obs()
+            self.get_unstable()
             for query_item in self.mail_unstable:
                 self.send_obs_info(query_item)
-
+                self.remove_from_unstable(query_item)
             stime = 10  # call _sched_start every 60 seconds
             self.mail_sched.enter(0, 0, self._sched_start, (stime, ))
             self.mail_sched.run()

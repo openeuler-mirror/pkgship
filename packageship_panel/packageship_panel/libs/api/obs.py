@@ -39,15 +39,19 @@ class ObsApi:
             password: password
         """
         self.host = configuration.OBS_HOST
-        self._account = account or configuration.OBS_ACCOUNT or os.getenv("OBS_ACCOUNT")
-        self._password = password or configuration.OBS_PASSWORD or os.getenv("OBS_PASSWORD")
+        self._account = account or configuration.OBS_ACCOUNT or os.getenv(
+            "OBS_ACCOUNT")
+        self._password = password or configuration.OBS_PASSWORD or os.getenv(
+            "OBS_PASSWORD")
         self.architectures = {
             "standard_aarch64": "aarch64",
             "standard_x86_64": "x86_64",
         }
         self.obs_states = list()
         if not all([self.host, self._account, self._password]):
-            raise RuntimeError("Please check whether the path, account and password of obs are fully configured")
+            raise RuntimeError(
+                "Please check whether the path, account and password of obs are fully configured"
+            )
 
     @property
     def _auth(self):
@@ -56,13 +60,15 @@ class ObsApi:
         Returns:
            BasicAuth of aiohttp
         """
-        return aiohttp.BasicAuth(login=self._account, password=self._password, encoding="utf-8")
+        return aiohttp.BasicAuth(login=self._account,
+                                 password=self._password,
+                                 encoding="utf-8")
 
     @property
     def _auth_basic(self):
         obs_auth = HTTPBasicAuth(self._account, self._password)
         return obs_auth
-    
+
     @staticmethod
     def _xpath(xpath, node, choice=False):
         """
@@ -147,18 +153,38 @@ class ObsApi:
         return self._parse_main_project(response.text)
 
     def get_project_state(self, project):
-        url = self._url(url="build/{project}/_result", project=project)
+        url = self._url(url="build/{project}/_result?view=summary",
+                        project=project)
         try:
+            project_state = "building"
             response = requests.get(url=url, auth=self._auth_basic)
             if response.status_code != 200 or not response.text:
                 LOGGER.error("failed to get project compilation status")
-                return []
-            self._parse_all_projects(response.text, project)
+                return project_state
+            project_state = self._parse_project_state(response.text)
+            return project_state
         except (RequestException, AttributeError) as e:
             LOGGER.error(f"failed to get project compilation status,{e}")
-            return []
+            return project_state
 
-    async def get_complete_packages(self, project, limit=5, community="openeuler"):
+    def _parse_project_state(self, xml_result):
+        project_state = "building"
+        try:
+            etree_element = self._etree_obj(xml_result)
+            if etree_element is None:
+                return project_state
+            state = self._xpath(xpath="//@state",
+                                node=etree_element,
+                                choice=True)
+            project_state = self._parse_arch_state(state[1:])
+        except IndexError as error:
+            LOGGER.error(error)
+        return project_state
+
+    async def get_complete_packages(self,
+                                    project,
+                                    limit=5,
+                                    community="openeuler"):
         """
         get the information of the successfully compiled package
         Args:
@@ -172,10 +198,8 @@ class ObsApi:
         url = f"https://omapi.osinfra.cn/query/obsDetails?community={community}&branch={project}&limit={limit}"
         response = await AsyncRequest.get(url)
         build_complete_packages = response.json
-        if (
-                not all([response.success, response.json])
-                or build_complete_packages["code"] != 200
-        ):
+        if (not all([response.success, response.json])
+                or build_complete_packages["code"] != 200):
             LOGGER.error("failed to get complete packages")
             return dict()
         return {
@@ -183,7 +207,10 @@ class ObsApi:
             for pkg in build_complete_packages["data"]
         }
 
-    async def get_iso_infos(self, branchs=None, limit=1, community="openeuler"):
+    async def get_iso_infos(self,
+                            branchs=None,
+                            limit=1,
+                            community="openeuler"):
         """
         get iso  construct info
         Args:
@@ -197,10 +224,12 @@ class ObsApi:
         url = f"https://omapi.osinfra.cn/query/isoBuildTimes"
         response = await AsyncRequest.post(
             url,
-            data=json.dumps(dict(community=community, limit=limit, branchs=branchs)),
+            data=json.dumps(
+                dict(community=community, limit=limit, branchs=branchs)),
         )
         iso_infos = response.json
-        if not all([response.success, response.json]) or iso_infos["code"] != 200:
+        if not all([response.success, response.json
+                    ]) or iso_infos["code"] != 200:
             LOGGER.error("failed to get iso infos")
             return []
         return iso_infos["data"]
@@ -232,19 +261,26 @@ class ObsApi:
         if etree_element is None:
             return obs_info
         state = self._xpath(xpath="//@state", node=etree_element, choice=True)
-        self.obs_states.append([project_name, self._parse_arch_state(state[1:])])
-        for _result in self._xpath(xpath="//result", node=etree_element, choice=True):
-            for status in self._xpath(xpath="./status", node=_result, choice=True):
+        self.obs_states.append(
+            [project_name, self._parse_arch_state(state[1:])])
+        for _result in self._xpath(xpath="//result",
+                                   node=etree_element,
+                                   choice=True):
+            for status in self._xpath(xpath="./status",
+                                      node=_result,
+                                      choice=True):
                 build_requires = list()
                 if self._xpath(xpath="./@code", node=status) == "unresolvable":
-                    build_unresolvable = self._xpath(xpath="./details/text()", node=status)
+                    build_unresolvable = self._xpath(xpath="./details/text()",
+                                                     node=status)
                     if build_unresolvable:
                         for provides in build_unresolvable.split(","):
                             build_requires.append(
-                                provides.replace("nothing provides", "").strip()
-                            )
+                                provides.replace("nothing provides",
+                                                 "").strip())
                 pkgs = dict(
-                    architecture=self._xpath(xpath="./@repository", node=_result),
+                    architecture=self._xpath(xpath="./@repository",
+                                             node=_result),
                     repo_name=self._xpath(xpath="./@package", node=status),
                     build_status=self._xpath(xpath="./@code", node=status),
                     obs_branch=project_name,
@@ -267,7 +303,9 @@ class ObsApi:
         if etree_element is None:
             return projects
         projects = [
-            self._xpath(xpath="./td[1]/a/text()", node=tr)
-            for tr in self._xpath(xpath='//div[@class="table-responsive"]//tbody/tr', node=etree_element, choice=True)
+            self._xpath(xpath="./td[1]/a/text()", node=tr) for tr in
+            self._xpath(xpath='//div[@class="table-responsive"]//tbody/tr',
+                        node=etree_element,
+                        choice=True)
         ]
         return projects
