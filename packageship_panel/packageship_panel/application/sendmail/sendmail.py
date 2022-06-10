@@ -134,18 +134,6 @@ class Mail:
          res_repo_dict["csv_contributors"]) = self._get_maintainers(
              res_repo_dict, "contributors", bcc_receiver)
 
-    def _load_tmp_file(self):
-        '''
-        Gets the HTML file content
-        '''
-        template_content = None
-        try:
-            with open(self.file_path, "r", encoding="utf-8") as mf:
-                template_content = mf.read()
-        except (IOError, ValueError) as error:
-            LOGGER.error(error)
-        return template_content
-
     def get_sig_package_state(self, gitee_branch):
         '''
         Get sig group statistics and make sort
@@ -172,6 +160,18 @@ class Mail:
         res_sig_list.sort(key=lambda x: x.get("result").get("sum"),
                           reverse=True)
         return res_sig_list
+    
+    def _load_tmp_file(self):
+        '''
+        Gets the HTML file content
+        '''
+        template_content = None
+        try:
+            with open(self.file_path, "r", encoding="utf-8") as mf:
+                template_content = mf.read()
+        except (IOError, ValueError) as error:
+            LOGGER.error(error)
+        return template_content
 
     def _get_attachment(self, gitee_branch, csv_dict):
         '''
@@ -186,10 +186,10 @@ class Mail:
                        encoding='utf-8-sig') as f:
             writer = csv.writer(f)
             writer.writerow(header)
-            for i in range(0, len(csv_dict)):
-                csv_dict[i].pop("maintainer", None)
-                csv_dict[i].pop("contributors", None)
-                csv_list = [val for _, val in csv_dict[i].items()]
+            for _, element in enumerate(csv_dict):
+                element.pop("maintainer", None)
+                element.pop("contributors", None)
+                csv_list = [val for _, val in element.items()]
                 writer.writerow(csv_list)
         return f'{date_today}-{gitee_branch}.csv'
 
@@ -377,8 +377,9 @@ class Mail:
         self.remove_from_unstable(gitee_items)
         if not send_obs_branch:
             return
+        mail_unstable_tmp=copy.deepcopy(self.mail_unstable)
         for item in send_obs_branch:
-            if item in self.mail_unstable[gitee_items]:
+            if item in mail_unstable_tmp[gitee_items]:
                 self.mail_unstable[gitee_items].remove(item)
 
     def _sched_query_unstable(self):
@@ -391,7 +392,7 @@ class Mail:
                     or self.mail_unstable[gitee_items] == []):
                 continue
             self._get_gitee_map_obs()
-            for items in self.obs_api_list:
+            for items in copy.deepcopy(self.obs_api_list):
                 for obs_branch in items["obs_branch"]:
                     if (obs_branch["state"] != "published"):
                         self.obs_api_list.remove(items)
@@ -489,7 +490,7 @@ class Mail:
             self.mail_sended.append(gitee_branch)
 
         for item in copy.deepcopy(send_obs_branch):
-            if item in self.mail_unstable[gitee_branch]:
+            if item in copy.deepcopy(self.mail_unstable[gitee_branch]):
                 self.mail_unstable[gitee_branch].remove(item)
 
         # delete the file
@@ -513,13 +514,20 @@ class Mail:
             if (items.get("gitee_branch") and items["gitee_branch"]
                     == gitee_branch) and items.get("obs_branch"):
                 obs_branch = items["obs_branch"]
+        mail_unstable_temp = copy.deepcopy(self.mail_unstable)
         if self.mail_unstable.get(gitee_branch) and obs_branch:
             for items in obs_branch:
                 if items["state"] == "published" and items["name"][
-                        "name"] in self.mail_unstable[gitee_branch]:
+                        "name"] in mail_unstable_temp[gitee_branch]:
                     self.mail_unstable[gitee_branch].remove(
                         items["name"]["name"])
                     
+    def get_unstable(self):
+        self.mail_unstable = {
+            i["gitee_branch"]: [n["name"] for n in i["obs_branch"]]
+            for i in self.gitee_obs_dict
+        }
+    
     def _get_mail_times_or_status(self, gitee_name, branch_architecture_items,
                                   mail, query_func):
         '''
@@ -533,11 +541,6 @@ class Mail:
             else:
                 mail[key] = value
 
-    def get_unstable(self):
-        self.mail_unstable = {
-            i["gitee_branch"]: [n["name"] for n in i["obs_branch"]]
-            for i in self.gitee_obs_dict
-        }
 
     async def start(self):
         """
