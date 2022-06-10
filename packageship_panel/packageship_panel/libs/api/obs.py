@@ -154,8 +154,8 @@ class ObsApi:
     def get_project_state(self, project):
         url = self._url(url="build/{project}/_result?view=summary",
                         project=project)
+        project_state = "building"
         try:
-            project_state = "building"
             response = requests.get(url=url, auth=self._auth_basic)
             if response.status_code != 200 or not response.text:
                 LOGGER.error("failed to get project compilation status")
