@@ -160,7 +160,7 @@ class Mail:
         res_sig_list.sort(key=lambda x: x.get("result").get("sum"),
                           reverse=True)
         return res_sig_list
-    
+
     def _load_tmp_file(self):
         '''
         Gets the HTML file content
@@ -197,7 +197,6 @@ class Mail:
         '''
         get detail information in repo_table
         '''
-
         def table_td(val, key, td, res_repo_dict):
             if key in ["build_status", "csv_maintainer", "csv_contributors"]:
                 return td
@@ -231,7 +230,6 @@ class Mail:
         '''
         Collect sig group information and add it to td table
         '''
-
         def sig_table_td(val, tds, add_color):
             tds = tds + \
                 f"<td {add_color}>{str(val)}</td>"
@@ -314,8 +312,8 @@ class Mail:
         try:
             smtp = smtplib.SMTP_SSL(self.mailhost, self.port)
             smtp.login(self.sender, self.password)
-            smtp.sendmail(self.sender, receiver +
-                          bcc_receiver, mime_mail.as_string())
+            smtp.sendmail(self.sender, receiver + bcc_receiver,
+                          mime_mail.as_string())
             LOGGER.info("mail send success!")
             return True
         except (smtplib.SMTPException) as error:
@@ -377,7 +375,7 @@ class Mail:
         self.remove_from_unstable(gitee_items)
         if not send_obs_branch:
             return
-        mail_unstable_tmp=copy.deepcopy(self.mail_unstable)
+        mail_unstable_tmp = copy.deepcopy(self.mail_unstable)
         for item in send_obs_branch:
             if item in mail_unstable_tmp[gitee_items]:
                 self.mail_unstable[gitee_items].remove(item)
@@ -521,13 +519,13 @@ class Mail:
                         "name"] in mail_unstable_temp[gitee_branch]:
                     self.mail_unstable[gitee_branch].remove(
                         items["name"]["name"])
-                    
+
     def get_unstable(self):
         self.mail_unstable = {
             i["gitee_branch"]: [n["name"] for n in i["obs_branch"]]
             for i in self.gitee_obs_dict
         }
-    
+
     def _get_mail_times_or_status(self, gitee_name, branch_architecture_items,
                                   mail, query_func):
         '''
@@ -540,7 +538,6 @@ class Mail:
                 mail[key] += value
             else:
                 mail[key] = value
-
 
     async def start(self):
         """
