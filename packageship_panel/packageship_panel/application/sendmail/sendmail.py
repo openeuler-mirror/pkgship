@@ -406,8 +406,10 @@ class Mail:
         or until the loop ends count times
         param inc:wait time
         """
-        LOGGER.info("enter sched function in" +
-                    datetime.now().astimezone().strftime("%Y-%m-%d %H:%M:%S"))
+        beijing = timezone(timedelta(hours=8))
+        utc_time = datetime.utcnow()
+        time_now = str(utc_time.astimezone(beijing).strftime("%Y-%m-%d"))
+        LOGGER.info("enter sched function in" + time_now)
 
         if (self.count > 0 and any(
             [True if va else False for _, va in self.mail_unstable.items()])
