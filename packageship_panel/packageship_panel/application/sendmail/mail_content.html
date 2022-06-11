@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+    <head>
+        <meta http-equiv="Content-Type" charset="UTF-8">
+        <title>
+            构建失败软件包统计信息
+        </title>
+    </head>
+    <style type="text/css">
+        table ^
+            border-collapse: collapse;
+            border-spacing: 0;
+        $
+
+        td,
+        th ^
+            border: 1px solid #ddd;
+            bordercolor: #ddd;
+            padding: 5px 10px;
+        $
+
+        th ^
+            font-weight: 600;
+            font-size: 16px;
+            color: #333;
+        $
+        .color_td ^
+            color: #FF0000;
+        $
+        
+        .title ^
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 20px 10px;
+            height: 30px;
+            line-height: 30px;
+            text-align: left;
+        $
+    </style>
+    <p>大家好!
+    <p>===============</p>
+    <p> 【请阅】</p>
+    <p>说明：</p>
+    <p>==================================</p>
+    <p>软件包构建失败！请及时注意问题及时解决！<br>表格中省略部分联系人邮箱，如需查看详细信息请下载附件:)</p>
+    <p>==================================</p>
+    <h5>今日缺陷摘要</h5>
+
+    <body>
+        <p class="title">{obs_branch}软件包及版本构建信息</p>
+        <table>
+            <tr>
+                <td rowspan="9"><b>软件包构建状态总览</b></td>
+                <td>unresolvable</td>
+                <td width="40">{unresolvable}</td>
+                <td rowspan="4"><b>软件包构建时间总览</b></td>
+                <td>< 10min </td>
+                <td width="40">{less_ten}</td>
+            </tr>
+
+            <tr>
+                <td>broken</td>
+                <td width="40">{broken}</td>
+                <td> 10min-20min </td>
+                <td width="40"> {ten_to_twenty}</td>
+            </tr>
+
+            <tr>
+                <td>blocked</td>
+                <td width="40">{blocked}</td>
+                <td> 20min-30min </td>
+                <td width="40">{twenty_to_thirty}</td>
+            </tr>
+
+            <tr>
+                <td>building</td>
+                <td width="40">{building}</td>
+                <td> >30min </td>
+                <td width="40">{more_thirty}</td>
+            </tr>
+            <tr>
+                <td>excluded</td>
+                <td width="40">{excluded}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td>succeeded</td>
+                <td width="40">{succeeded}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>disabled</td>
+                <td width="40">{disabled}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td>failed</td>
+                <td width="40">{failed}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+
+            <tr>
+                <td>locked</td>
+                <td width="40">{locked}</td>
+                <td><b>iso构建成功率</b></td>
+                <td>{obs_success_rate}</td>
+                <td></td>
+            </tr>
+            <tr></tr>
+
+        </table>
+        <p class="title">sig组软件包编译状态统计</p>
+        <table>
+            <tr>
+                <th>sig组</th>
+                <th width="100">fail总数</th>
+                <th>unresolvable总数</th>
+            </tr>
+            {content_tr_sig}
+        </table>
+
+        <p class="title">obs工程编译状态</p>
+        <table>
+            <tr class="tr-header">
+                <th>git仓库名称</th>
+                <th width="40">版本</th>
+                <th>obs工程分支</th>
+                <th>架构</th>
+                <th>编译状态（点击连接)</th>
+                <th width="80">编译耗时</th>
+                <th>sig组</th>
+                <th>maintainer</th>
+                <th>维护者</th>
+            </tr>
+            {content_tr_repo}
+        </table>
+    </body>
+
+</html>

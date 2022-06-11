@@ -41,6 +41,10 @@ setup(
             os.path.join(get_python_lib(), "packageship_panel", "application", "core"),
             ["packageship_panel/application/core/obs_info_template.csv"],
         ),
+        (
+            os.path.join(get_python_lib(), "packageship_panel", "application", "sendmail"),
+            ["packageship_panel/application/sendmail/mail_content.html"],
+        ),
     ],
     zip_safe=False,
 )
