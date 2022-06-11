@@ -27,7 +27,7 @@ except ImportError as error:
         "The package management software service failed to start : %s" % error
     ) from error
 else:
-    from packageship.application.appglobal import permissions
+    from packageship_panel.application.appglobal import permissions
     from packageship.libs.conf import configuration
 
 

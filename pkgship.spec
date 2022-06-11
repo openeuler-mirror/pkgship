@@ -13,14 +13,12 @@ BuildRequires: python3-flask-restful python3-flask python3 python3-pyyaml python
 BuildRequires: python3-prettytable python3-requests python3-retrying python3-coverage
 BuildRequires: python3-marshmallow python3-uWSGI python3-gevent python3-Flask-Limiter
 BuildRequires: python3-elasticsearch python3-concurrent-log-handler python3-pyrpm
-BuildRequires: python3-lxml python3-APScheduler python3-aiohttp
 
 Requires: shadow python3-mock
 Requires: python3-flask-restful python3-flask python3 python3-pyyaml python3-redis
 Requires: python3-prettytable python3-requests python3-retrying python3-coverage
 Requires: python3-marshmallow python3-uWSGI python3-gevent python3-Flask-Limiter
 Requires: python3-elasticsearch python3-concurrent-log-handler python3-pyrpm
-Requires: python3-lxml python3-APScheduler python3-aiohttp
 
 %description
 Pkgship implements rpm package dependence ,maintainer, patch query and so no.
@@ -35,10 +33,8 @@ perform compilation and installation operations, and perform simple functional v
 
 %package -n pkgship-panel
 Summary: openEuler Data panel
-# BuildRequires: pkgship python3-aiohttp python3-APScheduler python3-lxml
-# Requires: pkgship python3-aiohttp python3-APScheduler python3-lxml
-BuildRequires: pkgship
-Requires: pkgship
+BuildRequires: pkgship python3-aiohttp python3-APScheduler python3-lxml
+Requires: pkgship python3-aiohttp python3-APScheduler python3-lxml
 
 %description -n pkgship-panel
 A Kanban board that can view package compilation status,
@@ -102,10 +98,15 @@ groupadd $group 2>/dev/null
 useradd -g $group $user 2>/dev/null
 
 mkdir -p /opt/pkgship/ 750
+chown -R $user:$group /opt/pkgship/ 
 mkdir -p /opt/pkgship/compare 755
+chown -R $user:$group /opt/pkgship/compare
 mkdir -p /opt/pkgship/tools 755
+chown -R $user:$group /opt/pkgship/tools
 mkdir -p /var/log/pkgship 755
+chown -R $user:$group /var/log/pkgship
 mkdir -p /var/log/pkgship-operation 700
+chown -R $user:$group /var/log/pkgship-operation
 
 %files
 %doc README.md
@@ -130,9 +131,11 @@ mkdir -p /var/log/pkgship-operation 700
 %attr(0755,pkgshipuser,pkgshipuser) %{_bindir}/pkgship-panel
 %attr(0755,pkgshipuser,pkgshipuser) /lib/systemd/system/pkgship-panel.service
 %attr(0755,pkgshipuser,pkgshipuser) /etc/pkgship/timed_task.yaml
-%attr(0755,pkgshipuser,pkgshipuser) /etc/pkgship/sig_mentor.yaml
 
 %changelog
+* Sat Jun 11 2022 Zhengtang Gong <gongzhengtang@h-partners.com> -3.0.0-1
+- add panel data synchronization
+
 * Sat Mar 20 2021 Haiwei Li  <lihaiwei8@huawei.com> - 2.1.0-8
 - add patchs from the previous version
 

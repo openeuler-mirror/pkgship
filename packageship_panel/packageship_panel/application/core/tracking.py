@@ -301,7 +301,10 @@ class SigInfo(BaseTracking):
             if constant.REDIS_CONN.keys(self.prefix + "*"):
                 return
             pannel = PanelInfo()
-            sig_groups = pannel.query_sig_info(sig_name=None)
+            try:
+                sig_groups = pannel.query_sig_info(sig_name=None)
+            except ElasticSearchQueryException:
+                sig_groups = []
         if not sig_groups:
             sig_groups_om = await self.gitee.get_sig_info()
             sig_groups = await self.search_sig_file()
@@ -380,8 +383,7 @@ class ObsSynchronization(BaseTracking):
             if project.endswith("Mainline") or project == "openEuler:Epol":
                 gitee_branch = "master"
             else:
-                project = project.replace(":Epol", "")
-                gitee_branch = "-".join(project.split(":"))
+                gitee_branch = "-".join(project.replace(":Epol", "").split(":"))
             try:
                 branchs_map[gitee_branch].append(project)
             except KeyError:
