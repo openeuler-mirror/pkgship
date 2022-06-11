@@ -124,9 +124,17 @@ class Synchronization:
         tasks = [
             asyncio.create_task(task())
             for task_name, task in self.tasks.items()
-            if task_name != "sync_rpm_build"
+            if task_name not in ("sync_rpm_build", "send_email", "sync_version")
         ]
-        await asyncio.wait(tasks)
+        await asyncio.wait(tasks, return_when=asyncio.ALL_COMPLETED)
+        LOGGER.info("The email sending and version synchronization task starts.")
+        await asyncio.wait(
+            [
+                asyncio.create_task(sendmail.Mail().start()),
+                asyncio.create_task(PrSynchronization().synchronous_version()),
+            ]
+        )
+        LOGGER.info("The email sending and version synchronization tasks are complete.")
 
     def __add_job(self, tasks):
         if not tasks:

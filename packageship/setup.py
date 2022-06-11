@@ -24,7 +24,9 @@ PACKAGE_PATH = get_python_lib()
 MAPPING_PATH = os.path.join(PACKAGE_PATH, "packageship", "application", "common", "rsp")
 PACKAGESHIP_PATH = os.path.join(PACKAGE_PATH, "packageship")
 
-INITIALIZE_PATH = os.path.join(PACKAGE_PATH, "packageship", "application", "initialize")
+INITIALIZE_PATH = os.path.join(
+    PACKAGE_PATH, "packageship", "application", "initialize", "mappings"
+)
 
 setup(
     name="packageship",
