@@ -399,24 +399,6 @@ class Mail:
                 if items["gitee_branch"] not in self.mail_sended:
                     self._send_remove_unstable(items["gitee_branch"])
 
-    def _sched_start(self, inc):
-        """
-        A timed task entry function that waits until all branches have sent an email
-        or until the loop ends count times
-        param inc:wait time
-        """
-        beijing = timezone(timedelta(hours=8))
-        utc_time = datetime.utcnow()
-        time_now = str(utc_time.astimezone(beijing).strftime("%Y-%m-%d"))
-        LOGGER.info("enter sched function in" + time_now)
-
-        if (self.count > 0 and any(
-            [True if va else False for _, va in self.mail_unstable.items()])
-                and len(self.mail_sended) < len(self.obs_api_list)):
-            self.count -= 1
-            self._sched_query_unstable()
-            self.mail_sched.enter(inc, 0, self._sched_start, (inc, ))
-
     def send_obs_info(self, gitee_branch):
         """
         given obs branch name,send email
@@ -503,6 +485,24 @@ class Mail:
 
         return send_obs_branch
 
+    def _sched_start(self, inc):
+        """
+        A timed task entry function that waits until all branches have sent an email
+        or until the loop ends count times
+        param inc:wait time
+        """
+        beijing = timezone(timedelta(hours=8))
+        utc_time = datetime.utcnow()
+        time_now = str(utc_time.astimezone(beijing).strftime("%Y-%m-%d"))
+        LOGGER.info("enter sched function in" + time_now)
+
+        if (self.count > 0 and any(
+            [True if va else False for _, va in self.mail_unstable.items()])
+                and len(self.mail_sended) < len(self.obs_api_list)):
+            self.count -= 1
+            self._sched_query_unstable()
+            self.mail_sched.enter(inc, 0, self._sched_start, (inc, ))
+
     def remove_from_unstable(self, gitee_branch):
         '''
         adjust self.mail_unstable,remove the published branch
@@ -526,7 +526,8 @@ class Mail:
             for i in self.gitee_obs_dict
         }
 
-    def _get_mail_times_or_status(self, gitee_name, branch_architecture_items,
+    @staticmethod
+    def _get_mail_times_or_status(gitee_name, branch_architecture_items,
                                   mail, query_func):
         '''
         Get obs project build time or status statistics from the database
