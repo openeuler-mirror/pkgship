@@ -472,6 +472,7 @@ class ObsSynchronization(BaseTracking):
 
     async def synchronous_branch(self):
         """Source repository branch and OBS project mapping"""
+        LOGGER.info("Start obs project and warehouse branch mapping synchronization.")
         await self.get_main_project()
         self.clear_index(index="branch_info")
         branchs_map = self._gitee_obs_map()
@@ -485,6 +486,9 @@ class ObsSynchronization(BaseTracking):
             )
 
         await self.session.async_bulk(body=branch_info)
+        LOGGER.info(
+            "Complete obs project and warehouse branch mapping synchronization."
+        )
 
     async def _cache_pkg_versions(self):
         try:
@@ -607,3 +611,4 @@ class IsoInfoSynchronization(BaseTracking):
             )
 
         await self.session.async_bulk(body=bulk_bodys)
+        LOGGER.info("The ISO data synchronization finished.")
