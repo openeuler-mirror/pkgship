@@ -2,7 +2,10 @@
     <div id="app" v-cloak>
         <i-header></i-header>
         <div class="content">
-            <router-view />
+            <keep-alive>
+               <router-view v-if="$route.meta.keepAlive" />
+            </keep-alive>
+            <router-view v-if="!$route.meta.keepAlive" />
         </div>
         <i-footer></i-footer>
     </div>

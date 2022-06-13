@@ -3,7 +3,10 @@
         <div class="first-page">
             <h1>Packages in the palm of your hand</h1>
             <p>Pkgship – A query tool that manages OS software package information and dependencies.</p>
-            <p class="btn-start" @click="jump">Get Started</p>
+            <div style="display:flex">
+               <p class="btn-start" @click="jump('pack')">Package Management</p>
+               <p class="btn-start" @click="jump('info')">Info Management</p>
+            </div>
             <img class="icon-earth" src="@/assets/images/earth.svg" alt="">
             <img class="icon-pack" :class="[isWait ? 'wait' : '']" src="@/assets/images/icon-pack.png" alt="">
         </div>
@@ -56,8 +59,14 @@ export default {
         }
     },
     methods: {
-        jump(){
-            this.$router.push('/Packagemanagement')
+        jump(msg){
+            if(msg === 'pack'){
+               console.log(1);
+               this.$router.push('/Packagemanagement')
+            }
+            else {
+               this.$router.push('/Infomanagement')
+            }
         }
     }
 };
@@ -118,7 +127,7 @@ h1 {
     margin: 0 auto;
 }
 .first-page .btn-start {
-    width: 192px;
+    width: 227px;
     height: 48px;
     color: #fff;
     font-size: 18px;
