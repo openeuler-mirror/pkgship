@@ -3,5 +3,6 @@
  * */
 
 export default {
+    // serviceBaseUrl: 'http://101.34.216.62:8090',
     serviceBaseUrl: '/api',
 };

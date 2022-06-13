@@ -37,12 +37,13 @@ module.exports = {
         proxy: {
             '/api': {
                 target: 'https://api.openeuler.org/pkgmanage/',
+                // target: 'http://101.34.216.62:8090/',
                 ws: true,
                 changeOrigin: true,
                 pathRewrite: {
                     '^/api': ''
                 }
-            }
+            },
         }
 
     }
