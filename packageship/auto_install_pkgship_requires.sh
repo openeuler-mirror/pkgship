@@ -79,6 +79,11 @@ function change_elasticsearch_file_owner() {
   chown -R elasticsearch: /var/lib/elasticsearch
 }
 
+function change_es_memory() {
+    echo "[WARNING] start to Modify the maximum memory of elasticsearch to 4G"
+    sed -i 's/-Xmx1g/-Xmx4g/g' /etc/elasticsearch/jvm.options >/dev/null 2>&1
+}
+
 function start_elasticsearch_service() {
   echo "[INFO] start to start elasticsearch service"
   su - elasticsearch -c "/bin/bash /usr/share/elasticsearch/bin/elasticsearch &" >/dev/null 2>&1
@@ -124,6 +129,7 @@ function main() {
     download_install_es
     change_elasticsearch_login_type
     change_elasticsearch_file_owner
+    change_es_memory
     start_elasticsearch_service
   elif [ "${INSTALL_SOFTWARE}" = "redis" ]; then
     download_install_redis
