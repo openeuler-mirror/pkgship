@@ -52,7 +52,9 @@ class Log(object):
                                                                              maxBytes=self.__max_bytes,
                                                                              backupCount=self.__backup_count,
                                                                              encoding="utf-8",
-                                                                             use_gzip=True)
+                                                                             use_gzip=True,
+                                                                             owner=('pkgshipuser', 'pkgshipuser')
+                                                                             )
         self.__set_formatter()
         self.__set_handler()
 

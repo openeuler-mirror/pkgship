@@ -84,10 +84,12 @@ cp -r pkgship-tools/* %{buildroot}/opt/pkgship/tools/
 %check
 #TODO 区分pkgship和pkghsip-panel的测试用例入口
 # pkgship check
+
 current_path=`pwd`
 log_path=${current_path}/packageship/tmp/
 sed -i '/^LOG_PATH/d' ./packageship/packageship/libs/conf/global_config.py
 echo "LOG_PATH=r\"${log_path}\"" >> ./packageship/packageship/libs/conf/global_config.py
+sed -i "/owner=('pkgshipuser', 'pkgshipuser')/d" ./packageship/packageship/libs/log.py
 %{__python3} test/coverage_count.py
 
 %pre
