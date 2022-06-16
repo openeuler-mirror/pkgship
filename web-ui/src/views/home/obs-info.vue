@@ -213,13 +213,13 @@
             <div class="map-left" v-if="pieVisible">
                 <pie-chart :title="title3" :pieData="pieData2"></pie-chart>
             </div>
-            <div class="map-right" v-if="queryIf">
+            <!-- <div class="map-right" v-if="queryIf">
                 <line-chart
                 @closepop="closelineChart"
                 :title="title4"
                 :xAxisData="xAxisData2"
                 :linedata="data2" />
-            </div>
+            </div> -->
         </div>
     </div>
 </template>

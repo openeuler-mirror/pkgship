@@ -2,7 +2,10 @@
     <div>
         <div class="first-page">
             <h1>Packages in the palm of your hand</h1>
-            <p>Pkgship – A query tool that manages OS software package information and dependencies.</p>
+            <div style="display:flex">
+               <p>Pkgship – A query tool that manages OS software package information and dependencies.</p>
+               <p>Pkgship-panel – A query tool that package build status and maintenance information.</p>
+            </div>
             <div style="display:flex">
                <p class="btn-start" @click="jump('pack')">Package Management</p>
                <p class="btn-start" @click="jump('info')">Info Management</p>
