@@ -90,7 +90,7 @@ export default {
                     if(params.data.name === "无数据"){
                       return "#999d9c"
                     }else {
-                      var colorList = ["#1ab394","#ed1941","#ffd400","#426ab3","#afb4db","#f391a9","#8552a1","#C0FF3E","#E0FFFF"];
+                      var colorList = ["#1ab394","#ed1941","#ffd400","#426ab3","#afb4db","#f391a9","#8552a1","#C0FF3E","#40E7E7"];
                       return colorList[params.dataIndex];
                     }
                   }
