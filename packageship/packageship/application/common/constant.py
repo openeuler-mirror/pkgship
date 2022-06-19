@@ -133,6 +133,18 @@ DEFAULT_PAGE_SIZE = 100
 # OPENEULER URL
 OPENEULER_URL_TEST = "https://pkgmanagedebug.openeuler.org/"
 
+#
+OBS_PROJECT_BLACKLIST = ["openEuler:21.03",
+                         "openEuler:21.03:Epol",
+                         "openEuler:21.09",
+                         "openEuler:21.09:Epol",
+                         "openEuler:20.03:LTS:SP2",
+                         "openEuler:20.03:LTS:SP2:Epol",
+                         "openEuler:20.03:LTS",
+                         "openEuler:20.03:LTS:Epol",
+                         "openEuler:Factory",
+                         ]
+
 
 class ListNode():
     """
