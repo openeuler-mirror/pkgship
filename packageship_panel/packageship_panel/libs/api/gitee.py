@@ -153,3 +153,26 @@ class GiteeApi:
             LOGGER.error("failed to get sig infos,")
             return []
         return sig_infos["data"]
+    
+    async def get_file_contents(self, file_path, repo="pkgship", owner="openeuler"):
+        """
+        Get the specific contents of a file under a warehouse in gitee
+        :param file_path: The relative path of the file in the repository,
+        api format is https://gitee.com/api/v5/repos/{owner}/{repo}/contents(/{path})
+        :param repo: Warehouse Address
+        :param owner: The address of the space to which the warehouse belongs (the address path of the enterprise,
+        organization or individual)
+        :return: file contents(string)
+        """
+        url = f"https://gitee.com/api/v5/repos/{owner}/{repo}/contents/{file_path}"
+        params = {"access_token": self.token}
+        response = await AsyncRequest.get(url=url, params=params)
+        if not all([response.success, response.json]):
+            LOGGER.error(f'Failed to get the contents of file {url}')
+            return ""
+
+        content = response.json.get('content')
+        if not content:
+            LOGGER.error(f'The content of file {url} is empty')
+            return ""
+        return base64.b64decode(content).decode('utf-8')

@@ -352,10 +352,9 @@ class ObsSynchronization(BaseTracking):
     async def get_main_project(self):
         """Get the main project name of obs"""
         projects = await self.obs.main_project()
-        self.main_project = [
-            project for project in projects if project != "openEuler:Factory"
-        ]
-
+        self.main_project = list(
+            set([item for item in projects if item not in set(constant.OBS_PROJECT_BLACKLIST)]))
+        
     @staticmethod
     def obs_map_gitee_branch(obs_branch):
         """Branch mapping of OBS project name and open source project"""

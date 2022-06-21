@@ -147,9 +147,9 @@ class PanelInfo(Query):
         """
         body = dict(gitee_branch=branch)
         sig_group_collect = dict()
-        pkg_state = dict(failed=0, unresolved=0)
+        pkg_state = dict(failed=0, unresolvable=0)
         for obs_info in self.query_obs_info(body):
-            if obs_info["build_status"] not in ("failed", "unresolved"):
+            if obs_info["build_status"] not in ("failed", "unresolvable"):
                 continue
             try:
                 sig_name = obs_info.pop("name")

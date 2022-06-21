@@ -47,6 +47,7 @@
 
     <body>
         <p class="title">{obs_branch}软件包及版本构建信息</p>
+        <p>(数据为aarch64和x86_64两个架构总和)</p>
         <table>
             <tr>
                 <td rowspan="9"><b>软件包构建状态总览</b></td>
@@ -111,7 +112,7 @@
             <tr>
                 <td>locked</td>
                 <td width="40">{locked}</td>
-                <td><b>iso构建成功率</b></td>
+                <td><b>近30天iso构建成功率</b></td>
                 <td>{obs_success_rate}</td>
                 <td></td>
             </tr>
@@ -119,6 +120,7 @@
 
         </table>
         <p class="title">sig组软件包编译状态统计</p>
+        <p>(数据为aarch64和x86_64两个架构总和)</p>
         <table>
             <tr>
                 <th>sig组</th>
