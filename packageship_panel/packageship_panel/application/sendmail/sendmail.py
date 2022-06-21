@@ -304,7 +304,7 @@ class Mail:
         beijing = timezone(timedelta(hours=8))
         utc_time = datetime.utcnow()
         time_now = str(utc_time.astimezone(beijing).strftime("%Y-%m-%d"))
-        subject = "{time_now} gitee分支【{branch}】 问题单缺陷统计报告，请及时注意问题及时解决！".format(
+        subject = "{time_now} gitee分支【{branch}】 软件包构建异常情况报告，请及时注意问题及时解决！".format(
             time_now=time_now, branch=gitee_branch)
 
         template_content = self._load_tmp_file()
