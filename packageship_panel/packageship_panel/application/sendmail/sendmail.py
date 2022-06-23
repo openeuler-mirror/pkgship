@@ -11,26 +11,25 @@
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
 import asyncio
-import os
 import copy
 import csv
+import os
 import smtplib
 from datetime import datetime, timedelta, timezone
-from email.mime.text import MIMEText
 from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+
 import yaml
-from packageship_panel.application.query.panel import PanelInfo
-from packageship_panel.libs.api.gitee import GiteeApi
-from packageship_panel.application.core.obs import ObsInfo
-from packageship_panel.libs.api.obs import ObsApi
-from packageship_panel.application.core.tracking import ObsSynchronization
+from packageship.application.common.exc import (DatabaseConfigException,
+                                                ElasticSearchQueryException)
 from packageship.libs.conf import configuration
 from packageship.libs.log import LOGGER
-from packageship.application.common.exc import (
-    ElasticSearchQueryException,
-    DatabaseConfigException,
-)
+from packageship_panel.application.core.obs import ObsInfo
+from packageship_panel.application.core.tracking import ObsSynchronization
+from packageship_panel.application.query.panel import PanelInfo
+from packageship_panel.libs.api.gitee import GiteeApi
+from packageship_panel.libs.api.obs import ObsApi
 
 
 class Mail:
@@ -169,18 +168,13 @@ class Mail:
             res_sig_temp["name"] = key
             res_sig_temp["result"] = dict()
             failed_sum = 0
-            unresolvable_sum = 0
             for _, value in dicts.items():
                 if "failed" in value:
                     failed_sum += value["failed"]
-                if "unresolvable" in value:
-                    unresolvable_sum += value["unresolvable"]
             res_sig_temp["result"]["failed"] = failed_sum
-            res_sig_temp["result"]["unresolvable"] = unresolvable_sum
-            res_sig_temp["result"]["sum"] = failed_sum + unresolvable_sum
             res_sig_list.append(res_sig_temp)
 
-        res_sig_list.sort(key=lambda x: x.get("result").get("sum"),
+        res_sig_list.sort(key=lambda x: x.get("result").get("failed"),
                           reverse=True)
         return res_sig_list
 
@@ -274,7 +268,6 @@ class Mail:
             tds = ""
             tds = sig_table_td(items["name"], tds, add_color)
             tds = sig_table_td(items["result"]["failed"], tds, add_color)
-            tds = sig_table_td(items["result"]["unresolvable"], tds, add_color)
             sig_table_tr = sig_table_tr + "<tr>" + tds + "</tr>"
             i += 1
 
@@ -341,16 +334,14 @@ class Mail:
         mime_mail.attach(csvfile)
         mime_mail["Subject"] = subject
         mime_mail["form"] = self.sender
-        mime_mail["to"] = ",".join(bcc_receiver)
-        receiver = list(set(receiver + cc_receiver))
-        mime_mail["cc"] = ",".join(receiver)
+        receiver = list(set(receiver + cc_receiver + bcc_receiver))
+        mime_mail["bcc"] = ",".join(receiver)
 
         # create link
         try:
             smtp = smtplib.SMTP_SSL(self.mailhost, self.port)
             smtp.login(self.sender, self.password)
-            smtp.sendmail(self.sender, receiver + bcc_receiver,
-                          mime_mail.as_string())
+            smtp.sendmail(self.sender, receiver, mime_mail.as_string())
             LOGGER.info("mail send success!")
             return True
         except (smtplib.SMTPException) as error:
@@ -399,10 +390,8 @@ class Mail:
         """
         query_dict = {"gitee_branch": gitee_branch, "build_status": "failed"}
         faileds = self._pi.query_obs_info(query_dict)
-        query_dict["build_status"] = "unresolvable"
-        unresolvables = self._pi.query_obs_info(query_dict)
 
-        return faileds + unresolvables
+        return faileds
 
     def _send_remove_unstable(self, gitee_items):
         """
@@ -458,7 +447,7 @@ class Mail:
         mail_content = self._get_info(gitee_branch)
         if not mail_content:
             LOGGER.info(
-                f"{gitee_branch} has no failed or unresolvable package")
+                f"{gitee_branch} has no failed package")
             return exp
         # mark the obs branch that will be sended
         send_obs_branch = set([
@@ -554,8 +543,8 @@ class Mail:
         param inc:wait time
         """
         while (self.query_times > 0 and any(
-            [True if va else False for _, va in self.mail_unstable.items()])
-               and len(self.mail_sended) < len(self.obs_api_list)):
+                [True if va else False for _, va in self.mail_unstable.items()])
+                and len(self.mail_sended) < len(self.obs_api_list)):
             LOGGER.info(
                 f"The {self.query_times} engineering stability query is attempted."
             )
