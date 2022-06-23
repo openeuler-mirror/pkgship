@@ -130,11 +130,10 @@ class Synchronization:
         LOGGER.info("The email sending and version synchronization task starts.")
         await asyncio.wait(
             [
-                asyncio.create_task(sendmail.Mail().start()),
                 asyncio.create_task(PrSynchronization().synchronous_version()),
             ]
         )
-        LOGGER.info("The email sending and version synchronization tasks are complete.")
+        LOGGER.info("version synchronization tasks are complete.")
 
     def __add_job(self, tasks):
         if not tasks:
