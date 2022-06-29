@@ -766,7 +766,7 @@ Mulan V2
 
   | 参数名 | 必选 | 类型 | 说明 |
   |    - |   - |    - |   - |
-  | packagename | True | string | 数据库表里的包名，如：Cunit, dnf|
+  | packagename | True | list | 数据库表里的包名，如：["Cunit", "dnf"]|
   | depend_type   | 是  | str | 需要查询依赖的类型（installdep/builddep/selfdep/bedep） |
   | -parameter   | 否  | dict | 查询依赖的相关参数 |
   - parameter
@@ -783,7 +783,7 @@ Mulan V2
 
   ```json
   {
-      "packagename": "Judy",
+      "packagename": ["Judy"],
       "depend_type": "installdep",
       "parameter": {
         "db_priority": ["Mainline","os_version_2"],
@@ -794,7 +794,7 @@ Mulan V2
 
   ```json
   {
-      "packagename": "Judy",
+      "packagename": ["Judy"],
       "depend_type": "builddep",
       "parameter": {
         "db_priority": ["Mainline","os_version_2"],
@@ -806,7 +806,7 @@ Mulan V2
 
   ```json
   {
-      "packagename": "Judy",
+      "packagename": ["Judy"],
       "depend_type": "selfdep",
       "parameter": {
         "db_priority": ["Mainline","os_version_2"],
@@ -819,7 +819,7 @@ Mulan V2
 
     ```json
   {
-      "packagename": "Judy",
+      "packagename": ["Judy"],
       "depend_type": "bedep",
       "parameter": {
         "db_priority": ["Mainline"],
