@@ -144,5 +144,5 @@ class Synchronization:
             start_job = self.tasks[task["name"]]
             timing_schedule = getattr(self, task["trigger"])(**task)
             self.scheduler.add_job(
-                start_job, trigger=task["trigger"], **timing_schedule
+                start_job, trigger=task["trigger"],timezone='Asia/Shanghai', **timing_schedule
             )

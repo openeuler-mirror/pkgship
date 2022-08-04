@@ -35,7 +35,7 @@ setup(
         ("/lib/systemd/system/", ["pkgship-panel.service"]),
         (
             "/etc/pkgship/",
-            ["timed_task.yaml"],
+            ["timed_task.yaml","service-monitor.sh"],
         ),
         (
             os.path.join(get_python_lib(), "packageship_panel", "application", "core"),

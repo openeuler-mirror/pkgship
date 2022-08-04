@@ -60,7 +60,7 @@ class BaseTracking:
             stderr=subprocess.PIPE,
             cwd=cwd,
         )
-        out, err = pipe.communicate(timeout=60)
+        out, err = pipe.communicate()
 
         return (
             pipe.returncode,
