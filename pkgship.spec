@@ -134,6 +134,7 @@ chown -R $user:$group /var/log/pkgship-operation
 %attr(0755,pkgshipuser,pkgshipuser) %{_bindir}/pkgship-panel
 %attr(0755,pkgshipuser,pkgshipuser) /lib/systemd/system/pkgship-panel.service
 %attr(0755,pkgshipuser,pkgshipuser) /etc/pkgship/timed_task.yaml
+%attr(0755,pkgshipuser,pkgshipuser) /etc/pkgship/service-monitor.sh
 
 %changelog
 * Sat Jun 11 2022 Zhengtang Gong <gongzhengtang@h-partners.com> -3.0.0-1

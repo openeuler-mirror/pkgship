@@ -12,10 +12,13 @@
 # ******************************************************************************/
 try:
     from packageship_panel.application.core.task import Synchronization
+    from packageship.libs.log import LOGGER
+
 except ImportError as error:
     print("Import error,{msg}".format(msg=str(error)))
 else:
     try:
         Synchronization().run()
-    except RuntimeError as error:
-        print(error)
+    except (RuntimeError, KeyboardInterrupt, SystemExit) as error:
+        LOGGER.error(error)
+        print("The scheduled task has been stopped.")
