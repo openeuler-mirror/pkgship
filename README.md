@@ -31,7 +31,7 @@ pkgship是一款管理OS软件包依赖关系，提供依赖和被依赖关系�
 
 * Repo源挂载正式发布地址：<https://repo.openeuler.org/>
 * 源码获取地址：<https://gitee.com/openeuler/pkgship>
-* rpm包版本获取地址：<https://117.78.1.88/project/show/openEuler:Mainline>
+* rpm包版本获取地址：<https://build.openeuler.org/package/show/openEuler:22.09/pkgship>
 
 ## 运行环境
 
@@ -441,3 +441,18 @@ pkgshipd stop 停止服务
   pkgship启动时转储脚本后台运行，从启动时，每隔1天进行转储压缩，共保留30份压缩文件，压缩文件名称为uwsgi.log-20201010x.zip， x为压缩时的小时数。
 
   pkgship停止后转储脚本停止，不再进行转储，再次启动时，转储脚本重新执行。
+
+## 扩展工具pkgship-panel
+
+### 介绍
+
+pkgship-panel旨在将软件包构建信息和维护信息集成到一起，方便版本维护人员可以快速识别构建异常软件包并快速邮件通知相关责任人去解决，保证构建工程稳定性，提高IOS构建成功率。
+
+### 架构
+
+![](doc/design/pkgimg/panel逻辑视图.png)
+
+### 工具使用
+
+由于工具数据源不可配置，所以建议直接使用pkgship-panel官网地址：https://pkgmanage.openeuler.org/Infomanagement
+
