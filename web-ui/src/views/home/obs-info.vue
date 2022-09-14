@@ -445,9 +445,8 @@ export default {
             getObsDown (require)
                 .then(response => {
                     this.loading = false;
-                    let blob = response;
+                    let blob = new Blob([response], { type: 'application/vnd.ms-excel' })
                     let objectUrl = URL.createObjectURL(blob);
-                    // this.$refs.srcDown.href = objectUrl;
                     var oA = document.createElement("a");
                     oA.href = objectUrl;
                     oA.click();
