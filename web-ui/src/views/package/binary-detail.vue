@@ -11,6 +11,10 @@
                 <li>{{ detailData.url }}</li>
             </ul>
             <ul class="pkg-line">
+                <li class="detail-title">Release：</li>
+                <li>{{ detailData.release }}</li>
+            </ul>
+            <ul class="pkg-line">
                 <li class="detail-title">Summary：</li>
                 <li>{{ detailData.summary }}</li>
             </ul>
