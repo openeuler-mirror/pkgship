@@ -100,9 +100,10 @@
                             </div>
                             <el-dropdown-menu class="filter-multiple">
                                 <div style="padding:0 20px;">
-                                    <el-input v-model="filter_maintainer" placeholder="maintainer id"></el-input>
+                                    <el-input v-model="filter_maintainer" placeholder="maintainer id"
+                                        @change="filterMaintainers"></el-input>
                                 </div>
-                                <el-dropdown-item v-for="maintainer in maintainerArray" :key="maintainer.text">
+                                <el-dropdown-item v-for="maintainer in quickFilterMaintainers" :key="maintainer.text">
                                     <el-checkbox @change="checked => checkState(checked, maintainer, 'maintainers')">{{
                                     maintainer.text
                                     }}
@@ -216,8 +217,8 @@ export default {
                 page_index: 1,
                 page_size: 10,
                 pkg_name: "",
-                gitee_branch: "openEuler-20.03-LTS-SP3",
-                architecture: "standard_x86_64",
+                gitee_branch: ["master"],
+                architecture: ["standard_aarch64"],
                 build_state: [],
                 sig_name: '',
                 maintainers: [],
@@ -230,7 +231,7 @@ export default {
             productV: ["standard_x86_64", "standard_aarch64"],
             tableTitle: ['Name', 'Version', 'Release', 'URL', 'License'],
             tableData: [],
-            branchList: [],
+            branchList: ["master"],
             excelUrl: "",
             giteevalue: "",
             title1: '软件包编译状态分布图',
@@ -247,16 +248,22 @@ export default {
             roseData: [],
             buildStateArray: [],
             maintainerArray: [],
+            quickFilterMaintainers: [],
             timeout: null,
             sortFilter: Object()
         }
     },
+    watch: {
+        filter_maintainer() {
+            this.filterMaintainers()
+        }
+    },
     created() {
         if (localStorage.getItem("BranchName") != null) {
-            this.formData.gitee_branch = localStorage.getItem('BranchName')
+            this.formData.gitee_branch = localStorage.getItem('BranchName') || ["master"]
         }
         if (localStorage.getItem("architectureName") != null) {
-            this.formData.architecture = localStorage.getItem('architectureName')
+            this.formData.architecture = localStorage.getItem('architectureName') || ["standard_aarch64"]
         }
     },
     mounted() {
@@ -313,11 +320,6 @@ export default {
             localStorage.setItem('architectureName', this.formData.architecture)
             this.initData()
         },
-        // filterChange(val) {
-        //     var key = Object.keys(val)[0]
-        //     this.formData[key] = val[Object.keys(val)]
-        //     this.initData()
-        // },
         goSig(val) {
             this.$emit('goToSig', val)
         },
@@ -431,6 +433,7 @@ export default {
             getMaintainersSuggests().then(response => {
                 if (response.code === '200') {
                     this.maintainerArray = response.resp.map(key => ({ text: key, value: key }))
+                    this.quickFilterMaintainers = JSON.parse(JSON.stringify(this.maintainerArray))
                 } else {
                     this.$message.error(response.message + '\n' + response.tip);
                 }
@@ -451,13 +454,15 @@ export default {
             if (orderFilter.prop != "build_time") {
                 orderFilter.prop = orderFilter.prop + ".keyword"
             }
-            this.sortFilter[orderFilter.prop] = order
-            var _this = this
-            _this.formData.orders = []
-            Object.keys(this.sortFilter).forEach(function (key) {
-                _this.formData.orders.push({ "order": key, "sort_mode": _this.sortFilter[key] })
-            })
+            this.formData.orders = [{ "order": orderFilter.prop, "sort_mode": order }]
             this.initData()
+        },
+        filterMaintainers() {
+            if (this.filter_maintainer == "") {
+                this.quickFilterMaintainers = JSON.parse(JSON.stringify(this.maintainerArray))
+                return
+            }
+            this.quickFilterMaintainers = this.maintainerArray.filter(maintainer => maintainer.text.includes(this.filter_maintainer))
         }
     }
 }
