@@ -36,7 +36,7 @@ module.exports = {
     devServer: {
         proxy: {
             '/api': {
-                target: 'https://api.openeuler.org/pkgmanage/',
+                target: 'https://api.openeuler.org/pkgmanagedebug/',
                 // target: 'http://101.34.216.62:8090/',
                 ws: true,
                 changeOrigin: true,
