@@ -276,9 +276,15 @@ export default {
             dependDown (require)
                 .then(response => {
                     this.loading = false;
-                    let blob = response;
+                    let blob = new Blob([response], { type: 'application/vnd.ms-excel' })
                     let objectUrl = URL.createObjectURL(blob);
-                    this.$refs.srcDown.href = objectUrl;
+                    var oA = document.createElement("a");
+                    oA.href = objectUrl;
+                    oA.click();
+                    this.$message({
+                      message: '导出成功!',
+                      type: 'success'
+                    });
                 })
                 .catch(response => {
                     this.loading = false;
