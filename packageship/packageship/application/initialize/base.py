@@ -11,10 +11,10 @@
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
 import os
+import hashlib
 import shutil
-from packageship.application.query import database as db
 from packageship.application.database.session import DatabaseSession
-from packageship.application.common.exc import RepoError
+from packageship.application.common.exc import ElasticSearchInsertException, RepoError
 from packageship.libs.log import LOGGER
 from .repo import RepoFile
 
@@ -61,6 +61,21 @@ class ESJson(dict):
         return self.__getitem__(key)
 
 
+def file_hash(file_path: str, hash_method=hashlib.md5) -> str:
+    if not os.path.isfile(file_path):
+        LOGGER.error("Not a file or file does not exist: %s" % file_path)
+        return None
+    hash_func = hash_method()
+    with open(file_path, "rb") as file:
+        while file_bit := file.read(1024):
+            hash_func.update(file_bit)
+    return hash_func.hexdigest()
+
+
+def str_hash(content: str, encoding: str = "UTF-8", hash_method=hashlib.md5) -> str:
+    return hash_method(content.encode(encoding)).hexdigest()
+
+
 class BaseInitialize:
     """
     Initialize the base class of the service, which is
@@ -69,21 +84,6 @@ class BaseInitialize:
     """
 
     _session = DatabaseSession().connection()
-
-    def _clear_all_index(self):
-        """
-        Description: Clears all indexes associated with initialization
-
-        """
-        databases = db.get_db_priority()
-        del_databases = []
-        if databases:
-            for database_name in databases:
-                del_databases.append(database_name + "-binary")
-                del_databases.append(database_name + "-source")
-                del_databases.append(database_name + "-bedepend")
-        del_databases.append("databaseinfo")
-        self._session.delete_index(del_databases)
 
     @property
     def elastic_index(self):
@@ -118,15 +118,29 @@ class BaseInitialize:
             self._session.delete_index(list(del_index))
         return fails
 
-    def _delete_index(self):
+    def _delete_index(self, index_name=None):
         """
         Description: Delete dependencies related indexes
 
         """
+        if not index_name:
+            index_name = self.elastic_index
+        index_extend = ("source", "binary", "bedepend")
         fails = self._session.delete_index(
-            [self._index(index) for index in ("source", "binary", "bedepend")]
+            [index_name + "-" + index for index in index_extend]
         )
         return fails
+
+    def _reindex(self, old_index, new_index):
+        index_extend = ("source", "binary", "bedepend")
+        try:
+            for extend in index_extend:
+                self._session.reindex(
+                    old_index + "-" + extend, new_index + "-" + extend
+                )
+            return True
+        except ElasticSearchInsertException:
+            return False
 
     def _repo_files(self):
         xml = True if "db_file" in self._repo else False
@@ -159,9 +173,8 @@ class BaseInitialize:
         self._repo["file_list"] = RepoFile.files(path=filelist, file_type="filelists")
 
     def _xml(self):
-        repos = dict(xml=[], filelist=None)
+        repos = dict(xml=[], filelist=self._repo["file_list"])
         # Get the XML file that meets the requirements
-        repos["filelist"] = self._repo["file_list"]
         keys = ("src_db_file", "bin_db_file", "file_list")
         if all([key in self._repo for key in keys]):
             extend = list(set([self._repo[key].split(".")[-1] for key in keys]))

@@ -35,16 +35,15 @@ from packageship.libs.log import LOGGER
 class ObsInfo(ExportBase):
     """Obs data information"""
 
-    def __init__(
-            self,
-            **kwargs
-    ) -> None:
+    def __init__(self, **kwargs) -> None:
         super().__init__()
         self.gitee_branch = kwargs.get("gitee_branch") or DEFAULT_GIT_BRANCH
         self.architecture = kwargs.get("architecture") or OBS_A_ARCHITECTURE
         self.pkg_name = kwargs.get("pkg_name")
         self.build_state = kwargs.get("build_state")
         self.sig_name = kwargs.get("sig_name")
+        self.maintainers = kwargs.get("maintainers")
+        self.orders = kwargs.get("orders")
         self.page_index = kwargs.get("page_index") or -1
         self.page_size = kwargs.get("page_size") or DEFAULT_PAGE_SIZE
         self._panel_info = PanelInfo()
@@ -59,7 +58,11 @@ class ObsInfo(ExportBase):
             converted time
         """
         if isinstance(build_time, list):
-            return [round(int(number) / 60, 2) for number in build_time] if build_time else build_time
+            return (
+                [round(int(number) / 60, 2) for number in build_time]
+                if build_time
+                else build_time
+            )
         return round(int(build_time) / 60, 2) if build_time else build_time
 
     @staticmethod
@@ -72,7 +75,10 @@ class ObsInfo(ExportBase):
         Returns:
             pkg_builds_time: pkg builds time list
         """
-        return [obs_build_infos.get(obs_build_constant) for obs_build_constant in obs_build_constants]
+        return [
+            obs_build_infos.get(obs_build_constant)
+            for obs_build_constant in obs_build_constants
+        ]
 
     @staticmethod
     def _iso_success_rate(iso_info_count):
@@ -113,7 +119,9 @@ class ObsInfo(ExportBase):
         """
         body = {"gitee_branch": query}
         query_all = False if query else True
-        branchs = self._panel_info.query_suggest_info(index="branch_info", body=body, query_all=query_all)
+        branchs = self._panel_info.query_suggest_info(
+            index="branch_info", body=body, query_all=query_all
+        )
         return [branch_info["gitee_branch"] for branch_info in branchs]
 
     def suggest_pkg(self, query):
@@ -126,7 +134,9 @@ class ObsInfo(ExportBase):
         """
         body = {"repo_name": query}
         query_all = False if query else True
-        packages = self._panel_info.query_suggest_info(index="obs_info", body=body, query_all=query_all)
+        packages = self._panel_info.query_suggest_info(
+            index="obs_info", body=body, query_all=query_all
+        )
         return [package["repo_name"] for package in packages]
 
     def suggest_sig(self, query=None):
@@ -139,7 +149,9 @@ class ObsInfo(ExportBase):
         """
         body = {"name": query}
         query_all = False if query else True
-        sigs = self._panel_info.query_suggest_info(index="sig_info", body=body, query_all=query_all)
+        sigs = self._panel_info.query_suggest_info(
+            index="sig_info", body=body, query_all=query_all
+        )
         return [sig["name"] for sig in sigs]
 
     def get_obs_infos(self):
@@ -151,12 +163,18 @@ class ObsInfo(ExportBase):
             all obs info
         """
         # Query obs information
-        update_obs_infos = self._obs_infos(page_size=self.page_size, page=self.page_index)
+        update_obs_infos = self._obs_infos(
+            page_size=self.page_size, page=self.page_index
+        )
         total_count, total_page = self._total_page()
         # obs compile state data
-        build_states = self._panel_info.query_build_states(branch=self.gitee_branch, architecture=self.architecture)
+        build_states = self._panel_info.query_build_states(
+            branch=self.gitee_branch, architecture=self.architecture
+        )
         # obs compile time data
-        build_times = self._panel_info.query_build_times(branch=self.gitee_branch, architecture=self.architecture)
+        build_times = self._panel_info.query_build_times(
+            branch=self.gitee_branch, architecture=self.architecture
+        )
         # query iso compilation time data
         iso_info_ten, iso_success_rate = self._iso_build_data()
         return dict(
@@ -189,7 +207,13 @@ class ObsInfo(ExportBase):
             body.setdefault("build_status", self.build_state)
         if self.sig_name:
             body.setdefault("name", self.sig_name)
-        obs_infos = self._panel_info.query_obs_info(body=body, page_index=page, page_size=page_size)
+        if self.maintainers:
+            body.setdefault("maintainer.id", self.maintainers)
+        if self.orders:
+            body.setdefault("orders", self.orders)
+        obs_infos = self._panel_info.query_obs_info(
+            body=body, page_index=page, page_size=page_size
+        )
         update_obs_infos = list()
         for obs_info in obs_infos:
             # If the repositories field exists, it will be removed
@@ -203,7 +227,9 @@ class ObsInfo(ExportBase):
                 obs_info["build_state"] = obs_info.pop("build_status")
             # Convert seconds to minutes
             obs_info["build_time"] = self._seconds_to_min(obs_info["build_time"])
-            obs_info["history_build_times"] = self._seconds_to_min(obs_info["history_build_times"])
+            obs_info["history_build_times"] = self._seconds_to_min(
+                obs_info["history_build_times"]
+            )
             update_obs_infos.append(obs_info)
         return update_obs_infos
 
@@ -228,8 +254,13 @@ class ObsInfo(ExportBase):
         Returns:
 
         """
-        obs_branch = "openEuler:Mainline" if self.gitee_branch == "master" else self.gitee_branch.replace("-", ":")
-        iso_info_ten = self._panel_info.query_iso_info(branch=obs_branch, recent_days=recent_days)
+        branch = self.gitee_branch[0]
+        obs_branch = (
+            "openEuler:Mainline" if branch == "master" else branch.replace("-", ":")
+        )
+        iso_info_ten = self._panel_info.query_iso_info(
+            branch=obs_branch, recent_days=recent_days
+        )
         for iso_info in iso_info_ten:
             iso_info["build_time"] = self._seconds_to_min(iso_info["build_time"])
             iso_info["iso_time"] = self._seconds_to_min(iso_info["iso_time"])
@@ -285,15 +316,45 @@ class ObsInfo(ExportBase):
             None
         """
         # iso rate
-        self.modify_content_list(EXPORT_ISO_ROW, EXPORT_ISO_COLUMN, obs_infos.get("iso_success_rate"))
+        self.modify_content_list(
+            EXPORT_ISO_ROW, EXPORT_ISO_COLUMN, obs_infos.get("iso_success_rate")
+        )
         # obs state
-        pkg_build_states = self._csv_build_data(obs_infos.get("pkg_build_states"), BUILD_STATES)
+        pkg_build_states = self._csv_build_data(
+            obs_infos.get("pkg_build_states"), BUILD_STATES
+        )
         # obs build time
-        pkg_build_times = self._csv_build_data(obs_infos.get("pkg_build_times"), BUILD_TIME_LEVEL)
+        pkg_build_times = self._csv_build_data(
+            obs_infos.get("pkg_build_times"), BUILD_TIME_LEVEL
+        )
         self._traverse_content(pkg_build_states, EXPORT_BUILD_STATE_COLUMN)
         self._traverse_content(pkg_build_times, EXPORT_BUILD_TIME_COLUMN)
         # obs package info
-        for number, obs_info in enumerate(obs_infos.get("pkg_infos"), start=OBS_PACKAGE_INFO_COLUMN):
+        for number, obs_info in enumerate(
+            obs_infos.get("pkg_infos"), start=OBS_PACKAGE_INFO_COLUMN
+        ):
             self.insert_row(number)
-            for index, detailed_info in enumerate(self._package_info(obs_info), start=1):
+            for index, detailed_info in enumerate(
+                self._package_info(obs_info), start=1
+            ):
                 self.insert_col(number, index, detailed_info)
+
+    def suggest_maintainers(self, query=None):
+        """
+        Query maintainers by sig group
+        Args:
+            query: Fuzzy search maintainer
+        Returns:
+            maintainer  list
+        """
+        body = {"maintainer": query}
+        query_all = False if query else True
+        sigs = self._panel_info.query_suggest_info(
+            index="sig_info", body=body, query_all=query_all
+        )
+        maintainers = set()
+        for sig in sigs:
+            for maintainer in sig["maintainer"]:
+                maintainers.add(maintainer["id"])
+        maintainers = sorted(maintainers)
+        return maintainers

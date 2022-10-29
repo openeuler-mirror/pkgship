@@ -34,7 +34,9 @@ class PanelInfo(Query):
         super(PanelInfo, self).__init__()
         self.query_body = QueryBody()
 
-    def query_obs_info(self, body: dict, index="obs_info", source=None, page_index=0, page_size=0):
+    def query_obs_info(
+        self, body: dict, index="obs_info", source=None, page_index=0, page_size=0
+    ):
         """
         Query obs page information
         :param index: elasticsearch index
@@ -44,6 +46,9 @@ class PanelInfo(Query):
         :param page_size: Paging query the size of each page exp:50
         :return: query result
         """
+        orders = list()
+        if "orders" in body:
+            orders = body.pop("orders")
         format_query_body = {
             "fields": self._construct_term_query_body(body, keyword=True),
             "_source": None,
@@ -61,6 +66,12 @@ class PanelInfo(Query):
             _query_all = False
 
         self.query_body.query_and_filters = format_query_body
+        if orders:
+            sort = [
+                {order_item["order"]: dict(order=order_item["sort_mode"])}
+                for order_item in orders
+            ]
+            self.query_body.query_and_filters["sort"] = sort
         query_result_list = self._query_data(
             index=index, body=self.query_body.query_and_filters, query_all=_query_all
         )
@@ -76,7 +87,11 @@ class PanelInfo(Query):
         :return: Number of packages in each state
         """
         state_count = dict()
-        body = {"gitee_branch": branch, "architecture": architecture, "build_status": None}
+        body = {
+            "gitee_branch": branch,
+            "architecture": architecture,
+            "build_status": None,
+        }
         for state in BUILD_STATES:
             body["build_status"] = state
             self.query_body.query_and_filters = {
@@ -98,8 +113,8 @@ class PanelInfo(Query):
         :return: number of packages for each level of build time
         """
         each_time_count = dict()
-        branch_term_dict = {"term": {"gitee_branch.keyword": branch}}
-        arch_term_dict = {"term": {"architecture": architecture}}
+        branch_term_dict = {"terms": {"gitee_branch.keyword": branch}}
+        arch_term_dict = {"terms": {"architecture": architecture}}
         for i in range(len(BUILD_TIMES)):
             if i < len(BUILD_TIMES) - 1:
                 range_dict = {
@@ -110,7 +125,9 @@ class PanelInfo(Query):
             else:
                 range_dict = {"range": {"build_time": {"gt": BUILD_TIMES[i]}}}
 
-            combination_dict = {"fields": [branch_term_dict, arch_term_dict, range_dict]}
+            combination_dict = {
+                "fields": [branch_term_dict, arch_term_dict, range_dict]
+            }
             self.query_body.query_and_filters = combination_dict
             current_level_count = self._query_count(
                 index=index, body=self.query_body.query_and_filters
@@ -119,7 +136,9 @@ class PanelInfo(Query):
 
         return each_time_count
 
-    def query_iso_info(self, branch, index="iso_info", recent_days=DEFAULT_ISO_QUERY_DAYS):
+    def query_iso_info(
+        self, branch, index="iso_info", recent_days=DEFAULT_ISO_QUERY_DAYS
+    ):
         """
         Query iso build information
         :param branch: gitee branch exp:openEuler-22.03-LTS
@@ -166,7 +185,7 @@ class PanelInfo(Query):
             ] += 1
 
         return sig_group_collect
-    
+
     def query_sig_info(self, sig_name, index="sig_info"):
         """
         Querying sig group information
@@ -258,10 +277,11 @@ class PanelInfo(Query):
         """
         new_body_list = list()
         for key, value in body.items():
+            trem = "term" if isinstance(value, str) else "terms"
             if keyword:
-                new_body_list.append({"term": {f"{key}.keyword": value}})
+                new_body_list.append({trem: {f"{key}.keyword": value}})
             else:
-                new_body_list.append({"term": {key: value}})
+                new_body_list.append({trem: {key: value}})
 
         return new_body_list
 

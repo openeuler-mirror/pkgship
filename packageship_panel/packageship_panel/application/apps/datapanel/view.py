@@ -26,17 +26,19 @@ from packageship_panel.application.serialize.datapanel import (
     ObsInfoListSchema,
     ExportObsinfoSchema,
 )
-from packageship.application.common.exc import (ElasticSearchQueryException,
-                                                DatabaseConfigException)
+from packageship.application.common.exc import (
+    ElasticSearchQueryException,
+    DatabaseConfigException,
+)
 from packageship_panel.application.core.obs import ObsInfo
 
 
 class ObsInfoList(Resource):
     """
-        Obtain obS building and maintenance information
+    Obtain obS building and maintenance information
     """
 
-    def get(self):
+    def post(self):
         """
         Get obs info
         Args:
@@ -103,14 +105,19 @@ class ObsInfoList(Resource):
                 }
         """
         rspmsg = RspMsg()
-        result, error = validate(ObsInfoListSchema, dict(request.args), load=True)
+        result, error = validate(ObsInfoListSchema, dict(request.json), load=True)
         if error:
             response = rspmsg.body("param_error")
             return jsonify(response)
         try:
             obs = ObsInfo(**result)
             obs_infos = obs.get_obs_infos()
-        except (ElasticSearchQueryException, DatabaseConfigException, TypeError, KeyError) as error:
+        except (
+            ElasticSearchQueryException,
+            DatabaseConfigException,
+            TypeError,
+            KeyError,
+        ) as error:
             LOGGER.error(error)
             return jsonify(rspmsg.body("connect_db_error"))
         return jsonify(rspmsg.body("success", resp=obs_infos))
@@ -118,7 +125,7 @@ class ObsInfoList(Resource):
 
 class PkgSuggestView(Resource):
     """
-        Example Query the recommended software package list on the OBS build page
+    Example Query the recommended software package list on the OBS build page
     """
 
     def get(self):
@@ -137,7 +144,11 @@ class PkgSuggestView(Resource):
         try:
             obs = ObsInfo()
             suggest_pkgs = obs.suggest_pkg(query=query)
-        except (ElasticSearchQueryException, DatabaseConfigException, TypeError) as error:
+        except (
+            ElasticSearchQueryException,
+            DatabaseConfigException,
+            TypeError,
+        ) as error:
             LOGGER.error(error)
             return jsonify(rspmsg.body("connect_db_error"))
 
@@ -146,7 +157,7 @@ class PkgSuggestView(Resource):
 
 class BranchSuggestView(Resource):
     """
-        Query the OBS build page gitee branch suggestion list
+    Query the OBS build page gitee branch suggestion list
     """
 
     def get(self):
@@ -162,7 +173,11 @@ class BranchSuggestView(Resource):
         try:
             obs = ObsInfo()
             suggest_branch = obs.suggest_branch(query=query)
-        except (ElasticSearchQueryException, DatabaseConfigException, TypeError) as error:
+        except (
+            ElasticSearchQueryException,
+            DatabaseConfigException,
+            TypeError,
+        ) as error:
             LOGGER.error(error)
             return jsonify(rspmsg.body("connect_db_error"))
 
@@ -235,12 +250,18 @@ class ExportObsInfo(Resource):
             obs_csv_path = ObsInfo(**result).export_obs_info_csv()
 
             memory_file = CompressIo().send_memory_file(obs_csv_path)
-            return send_file(
-                memory_file, attachment_filename="obs-infos.zip", as_attachment=True)
+            return send_file(memory_file, download_name="obs-infos.zip")
         except (ElasticSearchQueryException, DatabaseConfigException) as error:
             LOGGER.error(error)
             return jsonify(rspmsg.body("connect_db_error"))
-        except (IOError, ValueError, AttributeError, IndexError, TypeError, OSError) as error:
+        except (
+            IOError,
+            ValueError,
+            AttributeError,
+            IndexError,
+            TypeError,
+            OSError,
+        ) as error:
             LOGGER.error(error)
             return jsonify(rspmsg.body("download_failed"))
 
@@ -276,7 +297,7 @@ class ExportSiginfo(Resource):
 
 class SigSuggestView(Resource):
     """
-        Query the OBS build page gitee sig suggestion list
+    Query the OBS build page gitee sig suggestion list
     """
 
     def get(self):
@@ -292,8 +313,41 @@ class SigSuggestView(Resource):
         try:
             obs = ObsInfo()
             sig_infos = obs.suggest_sig(query=query)
-        except (ElasticSearchQueryException, DatabaseConfigException, TypeError) as error:
+        except (
+            ElasticSearchQueryException,
+            DatabaseConfigException,
+            TypeError,
+        ) as error:
             LOGGER.error(error)
             return jsonify(rspmsg.body("connect_db_error"))
 
         return jsonify(rspmsg.body("success", resp=list(set(sig_infos))))
+
+
+class MaintainerSuggestView(Resource):
+    """
+    Filter the maintainers in all sig groups
+    """
+
+    def get(self):
+        """
+        Query all maintainers
+        Args:
+            query: query condition
+        Returns:
+            ["maintainer1","maintainer2","maintainer3"]
+        """
+        rspmsg = RspMsg()
+        query = request.args.get("query")
+        try:
+            obs = ObsInfo()
+            maintainers = obs.suggest_maintainers(query=query)
+        except (
+            ElasticSearchQueryException,
+            DatabaseConfigException,
+            TypeError,
+        ) as error:
+            LOGGER.error(error)
+            return jsonify(rspmsg.body("connect_db_error"))
+
+        return jsonify(rspmsg.body("success", resp=list(maintainers)))

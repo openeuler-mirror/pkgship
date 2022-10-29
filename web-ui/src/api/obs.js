@@ -2,69 +2,73 @@
  * @file  信息管理接口配置文件
  * */
 
- import appAjax from './../libs/ajax-utils';
- 
- export const getObsInfo = ({
-                                pkg_name,
-                                gitee_branch,
-                                architecture,
-                                build_state,
-                                sig_name,
-                                page_index,
-                                page_size
-                            }) => {
-     return new Promise((resolve, reject) => {
-         appAjax.postJson({
-             url: '/infoBoard/obs',
-             type: 'get',
-             params: {
+import appAjax from './../libs/ajax-utils';
+
+export const getObsInfo = ({
+    pkg_name,
+    gitee_branch,
+    architecture,
+    build_state,
+    maintainers,
+    orders,
+    sig_name,
+    page_index,
+    page_size
+}) => {
+    return new Promise((resolve, reject) => {
+        appAjax.postJson({
+            url: '/infoBoard/obs',
+            type: 'post',
+            data: {
                 pkg_name,
                 gitee_branch,
                 architecture,
                 build_state,
+                maintainers,
+                orders,
                 sig_name,
                 page_index,
                 page_size
-             },
-             success(result) {
-                 if (result) {
-                     resolve(result);
-                     return;
-                 }
-                 reject(result);
-             },
-             error(msg) {
-                 reject(msg);
-             }
- 
-         });
- 
-     });
- };
- 
- export const getObsSuggests = (queryName) => {
-     return new Promise((resolve, reject) => {
-         appAjax.postJson({
-             url: '/infoBoard/obs/package/suggest',
-             type: 'get',
-             params: {
-                 query: queryName,
-             },
-             success(result) {
-                 if (result) {
-                     resolve(result);
-                     return;
-                 }
-                 reject(result);
-             },
-             error(msg) {
-                 reject(msg);
-             }
-         });
-     });
- };
+            },
+            success(result) {
+                if (result) {
+                    resolve(result);
+                    return;
+                }
+                reject(result);
+            },
+            error(msg) {
+                reject(msg);
+            }
 
- export const getBranchSuggests = (queryName) => {
+        });
+
+    });
+};
+
+export const getObsSuggests = (queryName) => {
+    return new Promise((resolve, reject) => {
+        appAjax.postJson({
+            url: '/infoBoard/obs/package/suggest',
+            type: 'get',
+            params: {
+                query: queryName,
+            },
+            success(result) {
+                if (result) {
+                    resolve(result);
+                    return;
+                }
+                reject(result);
+            },
+            error(msg) {
+                reject(msg);
+            }
+        });
+    });
+};
+
+export const getBranchSuggests = (queryName) => {
     return new Promise((resolve, reject) => {
         appAjax.postJson({
             url: '/infoBoard/obs/branch/suggest',
@@ -87,12 +91,12 @@
 };
 
 export const getObsDown = ({
-                               pkg_name,
-                               gitee_branch,
-                               architecture,
-                               build_state,
-                               sig_name
-                           }) => {
+    pkg_name,
+    gitee_branch,
+    architecture,
+    build_state,
+    sig_name
+}) => {
     return new Promise((resolve, reject) => {
         appAjax.postJson({
             url: '/infoBoard/obs/export',
@@ -118,5 +122,28 @@ export const getObsDown = ({
 
         });
 
+    });
+};
+
+
+export const getMaintainersSuggests = (queryName) => {
+    return new Promise((resolve, reject) => {
+        appAjax.postJson({
+            url: '/infoBoard/obs/maintainer/suggest',
+            type: 'get',
+            params: {
+                query: queryName,
+            },
+            success(result) {
+                if (result) {
+                    resolve(result);
+                    return;
+                }
+                reject(result);
+            },
+            error(msg) {
+                reject(msg);
+            }
+        });
     });
 };

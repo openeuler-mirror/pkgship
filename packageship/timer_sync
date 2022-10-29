@@ -1,0 +1,5 @@
+#!/usr/bin/python3
+from packageship.trigger_timer import initizlize_release_repo
+
+
+initizlize_release_repo()

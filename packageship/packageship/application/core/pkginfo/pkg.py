@@ -50,6 +50,7 @@ class Package:
             "version": package_info_dict.get("version"),
             "url": package_info_dict.get("url"),
             "database": database,
+            "release": package_info_dict.get("release"),
         }
         return pkg_info
 
