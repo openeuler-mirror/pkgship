@@ -135,6 +135,14 @@ class TestMixin:
         """
         raise NotImplementedError
 
+    def _es_reindex_result(self, *args, **kwargs):
+        """_es_reindex_result
+
+        Raises:
+            NotImplementedError: [description]
+        """
+        raise NotImplementedError
+
     def _requests_get(self, *args, **kwargs):
         """_request_get"""
         raise NotImplementedError
@@ -222,6 +230,14 @@ class TestMixin:
         self._to_update_kw_and_make_mock(
             "elasticsearch.client.indices.IndicesClient.create",
             effect=self._es_create_result,
+            **kwargs,
+        )
+
+    def mock_es_reindex(self, **kwargs):
+        """mock_es_reindex"""
+        self._to_update_kw_and_make_mock(
+            "elasticsearch.Elasticsearch.reindex",
+            effect=self._es_reindex_result,
             **kwargs,
         )
 
@@ -362,6 +378,7 @@ class ClientTest(BaseTest):
         """
         os.environ["SETTINGS_FILE_PATH"] = str(Path(BASE_PATH, "package.ini"))
         from packageship.application import init_app
+
         app = init_app("query")
 
         super(ClientTest, self).setUp()

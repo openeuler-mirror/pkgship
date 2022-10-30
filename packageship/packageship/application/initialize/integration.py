@@ -21,14 +21,21 @@ import redis
 from elasticsearch import helpers
 from elasticsearch.exceptions import ElasticsearchException
 from packageship.application.common.exc import (
+    ElasticSearchInsertException,
     InitializeError,
     ResourceCompetitionError,
     RepoError,
 )
-from packageship.application.common.constant import MAX_INIT_DATABASE, REDIS_CONN
+from packageship.application.common.constant import (
+    MAX_INIT_DATABASE,
+    REDIS_CONN,
+    DB_INFO_INDEX,
+)
+from packageship.application.query import database as db
 from packageship.libs.log import LOGGER
 from packageship.libs.conf import configuration
-from .base import ESJson, BaseInitialize, del_temporary_file
+
+from .base import ESJson, BaseInitialize, del_temporary_file, str_hash, file_hash
 from .xtp import XmlPackage
 
 
@@ -50,6 +57,18 @@ class InitializeService(BaseInitialize):
         self._data = None
         self._fail = []
         self._success = False
+        self._archive_database = None
+        self._database_info = ESJson(
+            database_name=None,
+            priority=0,
+            hash_addr=None,
+            src_dbfile_hash=None,
+            bin_dbfile_hash=None,
+            db_file_hash=None,
+            file_list_hash=None,
+        )
+        self.remove_error = dict()
+        self.reindex_error = []
 
     @property
     def success(self):
@@ -57,7 +76,7 @@ class InitializeService(BaseInitialize):
         Description: Successfully initialize the database
 
         """
-        if not self._fail:
+        if not self._fail and not any([self.remove_error, self.reindex_error]):
             self._success = True
         return self._success
 
@@ -67,14 +86,16 @@ class InitializeService(BaseInitialize):
         Description: Failed database initialization
 
         """
-        return self._fail
+        databases = []
+        for failed_index in self._fail:
+            databases.extend(list(failed_index.keys()))
+        return databases
 
     @staticmethod
-    def _redis():
+    def _clear_redis_cache():
         try:
             if REDIS_CONN.keys("pkgship_*"):
-                REDIS_CONN.delete(
-                    *REDIS_CONN.keys("pkgship_*"))
+                REDIS_CONN.delete(*REDIS_CONN.keys("pkgship_*"))
         except redis.RedisError:
             LOGGER.error(
                 "There is an exception in Redis service. Please check it later."
@@ -83,12 +104,16 @@ class InitializeService(BaseInitialize):
 
     @staticmethod
     def _process():
-        _ps = os.popen(
-            "ps -ef | grep -v grep | grep 'pkgship init'").readlines()
+        _ps = os.popen("ps -ef | grep -v grep | grep 'pkgship init'").readlines()
         if len(_ps) > 1:
             raise ResourceCompetitionError(
                 "Multiple processes are initializing at the same time, Resource contention error ."
             )
+
+    def _remove_error(self, dbname):
+        self.remove_error[
+            dbname
+        ] = f"Please manually remove indexes starting with {dbname}."
 
     def _xml_parse(self, xml, filelist):
         self._data = XmlPackage(xml, filelist).parse()
@@ -109,6 +134,122 @@ class InitializeService(BaseInitialize):
                 % self.elastic_index
             )
 
+    def is_update(self, hash_addr, repo_files):
+        self._database_info.hash_addr = hash_addr
+        file_list = repo_files["filelist"]
+
+        self._database_info.file_list_hash = file_hash(file_list)
+        if not repo_files["xml"] or isinstance(repo_files["xml"], list):
+            self._database_info.src_dbfile_hash = file_hash(self._repo["src_db_file"])
+            self._database_info.bin_dbfile_hash = file_hash(self._repo["bin_db_file"])
+            compare_xml = False
+        else:
+            self._database_info.db_file_hash = file_hash(repo_files["xml"])
+            compare_xml = True
+
+        if not self._archive_database:
+            LOGGER.info("No archived database exists.")
+            return True
+        return self._update_compore(hash_addr, compare_xml)
+
+    def _update_compore(self, hash_addr, compare_xml=False):
+        def compare(database):
+            compare_list = [
+                database["db_file_hash"] == self._database_info.db_file_hash,
+                database["file_list_hash"] == self._database_info.file_list_hash,
+                database["src_dbfile_hash"] == self._database_info.src_dbfile_hash,
+                database["bin_dbfile_hash"] == self._database_info.bin_dbfile_hash,
+            ]
+            return all(compare_list[:2]) if compare_xml else all(compare_list[1:])
+
+        def remove_archive_database(dbname):
+            self._archive_database = [
+                _database
+                for _database in self._archive_database
+                if _database["database_name"] != dbname
+            ]
+
+        for _database in self._archive_database:
+            if _database["database_name"] == self._repo["dbname"]:
+                if _database["hash_addr"] != hash_addr:
+                    if self._delete_index(self._repo["dbname"]):
+                        self._remove_error(_database["database_name"])
+                    remove_archive_database(_database["database_name"])
+                    LOGGER.warning(
+                        f"The configuration file path has been updated,database name {self._repo['dbname']}"
+                    )
+                    return True
+                if compare(_database):
+                    self._insert_database_info()
+                    remove_archive_database(_database["database_name"])
+                    LOGGER.info(
+                        f"The contents of initialization files are consistent,database name {self._repo['dbname']}"
+                    )
+                    return False
+                else:
+                    if self._delete_index(self._repo["dbname"]):
+                        self._remove_error(_database["database_name"])
+                    remove_archive_database(_database["database_name"])
+                    LOGGER.warning(
+                        f"The file path remains the same, but the content is updated,database name {self._repo['dbname']}"
+                    )
+                    return True
+
+            if _database["hash_addr"] == hash_addr:
+                if compare(_database):
+                    LOGGER.info(
+                        "The contents of the initialization file are the same, but the database name has been updated. "
+                        + f"Archived database:{ _database['database_name']} Update database: {self._repo['dbname']}"
+                    )
+                    if self._reindex(_database["database_name"], self._repo["dbname"]):
+                        if self._delete_index(_database["database_name"]):
+                            LOGGER.warning(
+                                f"Index renaming creates redundant data,please manually \
+                                    remove indexes starting with {_database['database_name']}"
+                            )
+                            self._remove_error(_database["database_name"])
+
+                        self._insert_database_info()
+                    else:
+                        self.reindex_error.append(
+                            {
+                                "message": f"The data in database {self._repo['dbname']} is the same \
+                                as that in database {_database['database_name']}, but renaming fails",
+                                "reindex": f"{_database['database_name']} TO {self._repo['dbname']}",
+                                "del_index": [
+                                    _database["database_name"],
+                                    self._repo["dbname"],
+                                ],
+                            }
+                        )
+                        if self._delete_index(self._repo["dbname"]):
+                            self._remove_error(self._repo["dbname"])
+                        self._insert_database_info(dbname=_database["database_name"])
+
+                    remove_archive_database(_database["database_name"])
+                    return False
+                else:
+                    LOGGER.warning(
+                        f"The file path remains the same, but the content is updated,\
+                        database name {self._repo['dbname']}"
+                    )
+                    if self._delete_index(_database["database_name"]):
+                        self._remove_error(_database["database_name"])
+                    remove_archive_database(_database["database_name"])
+                    return True
+        LOGGER.warning(
+            f"The database name and address of the repo have been changed, dbname: {self._repo['dbname']}."
+        )
+        return True
+
+    def _insert_database_info(self, index="databaseinfo", dbname=None):
+        self._database_info.database_name = dbname or self._repo["dbname"]
+        self._database_info.priority = self._repo["priority"]
+        try:
+            self._session.insert(index=index, body=self._database_info)
+        except ElasticSearchInsertException as error:
+            LOGGER.error(f"Insert databaseinfo error: {error}")
+
     def import_depend(self, path=None):
         """
         Description: Initializes import dependency data
@@ -128,33 +269,57 @@ class InitializeService(BaseInitialize):
         if not self._config.validate:
             raise InitializeError(self._config.message)
 
-        self._clear_all_index()
         # Clear the cached value for a particular key
-        self._redis()
+        self._clear_redis_cache()
+        self._archive_database = db.get_all_archive_database()
+        if self._archive_database:
+            self._session.delete_index([DB_INFO_INDEX])
 
         for repo in self._config:
-            self._data = ESJson()
-            self._repo = repo
-            try:
-                if not self._repo_files():
-                    raise RepoError("Repo source data error: %s" %
-                                    self.elastic_index)
-                xml_files = self._xml()
-                if xml_files["xml"] and xml_files["filelist"]:
-                    self._xml_parse(**xml_files)
+            self._insert_initialize_data(repo)
 
-                self._save()
-                self._session.update_setting()
-            except (RepoError, ElasticsearchException) as error:
-                LOGGER.error(error)
-                self._fail.append(self.elastic_index)
-                if isinstance(error, ElasticsearchException):
-                    self._delete_index()
-            finally:
-                # delete temporary directory
-                del_temporary_file(
-                    configuration.TEMPORARY_DIRECTORY, folder=True)
-                self._repo = None
+        for _database in self._archive_database:
+            if self._delete_index(_database["database_name"]):
+                LOGGER.warning(
+                    f"Please manually remove indexes starting with {_database['database_name']}."
+                )
+                self._remove_error(_database["database_name"])
+
+    def _insert_initialize_data(self, repo):
+        self._data = ESJson()
+        self._repo = repo
+        hash_addr = str_hash(
+            content=repo.get("src_db_file", "")
+            + repo.get("bin_db_file", "")
+            + repo.get("db_file", "")
+        )
+        try:
+            if not self._repo_files():
+                raise RepoError("Repo source data error: %s" % self.elastic_index)
+            xml_files = self._xml()
+            if not self.is_update(hash_addr, xml_files):
+                LOGGER.warning(
+                    f"The database content is not updated and does not need \
+                     to be reconstructed, database name: {self._repo['dbname']}"
+                )
+                return
+
+            if xml_files["xml"] and xml_files["filelist"]:
+                self._xml_parse(**xml_files)
+
+            self._save()
+            self._session.update_setting()
+        except (RepoError, ElasticsearchException) as error:
+            LOGGER.error(error)
+            self._fail.append(
+                {self.elastic_index: f"Failed to initialize data: {self.elastic_index}"}
+            )
+            if isinstance(error, ElasticsearchException):
+                self._delete_index()
+        finally:
+            # delete temporary directory
+            del_temporary_file(configuration.TEMPORARY_DIRECTORY, folder=True)
+            self._repo = None
 
     def _source_depend(self):
         """
@@ -167,10 +332,9 @@ class InitializeService(BaseInitialize):
             es_json.update(src_pack)
             es_json["requires"] = self._build_requires(src_pack["pkgKey"])
             try:
-                location_href = src_pack["location_href"].split('/')[-1]
+                location_href = src_pack["location_href"].split("/")[-1]
                 for bin_pack in self._bin_pack["sources"].get(location_href, []):
-                    _subpacks = dict(
-                        name=bin_pack["name"], version=bin_pack["version"])
+                    _subpacks = dict(name=bin_pack["name"], version=bin_pack["version"])
                     try:
                         es_json["subpacks"].append(_subpacks)
                     except TypeError:
@@ -203,13 +367,11 @@ class InitializeService(BaseInitialize):
             src_pack = self._src_pack.get(bin_pack["src_name"])
             if src_pack:
                 es_json["src_version"] = (
-                    src_pack.get("version") if src_pack.get(
-                        "version") else None
+                    src_pack.get("version") if src_pack.get("version") else None
                 )
                 es_json["requires"] = self._build_requires(src_pack["pkgKey"])
 
-            es_json["requires"] = es_json["requires"] + \
-                self._install_requires(bin_pack)
+            es_json["requires"] = es_json["requires"] + self._install_requires(bin_pack)
 
             binarys.append(self._es_json("-binary", es_json))
         helpers.bulk(self._session.client, binarys)
@@ -280,10 +442,13 @@ class InitializeService(BaseInitialize):
     def _import_error(self, error, record=True):
         if record:
             LOGGER.error(error)
-        self._fail.append(self.elastic_index)
+        self._fail.append(
+            {self.elastic_index: f"Failed to initialize data: {self.elastic_index}"}
+        )
         fails = self._delete_index()
         if fails:
             LOGGER.warning("Delete the failed ES database:%s ." % fails)
+            self._remove_error(dbname=self.elastic_index)
 
     def _save(self):
         """
@@ -292,7 +457,9 @@ class InitializeService(BaseInitialize):
         """
         fails = self._create_index(("source", "binary", "bedepend"))
         if fails:
-            self._fail.append(self.elastic_index)
+            self._fail.append(
+                {self.elastic_index: f"Failed to create index: {self.elastic_index}"}
+            )
             return
 
         try:
@@ -306,13 +473,7 @@ class InitializeService(BaseInitialize):
         ) as error:
             self._import_error(error=error)
         else:
-            self._session.insert(
-                index="databaseinfo",
-                body={
-                    "database_name": self.elastic_index,
-                    "priority": self._repo["priority"],
-                },
-            )
+            self._insert_database_info()
 
     def _es_json(self, index, source, _type="_doc"):
         """
@@ -401,7 +562,7 @@ class InitializeService(BaseInitialize):
     def _src_location(self):
         if not self._data.src_location:
             for _, package in self._src_pack.items():
-                key = package["location_href"].split('/')[-1]
+                key = package["location_href"].split("/")[-1]
                 self._data["src_location"][key] = package
         return self._data.src_location
 
@@ -513,16 +674,15 @@ class InitializeService(BaseInitialize):
         """
 
         def combination_binary(row_data):
-            rpm_sourcerpm = row_data.get('rpm_sourcerpm')
+            rpm_sourcerpm = row_data.get("rpm_sourcerpm")
             row_data["src_name"] = rpm_sourcerpm
-            self._data[table]['packages'][row_data[key]] = row_data
+            self._data[table]["packages"][row_data[key]] = row_data
             self._data[table]["pkg_key"][row_data["pkgKey"]] = row_data
             if rpm_sourcerpm:
                 if isinstance(self._data[table]["sources"][rpm_sourcerpm], ESJson):
                     self._data[table]["sources"][rpm_sourcerpm] = [row_data]
                 else:
-                    self._data[table]["sources"][rpm_sourcerpm].append(
-                        row_data)
+                    self._data[table]["sources"][rpm_sourcerpm].append(row_data)
 
         def join_files(row_data, table):
 
@@ -643,14 +803,12 @@ class RepoConfig:
         # load yaml configuration file
         with open(path, "r", encoding="utf-8") as file_context:
             try:
-                self._repo = yaml.load(
-                    file_context.read(), Loader=yaml.FullLoader)
+                self._repo = yaml.safe_load(file_context.read())
             except yaml.YAMLError as yaml_error:
                 LOGGER.error(yaml_error)
                 raise ValueError(
                     "The format of the yaml configuration "
-                    "file is wrong please check and try again:{0}".format(
-                        yaml_error)
+                    "file is wrong please check and try again:{0}".format(yaml_error)
                 ) from yaml_error
 
     def _validate_priority(self, repo):
@@ -661,8 +819,7 @@ class RepoConfig:
         _priority = repo.get("priority")
         if not _priority:
             raise TypeError(
-                "The database priority of %s does not exist ." % repo.get(
-                    "dbname", "")
+                "The database priority of %s does not exist ." % repo.get("dbname", "")
             )
 
         if not isinstance(_priority, int):

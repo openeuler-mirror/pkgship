@@ -60,6 +60,7 @@ setup(
                 "conf.yaml",
                 "auto_install_pkgship_requires.sh",
                 "uwsgi_logrotate.sh",
+                "timer_sync"
             ],
         ),
         ("/usr/bin", ["pkgshipd", "pkgship"]),

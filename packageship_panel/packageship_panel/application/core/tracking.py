@@ -108,6 +108,12 @@ class BaseTracking:
         LOGGER.info(f"delete elasticsearch index: {index}")
         self.session.delete_index(index)
 
+    async def es_bulk(self, bodys):
+        try:
+            await self.session.async_bulk(body=bodys)
+        except ElasticSearchQueryException as error:
+            LOGGER.error(error)
+
 
 class SigInfo(BaseTracking):
     """
@@ -353,8 +359,15 @@ class ObsSynchronization(BaseTracking):
         """Get the main project name of obs"""
         projects = await self.obs.main_project()
         self.main_project = list(
-            set([item for item in projects if item not in set(constant.OBS_PROJECT_BLACKLIST)]))
-        
+            set(
+                [
+                    item
+                    for item in projects
+                    if item not in set(constant.OBS_PROJECT_BLACKLIST)
+                ]
+            )
+        )
+
     @staticmethod
     def obs_map_gitee_branch(obs_branch):
         """Branch mapping of OBS project name and open source project"""
@@ -407,6 +420,8 @@ class ObsSynchronization(BaseTracking):
         Integrate SIG group data in OBS information and save to ES
         """
         bodys = []
+        pannel = PanelInfo()
+        pannel.delete(body=dict(obs_branch=project), index=self.index)
         for package in packages:
             # get sig groups info
             sig_info = self.get_cache(package=package["repo_name"])
@@ -422,9 +437,11 @@ class ObsSynchronization(BaseTracking):
             bodys.append(
                 self.session.es_insert_struct(index=self.index, source=package)
             )
-        pannel = PanelInfo()
-        pannel.delete(body=dict(obs_branch=project), index=self.index)
-        await self.session.async_bulk(body=bodys)
+            if len(bodys) >= 100:
+                await self.es_bulk(bodys)
+                bodys = []
+        if bodys:
+            await self.es_bulk(bodys)
 
     async def _get_all_packages(self, project):
         pre_tasks = [

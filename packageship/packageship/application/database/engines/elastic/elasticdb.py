@@ -211,7 +211,8 @@ class ElasticSearch(object):
             await self.async_client.index(index=index, body=body)
         except ElasticsearchException as elastic_err:
             LOGGER.error(
-                "Insert to %s failed,data is %s, message is %s" % (index, body, elastic_err)
+                "Insert to %s failed,data is %s, message is %s"
+                % (index, body, elastic_err)
             )
 
     async def async_bulk(self, body: list):
@@ -250,5 +251,16 @@ class ElasticSearch(object):
             self.client.delete_by_query(index=index, body=body)
         except ElasticsearchException as elastic_err:
             LOGGER.error(
-                "Delete to %s failed,query is %s,message is %s" % (index, body, elastic_err)
+                "Delete to %s failed,query is %s,message is %s"
+                % (index, body, elastic_err)
             )
+
+    def reindex(self, old_index, new_index):
+        try:
+            body = {"source": {"index": old_index}, "dest": {"index": new_index}}
+            self.client.reindex(body)
+        except ElasticsearchException as elastic_err:
+            LOGGER.error(
+                "Reindex to %s failed, error is %s." % (old_index, elastic_err)
+            )
+            raise ElasticSearchInsertException()

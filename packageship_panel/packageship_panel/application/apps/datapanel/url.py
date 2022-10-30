@@ -13,11 +13,16 @@
 from packageship_panel.application.apps.datapanel import view
 
 urls = [
-    (view.ObsInfoList, "/infoBoard/obs", {"query": ("GET")}),
+    (view.ObsInfoList, "/infoBoard/obs", {"query": ("POST")}),
     (view.PkgSuggestView, "/infoBoard/obs/package/suggest", {"query": ("GET")}),
     (view.BranchSuggestView, "/infoBoard/obs/branch/suggest", {"query": ("GET")}),
     (view.SigSuggestView, "/infoBoard/obs/sig/suggest", {"query": ("GET")}),
     (view.ExportObsInfo, "/infoBoard/obs/export", {"query": ("POST")}),
     (view.SigInfoList, "/infoBoard/sig", {"query": ("GET")}),
     (view.ExportSiginfo, "/infoBoard/sig/export", {"query": ("POST")}),
+    (
+        view.MaintainerSuggestView,
+        "/infoBoard/obs/maintainer/suggest",
+        {"query": ("GET")},
+    ),
 ]

@@ -15,7 +15,10 @@ get database list according to priority
 """
 from elasticsearch import NotFoundError
 from packageship.application.common.constant import DB_INFO_INDEX
-from packageship.application.common.exc import DatabaseConfigException, ElasticSearchQueryException
+from packageship.application.common.exc import (
+    DatabaseConfigException,
+    ElasticSearchQueryException,
+)
 from packageship.application.database.session import DatabaseSession
 from packageship.application.query.query_body import QueryBody
 from packageship.libs.log import LOGGER
@@ -31,14 +34,53 @@ def get_db_priority():
     """
     db_infos = {}
     try:
-        result = db_client.query(index=DB_INFO_INDEX, body=QueryBody.QUERY_ALL_NO_PAGING)
+        result = db_client.query(
+            index=DB_INFO_INDEX, body=QueryBody.QUERY_ALL_NO_PAGING
+        )
         for _db in result["hits"]["hits"]:
             db_info = _db.get("_source")
             db_infos[db_info.get("database_name")] = db_info.get("priority")
         db_order = sorted(db_infos.items(), key=lambda x: (x[1], x[0]))
         database_list = [key for key, value in db_order]
         return database_list
-    except (NotFoundError, KeyError, ConnectionRefusedError,
-            DatabaseConfigException, ElasticSearchQueryException):
+    except (
+        NotFoundError,
+        KeyError,
+        ConnectionRefusedError,
+        DatabaseConfigException,
+        ElasticSearchQueryException,
+    ):
         LOGGER.warn("Error in getting db priority info.")
+        return []
+
+
+def get_all_archive_database(db_name=None, hash_addr=None):
+    """
+    Gets a list of databases that have been initialized
+
+    Args:
+        db_name: database name
+        hash_addr: hash value of the path
+    Returns:
+        database list
+    """
+    query_body = QueryBody()
+    should = []
+    if db_name:
+        should.append({"terms": {"database_name": [db_name]}})
+    if hash_addr:
+        should.append({"terms": {"hash_addr": [hash_addr]}})
+    query_body.query_and_filters = dict(fields={"bool": {"should": should}})
+    try:
+        databases = db_client.query(
+            index=DB_INFO_INDEX, body=query_body.query_and_filters
+        )
+        return [_db["_source"] for _db in databases["hits"]["hits"]]
+    except (
+        NotFoundError,
+        KeyError,
+        ConnectionRefusedError,
+        DatabaseConfigException,
+        ElasticSearchQueryException,
+    ):
         return []

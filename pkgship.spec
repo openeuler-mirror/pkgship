@@ -1,6 +1,6 @@
 Name:           pkgship
 Version:        3.0.0
-Release:        1
+Release:        2
 Summary:        Pkgship implements rpm package dependence ,maintainer, patch query and so on.
 License:        Mulan 2.0
 URL:            https://gitee.com/openeuler/pkgship
@@ -122,6 +122,7 @@ chown -R $user:$group /var/log/pkgship-operation
 %attr(0750,pkgshipuser,pkgshipuser) /etc/pkgship/uwsgi_logrotate.sh
 %attr(0640,pkgshipuser,pkgshipuser) /etc/pkgship/package.ini
 %attr(0644,pkgshipuser,pkgshipuser) /etc/pkgship/conf.yaml
+%attr(0644,pkgshipuser,pkgshipuser) /etc/pkgship/timer_sync
 %attr(0640,pkgshipuser,pkgshipuser) /lib/systemd/system/pkgship.service
 # The file list of the package pkgship-tools
 %files -n pkgship-tools
@@ -137,6 +138,9 @@ chown -R $user:$group /var/log/pkgship-operation
 %attr(0755,pkgshipuser,pkgshipuser) /etc/pkgship/service-monitor.sh
 
 %changelog
+* Sun Oct 9 2022 Yuting Han <996233772@qq.com> -3.0.0-2
+- Add dynamic version data update and search by multiple criteria
+
 * Sat Jun 11 2022 Zhengtang Gong <gongzhengtang@h-partners.com> -3.0.0-1
 - add panel data synchronization
 

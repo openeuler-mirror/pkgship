@@ -127,6 +127,11 @@ class Synchronization:
             if task_name not in ("sync_rpm_build", "send_email", "sync_version")
         ]
         await asyncio.wait(tasks, return_when=asyncio.ALL_COMPLETED)
+        await asyncio.wait(
+            [
+                asyncio.create_task(ObsSynchronization().start()),
+            ]
+        )
         LOGGER.info("The email sending and version synchronization task starts.")
         await asyncio.wait(
             [
@@ -144,5 +149,8 @@ class Synchronization:
             start_job = self.tasks[task["name"]]
             timing_schedule = getattr(self, task["trigger"])(**task)
             self.scheduler.add_job(
-                start_job, trigger=task["trigger"],timezone='Asia/Shanghai', **timing_schedule
+                start_job,
+                trigger=task["trigger"],
+                timezone="Asia/Shanghai",
+                **timing_schedule,
             )

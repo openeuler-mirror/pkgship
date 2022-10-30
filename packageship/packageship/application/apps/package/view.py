@@ -149,6 +149,7 @@ class BinaryPackages(ParsePackageMethod):
                         {
                           "pkg_name": "Judy",
                           "license": "Apache 2.0",
+                          "release": "2.oe1",
                           "version": "2.0.0",
                           "url":"http://www.xxx.com",
                           "source_name": "Judy",

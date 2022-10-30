@@ -2,16 +2,8 @@
     <div class="nav-fill">
         <div class="nav-wrapper">
             <div class="nav-bar">
-                <img
-                    src="@/assets/images/openeuler.png"
-                    alt=""
-                    class="nav-logo"
-                    @click="go('/')"
-                />
-                <div
-                    :class="{ mask: menuMobileFlag }"
-                    @click="menuMobileFlag = false"
-                ></div>
+                <img src="@/assets/images/openeuler.png" alt="" class="nav-logo" @click="go('/')" />
+                <div :class="{ mask: menuMobileFlag }" @click="menuMobileFlag = false"></div>
             </div>
         </div>
     </div>
@@ -28,13 +20,13 @@ export default {
             searchFlag: false
         };
     },
-    mounted() {},
+    mounted() { },
     methods: {
         go(path) {
             if (path) {
                 this.$router.push(path);
                 this.menuMobileFlag = false;
-                location.reload(false);
+                // location.reload(false);
             }
         },
         showSub(toggleClass) {
@@ -94,38 +86,47 @@ export default {
         opacity: 0;
         top: -110px;
     }
+
     100% {
         opacity: 1;
         top: 0;
     }
 }
+
 @keyframes slide-down {
     0% {
         display: block;
         opacity: 0;
         top: -352px;
     }
+
     50% {
         opacity: 0;
     }
+
     100% {
         opacity: 1;
         top: 110px;
         display: block;
     }
 }
+
 .menu-active {
     border-bottom: 5px solid @primary-color;
 }
+
 .menu-mobile-active {
     display: block !important;
 }
+
 .show {
     display: block !important;
 }
+
 .search-active {
     color: #0041bd;
 }
+
 .mask {
     position: fixed;
     top: 72px;
@@ -136,11 +137,14 @@ export default {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.4);
 }
+
 .nav-fill {
     height: 60px;
+
     @media (max-width: 1000px) {
         height: 70px;
     }
+
     .nav-wrapper {
         background-color: #fff;
         animation: fade-in;
@@ -150,9 +154,11 @@ export default {
         position: fixed;
         z-index: 999;
         box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.2);
+
         @media (max-width: 1000px) {
             height: 70px;
         }
+
         .nav-bar {
             width: 1200px;
             height: 100%;
@@ -160,29 +166,36 @@ export default {
             display: flex;
             justify-content: space-between;
             align-items: center;
+
             @media (max-width: 1000px) {
                 width: 100%;
                 padding: 0 15px;
             }
+
             ul li {
                 display: inline-block;
             }
+
             .nav-logo {
                 flex-shrink: 0;
                 height: 60px;
                 margin-right: 25px;
                 cursor: pointer;
             }
+
             .nav-logo-mobile {
                 display: none;
                 width: 142px;
             }
+
             .nav-other-mobile {
                 display: none;
                 height: 100%;
+
                 .menu-icon-active {
                     color: #0041bd;
                 }
+
                 li {
                     height: 100%;
                     line-height: 70px;
@@ -190,16 +203,20 @@ export default {
                     margin-left: 20px;
                     cursor: pointer;
                 }
+
                 .lang {
                     font-size: 16px;
                 }
+
                 .search {
                     font-size: 25px;
                 }
+
                 .menu {
                     font-size: 22px;
                 }
             }
+
             .nav-menu-mobile {
                 display: none;
                 max-height: calc(100vh - 70px);
@@ -211,10 +228,12 @@ export default {
                 width: 100%;
                 padding: 10px 30px;
                 z-index: 998;
-                & > li {
+
+                &>li {
                     display: block;
                     border-bottom: 1px solid rgba(0, 0, 0, 0.09);
                     padding: 10px 0;
+
                     a {
                         border: none;
                         font-size: 16px;
@@ -224,22 +243,27 @@ export default {
                         display: inline-block;
                         width: 100%;
                         position: relative;
+
                         .arrow-active {
                             color: #0041bd;
                             transform: rotate(90deg);
                         }
+
                         i {
                             position: absolute;
                             right: 7px;
                             top: 5px;
                         }
                     }
+
                     .sub-menu {
                         margin-left: 15px;
                         display: none;
+
                         .sub-menu-color-active {
                             color: #0041bd;
                         }
+
                         li {
                             display: block;
                             height: 26px;
@@ -252,6 +276,7 @@ export default {
                     }
                 }
             }
+
             .nav-menu {
                 height: 100%;
                 flex: 3;
@@ -260,9 +285,11 @@ export default {
                 .fz20();
                 display: flex;
                 align-items: center;
+
                 @media (max-width: 1000px) {
                     display: none;
                 }
+
                 .show-sub-menu {
                     .sub-menu {
                         animation: slide-down;
@@ -271,6 +298,7 @@ export default {
                         display: block;
                     }
                 }
+
                 .sub-menu {
                     background-color: #fff;
                     position: absolute;
@@ -281,6 +309,7 @@ export default {
                     border: 1px solid @primary-color;
                     box-shadow: 0 6px 30px 0 rgba(0, 0, 0, 0.1);
                     border-radius: 5px;
+
                     .sub-menu-wrapper {
                         height: 100%;
                         display: flex;
@@ -292,30 +321,37 @@ export default {
                             flex: 3;
                             background-color: rgba(0, 0, 0, 0.05);
                             height: 100%;
+
                             &:hover {
                                 cursor: pointer;
                                 color: @primary-color2;
                             }
+
                             .sub-menu-img {
                                 width: 100%;
                                 flex: 3;
                             }
+
                             .sub-menu-name {
                                 text-align: center;
                                 flex: 1;
                             }
                         }
+
                         .sub-menu-right {
                             display: inline-block;
                             flex: 2;
                         }
+
                         .community-sub-menu {
                             display: flex;
                             flex-direction: column;
                             align-items: center;
                             justify-content: space-around;
+
                             li {
                                 line-height: 20px;
+
                                 &:hover {
                                     cursor: pointer;
                                     color: @primary-color2;
@@ -324,25 +360,32 @@ export default {
                         }
                     }
                 }
+
                 .sig-menu {
                     width: 572px;
+
                     .sub-menu-left {
                         flex: 2 !important;
                     }
+
                     .sig-sub-menu {
                         padding-left: 30px;
                         flex: 3 !important;
+
                         .sub-menu-head {
                             height: 60px;
                             line-height: 60px;
+
                             a {
                                 margin-left: 10px;
+
                                 &:hover {
                                     cursor: pointer;
                                     color: @primary-color;
                                 }
                             }
                         }
+
                         .sig-menu-content {
                             height: 182px;
                             display: flex;
@@ -350,9 +393,11 @@ export default {
                             align-items: flex-start;
                             justify-content: flex-start;
                             flex-wrap: wrap;
+
                             li {
                                 line-height: 20px;
                                 margin-bottom: 15px;
+
                                 &:hover {
                                     cursor: pointer;
                                     color: @primary-color;
@@ -361,24 +406,29 @@ export default {
                         }
                     }
                 }
-                & > li {
+
+                &>li {
                     position: relative;
                     padding: 0 25px;
                     height: 100%;
                     line-height: 110px;
+
                     @media (max-width: 1000px) {
                         line-height: 70px;
                     }
-                    & > a {
+
+                    &>a {
                         display: inline-block;
                         height: 100%;
                         cursor: pointer;
+
                         &:hover {
                             border-bottom: 5px solid @primary-color;
                         }
                     }
                 }
             }
+
             .nav-other {
                 flex: 1;
                 height: 100%;
@@ -387,9 +437,11 @@ export default {
                 .ff-xih();
                 display: flex;
                 justify-content: flex-end;
+
                 @media (max-width: 1000px) {
                     display: none;
                 }
+
                 li {
                     margin-left: 36px;
                     cursor: pointer;
@@ -397,11 +449,13 @@ export default {
                     flex-direction: column;
                     align-items: center;
                     justify-content: center;
+
                     span {
                         margin-top: 10px;
                     }
                 }
             }
+
             .search-mobile {
                 display: none;
                 text-align: center;
@@ -411,13 +465,16 @@ export default {
                 width: 100%;
                 background-color: #fff;
             }
+
             @media (max-width: 1000px) {
                 .nav-logo {
                     display: none;
                 }
+
                 .nav-logo-mobile {
                     display: inline-block;
                 }
+
                 .nav-other-mobile {
                     display: inline-block;
                 }

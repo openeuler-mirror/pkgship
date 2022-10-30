@@ -18,5 +18,7 @@
   src_db_file: http://remote-address
   # bin_db_file: file:///path
   bin_db_file: http://remote-address
+  # db_file: file:///path
+  # db_file: http://remote-address
   priority: 1/2/3/4/...
  

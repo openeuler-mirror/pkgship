@@ -92,7 +92,7 @@ class DownloadFiles(Resource):
 
         """
         return send_file(memory_file,
-                         attachment_filename="{search_name}_{file_type}.zip".format(
+                         download_name="{search_name}_{file_type}.zip".format(
                              search_name=names,
                              file_type=depend_type),
                          as_attachment=True)
@@ -192,7 +192,8 @@ class DependGraph(Resource):
             depend = DispatchDepend.execute(**result)
         except (ElasticSearchQueryException, DatabaseConfigException) as e:
             return jsonify(rspmsg.body('connect_db_error'))
-        graph_data = depend.depend_info_graph(source=node_name, package_type=node_type)
+        graph_data = depend.depend_info_graph(
+            source=node_name, package_type=node_type)
         if not graph_data['edges'] and not graph_data['nodes']:
             return jsonify(rspmsg.body('pack_name_not_found'))
         res_dict = rspmsg.body("success", resp=graph_data)

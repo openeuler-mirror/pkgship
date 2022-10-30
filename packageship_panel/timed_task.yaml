@@ -3,18 +3,21 @@
   tasks:
     - name: sync_rpm_build  # 同步obs上软件包构建状态信息-每10分钟更新一次
       trigger: cron
+      enable: true
       day_of_week: 0
       hour: 0
       minute: '*/10'
       second: 0
     - name: sync_iso_build # 同步iso构建信息-每天2:00更新一次
       trigger: cron
+      enable: true
       day_of_week: 0
       hour: 2
       minute: 0
       second: 0
     - name: sync_sig # 同步sig组信息-每天1:05更新一次
       trigger: cron
+      enable: true
       day_of_week: 0
       hour: 1
       minute: 5
