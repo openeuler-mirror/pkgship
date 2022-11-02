@@ -74,9 +74,8 @@
                             </div>
                             <el-dropdown-menu>
                                 <el-dropdown-item v-for="state in buildStateArray" :key="state.text">
-                                    <el-checkbox @change="checked => checkState(checked, state, 'build_state')">{{
-                                    state.text
-                                    }}
+                                    <el-checkbox @change="checked => checkState(checked, state, 'build_state')">
+                                        {{ state.text }}
                                     </el-checkbox>
                                 </el-dropdown-item>
                             </el-dropdown-menu>
@@ -104,9 +103,8 @@
                                         @change="filterMaintainers"></el-input>
                                 </div>
                                 <el-dropdown-item v-for="maintainer in quickFilterMaintainers" :key="maintainer.text">
-                                    <el-checkbox @change="checked => checkState(checked, maintainer, 'maintainers')">{{
-                                    maintainer.text
-                                    }}
+                                    <el-checkbox @change="checked => checkState(checked, maintainer, 'maintainers')">
+                                        {{ maintainer.text }}
                                     </el-checkbox>
                                 </el-dropdown-item>
                             </el-dropdown-menu>
@@ -260,10 +258,10 @@ export default {
     },
     created() {
         if (localStorage.getItem("BranchName") != null) {
-            this.formData.gitee_branch = localStorage.getItem('BranchName') || ["master"]
+            this.formData.gitee_branch = JSON.parse(localStorage.getItem('BranchName')) || ["master"]
         }
         if (localStorage.getItem("architectureName") != null) {
-            this.formData.architecture = localStorage.getItem('architectureName') || ["standard_aarch64"]
+            this.formData.architecture = JSON.parse(localStorage.getItem('architectureName')) || ["standard_aarch64"]
         }
     },
     mounted() {
@@ -313,11 +311,11 @@ export default {
                 })
         },
         branchSelect() {
-            localStorage.setItem('BranchName', this.formData.gitee_branch)
+            localStorage.setItem('BranchName', JSON.stringify(this.formData.gitee_branch))
             this.initData()
         },
         architectureSelect() {
-            localStorage.setItem('architectureName', this.formData.architecture)
+            localStorage.setItem('architectureName', JSON.stringify(this.formData.architecture))
             this.initData()
         },
         goSig(val) {
