@@ -11,6 +11,7 @@
 # See the Mulan PSL v2 for more details.
 # ******************************************************************************/
 import os
+import stat
 import requests
 import yaml
 import retrying
@@ -57,7 +58,9 @@ def bin_db_path(branch):
 
 def _write_conf_repo(conf_yaml, repos):
     try:
-        with os.fdopen(os.open(conf_yaml), "w", encoding="utf-8") as file:
+        flags = os.O_RDWR | os.O_CREAT
+        modes = stat.S_IWUSR | stat.S_IRUSR
+        with os.fdopen(os.open(conf_yaml, flags, modes), "w", encoding="utf-8") as file:
             yaml.dump(data=repos, stream=file)
     except yaml.YAMLError:
         LOGGER.error(
