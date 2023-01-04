@@ -66,7 +66,7 @@ setup(
         ("/usr/bin", ["pkgshipd", "pkgship"]),
         ("/lib/systemd/system/", ["pkgship.service"]),
         (MAPPING_PATH, ["packageship/application/common/rsp/mapping.xml"]),
-        (PACKAGESHIP_PATH, ["version.yaml"]),
+        (PACKAGESHIP_PATH, ["version.yaml", "packageship/trigger_timer_additional_repo.json"]),
         (
             INITIALIZE_PATH,
             [
