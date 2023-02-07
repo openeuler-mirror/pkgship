@@ -64,7 +64,6 @@ export default {
     methods: {
         jump(msg){
             if(msg === 'pack'){
-               console.log(1);
                this.$router.push('/Packagemanagement')
             }
             else {

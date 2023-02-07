@@ -147,6 +147,7 @@
                         :data="washTableData(transData)"
                         :props="{key: 'id',label: 'fileName'}"
                         :titles="['Select from Here', 'Set in Here']"
+                        :render-content="renderFunc"
                         class="transfer-box"
                         target-order="push"
                         v-model="selectedData"
@@ -381,6 +382,12 @@ export default {
         this.getDbPriority();
     },
     methods: {
+        renderFunc(h, option) {
+          return <el-tooltip class="item" effect="dark" content="option.fileName" placement="top">
+                   <div slot="content">{ option.fileName }</div>
+                   <span>{ option.fileName }</span>
+                 </el-tooltip>
+        },
         sourceChange(val){
             console.log(this.checkList);
             console.log(this.checkList.length);
