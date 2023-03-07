@@ -63,11 +63,8 @@ LEVEL_RADIUS = 30
 # node size shown in the map
 NODE_SIZE = 25
 
-# Maximum number of requests per day
-MAX_DAY_NUMBER = 500
-
 # Maximum number of requests per minute
-MAX_MINUTES_NUMBER = 20
+MAX_MINUTES_NUMBER = 50
 
 # uwsig path
 UWSIG_PATH = "/opt/pkgship/uwsgi/pkgship.ini"

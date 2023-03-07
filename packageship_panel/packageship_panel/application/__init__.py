@@ -14,12 +14,15 @@
    Initial operation and configuration of the flask project
 """
 import os
-from flask import Flask
+from flask import Flask,request
 from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
 
-from packageship.application.common.constant import MAX_DAY_NUMBER, MAX_MINUTES_NUMBER
+from packageship.application.common.constant import MAX_MINUTES_NUMBER
 from packageship.application.settings import Config
+
+
+def limiter_key() -> str:
+    return str(request.headers.get("X-Forwarded-For", '127.0.0.1'))
 
 
 def init_app(permissions):
@@ -33,16 +36,9 @@ def init_app(permissions):
     # Load configuration items
     app.config.from_object(Config())
 
-    default_limits = [
-        "{day_nu}/day;{minute_nu}/minute".format(
-            day_nu=MAX_DAY_NUMBER, minute_nu=MAX_MINUTES_NUMBER
-        )
-    ]
-    Limiter(
-        app,
-        key_func=get_remote_address,
-        default_limits=default_limits,
-    )
+    default_limits = ["{minute_nu}/minute".format(minute_nu=MAX_MINUTES_NUMBER)]
+    Limiter(app=app, key_func=limiter_key, default_limits=default_limits)
+
     from packageship_panel.application import apps
 
     # Register Blueprint
