@@ -8,6 +8,7 @@ import router from './router';
 import ElementUI from 'element-ui';
 import locale from 'element-ui/lib/locale/lang/en';
 import '@/assets/style/base.css';
+import '@/assets/style/variable.less';
 import  echarts from 'echarts';
 import analytcsConfig from './libs/analytics';
 
