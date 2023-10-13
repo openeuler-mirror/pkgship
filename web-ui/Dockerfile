@@ -14,11 +14,15 @@ FROM swr.cn-north-4.myhuaweicloud.com/opensourceway/openeuler/nginx:1.22.0-22.03
 
 COPY --from=Builder /home/openeuler/pkgwebui/dist /usr/share/nginx/html/
 RUN chmod -R 755 /usr/share/nginx/html
-COPY ./deploy/nginx/default.conf /etc/nginx/conf.d/
+RUN rm -rf  /usr/share/nginx/html/ru
+COPY ./deploy/nginx/nginx.conf /etc/nginx/nginx.conf
 
-ENV RUN_USER nginx
-ENV RUN_GROUP nginx
+RUN touch /var/run/nginx.pid \
+    && chown -R nginx:nginx /var/log/nginx \
+    && chown -R nginx:nginx /var/run/nginx.pid \
+    && chown -R nginx:nginx /etc/nginx
 EXPOSE 8080
+USER nginx
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
 
 
