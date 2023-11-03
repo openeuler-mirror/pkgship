@@ -31,6 +31,7 @@ class TestInstallDep(DependTestBase):
     """
     class for TestInstallDep
     """
+
     cmd_class = InstallDepCommand
     binary_file = "os-version-binary.json"
     component_file = "os-version-binary-component.json"
@@ -86,9 +87,8 @@ HINT           :Please check the parameter is valid and query again
 
         self.command_params = ["Judy"]
         self.excepted_str = self.read_file_content(
-            "installdep_Judy.txt",
-            folder=INSTALLDEP_EXPECTED_DATA_FOLDER,
-            is_json=False)
+            "installdep_Judy.txt", folder=INSTALLDEP_EXPECTED_DATA_FOLDER, is_json=False
+        )
         self.assert_result()
 
     def test_true_level_1(self):
@@ -100,7 +100,8 @@ HINT           :Please check the parameter is valid and query again
         self.excepted_str = self.read_file_content(
             "install_Judy_level_1.txt",
             folder=INSTALLDEP_EXPECTED_DATA_FOLDER,
-            is_json=False)
+            is_json=False,
+        )
         self.assert_result()
 
     def test_true_level_one_db(self):
@@ -112,7 +113,8 @@ HINT           :Please check the parameter is valid and query again
         self.excepted_str = self.read_file_content(
             "installdep_Judy_level_1_dbs.txt",
             folder=INSTALLDEP_EXPECTED_DATA_FOLDER,
-            is_json=False)
+            is_json=False,
+        )
         self.assert_result()
 
     def test_true_level_db(self):
@@ -120,11 +122,11 @@ HINT           :Please check the parameter is valid and query again
         The installation depends on the specified query for the specified database
         """
         self.command_params = ["Judy", "-dbs=os-version"]
-        self._execute_command()
         self.excepted_str = self.read_file_content(
             "installdep_Judy_dbs.txt",
             folder=INSTALLDEP_EXPECTED_DATA_FOLDER,
-            is_json=False)
+            is_json=False,
+        )
         self.assert_result()
 
     def test_error_es_data_return_not_resp(self):
