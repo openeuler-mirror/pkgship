@@ -17,6 +17,10 @@ from packageship.application.common.constant import (
     BUILD_TIME_LEVEL,
     MAX_NUM_OF_RESULT,
 )
+from packageship.application.common.exc import (
+    DatabaseConfigException,
+    ElasticSearchQueryException,
+)
 from packageship.application.query import Query, QueryBody
 from packageship.libs.log import LOGGER
 
@@ -246,11 +250,14 @@ class PanelInfo(Query):
         if not index:
             LOGGER.error("index: %s is unavailable", index)
             return []
-        if query_all:
-            response = self.session.scan(index=index, body=body)
-        else:
-            response = self.session.query(index=index, body=body)
-
+        try:
+            if query_all:
+                response = self.session.scan(index=index, body=body)
+            else:
+                response = self.session.query(index=index, body=body)
+        except ElasticSearchQueryException as error:
+            LOGGER.error(f"Query data failed, error: {error}")
+            response = None
         return self.search_result_format(response, is_scan=query_all)
 
     def _query_count(self, index, body):
@@ -263,8 +270,11 @@ class PanelInfo(Query):
         if not index:
             LOGGER.error("index: %s is unavailable", index)
             return 0
-
-        count = self.session.count(index=index, body=body)
+        try:
+            count = self.session.count(index=index, body=body)
+        except ElasticSearchQueryException as error:
+            LOGGER.error(f"Query data failed, error: {error}")
+            count = None
         return self.count_result_format(count)
 
     @staticmethod
