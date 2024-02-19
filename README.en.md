@@ -10,6 +10,7 @@
   - [Starting and Stopping Services](#)
   - [Tool Usage](#)
   - [Viewing and Dumping Logs](#)
+  - [Extension tool pkgship-panel](#)
 
 ## Introduction
 
@@ -432,3 +433,17 @@ Permission: The permission on the path is 700, and the permission on the log fil
   When pkgship is started, the dump script runs in the background. From the startup, dump and compression are performed every one day. A total of 30 compressed files are retained. The compressed file name is uwsgi.log-20201010x.zip, where x indicates the hour when the file is compressed.
 
   After the pkgship is stopped, the dump script is stopped and does not dump data. When the pkgship is started again, the dump script is executed again.
+
+## Extension tool pkgship-panel
+
+### Introduction
+
+pkgship-panel is designed to integrate package build information and maintenance  information together, so that version maintainers can quickly identify  abnormal packages and quickly notify the relevant responsible persons by email to solve them, so as to ensure the stability of the build project and improve the success rate of IOS builds. 
+
+### Architecture
+
+![img](doc/design/pkgimg/panel%E9%80%BB%E8%BE%91%E8%A7%86%E5%9B%BE.png)
+
+### Tool use
+
+Since the tool data source is not configurable, it is recommended to directly use the official website address of pkgship-panel:  https://pkgmanage.openeuler.org/Infomanagement
