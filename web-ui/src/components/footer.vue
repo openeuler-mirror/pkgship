@@ -166,7 +166,7 @@ export default {
     background: url(../assets/images/footer-bg.png) no-repeat bottom center;
     .inner {
       display: flex;
-      align-items: end;
+      align-items: flex-end;
       justify-content: space-between;
       padding: 18px 0 32px;
       position: relative;
