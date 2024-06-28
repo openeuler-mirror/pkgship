@@ -77,7 +77,7 @@ You can use either of the following methods to install the tool:
   dnf install pkgship-x.x-x.oe1.noarch.rpm
   ```
 
-**2. Install Elasticsearch and Redis**
+**2. Install Elasticsearch and Redis and start**
 
 If Elasticsearch or Redis is not installed in the environment, you can run the automatic installation script after pkgship is installed.
 
@@ -99,6 +99,15 @@ or
 
 ```
  /bin/bash auto_install_pkgship_requires.sh redis
+```
+
+After elasticsearch and redis is installed, need to start the service.The command is as follows:
+
+```
+ systemctl start elasticsearch
+```
+```
+ systemctl start redis
 ```
 
 **3. Add a user after the installation**
