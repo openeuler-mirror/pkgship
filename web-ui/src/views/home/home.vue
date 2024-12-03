@@ -4,11 +4,11 @@
             <h1>Packages in the palm of your hand</h1>
             <div style="display:flex">
                <p>Pkgship – A query tool that manages OS software package information and dependencies.</p>
-               <p>Pkgship-panel – A query tool that package build status and maintenance information.</p>
+               <!-- <p>Pkgship-panel – A query tool that package build status and maintenance information.</p> -->
             </div>
             <div style="display:flex">
                <p class="btn-start" @click="jump('pack')">Package Management</p>
-               <p class="btn-start" @click="jump('info')">Info Management</p>
+               <!-- <p class="btn-start" @click="jump('info')">Info Management</p> -->
             </div>
             <img class="icon-earth" src="@/assets/images/earth.svg" alt="">
             <img class="icon-pack" :class="[isWait ? 'wait' : '']" src="@/assets/images/icon-pack.png" alt="">
