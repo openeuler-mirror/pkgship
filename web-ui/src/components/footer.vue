@@ -38,17 +38,6 @@
           </p>
         </div>
         <div class="footer-right">
-          <div class="footer-links">
-            <a
-              v-for="item in linksData"
-              :key="item.id"
-              :href="item.path"
-              class="links-logo"
-              target="_blank"
-            >
-              <img :src="item.logo" alt="" />
-            </a>
-          </div>
         </div>
       </div>
     </div>
@@ -56,11 +45,6 @@
 </template>
 
 <script>
-import LogoRedditSquare from '@/assets/images/reddit-square@2x.png';
-import LogoBilibili2 from '@/assets/images/bilibili@2x.png';
-import LogoLinkedin from '@/assets/images/linkedin@2x.png';
-import LogoYoutube from '@/assets/images/youtube@2x.png';
-import LogoTwitter from '@/assets/images/twitter@2x.png';
 export default {
   data() {
     return {
@@ -83,35 +67,8 @@ export default {
           URL: 'https://www.openeuler.org/en/other/legal/',
         },
         {
-          NAME: 'Service Status',
-          URL: 'https://status.openeuler.org/',
-        },
-      ],
-      linksData: [
-        {
-          path: 'https://www.reddit.com/r/openEuler/',
-          logo: LogoRedditSquare,
-          id: 'reddit-square',
-        },
-        {
-          path: 'https://www.linkedin.com/company/openeuler',
-          logo: LogoLinkedin,
-          id: 'linkedin',
-        },
-        {
-          path: 'https://twitter.com/openEuler',
-          logo: LogoTwitter,
-          id: 'twitter',
-        },
-        {
-          path: 'https://space.bilibili.com/527064077/channel/series',
-          logo: LogoBilibili2,
-          id: 'bilibili',
-        },
-        {
-          path: 'https://www.youtube.com/channel/UCPzSqXqCgmJmdIicbY7GAeA',
-          logo: LogoYoutube,
-          id: 'youtube',
+          NAME: 'About Cookies',
+          URL: 'https://www.openeuler.org/en/other/cookies/',
         },
       ],
     };
@@ -245,108 +202,6 @@ export default {
   }
   .footer-right {
     flex: 1;
-    .code-box {
-      display: flex;
-      justify-content: right;
-      gap: 16px;
-      margin-bottom: 16px;
-      .code-pop {
-        position: relative;
-        height: 20px;
-        display: block;
-        > img {
-          height: 100%;
-          object-fit: cover;
-        }
-        .code-layer {
-          position: absolute;
-          top: -105px;
-          left: -32px;
-          z-index: 99;
-          display: none;
-          background: #fff;
-          padding: 6px;
-          img {
-            width: 78px;
-            height: 78px;
-          }
-          .txt {
-            font-size: 12px;
-            color: #fff;
-            display: none;
-          }
-          &::after {
-            border: 10px solid transparent;
-            content: '';
-            border-top-color: #fff;
-            position: absolute;
-            bottom: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: block;
-          }
-          @media (max-width: 800px) {
-            display: block;
-            position: initial;
-            background: none;
-            padding: 0;
-            text-align: center;
-            &::after {
-              display: none !important;
-            }
-            .txt {
-              display: block;
-            }
-          }
-        }
-        &:hover {
-          .code-layer {
-            display: block;
-          }
-        }
-        @media (max-width: 800px) {
-          height: auto;
-          > img {
-            display: none;
-          }
-        }
-      }
-      @media (max-width: 1400px) {
-        justify-content: center;
-      }
-      @media (max-width: 1100px) {
-        margin-top: 24px;
-      }
-    }
-    .footer-links {
-      display: flex;
-      justify-content: right;
-      align-items: center;
-      gap: 16px;
-      .links-logo {
-        height: 16px;
-        img {
-          height: 100%;
-          object-fit: cover;
-        }
-      }
-      @media (max-width: 1100px) {
-        justify-content: center;
-      }
-      @media (max-width: 800px) {
-        display: flex;
-        text-align: center;
-        .img {
-          height: 16px;
-        }
-      }
-    }
-
-    p {
-      color: #fff;
-      font-size: var(--o-font-size-tip);
-      margin-top: var(--o-spacing-h8);
-    }
   }
 
   .email {
